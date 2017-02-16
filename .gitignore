@@ -1,0 +1,9 @@
+/vendor
+/node_modules
+composer.phar
+composer.lock
+/.idea
+.idea/
+.idea/*
+.idea/workspace.xml
+#.env
