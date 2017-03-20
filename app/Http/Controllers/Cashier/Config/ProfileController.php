@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cashier;
+namespace App\Http\Controllers\Cashier\Config;
 
 use App\RMS\Config\Config;
 use Illuminate\Http\Request;
