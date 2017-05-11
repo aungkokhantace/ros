@@ -5,6 +5,7 @@
             <th><label>Total Amount</label></th>
             <th><label>Date</label></th>
             <th><label>View Detail</label></th>
+            <th><label>Status</label></th>
         </tr>
     </thead>
     <tbody>
@@ -15,7 +16,13 @@
                     <td> {{$order->all_total_amount}} </td>
                     <td > {{$order->created_at }} </td>
                     <td ><a href="/Cashier/invoice/detail/{{$order->id}}">View Detail </a></td>
-                                        
+                    <td ><a href="/Cashier/invoice/paid/{{$order->id}}">
+                            @if($order->payment_amount > 0)
+                                {{ 'Paid' }}
+                            @else
+                                {{ 'To Pay' }}
+                            @endif
+                        </a></td>
                 </tr>
         @endforeach
 

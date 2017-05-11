@@ -719,6 +719,9 @@ function table_delete() {
 }
 //table delete
 
+
+//Payment Confirmation
+
 //room delete
 function room_delete() {
     var data = [];
@@ -804,7 +807,7 @@ function sub_menus_delete() {
                 text: "You will not be able to recover this record!",
                 type: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#DD6B55 ",
+                confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Confirm",
                 cancelButtonText: "Cancel",
                 closeOnConfirm: false,
@@ -1025,6 +1028,26 @@ function permission_cancel(){
 function Promotion_Cancel_Form(){
     window.location.href = '/Cashier/Promotion/index';
 }
+
+
+
+$('#btn-payment').on('click',function(e){
+    e.preventDefault();
+    var form = $(this).parents('form');
+    swal({
+        title: "Are you sure?",
+        text: "You will not be able to recover this payment!",
+        type: "success",
+        showCancelButton: true,
+        confirmButtonColor: "#86CCEB",
+        confirmButtonText: "Confirm",
+        closeOnConfirm: false
+    }, function(isConfirm){
+        if (isConfirm) form.submit();
+    });
+});
+
+
 
 
 

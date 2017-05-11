@@ -932,3 +932,57 @@ thead label{color: #FFFFFF;}
 .ui-page-theme-a a, html .ui-bar-a a, html .ui-body-a a, html body .ui-group-theme-a a{
     font-weight: 100 !important;
 }
+
+/*--================== Start Theodore CSS ==================--*/
+
+/*-- Start Paid Table Css -- */
+.paid_header {
+    background:#DBDBDB !important;
+    border-radius:15px !important;
+}
+/*!-- End Paid Table Css -- */
+
+
+/*-- Vouncher Detail -- */
+.col-left-vouncher {
+    font-size:17px;
+    color:#F3A42E;
+    font-weight:500;
+}
+/* member info css */
+.paid_mem_info {
+    font-size:17px;
+    color:#797979;
+    font-weight:500;
+}
+.paid-post-box {
+    border-bottom:2px solid #989696;
+    padding:0 0 5px 0 !important;
+}
+/* End member info */
+
+/* Btn paid */
+.paid_btn {
+    background: #F57414 !important;
+    border-radius:5px !important;
+    color:#ffffff !important;
+}
+.paid_btn span {
+    font-size:20px;
+}
+
+
+/*-- End Vouncher Detail -- */
+.spacer-10px {
+    height:20px;
+}
+
+.form-invoice {
+    background:none !important;
+    border:none !important;
+    font-size:17px !important;
+    margin:0 !important;
+    padding:0 !important;
+}
+
+/*--================== End Theodore CSS ==================--*/

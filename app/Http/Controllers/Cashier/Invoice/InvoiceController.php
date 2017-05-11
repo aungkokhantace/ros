@@ -3,7 +3,9 @@ namespace App\Http\Controllers\Cashier\Invoice;
 use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use App\RMS\Invoice\InvoiceRepositoryInterface;
+use App\RMS\Infrastructure\Forms\InvoiceRequest;
 use App\Http\Requests;
+use Auth;
 use App\Http\Controllers\Controller;
 use App\RMS\Order\Order;
 use App\RMS\Orderdetail\Orderdetail;
@@ -15,6 +17,8 @@ use PDF;
 use Excel;
 use App;
 use App\RMS\Utility;
+use App\RMS\FormatGenerator As FormatGenerator;
+use App\RMS\ReturnMessage As ReturnMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection as Collection;
 
@@ -69,6 +73,54 @@ class InvoiceController extends Controller
         $config         = Config::select('restaurant_name','logo','website','address','phone')->first();
        
         return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier'));
+    }
+
+    public function invoicePaid($id) {
+        $orders = $this->InvoiceRepository->getorder($id);
+        $add    = $this->InvoiceRepository->getaddon($id);
+        $total  = $this->InvoiceRepository->getaddonAmount($id);
+        $addon  = array();
+        foreach($add as $dd){
+            foreach($dd as $d){
+                $addon[] = $d;
+            }
+        }
+        $amount = array();
+        foreach($total as $t){
+            foreach($t as $tt){
+                $amount[] = $tt;
+            }
+        }
+        $order_detail   = $this->InvoiceRepository->getdetail($id);
+        $tables         = $this->InvoiceRepository->orderTable($id);
+        $rooms          = $this->InvoiceRepository->orderRoom($id);
+        $cashier        = $this->InvoiceRepository->cashier($id);
+        $config         = Config::select('restaurant_name','logo','website','address','phone')->first();
+
+        return view('cashier.invoice.payment',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier'));
+    }
+
+    public function invoiceAddpaid(InvoiceRequest $request)
+    {
+
+        $id = Input::get('id');
+        $payment = Input::get('payment');
+        $all_total = Input::get('all_total');
+        $foc = (int)(Input::get('foc'));
+        $paymentfoc = $payment + $foc;
+        $refund = $paymentfoc - $all_total;
+
+        if ($foc <= 0) {
+            $foc = null;
+        }
+        $request->validate();
+
+        DB::table('order')
+            ->where('id', $id)
+            ->update(['status' => 5,'payment_amount' => $payment, 'refund' => $refund,'total_price_foc' => $foc]);
+
+        return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
+                        ->withMessage(FormatGenerator::message('Success', 'Item have been paid ...'));
     }
 
     public function invoiceprint($id){
@@ -194,6 +246,5 @@ class InvoiceController extends Controller
         return redirect('/');
     }
 
-       
 }
 

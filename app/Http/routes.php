@@ -43,7 +43,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Permission/index','Cashier\Module\ModuleController@index');
                 Route::get('Permission/create','Cashier\Module\ModuleController@create');
                 Route::post('Permission/store','Cashier\Module\ModuleController@store');
-                Route::get('Permission/edit/{id}','Cashier\Module\ModuleController@edit');
+                Route::get('PermisCategory/editsion/edit/{id}','Cashier\Module\ModuleController@edit');
                 Route::post('Permission/update','Cashier\Module\ModuleController@update');
                 //End Permission
             });
@@ -234,6 +234,8 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('invoice/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxInvoiceRequest');
                 Route::get('invoice/detail/{id}','Cashier\Invoice\InvoiceController@invoicedetail');
                 Route::get('invoice/detail/print/{id}','Cashier\Invoice\InvoiceController@invoicePrint');
+                Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');
+                Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
 
                 //Sale Summary Report & Excel Download
                 Route::get('saleSummaryReport','Cashier\Report\SaleSummaryReportController@saleSummary');
