@@ -96,6 +96,7 @@ class AddonController extends Controller
         $file        = $request->file('fileupload');
         $old_name    = $this->extra_repository->getOldName($id);
         $all_names   = $this->extra_repository->getAllNames();
+        $oldprice    = $old_name->price;
         $flag        = 1;
         if($food_name == $old_name->food_name ){
             $flag = 1;
@@ -126,7 +127,7 @@ class AddonController extends Controller
                 $paramObj->mobile_image = base64_encode($image->encoded);
                 $paramObj->price        = $price;
                 $paramObj->status       = $status;
-                $result = $this->extra_repository->updateall($paramObj);
+                $result = $this->extra_repository->updateall($paramObj,$oldprice);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Cashier\Addon\AddonController@index')
@@ -145,7 +146,7 @@ class AddonController extends Controller
                 $paramObj->description  = $description;
                 $paramObj->price        = $price;
                 $paramObj->status       = $status;
-                $result = $this->extra_repository->update($paramObj);
+                $result = $this->extra_repository->update($paramObj,$oldprice);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Cashier\Addon\AddonController@index')

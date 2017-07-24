@@ -14,6 +14,7 @@ use App\RMS\Kitchen\Kitchen;
 use App\RMS\Utility;
 use App\RMS\ReturnMessage;
 use App\RMS\Member\Member;
+use App\RMS\SetMenu\SetMenu;
 use App\RMS\SetItem\SetItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
@@ -72,6 +73,14 @@ class SetMenuRepository implements SetMenuRepositoryInterface
                 $tempItem                = Utility::addCreatedBy($paramObj);
                 $tempItem->save();
             }
+
+            $inserted_id = $tempObj->id;
+            $product_type = 4; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
+            $stock_code = Utility::generateStockCode($inserted_id,$product_type);
+            $paramObj = SetMenu::find($inserted_id);
+            $paramObj->stock_code = $stock_code;
+            $paramObj->save();
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -95,18 +104,25 @@ class SetMenuRepository implements SetMenuRepositoryInterface
         
         $tempObj                = SetMenu::find($id);
         $tempObj                = Utility::addDeletedBy($tempObj);
+        $tempObj->status        = 2; 
         $tempObj->deleted_at    = date('Y-m-d H:m:i');
         $tempObj->save();
     }
 
-    public function setMenuUpdate($paramObj,$item)
+    public function setMenuUpdate($paramObj,$item,$oldprice)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
-
+        $currentUser = Utility::getCurrentUserID();//get current user login
         try {
             $tempObj    = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+
+            if ($tempObj->set_menus_price !== $oldprice) {
+                //Save item Price change history
+                Utility::savePriceTracking('set_menu',$tempObj->id,'integer','update',$oldprice,$tempObj->set_menus_price,$currentUser,$tempObj->updated_at);
+            }
+
             $id         = $paramObj->id;
             if(isset($sell_item)) {
                 SetItem::where('set_menu_id',$id)->delete();
@@ -132,14 +148,20 @@ class SetMenuRepository implements SetMenuRepositoryInterface
 
     }
 
-    public function itemUpdate($paramObj,$item)
+    public function itemUpdate($paramObj,$item,$oldprice)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
-       
+        $currentUser = Utility::getCurrentUserID();//get current user login
         try {
             $tempObj    = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+
+            if ($tempObj->set_menus_price !== $oldprice) {
+                //Save item Price change history
+                Utility::savePriceTracking('set_menu',$tempObj->id,'integer','update',$oldprice,$tempObj->set_menus_price,$currentUser,$tempObj->updated_at);
+            }
+
             $id         = $paramObj->id;
             if(isset($item)) {
                 SetItem::where('set_menu_id',$id)->delete();

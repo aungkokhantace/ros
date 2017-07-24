@@ -1,4 +1,4 @@
-@extends('Cashier.layouts.kitchen.master')
+@extends('cashier.layouts.kitchen.master')
 @section('title','Order View')
 @section('content')
     {{--title--}}

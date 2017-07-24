@@ -130,6 +130,8 @@ class ItemController extends Controller
         $status         = $request->get('status');
         $cooking_time   = Input::get('standard_cooking_time');
         $oldname        = $this->ItemRepository->find(Input::get('id'));
+        $oldprice       = $oldname->price;
+
         $lower_old_name = strtolower($oldname->name); //to change old name from database to lower
         $flag = 1;
 
@@ -172,7 +174,7 @@ class ItemController extends Controller
                     $paramObj->status                   = $status;
                     $paramObj->category_id              = $category;
                     $paramObj->standard_cooking_time    = $cooking_time;
-                    $result = $this->ItemRepository->updateAllItem($paramObj);
+                    $result = $this->ItemRepository->updateAllItem($paramObj,$oldprice);
 
                     if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                         return redirect()->action('Cashier\Item\ItemController@index')
@@ -204,7 +206,7 @@ class ItemController extends Controller
                 $paramObj->status                = $status;
                 $paramObj->category_id           = $category;
                 $paramObj->standard_cooking_time = $cooking_time;
-                $result = $this->ItemRepository->updateItem($paramObj);
+                $result = $this->ItemRepository->updateItem($paramObj,$oldprice);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Cashier\Item\ItemController@index')

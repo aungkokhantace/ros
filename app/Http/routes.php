@@ -224,6 +224,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Profile/company_profile','Cashier\Config\ProfileController@profile');
                 Route::post('Profile/update','Cashier\Config\ProfileController@update');
                 Route::post('Profile/store','Cashier\Config\ProfileController@store');
+                Route::get('Pricehistory/{type?}/{id?}','Cashier\Log\PricelogController@search');
             });
             //End config
 
@@ -423,11 +424,11 @@ Route::post('api/v1/customer_cancel','makeAPIController@customer_cancel');
 Route::post('api/v1/post_kitchen_cancel','makeAPIController@post_kitchen_cancel');
 Route::post('api/v1/order_status','makeAPIController@order_status');
 
-Route::post('api/v1/download_voucher','downloadAPIController@download_voucher');
-Route::post('api/v1/download_voucher_detail','downloadAPIController@download_voucher_detail');
-Route::post('api/v1/order_table','downloadAPIController@order_table');
-Route::post('api/v1/order_room','downloadAPIController@order_room');
+Route::post('api/v1/download_voucher','downloadApiController@download_voucher');
+Route::post('api/v1/download_voucher_detail','downloadApiController@download_voucher_detail');
+Route::post('api/v1/order_table','downloadApiController@order_table');
+Route::post('api/v1/order_room','downloadApiController@order_room');
 
-Route::post('api/v1/download_order_table_with_order_id','downloadAPIController@order_table_with_order_id');
-Route::post('api/v1/download_order_room_with_order_id','downloadAPIController@order_room_with_order_id');
-Route::post('api/v1/download_order_table_status','downloadAPIController@download_order_table_status');
+Route::post('api/v1/download_order_table_with_order_id','downloadApiController@order_table_with_order_id');
+Route::post('api/v1/download_order_room_with_order_id','downloadApiController@order_room_with_order_id');
+Route::post('api/v1/download_order_table_status','downloadApiController@download_order_table_status');

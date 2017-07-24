@@ -70,6 +70,18 @@ class Utility
         }
     }
 
+    public static function getCurrentUserID(){
+        $id = Auth::guard('Cashier')->user()->id;
+        return $id;
+    }
+
+    public static function savePriceTracking($table_name,$table_id,$table_id_type,$action,$old_price,$new_price,$created_by,$created_at) {
+        DB::table('setup_price_tracking')->insert([
+            ['table_name'=>$table_name, 'table_id'=>$table_id, 'table_id_type'=>$table_id_type,
+                'action'=>$action, 'old_price'=> $old_price , 'new_price'=>$new_price, 'created_by'=>$created_by, 'created_at'=>$created_at]
+        ]);
+    }
+
     public static function exportPDF($html)
     {
         PDF::SetTitle('exportPDF');
@@ -91,5 +103,47 @@ class Utility
                         '' : empty string : left for LTR or right for RTL */
 
         PDF::Output('exportPDF.pdf');
+    }
+
+    public static function generateStockCode($inserted_id,$product_type)
+    {
+        $generate_codes = DB::table('core_settings')
+                        ->select('code')
+                        ->WHERE ('value','=',$product_type)
+                        ->get();
+        foreach($generate_codes as $generate_code) {
+            $code = $generate_code->code;
+        }
+
+        $inserted_id_length =  strlen($inserted_id);
+        $limit_length = 6;
+        $remain_length = $limit_length - $inserted_id_length;
+        $remain_length_arr = array();
+        for ($i = 1;$i <= $remain_length; $i++) {
+            $remain_length_arr[$i] = 0;
+        }
+
+        $code_length = implode('',$remain_length_arr);
+
+        $stock_code = $code . "_" . $code_length . $inserted_id;
+        return $stock_code;
+    }
+
+    public static function getTableId($order_id) {
+        $tables = DB::table('order_tables')
+            ->select('table_id')
+            ->WHERE ('order_id','=',$order_id)
+            ->get();
+
+        return $tables;
+    }
+
+    public static function getRoomId($order_id) {
+        $rooms = DB::table('order_room')
+            ->select('room_id')
+            ->WHERE ('order_id','=',$order_id)
+            ->get();
+
+        return $rooms;
     }
 }

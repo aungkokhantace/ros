@@ -92,7 +92,6 @@ class downloadAPIController extends ApiGuardController
 
 	public function download_voucher_detail(){
 		$temp	= Input::all();
-
 		$key                    = $temp['site_activation_key'];
 		$order_id				= $temp['order_id'];
 		$site_activation_key    = Config::all();

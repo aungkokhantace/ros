@@ -14,10 +14,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Input;
 use Monolog\Handler\Curl\Util;
 use App\RMS\ReturnMessage;
+use App\RMS\Addon\Addon;
 
 class AddonRepository  implements  AddonRepositoryInterface
 {
-    public function getAllType(){
+    public function getAllType() {
         $addon = Addon::all();
         return $addon;
     }
@@ -30,6 +31,14 @@ class AddonRepository  implements  AddonRepositoryInterface
         try {
             $tempObj        = Utility::addCreatedBy($paramObj);
             $tempObj->save();
+
+            $inserted_id = $tempObj->id;
+            $product_type = 3; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
+            $stock_code = Utility::generateStockCode($inserted_id,$product_type);
+            $paramObj = Addon::find($inserted_id);
+            $paramObj->stock_code = $stock_code;
+            $paramObj->save();
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -54,14 +63,20 @@ class AddonRepository  implements  AddonRepositoryInterface
         $tempObj->save();
     }
 
-    public function update($paramObj){
+    public function update($paramObj,$oldprice){
 
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
-
+        $currentUser = Utility::getCurrentUserID();//get current user login
         try {
             $tempObj            = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+
+            if ($tempObj->price !== $oldprice) {
+                //Save item Price change history
+                Utility::savePriceTracking('add_on',$tempObj->id,'integer','update',$oldprice,$tempObj->price,$currentUser,$tempObj->updated_at);
+            }
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -74,14 +89,20 @@ class AddonRepository  implements  AddonRepositoryInterface
 
     }
 
-    public function updateall($paramObj){
+    public function updateall($paramObj,$oldprice){
 
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
-
+        $currentUser = Utility::getCurrentUserID();//get current user login
         try {
             $tempObj             = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+
+            if ($tempObj->price !== $oldprice) {
+                //Save item Price change history
+                Utility::savePriceTracking('add_on',$tempObj->id,'integer','update',$oldprice,$tempObj->price,$currentUser,$tempObj->updated_at);
+            }
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }

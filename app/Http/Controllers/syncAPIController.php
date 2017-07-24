@@ -145,7 +145,7 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu");
+            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu WHERE status = '1'");
             $output = array("set_menu" => $set_menu);
             return Response::json($output);
         }else{
@@ -188,7 +188,7 @@ class syncAPIController extends ApiGuardController
         }
        
         if($key == $activate_key){
-            $config = DB::select("SELECT tax,service,booking_warning_time,booking_waiting_time,booking_service_time,restaurant_name,logo,mobile_logo,email,website,phone,address,message,remark,mobile_image FROM config");
+            $config = DB::select("SELECT tax,service,booking_warning_time,booking_waiting_time,booking_service_time,room_charge,restaurant_name,logo,mobile_logo,email,website,phone,address,message,remark,mobile_image FROM config");
         
         $output = array("config" => $config);
         return Response::json($output);
@@ -436,7 +436,6 @@ class syncAPIController extends ApiGuardController
     {
         $returnArr              = array();
         $temp                   = Input::all();
-
         $key                    = $temp['site_activation_key'];
         $site_activation_key    = Config::all();
         $activate_key           = 0;
@@ -457,7 +456,6 @@ class syncAPIController extends ApiGuardController
                         $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image FROM category WHERE status='1'");
 
                         $returnArr['category'] = $category;
-
                     }
                 }
 
@@ -485,7 +483,7 @@ class syncAPIController extends ApiGuardController
                     }
                 }
            
-                if ($sync->table_name == "set_menu") {
+                    if ($sync->table_name == "set_menu") {
                     if ($sync->version > $temp['set_menu']) {
                         $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image FROM set_menu  WHERE status='1'");
                         $returnArr['set_menu'] = $set_menu;
@@ -564,7 +562,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "config") {
                     if ($sync->version > $temp['config']) {
-                        $config = DB::select("SELECT tax,service,booking_warning_time,booking_waiting_time,booking_service_time,restaurant_name,logo,mobile_logo,email,
+                        $config = DB::select("SELECT tax,service,booking_warning_time,room_charge,booking_waiting_time,booking_service_time,restaurant_name,logo,mobile_logo,email,
                             website,phone,address,message,remark,mobile_image FROM config");
                         $returnArr['config'] = $config;
                     }

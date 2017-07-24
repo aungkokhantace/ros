@@ -32,7 +32,7 @@ class SaleSummaryReportController extends Controller
     {
         $orders = $this->reportRepository->saleSummary();
 
-        return view('cashier.report.saleSummaryReport')->with('orders',$orders);
+        return view('cashier.report.SaleSummaryReport')->with('orders',$orders);
 
     }
 
@@ -211,7 +211,7 @@ class SaleSummaryReportController extends Controller
             return back();
         }else{
             $orders = $this->reportRepository->searchDailySummary($from_date, $to_date);
-            
+            // dd($orders);
             return view('cashier.report.SaleSummaryReport')->with('orders',$orders)->with('to_date',$to_date)->with('from_date',$from_date);
         }
     }

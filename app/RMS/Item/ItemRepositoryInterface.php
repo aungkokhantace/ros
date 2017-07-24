@@ -24,8 +24,8 @@ interface ItemRepositoryInterface
 
     public function getAllItemName();
     public function allCat();
-    public function updateItem($paramObj);
-    public function updateAllItem($paramObj);
+    public function updateItem($paramObj,$oldprice);
+    public function updateAllItem($paramObj,$oldprice);
     public function delete($id);
     public function itemenabled($id);
     public function itemdisabled($id);

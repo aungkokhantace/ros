@@ -20,8 +20,8 @@ interface SetMenuRepositoryInterface
     public function getAllItem();
     public function delete($id);
     public function getAllSet();
-    public function setMenuUpdate($paramObj,$item);
-    public function itemUpdate($paramObj,$item);
+    public function setMenuUpdate($paramObj,$item,$oldprice);
+    public function itemUpdate($paramObj,$item,$oldprice);
     public function getOldName($id);
     public function getAllNames();
 }

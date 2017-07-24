@@ -17,4 +17,5 @@ interface InvoiceRepositoryInterface
     public function orderRoom($id);
     public function cashier($id);
     public function addpaid($id);
+    public function update($id);
 }

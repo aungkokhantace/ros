@@ -111,7 +111,9 @@ class SetMenuController extends Controller
         $file                           = $request->file('fileupload');
         $old_name                       = $this->setMenuRepository->getOldName($id);
         $all_names                      = $this->setMenuRepository->getAllNames();
+        $oldprice                       = $old_name->set_menus_price;
         $flag                           = 1;
+
         if($set_menus_name == $old_name->set_menus_name ){
             $flag = 1;
         }
@@ -138,7 +140,7 @@ class SetMenuController extends Controller
                 $paramObj->image            = $photo;
                 $paramObj->mobile_image     = base64_encode($image->encoded);
                 $paramObj->status           = $status;
-                $result = $this->setMenuRepository->setMenuUpdate($paramObj,$item);
+                $result = $this->setMenuRepository->setMenuUpdate($paramObj,$item,$oldprice);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Cashier\Setmenu\SetMenuController@index')
@@ -158,7 +160,7 @@ class SetMenuController extends Controller
                 $paramObj->set_menus_name   = $set_menus_name;
                 $paramObj->set_menus_price  = $set_menus_price;
                 $paramObj->status           = $status;
-                $result  = $this->setMenuRepository->itemUpdate($paramObj,$item);
+                $result  = $this->setMenuRepository->itemUpdate($paramObj,$item,$oldprice);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Cashier\Setmenu\SetMenuController@index')

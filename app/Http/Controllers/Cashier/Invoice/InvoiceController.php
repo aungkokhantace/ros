@@ -95,32 +95,71 @@ class InvoiceController extends Controller
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier        = $this->InvoiceRepository->cashier($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge')->first();
 
         return view('cashier.invoice.payment',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier'));
     }
 
     public function invoiceAddpaid(InvoiceRequest $request)
     {
-
-        $id = Input::get('id');
-        $payment = Input::get('payment');
-        $all_total = Input::get('all_total');
-        $foc = (int)(Input::get('foc'));
-        $paymentfoc = $payment + $foc;
-        $refund = $paymentfoc - $all_total;
-
-        if ($foc <= 0) {
-            $foc = null;
-        }
         $request->validate();
+        $id                 = Input::get('id');
+        $config             = Config::select('tax','service','room_charge')->first();
+        $orders             = $this->InvoiceRepository->getorder($id);
+        $tax_foc            = $orders->tax_amount;
+        $services           = $orders->service_amount;
+        $rooms              = $this->InvoiceRepository->orderRoom($id);
+        $tables             = $this->InvoiceRepository->orderTable($id);
+        $payment            = Input::get('payment');
+        $foc                = (int)(Input::get('foc'));
+        $all_total          = $orders->all_total_amount;
+        $paymentfoc         = $payment + $foc;
+        $total_price_foc    = $all_total - $foc;
+        $refund             = $paymentfoc - $all_total;
+        $status             = 1;
 
-        DB::table('order')
-            ->where('id', $id)
-            ->update(['status' => 5,'payment_amount' => $payment, 'refund' => $refund,'total_price_foc' => $foc]);
+        if ($foc > 0) {
+            $all_total_with_foc     = $all_total - $foc;
+        } else {
+            $all_total_with_foc     = $all_total;    
+        }
+        // if ($foc <= 0) {
+        //     $foc = null;
+        //     $total_price_foc = null;
+        // } else {
 
-        return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
-                        ->withMessage(FormatGenerator::message('Success', 'Item have been paid ...'));
+        //     $total_price = $orders->total_price;
+        //     $tax = $config->tax;
+        //     $service = $config->service;
+        //     $room_charge = $config->room_charge;
+        //     $total_price_foc = $total_price - $foc;
+        //     $tax_foc = $total_price_foc/$tax;
+        //     $service_focs = $total_price_foc/$service;
+
+        //     $services = $service_focs;
+        //     if (count($rooms) > 0) {
+        //         $services = $service_focs + $room_charge;
+        //     }
+
+        //     $all_total = $total_price_foc + $tax_foc + $services;
+        //     $refund = $payment - $all_total;
+        // }
+        $paramObj                   = Order::find($id);
+        $paramObj->status           = $status;
+        $paramObj->payment_amount   = $payment;
+        $paramObj->refund           = $refund;
+        $paramObj->foc_amount       = $foc;
+        $paramObj->all_total_amount = $all_total_with_foc;
+        $result                     = $this->InvoiceRepository->update($paramObj);
+
+        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+            return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
+                ->withMessage(FormatGenerator::message('Success', 'Item have been paid ...'));
+        }
+        else{
+            return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
+                ->withMessage(FormatGenerator::message('Fail', 'Table did not update ...'));
+        }
     }
 
     public function invoiceprint($id){

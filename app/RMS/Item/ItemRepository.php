@@ -9,6 +9,7 @@
 namespace App\RMS\Item;
 use App\RMS\Utility;
 use App\RMS\Category\Category;
+use App\RMS\Item\Item;
 use Illuminate\Support\Facades\DB;
 use App\RMS\ReturnMessage;
 
@@ -22,6 +23,14 @@ class ItemRepository implements ItemRepositoryInterface
         try {
             $tempObj    = Utility::addCreatedBy($paramObj);
             $tempObj->save();
+
+            $inserted_id = $tempObj->id;
+            $product_type = 1; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
+            $stock_code = Utility::generateStockCode($inserted_id,$product_type);
+            $paramObj = Item::find($inserted_id);
+            $paramObj->stock_code = $stock_code;
+            $paramObj->save();
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -91,14 +100,21 @@ class ItemRepository implements ItemRepositoryInterface
         return $data;
     }
 
-    public function updateAllItem($paramObj)
+    public function updateAllItem($paramObj,$oldprice)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
+        $currentUser = Utility::getCurrentUserID();//get current user login
         try {
             $tempObj = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+
+            if ($tempObj->price !== $oldprice) {
+                //Save item Price change history
+                Utility::savePriceTracking('items',$tempObj->id,'integer','update',$oldprice,$tempObj->price,$currentUser,$tempObj->updated_at);
+            }
+            
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -111,14 +127,20 @@ class ItemRepository implements ItemRepositoryInterface
 
     }
 
-    public function updateItem($paramObj)
+    public function updateItem($paramObj,$oldprice)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
+        $currentUser = Utility::getCurrentUserID();//get current user login
         try {
             $tempObj = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+
+            if ($tempObj->price !== $oldprice) {
+                //Save item Price change history
+                Utility::savePriceTracking('items',$tempObj->id,'integer','update',$oldprice,$tempObj->price,$currentUser,$tempObj->updated_at);
+            }
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }

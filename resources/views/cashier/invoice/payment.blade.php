@@ -50,15 +50,23 @@
                             <td class="text-center"> {{ number_format($detail->amount)  }}</td>
                             <td class="text-center"> {{$detail->quantity}} </td>
                             <td class="text-center">
-                                @if(isset($detail->order_extra))
-                                    {{$detail->order_extra}}
-                                @else
-                                    {{ '0.0' }}
-                                @endif
+
+                                <?php
+                                $default_extra = '0.0';
+                                ?>
+                                @foreach($amount as $am)
+                                    @if($detail->order_detail_id == $am['order_detail_id'])
+                                        {{ ($am['amount']) *($detail->quantity) }}
+                                         <?php $default_extra = ''; ?>
+                                    @endif
+                                @endforeach
+
+                                {{ $default_extra }}
                             </td>
                             <td class="text-center">{{$detail->discount_amount}}</td>
-                            <td class="text-center">{{ number_format($detail->amount_with_discount)}}</td>
+                            <td class="text-center">{{ $detail->amount_with_discount * $detail->quantity }}</td>
                         </tr>
+
                         <?php $sub_total += $detail->amount_with_discount ?>
                     @endforeach
 
@@ -126,7 +134,7 @@
                 <div class="row">
                     <div class="col-md-10 paid_mem_info">
                         <div class="paid-post-box">
-                            <input id="FOC" name="foc" type="text" class="form-control form-invoice" value="@if($orders->total_price_foc > 0){{ 'Free of Charge - ' .  $orders->total_price_foc }} @endif" @if($orders->total_price_foc > 0){{ 'disabled' }} @endif placeholder="Free Of Charge"/>
+                            <input id="FOC" name="foc" type="text" class="form-control form-invoice" placeholder="Free Of Charge" value="@if($orders->foc_amount > 0){{ 'Free of Charge - ' .  $orders->foc_amount }} @elseif(Request::old('foc')){{ Request::old('foc') }} @endif" @if($orders->foc_amount > 0){{ 'disabled' }} @endif />
                         </div>
                     </div>
                 </div><div class="spacer-10px"></div>
@@ -134,7 +142,8 @@
                 <div class="row">
                     <div class="col-md-10 paid_mem_info">
                         <div class="paid-post-box">
-                            Remark
+                            <input id="Remark" name="Remark" type="text" class="form-control form-invoice" value="" placeholder="Remark"/>
+
                         </div>
                     </div>
                 </div><div class="spacer-10px"></div>
@@ -142,10 +151,11 @@
                 <div class="row">
                     <div class="col-md-10 paid_mem_info">
                         <div class="paid-post-box">
-                            <input id="Payment" type="text" class="form-control form-invoice" value="@if($orders->payment_amount > 0){{ 'Payment - ' .  $orders->payment_amount }} @endif" name="payment" placeholder="Pay Amount" @if($orders->payment_amount > 0){{ 'disabled' }} @endif/>
+                            <input id="Payment" type="text" class="form-control form-invoice" value="@if($orders->payment_amount > 0){{ 'Payment - ' .  $orders->payment_amount }} @elseif(Request::old('payment')){{ Request::old('payment') }} @endif" name="payment" placeholder="Payment" @if($orders->payment_amount > 0){{ 'disabled' }} @endif/>
 
                         </div>
                         <p class="text-danger">{{$errors->first('payment')}}</p>
+                        <p class="text-danger">{{$errors->first('payment_check')}}</p>
                     </div>
                 </div><div class="spacer-10px"></div>
 
@@ -206,7 +216,7 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info">{{ number_format($orders->tax_amount)}}</span>
+                        <span class="paid_mem_info" id="Tax">{{ number_format($orders->tax_amount)}}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
@@ -216,7 +226,7 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info">{{ number_format($orders->tax_amount)}}</span>
+                        <span class="paid_mem_info" id="Service">{{ number_format($orders->service_amount)}}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
@@ -226,14 +236,14 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info">{{ number_format($orders->all_total_amount)}}</span>
+                        <span class="paid_mem_info" id="Net">{{ number_format($orders->all_total_amount)}}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
                 @if ($orders->payment_amount <= 0)
                 <div class="row">
                     <div class="col-md-10">
-                        <button type="submit" class="btn btn-default btn-md paid_btn pull-right" id="btn-payment" onclick="confirmPayment();">
+                        <button type="submit" class="btn btn-default btn-md paid_btn pull-right" id="btn-payment">
                             <span><i class="fa fa-usd" aria-hidden="true"></i>&nbsp;&nbsp;Paid</span>
                         </button>
                     </div>
@@ -242,50 +252,8 @@
             </div>
         </div>
         {!! Form::close() !!}
-
+        <script type="text/javascript">
+            var foc = document.getElementById('FOC');
+        </script>
     </div>
-
-    <?php
-    $net_ammount = $orders->all_total_amount;
-    ?>
-    <script>
-        var net = "<?php echo $net_ammount; ?>";
-        var PaymentInput = document.getElementById('Payment');
-        var FocInput = document.getElementById('FOC');
-        var typingTimer;                //timer identifier
-        var doneTypingInterval = 1000;  //time in ms, 1 second for example
-        var $input = $('#Payment');
-        var focinput = $('#FOC');
-
-        //on keyup, start the countdown
-        $input.on('keyup', function () {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(doneTyping, doneTypingInterval);
-        });
-
-        //on keydown, clear the countdown
-        $input.on('keydown', function () {
-            clearTimeout(typingTimer);
-        });
-
-        //on keyup, start the countdown
-        focinput.on('keyup', function () {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(doneTyping, doneTypingInterval);
-        });
-
-        //on keydown, clear the countdown
-        focinput.on('keydown', function () {
-            clearTimeout(typingTimer);
-        });
-
-        //user is "finished typing," do something
-        function doneTyping () {
-            var PaymentValue = PaymentInput.value*1;
-            var FocValue = FocInput.value*1;
-            var PaymentFoc = PaymentValue + FocValue;
-            var Refund = PaymentFoc - net;
-            document.getElementById('refund').innerHTML = Refund;
-        }
-    </script>
 @endsection

@@ -64,6 +64,7 @@
                             <th>Total Amount</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <?php $t=0; $tt=0; $sub_total=0;$add_qty=0; ?>
                         @foreach($order_detail as $detail)
@@ -89,12 +90,17 @@
 
                                 </td>
                                 <td>
+                                    <?php
+                                    $default_extra = '0.0';
+                                    ?>
                                     @foreach($amount as $am)
                                         @if($detail->order_detail_id == $am['order_detail_id'])
                                             {{ ($am['amount']) *($detail->quantity) }}
                                         @endif
+                                         <?php $default_extra = ''; ?>
                                     @endforeach
 
+                                    {{ $default_extra }}
                                 </td>
                                 <td>{{$detail->discount_amount}}</td>
                                 <td > {{ number_format($detail->amount_with_discount)}} </td>
@@ -118,6 +124,13 @@
                             <td>Total Amount<span>%</span>
                             <td><span>-</span>{{($orders->member_discount_amount)}}</td>
                         </tr>
+                        @if ($orders->foc_amount > 0)
+                        <tr class="invoice_body inv_head">
+                            <td colspan="7">Free of Charge</td>
+                            <td>{{($orders->foc_amount)}}</td>
+                        </tr>
+                        @endif
+                        
                         <tr class="invoice_body inv_head">
                             <td colspan="7">Net Amount</td>
                             <td>{{ number_format($orders->all_total_amount)}}</td>

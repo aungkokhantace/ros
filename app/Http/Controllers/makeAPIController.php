@@ -423,8 +423,8 @@ class MakeAPIController extends ApiGuardController
                 $room->save();
                 $booking_room      = BookingRoom::where('booking_id','=',$booking_id)->get();
                 foreach($booking_room as $room){
-                    if($room->room_id == $r->room_id){
-                        $bookingRoom               = BookingRoom::find($table->id);
+                    if($room->room_id == $room_id){
+                        $bookingRoom               = BookingRoom::find($room->id);
                         $bookingRoom               = Utility::addDeletedBy($bookingRoom);
                         $bookingRoom->deleted_at   = date('Y-m-d H:m:i');
                         $bookingRoom->save();
@@ -433,7 +433,7 @@ class MakeAPIController extends ApiGuardController
                 $booking            = Booking::find($booking_id);
                 $booking            = Utility::addDeletedBy($booking);
                 $booking->deleted_at= date('Y-m-d H:m:i');
-                $booking->save();    
+                $booking->save();
             }
 
         $output             = array("message" => "Success");
@@ -458,10 +458,16 @@ class MakeAPIController extends ApiGuardController
         $to_table->save();
 
 
-        $order_table        = OrderTable::where('order_id',$order_id)->where('table_id',$transfer_from_table_id)->first();
+        // $order_table        = OrderTable::where('order_id',$order_id)
+        //                       ->where('table_id',$transfer_from_table_id)
+        //                       ->first();
 
-        $order_table->table_id = $transfer_to_table_id;
-        $order_table->save();
+        // $order_table->table_id = $transfer_to_table_id;
+        // $order_table->save();
+
+        OrderTable::where('order_id','=',$order_id)
+                    ->where('table_id','=',$transfer_from_table_id)
+                    ->update(['table_id'=> $transfer_to_table_id]);
 
         $output             = array("message" => "Success");
         return Response::json($output);

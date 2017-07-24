@@ -50,6 +50,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind('App\RMS\Location\LocationRepositoryInterface','App\RMS\Location\LocationRepository');
         $this->app->bind('App\RMS\Module\ModuleRepositoryInterface','App\RMS\Module\ModuleRepository');
         $this->app->bind('App\RMS\Booking\BookingRepositoryInterface','App\RMS\Booking\BookingRepository');
+        $this->app->bind('App\RMS\Pricehistory\PriceLogRepositoryInterface','App\RMS\Pricehistory\PriceLogRepository');
         //End
     }
 }

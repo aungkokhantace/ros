@@ -37,9 +37,7 @@ class OrderViewController extends Controller
         $tables             = $this->OrderRepository->orderTable();
         $rooms              = $this->OrderRepository->orderRoom();
         $extra              = $this->OrderRepository->orderExtra();
-
         $ordersRaw          = DB::select("SELECT * FROM `order`");
-
         $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
@@ -74,7 +72,7 @@ class OrderViewController extends Controller
             $orderItemList = array();
 
             foreach ($order_detailsRaw as $keyOD => $order_detail) {
-                
+
                 $order_detail_id            = $order_detail->id;
                 $item_id                    = $order_detail->item_id;
                 $setmenu_id                 = $order_detail->setmenu_id;

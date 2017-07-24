@@ -4,11 +4,14 @@ use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\Order\Order;
 use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
+use App\RMS\Table\Table;
+use App\RMS\Room\Room;
+use App\RMS\Utility;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\RMS\Category\Category;
 use App\RMS\OrderExtra\OrderExtra;
-
+use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
 
@@ -23,7 +26,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 	public function getorder($id)
 	{
-		$orders = Order::select('id as order_id','service_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc')->where('id',$id)->first();
+		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc')->where('id',$id)->first();
 		
 		return $orders;
 	}
@@ -31,10 +34,11 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	public function getdetail($id){
 		$order_details = Orderdetail::leftjoin('order','order_details.order_id','=','order.id')
 		->leftjoin('items','items.id','=','order_details.item_id')
-		->leftjoin('order_extra','order_extra.order_detail_id','=','order_details.id')
 		->leftjoin('set_menu','set_menu.id','=','order_details.setmenu_id')
 		->leftjoin('users','users.id','=','order.user_id')
-		->select('items.name as item_name','set_menu.set_menus_name as set_name','order_details.quantity','order_details.discount_amount','order_details.amount','order_details.id as order_detail_id','order_extra.amount as order_extra','users.user_name','order.id',
+		->select('items.name as item_name','set_menu.set_menus_name as set_name','order_details.quantity',
+				'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id',
+				'users.user_name','order.id',
 			'order_details.amount_with_discount')->where('order_id','=',$id)
 		->whereNotIn('status_id',[6,7])->get();
 		return $order_details;
@@ -90,6 +94,45 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 				->where('id',$id)
 				->update(['status'=>5,'payment_amount']);
 	}
-	
 
+	public function update($paramObj){
+
+		$returnedObj = array();
+		$returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
+
+		try {
+			$tempObj        = Utility::addUpdatedBy($paramObj);
+			$tempObj->save();
+
+			$order_id = $tempObj->id;
+			$table_id = Utility::getTableId($order_id);
+
+			if (count($table_id) > 0) {
+				foreach($table_id as $table) {
+					$id = $table->table_id;
+				};
+				$tempObj = Table::find($id);
+				$tempObj->status = 0;
+				$tempObj->save();
+			}
+
+			$room_id = Utility::getRoomId($order_id);
+			if (count($room_id) > 0) {
+				foreach($room_id as $room) {
+					$id = $room->room_id;
+				};
+				$tempObj = Room::find($id);
+				$tempObj->status = 0;
+				$tempObj->save();
+			}
+
+			$returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+			return $returnedObj;
+		}
+		catch(Exception $e){
+
+			$returnedObj['aceplusStatusMessage'] = $e->getMessage();
+			return $returnedObj;
+		}
+	}
 }
