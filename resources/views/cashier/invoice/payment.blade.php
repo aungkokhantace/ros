@@ -64,7 +64,7 @@
                                 {{ $default_extra }}
                             </td>
                             <td class="text-center">{{$detail->discount_amount}}</td>
-                            <td class="text-center">{{ $detail->amount_with_discount * $detail->quantity }}</td>
+                            <td class="text-center">{{ $detail->amount_with_discount }}</td>
                         </tr>
 
                         <?php $sub_total += $detail->amount_with_discount ?>
