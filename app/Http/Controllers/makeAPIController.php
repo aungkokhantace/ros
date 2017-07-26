@@ -184,10 +184,12 @@ class MakeAPIController extends ApiGuardController
             $extra = $order_detail->extra;
             foreach ($extra as $e) {
                 $extra = new OrderExtra();
-                $extra->order_detail_id = $temp->id;
-                $extra->extra_id = $e->extra_id;
-                $extra->quantity = $e->quantity;
-                $extra->amount = $e->amount;
+                $extra->order_detail_id         = $temp->id;
+                $extra->extra_id                = $e->extra_id;
+                $extra->quantity                = $e->quantity;
+                $extra->amount                  = $e->amount;
+                $extra->amount                  = $e->amount;
+                $extra->total_extra_amount      = $e->total_extra_amount;
                 $extra->save();
             }
 
@@ -258,10 +260,11 @@ class MakeAPIController extends ApiGuardController
                 $extra = $order_detail->extra;
                 foreach ($extra as $e) {
                     $extra = new OrderExtra();
-                    $extra->order_detail_id = $temp->id;
-                    $extra->extra_id = $e->extra_id;
-                    $extra->quantity = $e->quantity;
-                    $extra->amount = $e->amount;
+                    $extra->order_detail_id         = $temp->id;
+                    $extra->extra_id                = $e->extra_id;
+                    $extra->quantity                = $e->quantity;
+                    $extra->amount                  = $e->amount;
+                    $extra->total_extra_amount      = $e->total_extra_amount;
                     $extra->save();
                 }
             }
