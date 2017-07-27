@@ -207,19 +207,21 @@ class MakeAPIController extends ApiGuardController
         
         $dt         = Carbon::now();
         foreach($orders as $order) {
-            $order_id       = $order->order_id;
-            $total_price    = $order->total_price;
-            $service_amount = $order->service_amount;
-            $tax_amount     = $order->tax_amount;
-            $net_price      = $order->net_price;
-            $order_details  = $order->order_detail;
+            $order_id           = $order->order_id;
+            $total_price        = $order->total_price;
+            $service_amount     = $order->service_amount;
+            $tax_amount         = $order->tax_amount;
+            $net_price          = $order->net_price;
+            $order_details      = $order->order_detail;
+            $discount_amount    = $order->discount_amount;
         }
         
-        $order                      = Order::find($order_id);
-        $order->total_price         = $total_price;
-        $order->service_amount      = $service_amount;
-        $order->tax_amount          = $tax_amount;
-        $order->all_total_amount    = $net_price;
+        $order                          = Order::find($order_id);
+        $order->total_price             = $total_price;
+        $order->service_amount          = $service_amount;
+        $order->tax_amount              = $tax_amount;
+        $order->all_total_amount        = $net_price;
+        $order->total_discount_amount   = $discount_amount;
         $order->save();
 
         foreach ($order_details as $order_detail) {
