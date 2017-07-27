@@ -179,8 +179,8 @@
                         <span class="paid_mem_info">{{ number_format($sub_total) }}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
-
-                <div class="row">
+                
+                <!-- <div class="row">
                     <div class="col-md-6">
                         <span class="paid_mem_info">Total Extra Amount:</span>
                     </div>
@@ -188,7 +188,7 @@
                     <div class="col-md-4 text-right">
                         <span class="paid_mem_info">{{ $orders->total_extra_price }}</span>
                     </div>
-                </div><div class="spacer-10px"></div>
+                </div><div class="spacer-10px"></div> -->
 
                 <div class="row">
                     <div class="col-md-6">
