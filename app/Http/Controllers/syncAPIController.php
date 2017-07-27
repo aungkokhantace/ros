@@ -316,13 +316,12 @@ class syncAPIController extends ApiGuardController
 
         $today                  = Carbon::now();
         $cur_date               = Carbon::parse($today)->format('Y-m-d');
-
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
 
         if($key == $activate_key){
-            $discount = DB::select("SELECT amount,type,item_id FROM discount WHERE $cur_date >= start_date AND $cur_date <= end_date");
+            $discount = DB::select("SELECT amount,type,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date'");
             $output = array("discount" => $discount);
             return Response::json($output);
         }else{
@@ -583,8 +582,8 @@ class syncAPIController extends ApiGuardController
                 }
 
                 if ($sync->table_name == "discount") {
-                    if ($syncs[$key]->version > $temp['discount'] && $syncs[$key]->version < $temp['discount']) {
-                        $discount = DB::select("SELECT id,name,amount,type,start_date,end_date,item_id FROM discount WHERE $cur_date >= start_date AND $cur_date <= end_date");
+                    if ($syncs[$key]->version > $temp['discount']) {
+                        $discount = DB::select("SELECT id,name,amount,type,start_date,end_date,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date'");
                         $returnArr['discount'] = $discount;
                     }
                 }
