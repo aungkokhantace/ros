@@ -189,7 +189,7 @@ class MakeAPIController extends ApiGuardController
                 $extra->quantity                = $e->quantity;
                 $extra->amount                  = $e->amount;
                 $extra->amount                  = $e->amount;
-                $extra->total_extra_amount      = $e->total_extra_amount;
+                // $extra->total_extra_amount      = $e->total_extra_amount;
                 $extra->save();
             }
 
@@ -264,7 +264,7 @@ class MakeAPIController extends ApiGuardController
                     $extra->extra_id                = $e->extra_id;
                     $extra->quantity                = $e->quantity;
                     $extra->amount                  = $e->amount;
-                    $extra->total_extra_amount      = $e->total_extra_amount;
+                    // $extra->total_extra_amount      = $e->total_extra_amount;
                     $extra->save();
                 }
             }
