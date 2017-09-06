@@ -1,4 +1,4 @@
-@extends('Cashier.layouts.master')
+@extends('cashier.layouts.master')
 @section('title', isset($promotion) ? 'Edit Promotion' : 'New Promotion')
 
 @section('content')
