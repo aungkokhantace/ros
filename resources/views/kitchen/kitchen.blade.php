@@ -41,7 +41,7 @@
                 });
             };
 
-           setInterval(ajaxCall, 20000); //300000 MS == 5 minutes
+           setInterval(ajaxCall, 20000); //300000 MS == 5 minutes20000
             function ajaxCall() {
                 $.ajax({
                     type: 'GET',

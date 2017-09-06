@@ -43,7 +43,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Permission/index','Cashier\Module\ModuleController@index');
                 Route::get('Permission/create','Cashier\Module\ModuleController@create');
                 Route::post('Permission/store','Cashier\Module\ModuleController@store');
-                Route::get('PermisCategory/editsion/edit/{id}','Cashier\Module\ModuleController@edit');
+                Route::get('Permission/edit/{id}','Cashier\Module\ModuleController@edit');
                 Route::post('Permission/update','Cashier\Module\ModuleController@update');
                 //End Permission
             });

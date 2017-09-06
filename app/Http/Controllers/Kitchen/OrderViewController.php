@@ -49,7 +49,7 @@ class OrderViewController extends Controller
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           WHERE order_setmenu_detail.status_id IN (1,2) ");
-
+        
         $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
         $categoryIdArr      = array();
         foreach($categoryRaw as $category){
@@ -66,11 +66,10 @@ class OrderViewController extends Controller
         foreach ($ordersRaw as $key => $order) {
             $orders[$order->id]   = $order;
         }
-
         foreach ($orders as $key => $order) {
             $order_id = $order->id;
             $orderItemList = array();
-
+            
             foreach ($order_detailsRaw as $keyOD => $order_detail) {
 
                 $order_detail_id            = $order_detail->id;
@@ -90,7 +89,8 @@ class OrderViewController extends Controller
                             $setMenuItemId          = $set_menu->item_id;
                             $setCategoryId          = $set_menu->category_id;
                             
-                            if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId && in_array($setCategoryId,$categoryIdArr)){
+                            if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId){
+                                
                                 // need to add the item array
                                 array_push($orderItemList,$set_menu);
                             }
@@ -101,9 +101,11 @@ class OrderViewController extends Controller
                         array_push($orderItemList,$order_detail);
                     }
                 }
+                
             }
             $orders[$key]->items = $orderItemList;
         }
+        // dd($set_menu);
         return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
 
@@ -172,7 +174,7 @@ class OrderViewController extends Controller
                             $setMenuItemId          = $set_menu->item_id;
                             $setCategoryId          = $set_menu->category_id;
 
-                            if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId && in_array($setCategoryId,$categoryIdArr)){
+                            if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId){
                                 // need to add the item array
                                 array_push($orderItemList,$set_menu);
                             }
@@ -223,7 +225,7 @@ class OrderViewController extends Controller
                                     INNER JOIN items AS i ON i.id = os.item_id
                                     INNER JOIN category AS c ON i.category_id = c.id
                                     WHERE os.item_id = $item_id AND c.kitchen_id = $kitchen->id AND os.status_id IN (1,2)");
-
+    
             if($orderDetails != null || $setMenus != null){
 
                 $tempItem                   = array();
