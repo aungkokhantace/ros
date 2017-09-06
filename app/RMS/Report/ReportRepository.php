@@ -31,7 +31,7 @@ class ReportRepository implements ReportRepositoryInterface
                 DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'))
             ->whereBetween('order.order_time', [$start_date->min,$end_date->max])
             ->where('order_details.item_id','!=','null')
-            ->where('order_details.status_id','=','5')
+            ->where('order_details.status_id','=','1')
             ->where('order_details.deleted_at',NULL)
             ->whereNotNull('order_details.item_id')
             ->groupBy('order_details.item_id')
@@ -242,7 +242,7 @@ class ReportRepository implements ReportRepositoryInterface
             ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount_with_discount) As Amount'),
                 DB::raw('(SUM(order_details.quantity))*(order_details.amount_with_discount) as TotalAmount'))
             ->where('order_details.setmenu_id','!=','null')
-            ->where('order_details.status_id','=','5')
+            ->where('order.status','=','1')
             ->where('order_details.deleted_at',NULL)
             ->whereNotNUll('order_details.setmenu_id')
             ->groupBy('order_details.setmenu_id')
