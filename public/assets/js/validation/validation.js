@@ -131,7 +131,7 @@ $(document).ready(function() {
               number : "Item Price must be numeric."
             },
             filename       : "Item Image is required.",
-            description : "Item Description is required."
+            description    : "Item Description is required."
         }
     });
     $('#item_browse').on('change',function(){

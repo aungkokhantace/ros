@@ -18,7 +18,7 @@
 @if(isset($groupedOrders) && count($groupedOrders) > 0)
 @foreach($groupedOrders as $group)
 
-    @if($group['status'] == null)
+    @if($group['status'] == 1)
     <div class="col-md-2 sticky">
         <table>
          @if($group['order_id'])

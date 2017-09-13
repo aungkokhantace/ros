@@ -11,7 +11,7 @@ namespace App\RMS\Item;
 
 interface ItemRepositoryInterface
 {
-    public function store($paramObj);
+    public function store($paramObj,$input);
     public function ChooseCat();
     public function selectParent();
     public function selectSub();
@@ -29,4 +29,6 @@ interface ItemRepositoryInterface
     public function delete($id);
     public function itemenabled($id);
     public function itemdisabled($id);
+    public function getContinent();
+    public function getContinentByGroupID($groupID);
 }

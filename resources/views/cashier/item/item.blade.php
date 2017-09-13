@@ -1,7 +1,19 @@
 @extends('cashier.layouts.master')
 @section('title',isset($record)?'Edit Item':'New Item')
 @section('content')
-
+    <style>
+        .image-preview-input input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+    </style>
     <div class="col-md-8">
         {{--title--}}
         <h3 class="font">{{isset($record)? "Edit Item":"Create New Item"}}</h3>
@@ -9,7 +21,7 @@
         @if(isset($record))
             {!! Form::open(array('url' => 'Cashier/Item/update', 'method' => 'post', 'files' => true, 'class'=> 'form-horizontal', 'id'=>'item-validate')) !!}
         @else
-            {!! Form::open(array('url' => 'Cashier/Item/store', 'method' => 'post', 'files' => true, 'class'=> 'form-horizontal', 'id'=>'item-validate')) !!}
+            {!! Form::open(array('url' => 'Cashier/Item/store', 'method' => 'post', 'files' => true, 'class'=> 'form-horizontal', 'id'=>'item-validate', 'onsubmit' => 'return validate();')) !!}
         @endif
 
         @if(isset($record))
@@ -52,6 +64,27 @@
         </div>
 
         <div class="form-group">
+            <label for="item-continent" class="col-sm-3 control-label">Has Contiuent<span class="require">*</span></label>
+            <div class="col-sm-7">
+                <input name="check" value="0" type="hidden">
+                @if(isset($record))
+                <input type="checkbox" name="check" id="item-continent" value="1" @if($record->has_continent == 1) checked @endif disabled/>
+                @else
+                <input type="checkbox" name="check" id="item-continent" value="1" @if(Input::old('check') == 1) checked @endif/>
+                @endif
+                <p class="text-danger">{{$errors->first('price')}}</p>
+            </div>
+        </div>
+
+        @if(isset($record))
+            @include('cashier.item.continent_edit')
+        @else
+            @include('cashier.item.continent')
+        @endif
+
+        
+
+        <div class="form-group price-item">
             <label for="item-price" class="col-sm-3 control-label">Item Price<span class="require">*</span></label>
             <div class="col-sm-7">
                 <input type="text" class="form-control" id="item-price" name="price" placeholder="Enter Item Price" value="{{isset($record)? $record->price:Input::old('price')}}" />
@@ -59,7 +92,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group price-item">
             <label for="item-image" class="col-sm-3 control-label">Item Image<span class="require">*</span></label>
             <div class="col-sm-7">
                 <input type="file" class="form-control" id="item_browse" onchange="item_upload();"
@@ -110,5 +143,153 @@
         </div>
         {!! Form::close() !!}
     </div>
+<script>
 
+$(document).ready(function(){
+    if ( $('input[id="item-continent"]').is(':checked') ) {
+        $('.price-item').hide();
+        $('.continent').show();
+    } else {
+        $('.price-item').show();
+        $('.continent').hide();   
+    }
+
+    //If Checkbox is check
+    $('input[id="item-continent"]').on('click', function(){
+        if ( $(this).is(':checked') ) {
+            $('.price-item').hide();
+            $('.continent').show();
+        } 
+        else {
+            $('.price-item').show();
+            $('.continent').hide();
+        }
+    });
+});
+</script>
+
+<script>
+function isEmptyPrice() {
+    var isValid     = true;
+    var itemPrice      = $('.item-price').map(function() { return this.value; }).get();
+    var count   = -1;
+    $(".item-price").each(function() {
+        var element = $(this);
+        count   = count + 1;
+        if (element.val() == "") {
+            $('.price-error:eq(' + count + ')').css('display','block');
+            isValid = false;
+        }
+
+        if (isNaN(parseInt(element.val()))) {
+            $('.integer-error:eq(' + count + ')').css('display','block');
+            isValid = false;
+        }
+        
+    });
+    return isValid;
+    
+}
+
+function isEmptyContinent() {
+    var Valid     = true;
+    var itemPrice      = $('.item-select').map(function() { return this.value; }).get();
+    var count   = -1;
+    $(".item-select").each(function() {
+        var element = $(this);
+        count   = count + 1;
+        if (element.val() == "") {
+            $('.select-error:eq(' + count + ')').css('display','block');
+            Valid = false;
+        }
+    });
+    return Valid;
+    
+}
+
+function isEmptyBrowse() {
+    var isValid      = true;
+    var browseFile   = $('.input-file').map(function() { return this.value; }).get();
+    var count   = -1;
+    $(".input-file").each(function() {
+        var element = $(this);
+        count   = count + 1;
+        if (element.val() == "") {
+            $('.browse-error:eq(' + count + ')').css('display','block');
+            isValid = false;
+        }
+    });
+    return isValid;
+    
+}
+
+function validate()
+{
+    var empty       = isEmptyPrice();
+    var emptyCon    = isEmptyContinent();
+    var emptyFile   = isEmptyBrowse();
+    $(document).ready(function(){
+        if ( $('input[id="item-continent"]').is(':checked') ) {
+            //Do Nothing
+        } else {
+            empty       = true;
+            emptyCon    = true;
+            emptyFile   = true;   
+        }
+
+        //If Checkbox is check
+        $('input[id="item-continent"]').on('click', function(){
+            if ( $(this).is(':checked') ) {
+                //Do Nothing
+            } 
+            else {
+                empty       = true;
+                emptyCon    = true;
+                emptyFile   = true;
+            }
+        });
+    });
+
+    //If Valadtion Pass Form Submit
+    if (empty == false || emptyCon == false || emptyFile == false) {
+        return false;
+    } else {
+       return true; 
+    }
+}
+
+
+
+function getFileName() {
+    $(document).ready(function() {
+        var addBrowseCount = $('#browseCount').val();
+        var eqCount        = $('#browseCount').val();
+        $(".input-file").each(function() {
+            var inputFile   = $('.input-file:eq(' + eqCount + ')').val();
+            $('.image-preview-filename:eq(' + eqCount + ')').val(inputFile);
+        });
+    });
+}
+
+// function getBrowseCount() {
+//     $('.input-file').click(function(){
+//         $(document).on('click', '.input-file', function (event) { 
+//             var i   = $(this).closest('.input-file').index('.input-file');
+//             $(document).ready(function() {
+//                 $('#browseCount').val(i);
+//             });
+//         });
+//     });
+// }
+
+$(document).ready(function() {
+    $('.input-file').click(function(){
+        $(document).on('click', '.input-file', function (event) { 
+            var i   = $(this).closest('.input-file').index('.input-file');
+            $('#browseCount').val(i);
+            getFileName();      
+        });
+    });
+});
+</script>
 @endsection

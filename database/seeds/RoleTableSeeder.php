@@ -16,18 +16,30 @@ class RoleTableSeeder extends Seeder
         ]);
         DB::table('roles')->insert([
             'id'          => '2',
+            'name'        => 'Manager',
+            'description' => 'Manager',
+            'created_by'  => '1'
+        ]);
+        DB::table('roles')->insert([
+            'id'          => '3',
+            'name'        => 'Supervisor',
+            'description' => 'Supervisor',
+            'created_by'  => '1'
+        ]);
+        DB::table('roles')->insert([
+            'id'          => '4',
             'name'        => 'Cashier',
             'description' => 'Cashier',
             'created_by'  => '1'
         ]);
         DB::table('roles')->insert([
-            'id'          => '3',
+            'id'          => '5',
             'name'        => 'Waiter',
             'description' => 'Waiter',
             'created_by'  => '1'
         ]);
         DB::table('roles')->insert([
-            'id'          => '4',
+            'id'          => '6',
             'name'        => 'Kitchen',
             'description' => 'Kitchen',
             'created_by'  => '1'

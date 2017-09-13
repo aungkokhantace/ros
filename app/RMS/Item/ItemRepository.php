@@ -10,27 +10,71 @@ namespace App\RMS\Item;
 use App\RMS\Utility;
 use App\RMS\Category\Category;
 use App\RMS\Item\Item;
+use App\RMS\Item\Continent;
 use Illuminate\Support\Facades\DB;
+use InterventionImage;
 use App\RMS\ReturnMessage;
 
 class ItemRepository implements ItemRepositoryInterface
 {
-    public function store($paramObj)
+    public function store($paramObj,$input)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
-            $tempObj    = Utility::addCreatedBy($paramObj);
-            $tempObj->save();
+            $check      = $input['check'];
+            if ($check <= 0) {
+                $tempObj    = Utility::addCreatedBy($paramObj);
+                $tempObj->save();
 
-            $inserted_id = $tempObj->id;
-            $product_type = 1; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
-            $stock_code = Utility::generateStockCode($inserted_id,$product_type);
-            $paramObj = Item::find($inserted_id);
-            $paramObj->stock_code = $stock_code;
-            $paramObj->save();
+                $inserted_id = $tempObj->id;
+                $product_type = 1; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
+                $stock_code = Utility::generateStockCode($inserted_id,$product_type);
+                $paramObj = Item::find($inserted_id);
+                $paramObj->stock_code = $stock_code;
+                $paramObj->save();
+            } else {
+                $count       = count($input['continent']);
+                $maxID      = DB::table('items')->max('id');
+                $uniqID     = uniqid();
+                $groupID    = $uniqID . $maxID;
+               for ($i = 0; $i < $count; $i++) {
+                    $isDefault  = 0;
+                    if ($i == 0) {
+                        $isDefault  = 1;
+                    }
+                    $tempObj    = new item();
+                    $tempObj->name          = $input['name'];
+                    $file                   = $input['input-file-preview'][$i];
+                    $imagedata              = file_get_contents($file);
+                    $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
+                    $file->move('uploads', $photo);
+                    // resizing image
+                    $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+                    $tempObj->image                    = $photo;
+                    $tempObj->mobile_image            = base64_encode($image->encoded);
+                    $tempObj->description              = $input['description'];
+                    $tempObj->price                    = $input['continent-price'][$i];
+                    $tempObj->continent_id             = $input['continent'][$i];
+                    $tempObj->status                   = $input['status'];
+                    $tempObj->category_id              = $input['parent_category'];
+                    $tempObj->standard_cooking_time    = $input['standard_cooking_time'];
+                    $tempObj->isdefault                = $isDefault;
+                    $tempObj->group_id                 = $groupID;
+                    $tempObj->has_continent            = $check;
+                    $addCreatedBy                      = Utility::addCreatedBy($tempObj);
+                    $addCreatedBy->save();
 
+                    //Insert item Code
+                    $inserted_id = $addCreatedBy->id;
+                    $product_type = 1; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
+                    $stock_code = Utility::generateStockCode($inserted_id,$product_type);
+                    $paramObj = Item::find($inserted_id);
+                    $paramObj->stock_code = $stock_code;
+                    $paramObj->save();
+               }
+            }
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -53,7 +97,6 @@ class ItemRepository implements ItemRepositoryInterface
         $sub = DB::table('category')->where('parent_id', '!=', 0)->get();
         return $sub;
     }
-
     public function allCat()
     {
         $allCat = DB::table('category')->get();
@@ -100,6 +143,19 @@ class ItemRepository implements ItemRepositoryInterface
         return $data;
     }
 
+    public function getContinent()
+    {
+        $continent     = Continent::select('id','name','description')->whereNull('deleted_at')->get()->toArray();
+        return $continent;
+    }
+
+    public function getContinentByGroupID($groupID)
+    {
+        $continent_items    = Item::select('id','image','price','continent_id')
+        ->where('group_id','=',$groupID)->whereNull('deleted_at')->get();
+        return $continent_items;
+    }
+    
     public function updateAllItem($paramObj,$oldprice)
     {
         $returnedObj = array();
@@ -141,6 +197,58 @@ class ItemRepository implements ItemRepositoryInterface
                 //Save item Price change history
                 Utility::savePriceTracking('items',$tempObj->id,'integer','update',$oldprice,$tempObj->price,$currentUser,$tempObj->updated_at);
             }
+            $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+            return $returnedObj;
+        }
+        catch(Exception $e){
+
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
+
+    }
+
+    public function updateContinent($paramObj,$oldprice)
+    {
+        $returnedObj = array();
+        $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
+
+        $currentUser = Utility::getCurrentUserID();//get current user login
+        try {
+            $tempObj = Utility::addUpdatedBy($paramObj);
+            $tempObj->save();
+
+            if ($tempObj->price !== $oldprice) {
+                //Save item Price change history
+                Utility::savePriceTracking('items',$tempObj->id,'integer','update',$oldprice,$tempObj->price,$currentUser,$tempObj->updated_at);
+            }
+            $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+            return $returnedObj;
+        }
+        catch(Exception $e){
+
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
+
+    }
+
+    public function updateNewContinent($paramObj)
+    {
+        $returnedObj = array();
+        $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
+
+        try {
+            $tempObj    = Utility::addCreatedBy($paramObj);
+            $tempObj->save();
+
+            $inserted_id = $tempObj->id;
+            $product_type = 1; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
+            $stock_code = Utility::generateStockCode($inserted_id,$product_type);
+            $paramObj = Item::find($inserted_id);
+            $paramObj->stock_code = $stock_code;
+            $paramObj->save();
+            
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }

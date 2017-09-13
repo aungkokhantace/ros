@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\RMS\Category\Category;
 use App\RMS\OrderExtra\OrderExtra;
+use App\RMS\Payment\Payment;
 use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
@@ -18,10 +19,29 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	public function getinvoice( )
 	{
 		
-		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`payment_amount`
-		from `order` where `deleted_at` is null order by `order_time` desc");
+		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`payment_amount`,`status`
+		from `order` where `deleted_at` is null AND status = 1 OR status = 2 order by `order_time` desc");
 		
 		return $orders;
+	}
+
+	public function getinvoiceCancel() {
+		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`payment_amount`,`status`
+		from `order` where `deleted_at` is null AND status = 3 order by `order_time` desc");
+		
+		return $orders;
+	}
+
+	public function getCard() {
+		$cards 	= DB::select("SELECT id,name FROM card WHERE `deleted_at` is null order by id DESC");
+
+		return $cards;
+	}
+
+	public function getPayment($id) {
+		$payment = Payment::select('paid_amount','payment_type','payment_card_id','uuid')
+					->where('order_id','=',$id)->whereNull('deleted_at')->get();
+		return $payment;
 	}
 
 	public function getorder($id)
@@ -95,8 +115,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 				->update(['status'=>5,'payment_amount']);
 	}
 
-	public function update($paramObj){
-
+	public function update($paramObj,$input,$refund){
 		$returnedObj = array();
 		$returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
@@ -106,7 +125,6 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 			$order_id = $tempObj->id;
 			$table_id = Utility::getTableId($order_id);
-
 			if (count($table_id) > 0) {
 				foreach($table_id as $table) {
 					$id = $table->table_id;
@@ -125,6 +143,85 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 				$tempObj->status = 0;
 				$tempObj->save();
 			}
+			
+			$paidAmount 	= $input['amount'];
+			$changeAmount 	= $refund;
+			$cardType 		= $input['cardtype'];
+			$cardId 		= $input['card_id'];
+			$uuid 			= $this->randomChar();
+			$count 			= 0;
+			$paymentCount 	= count($paidAmount);
+			foreach($paidAmount as $key => $pay) {
+				$count 					= $count + 1;
+				$paymentObj 					= new Payment();
+				$paymentObj->paid_amount 		= $pay;
+				if ($count == $paymentCount) {
+					$paymentObj->change_amount 	= $changeAmount;
+				}
+				$paymentObj->order_id 			= $order_id;
+				$paymentObj->payment_type 		= $cardType[$key];
+				$paymentObj->payment_card_id 	= $cardId[$key];
+				$paymentObj->uuid 				= $uuid;
+				$tempObj        		= Utility::addCreatedBy($paymentObj);
+				$tempObj->save();
+			}
+			
+
+			$returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+			return $returnedObj;
+		}
+		catch(Exception $e){
+
+			$returnedObj['aceplusStatusMessage'] = $e->getMessage();
+			return $returnedObj;
+		}
+	}
+
+	private function randomChar() {
+		$db_count 	= Payment::whereNull('deleted_at')->get()->count();
+		if ($db_count <= 0) {
+			$ran_char 	= sprintf("%06d", mt_rand(1, 999999));
+		} else {
+			$maxIdAttr 	= DB::table('payment')->where('uuid', DB::raw("(select max(`uuid`) from payment)"))->get();
+			foreach($maxIdAttr as $value) {
+				$max_id 	= $value->uuid;
+			}
+			$random 	= sprintf("%02d", mt_rand(1, 99));
+			$ran_char 	= $max_id + $random;
+		}
+		
+		return $ran_char;
+	}
+
+	public function updateOrder($paramObj){
+		$returnedObj = array();
+		$returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
+
+		try {
+			$tempObj        = Utility::addUpdatedBy($paramObj);
+			$tempObj->save();
+
+			$order_id = $tempObj->id;
+			$table_id = Utility::getTableId($order_id);
+			if (count($table_id) > 0) {
+				foreach($table_id as $table) {
+					$id = $table->table_id;
+				};
+				$tempObj = Table::find($id);
+				$tempObj->status = 0;
+				$tempObj->save();
+			}
+
+			$room_id = Utility::getRoomId($order_id);
+			if (count($room_id) > 0) {
+				foreach($room_id as $room) {
+					$id = $room->room_id;
+				};
+				$tempObj = Room::find($id);
+				$tempObj->status = 0;
+				$tempObj->save();
+			}
+			
 
 			$returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
 			return $returnedObj;

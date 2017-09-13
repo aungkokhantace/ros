@@ -6,25 +6,34 @@
             <th><label>Date</label></th>
             <th><label>View Detail</label></th>
             <th><label>Status</label></th>
+            <th><label>Cancel</label></th>
         </tr>
     </thead>
     <tbody>
         @foreach($orders as $order)
-                
-                <tr >
-                    <td> {{$order->id}} </td>
+                <tr class="tr-{{$order->id}}">
+                    <td id="ordere-id"> {{$order->id}} </td>
                     <td> {{$order->all_total_amount}} </td>
                     <td > {{$order->created_at }} </td>
                     <td ><a href="/Cashier/invoice/detail/{{$order->id}}">View Detail </a></td>
                     <td ><a href="/Cashier/invoice/paid/{{$order->id}}">
-                            @if($order->payment_amount > 0)
+                            @if($order->status == 2)
                                 {{ 'Paid' }}
                             @else
                                 {{ 'To Pay' }}
                             @endif
-                        </a></td>
+                        </a>
+                    </td>
+                    <td>
+                    @if($order->status == 2)
+                        
+                    @else
+                        <button type="submit" class="btn btn-danger order-cancel" onclick="confirmCancle()" id = '{{$order->id}}' data-toggle="modal" data-target="#myModal" data-id="{{$order->id}}">Cancel</button>
+                    @endif
+                    </td>
                 </tr>
         @endforeach
 
     </tbody>
 </table>
+

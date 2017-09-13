@@ -124,8 +124,28 @@ class syncAPIController extends ApiGuardController
            $activate_key = $k->site_activation_key;
         }
         if($key == $activate_key){
-            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image FROM items WHERE status = '1' ");
+            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' ");
             $output = array("items" => $item);
+            return Response::json($output);
+        }else{
+            $output = array("Message" => "Unauthorized");
+            return Response::json($output);       
+        }
+    }
+
+    public function continent()
+    {
+        $temp = Input::all();
+        $key  = $temp['site_activation_key'];
+        $site_activation_key = Config::all();
+
+        $activate_key = 0;
+        foreach($site_activation_key as $k){
+           $activate_key = $k->site_activation_key;
+        }
+        if($key == $activate_key){
+            $continent  = DB::select("SELECT id,name FROM continent WHERE deleted_at IS NULL ");
+            $output     = array("continents" => $continent);
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");

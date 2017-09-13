@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
             'role_id'   => '1',
             'kitchen_id'=> '',
             'status' => '1'
-
+    
         ]);
     }
 }

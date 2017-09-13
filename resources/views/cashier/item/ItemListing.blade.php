@@ -53,6 +53,7 @@
                         </thead>
                         <tbody>
                         @foreach($items as $item)
+                            @if ($item->group_id == '' || $item->isdefault == 1)
                             <tr class="active">
                                 <td>
                                     <input type="checkbox" class="source" name="check_item" value="{{$item->id}}">
@@ -71,6 +72,7 @@
                                     @endif
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

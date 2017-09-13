@@ -43,7 +43,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Permission/index','Cashier\Module\ModuleController@index');
                 Route::get('Permission/create','Cashier\Module\ModuleController@create');
                 Route::post('Permission/store','Cashier\Module\ModuleController@store');
-                Route::get('PermisCategory/editsion/edit/{id}','Cashier\Module\ModuleController@edit');
+                Route::get('Permission/edit/{id}','Cashier\Module\ModuleController@edit');
                 Route::post('Permission/update','Cashier\Module\ModuleController@update');
                 //End Permission
             });
@@ -237,6 +237,9 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('invoice/detail/print/{id}','Cashier\Invoice\InvoiceController@invoicePrint');
                 Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');
                 Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
+                Route::get('invoice/cancel','Cashier\Invoice\InvoiceController@invoiceCancel');
+                Route::get('invoice/cancel/{id}','Cashier\Invoice\InvoiceController@orderCancel');
+                Route::get('invoice/manager/confirm/{username}/{password}','Cashier\Invoice\InvoiceController@checkManager');
 
                 //Sale Summary Report & Excel Download
                 Route::get('saleSummaryReport','Cashier\Report\SaleSummaryReportController@saleSummary');
@@ -394,6 +397,7 @@ Route::post('api/v1/user', 'syncAPIController@user');
 Route::post('api/v1/category','syncAPIController@category');
 Route::post('api/v1/addon','syncAPIController@addon');
 Route::post('api/v1/item', 'syncAPIController@item');
+Route::post('api/v1/continent', 'syncAPIController@continent');
 Route::post('api/v1/set_menu','syncAPIController@set_menu');
 Route::post('api/v1/set_item','syncAPIController@set_item');
 Route::post('api/v1/config','syncAPIController@config');

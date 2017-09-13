@@ -25,7 +25,7 @@ class CreateOrderTable extends Migration
             $table->text('foc_description')->nullable();
             $table->double('total_price_foc');
             $table->double('all_total_amount');
-            $table->double('pay_amount');
+            $table->double('payment_amount');   
             $table->double('refund');
             $table->integer('status')->nullable();
             $table->integer('created_by');

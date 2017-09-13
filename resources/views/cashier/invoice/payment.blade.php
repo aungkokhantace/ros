@@ -1,6 +1,6 @@
 @extends('cashier.layouts.master')
 @section('title','Invoice Paid')
-@section('content')
+@section('content') 
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="container">
 
@@ -20,7 +20,7 @@
     {{--tables--}}
     <div class="container">
         <div class="row">
-            {!! Form::open(array('url' => '/Cashier/invoice/add_paid', 'method' => 'post', 'files' => false)) !!}
+            {!! Form::open(array('url' => '/Cashier/invoice/add_paid', 'method' => 'post','id' => '#myForm' , 'files' => false)) !!}
             {{ Form::hidden('id', $orders->order_id) }}
             {{ Form::hidden('all_total', $orders->all_total_amount) }}
             <div class="col-md-8">
@@ -148,16 +148,7 @@
                     </div>
                 </div><div class="spacer-10px"></div>
 
-                <div class="row">
-                    <div class="col-md-10 paid_mem_info">
-                        <div class="paid-post-box">
-                            <input id="Payment" type="text" class="form-control form-invoice" value="@if($orders->payment_amount > 0){{ 'Payment - ' .  $orders->payment_amount }} @elseif(Request::old('payment')){{ Request::old('payment') }} @endif" name="payment" placeholder="Payment" @if($orders->payment_amount > 0){{ 'disabled' }} @endif/>
-
-                        </div>
-                        <p class="text-danger">{{$errors->first('payment')}}</p>
-                        <p class="text-danger">{{$errors->first('payment_check')}}</p>
-                    </div>
-                </div><div class="spacer-10px"></div>
+                @include('cashier.invoice.card')
 
 
                 <div class="row">
@@ -254,6 +245,110 @@
         {!! Form::close() !!}
         <script type="text/javascript">
             var foc = document.getElementById('FOC');
+        </script>
+
+        <script>
+
+        function isEmpty() {
+            var amount      = $('.amount').map(function() { return this.value; }).get();
+            var isValid     = true;
+            $(".amount").each(function() {
+                
+                var element = $(this);
+                if (element.val() == "") {
+                    isValid = false;
+                }
+            });
+            return isValid;
+            
+        }
+
+        function getItems() {
+            var items = document.getElementsByClassName("amount");
+            var total = 0;
+            for (var i = 0; i < items.length; i++) {
+                total += Number(items[i].value);
+            }
+            return total;
+        }
+
+        var element     = document.getElementById('fields_wrap').innerHTML;
+        function addAmount(element) {
+
+            var checkAdd  = isEmpty();
+
+            //Get Net Amount
+            var payment     = $('#Net').html();
+            payment         = parseInt(payment.replace(/,/g, ''));
+            //Calculate Payment with FOC
+            var foc         = parseInt($('#FOC').val());
+            if (Number.isNaN(foc)) {
+                foc     = 0;
+            }
+            var payment     = payment - foc;
+            //Total Sum From input
+            var total   = getItems();
+
+            //If Pay amount is Greater than Payment Disable Add button
+            if (total >= payment) {
+            checkAdd     = false;
+            $('.add-amount').attr('disabled','disabled'); 
+            var refund   = total - payment;
+            $('#refund').text(refund);
+            } else {
+            $('#refund').text(0); 
+            }
+
+            if (checkAdd == true) {
+                var count       = parseInt($('.count').val());
+                $(document).ready(function(e) {
+                    count       = count + 1;
+                    $('.count').val(count);//Add Count to input hidden to get count
+                    $('.changeSelect').attr('class', count);
+                    $('#fields_wrap').append(element);
+
+                    $('.remove').css('display','block');
+                    var parentCount     = count - 1;
+                    $('.add-amount:eq(' + parentCount + ')').css('display','none');
+
+                    $('.remove').click(function() { 
+                        //If Total Amount Less than Payment Enable Button
+                        if (total < payment) {
+                            $('.add-amount').removeAttr('disabled');
+                        }
+
+                        $(this).closest(".payment_wrapper").remove();
+                        var count   = parseInt($('.count').val()); 
+                        count       = count - 1;
+                        $('.count').val(count);
+                        
+                        if (count > 0) {
+                            $('.add-amount:eq(' + count + ')').css('display','block');
+                            exit();
+                        } else {
+                        $('.add-amount:eq(' + count + ')').css('display','block');
+                        $('.remove:eq(' + count + ')').css('display','none');
+                            exit(); 
+                        }
+                    });
+                });
+            }
+        }
+
+        function checkCash(selectObj) {
+            var count           = parseInt($('.count').val());
+            var cardType        = selectObj.value;
+            var classObj        = $("option:selected", selectObj).attr("class");
+            
+            $(document).ready(function() {
+                if (cardType == 2) {
+                    $('input.' +classObj).hide();
+                } else {
+                    $('input.' +classObj).show(); 
+                }
+            });
+            
+        }
         </script>
     </div>
 @endsection

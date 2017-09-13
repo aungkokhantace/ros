@@ -51,7 +51,7 @@ class MakeAPIController extends ApiGuardController
         $password = $temp['password'];
         $key      = $temp['site_activation_key'];
         $site_activation_key = Config::all();
-
+        
         $activate_key = 0;
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
@@ -98,7 +98,6 @@ class MakeAPIController extends ApiGuardController
         $temp       = Input::all();
         $ordersRaw  = $temp['orderID'];
         $orders     = json_decode($ordersRaw);
-        
         $dt         = Carbon::now();
         foreach($orders as $order) {
 
@@ -114,9 +113,9 @@ class MakeAPIController extends ApiGuardController
             $order_tables           = $order->order_table;
             $order_rooms            = $order->order_room;
             $order_details          = $order->order_detail;
+            $order_status           = $order->order_status;
 
         }
-
         $order                          = new Order();
         $order->id                      = $order_id;
         $order->user_id                 = $user_id;
@@ -128,6 +127,7 @@ class MakeAPIController extends ApiGuardController
         $order->service_amount          = $service_amount;
         $order->tax_amount              = $tax_amount;
         $order->all_total_amount        = $all_total_amount;
+        $order->status                  = $order_status;
 
         $order->save();
 

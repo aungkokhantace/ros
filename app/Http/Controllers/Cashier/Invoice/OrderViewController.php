@@ -31,7 +31,7 @@ class OrderViewController extends Controller
     public function index(){
         $orders = $this->OrderRepository->getVoucher();
         $tables = $this->OrderRepository->orderTable();
-        $rooms  = $this->OrderRepository->orderRoom();      
+        $rooms  = $this->OrderRepository->orderRoom();    
         $groupedOrders = Collection::make($orders)->groupBy("order_id","order_status")->filter(function($orderDetails)
         {
             foreach($orderDetails as $detail)
@@ -43,7 +43,6 @@ class OrderViewController extends Controller
             }
             return true;
         });
-
         $count_start    = 0;
         $count_cooking  = 0;
         $count_cooked   = 0;
@@ -75,7 +74,7 @@ class OrderViewController extends Controller
             $orderValue['count_cooked']     = $count_cooked;
             $orderValue['count_taken']      = $count_taken;
 
-
+            
             $order_arr[$groupKey]   = $orderValue;
             $count_start            = 0;
             $count_cooking          = 0;
