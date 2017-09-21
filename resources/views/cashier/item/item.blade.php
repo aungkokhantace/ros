@@ -271,17 +271,6 @@ function getFileName() {
     });
 }
 
-// function getBrowseCount() {
-//     $('.input-file').click(function(){
-//         $(document).on('click', '.input-file', function (event) { 
-//             var i   = $(this).closest('.input-file').index('.input-file');
-//             $(document).ready(function() {
-//                 $('#browseCount').val(i);
-//             });
-//         });
-//     });
-// }
-
 $(document).ready(function() {
     $('.input-file').click(function(){
         $(document).on('click', '.input-file', function (event) { 

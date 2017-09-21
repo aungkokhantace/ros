@@ -56,16 +56,98 @@
                 var url = 'getTableView?view='+ $(this).value();
             })
             $('#autoDiv').on('click', '.start_duration_item',function(e){
-                window.location.href = "/Kitchen/productView/CookingItem/" +$(this).attr('id');
+                // window.location.href = "/Kitchen/productView/CookingItem/" +$(this).attr('id');
+                var itemID      = $(this).attr('id');
+                $(document).ready(function(){
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Kitchen/productView/CookingItem/' + itemID,
+                        success: function (Response) {
+                            var returnResp        = Response.message;
+                            if (returnResp == 'success') {
+                                console.log(Response);
+                                ajaxCall();
+                            }
+                        }
+                    });
+                });
             });
             $('#autoDiv').on('click','.complete_duration_item', function (e) {
-                window.location.href = "/Kitchen/productView/CookedItem/" + $(this).attr('id');
+                // window.location.href = "/Kitchen/productView/CookedItem/" + $(this).attr('id');
+                var itemID      = $(this).attr('id');
+                $(document).ready(function(){
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Kitchen/productView/CookedItem/' + itemID,
+                        success: function (Response) {
+                            var returnResp        = Response.message;
+                            if (returnResp == 'success') {
+                                console.log(Response);
+                                ajaxCall();
+                            }
+                        }
+                    });
+                });
             });
             $('#autoDiv').on('click','.start_duration_setmenu',function(e){
-                window.location.href = "/Kitchen/productView/CookingSetMenuItem/" +$(this).attr('id');
+                // window.location.href = "/Kitchen/productView/CookingSetMenuItem/" +$(this).attr('id');
+                var itemID      = $(this).attr('id');
+                $(document).ready(function(){
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Kitchen/productView/CookingSetMenuItem/' + itemID,
+                        success: function (Response) {
+                            var returnResp        = Response.message;
+                            if (returnResp == 'success') {
+                                console.log(Response);
+                                ajaxCall();
+                            }
+                        }
+                    });
+                });
             });
             $('#autoDiv').on('click','.complete_duration_setmenu',function(e){
-                window.location.href = "/Kitchen/productView/CookedSetMenuItem/" +$(this).attr('id');
+                // window.location.href = "/Kitchen/productView/CookedSetMenuItem/" +$(this).attr('id');
+                var itemID      = $(this).attr('id');
+                $(document).ready(function(){
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Kitchen/productView/CookedSetMenuItem/' + itemID,
+                        success: function (Response) {
+                            var returnResp        = Response.message;
+                            if (returnResp == 'success') {
+                                console.log(Response);
+                                ajaxCall();
+                            }
+                        }
+                    });
+                });
+            });
+
+
+            $('#autoDiv').on('click', '.cancel_product',function (e) {
+                var formID      = $(this).closest("form").attr('id');
+                var data        = $('#' + formID).serialize();
+                var modalID     = $(this).attr('id') + 'modal';
+                console.log(data);
+                $(document).ready(function(){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Kitchen/getCancelID/ProductView',
+                        data: data,
+                        dataType: "json",
+                        success: function (Response) {
+                            var returnResp        = Response.message;
+                            if (returnResp == 'success') {
+                                ajaxCall();
+                                $("#" + modalID).modal("hide");
+                                $('body').removeClass('modal-open');
+                                $('.modal-backdrop').remove();
+                            }
+                        }
+                    });
+                });
+
             });
            
         });

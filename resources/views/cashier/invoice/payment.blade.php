@@ -21,8 +21,8 @@
     <div class="container">
         <div class="row">
             {!! Form::open(array('url' => '/Cashier/invoice/add_paid', 'method' => 'post','id' => '#myForm' , 'files' => false)) !!}
-            {{ Form::hidden('id', $orders->order_id) }}
-            {{ Form::hidden('all_total', $orders->all_total_amount) }}
+            {{ Form::hidden('id', $order->order_id) }}
+            {{ Form::hidden('all_total', $order->all_total_amount) }}
             <div class="col-md-8">
                 <table class="table paid_table">
                     <thead>
@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <span class="col-left-vouncher"> :&nbsp;&nbsp;&nbsp;&nbsp;{{$orders->order_time}}</span>
+                        <span class="col-left-vouncher"> :&nbsp;&nbsp;&nbsp;&nbsp;{{$order->order_time}}</span>
                     </div>
                 </div>
 
@@ -93,7 +93,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <span class="col-left-vouncher"> :&nbsp;&nbsp;&nbsp;&nbsp;{{$orders->order_id }}</span>
+                        <span class="col-left-vouncher"> :&nbsp;&nbsp;&nbsp;&nbsp;{{$order->order_id }}</span>
                     </div>
                 </div>
 
@@ -126,7 +126,7 @@
                 <div class="row">
                     <div class="col-md-10 paid_mem_info">
                         <div class="paid-post-box">
-                            member card number : {{($orders->member_id)}}
+                            member card number : {{($order->member_id)}}
                         </div>
                     </div>
                 </div><div class="spacer-10px"></div>
@@ -134,7 +134,7 @@
                 <div class="row">
                     <div class="col-md-10 paid_mem_info">
                         <div class="paid-post-box">
-                            <input id="FOC" name="foc" type="text" class="form-control form-invoice" placeholder="Free Of Charge" value="@if($orders->foc_amount > 0){{ 'Free of Charge - ' .  $orders->foc_amount }} @elseif(Request::old('foc')){{ Request::old('foc') }} @endif" @if($orders->foc_amount > 0){{ 'disabled' }} @endif />
+                            <input id="FOC" name="foc" type="text" class="form-control form-invoice" placeholder="Free Of Charge" value="@if($order->foc_amount > 0){{ 'Free of Charge - ' .  $order->foc_amount }} @elseif(Request::old('foc')){{ Request::old('foc') }} @endif" @if($order->foc_amount > 0){{ 'disabled' }} @endif />
                         </div>
                     </div>
                 </div><div class="spacer-10px"></div>
@@ -157,7 +157,7 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info" id="refund">{{ $orders->refund }}</span>
+                        <span class="paid_mem_info" id="refund">{{ $order->refund }}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
@@ -177,7 +177,7 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info">{{ $orders->total_extra_price }}</span>
+                        <span class="paid_mem_info">{{ $order->total_extra_price }}</span>
                     </div>
                 </div><div class="spacer-10px"></div> -->
 
@@ -187,7 +187,7 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info">{{ $orders->total_discount_amount }}</span>
+                        <span class="paid_mem_info">{{ $order->total_discount_amount }}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
@@ -197,7 +197,7 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info">{{ $orders->member_discount_amount }}</span>
+                        <span class="paid_mem_info">{{ $order->member_discount_amount }}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
@@ -207,7 +207,7 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info" id="Tax">{{ number_format($orders->tax_amount)}}</span>
+                        <span class="paid_mem_info" id="Tax">{{ number_format($order->tax_amount)}}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
@@ -217,7 +217,7 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info" id="Service">{{ number_format($orders->service_amount)}}</span>
+                        <span class="paid_mem_info" id="Service">{{ number_format($order->service_amount)}}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
@@ -227,11 +227,11 @@
                     </div>
 
                     <div class="col-md-4 text-right">
-                        <span class="paid_mem_info" id="Net">{{ number_format($orders->all_total_amount)}}</span>
+                        <span class="paid_mem_info" id="Net">{{ number_format($order->all_total_amount)}}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
 
-                @if ($orders->payment_amount <= 0)
+                @if ($order->payment_amount <= 0)
                 <div class="row">
                     <div class="col-md-10">
                         <button type="submit" class="btn btn-default btn-md paid_btn pull-right" id="btn-payment">
@@ -243,6 +243,14 @@
             </div>
         </div>
         {!! Form::close() !!}
+
+        @include('cashier.invoice.payment_print')
+        @if (session('status'))
+            <script>
+                var modal   = $('.modal').attr('id');
+                $('#' + modal).modal('show');
+            </script>
+        @endif
         <script type="text/javascript">
             var foc = document.getElementById('FOC');
         </script>
@@ -348,6 +356,34 @@
                 }
             });
             
+        }
+        </script>
+
+        <!-- For Print Js -->
+        <script>
+            function printElement(e) {
+            var ifr = document.createElement('iframe');
+            ifr.style='height: 0; width: 0px; position: absolute'
+
+            document.body.appendChild(ifr);
+
+            $(e).clone().appendTo(ifr.contentDocument.body);
+            ifr.contentWindow.print();
+
+            ifr.parentElement.removeChild(ifr);
+        }
+
+        function print_click(clicked_id)
+        {
+            var clickID     = clicked_id;
+            var printID     = clickID + "-print-table";
+            printElement(document.getElementById(printID));
+        }
+
+        //Close Button Return Payment List
+        function return_btn()
+        {
+            window.location.href = "/Cashier/invoice";
         }
         </script>
     </div>

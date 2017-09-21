@@ -110,7 +110,7 @@
                                         <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
                                     </div>
                                     <div class="modal-body">
-                                    {!! Form::open(array('url' => 'Kitchen/getCancelID/TableView', 'class'=> 'form-horizontal')) !!}
+                                    {!! Form::open(array('url' => 'Kitchen/getCancelID/TableView', 'class'=> 'form-horizontal', 'id' => $item->id)) !!}
 
                                         @if(isset($item->setmenu_id) && $item->setmenu_id != 0)
                                             <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
@@ -127,7 +127,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
-                                                <input type="submit" name="submit" value="Save" class="btn btn-primary pop-up-button">
+                                                <input type="button" name="submit" value="Save" class="btn btn-primary pop-up-button cancel_item" id="{{$item->id}}-{{$item->setmenu_id}}">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>

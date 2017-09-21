@@ -19,7 +19,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	public function getinvoice( )
 	{
 		
-		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`payment_amount`,`status`
+		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `refund`,`created_at`,`payment_amount`,`status`
 		from `order` where `deleted_at` is null AND status = 1 OR status = 2 order by `order_time` desc");
 		
 		return $orders;

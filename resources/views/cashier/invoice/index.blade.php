@@ -99,6 +99,11 @@
     </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+@if (isset($orders))
+    @foreach($orders as $order)
+        @include('cashier.invoice.invoice_print')
+    @endforeach
+@endif
 
 @if (Auth::guard('Cashier')->user()->role_id == 1 || Auth::guard('Cashier')->user()->role_id == 2 || Auth::guard('Cashier')->user()->role_id == 3)
     @php 
@@ -136,6 +141,32 @@
 
     });
 
+    $('.btn-print').on('click',function(e){
+        e.preventDefault();
+        var id      = this.id;
+        var modal   = id + '-print';
+        $('#' + modal).modal('show');
+    });
+
+    function printElement(e) {
+        var ifr = document.createElement('iframe');
+        ifr.style='height: 0; width: 0px; position: absolute'
+
+        document.body.appendChild(ifr);
+
+        $(e).clone().appendTo(ifr.contentDocument.body);
+        ifr.contentWindow.print();
+
+        ifr.parentElement.removeChild(ifr);
+    }
+
+    function print_click(clicked_id)
+    {
+        var clickID     = clicked_id;
+        var printID     = clickID + "-print-table";
+        printElement(document.getElementById(printID));
+    }
+
     function cancelOrder(id) {
         $(document).ready(function(){
             $.ajax({
@@ -154,11 +185,11 @@
     }
 </script>
 
-    <script>
-        $(document).ready(function(){
-            $('#invoice-form').on('change',function() {
-                this.form.submit();
-            });
+<script>
+    $(document).ready(function(){
+        $('#invoice-form').on('change',function() {
+            this.form.submit();
         });
-    </script>
+    });
+</script>
 @endsection

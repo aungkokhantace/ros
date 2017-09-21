@@ -37,7 +37,7 @@ class OrderViewController extends Controller
         $tables             = $this->OrderRepository->orderTable();
         $rooms              = $this->OrderRepository->orderRoom();
         $extra              = $this->OrderRepository->orderExtra();
-        $ordersRaw          = DB::select("SELECT * FROM `order`");
+        $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '1'");
         $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
@@ -115,7 +115,7 @@ class OrderViewController extends Controller
         $rooms               = $this->OrderRepository->orderRoom();
         $extra               = $this->OrderRepository->orderExtra(); 
 
-        $ordersRaw           = DB::select("SELECT * FROM `order`");
+        $ordersRaw           = DB::select("SELECT * FROM `order` WHERE status = '1'");
 
         $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id
                                           FROM `order_details`
@@ -307,6 +307,31 @@ class OrderViewController extends Controller
         return redirect()->action('Kitchen\OrderViewController@tableView');
     }
 
+    public function itemStart($id,$setmenu_id)
+    {
+        $carbon  = Carbon::now();
+        $date    = $carbon->toDateTimeString();
+        if($id != 0 && $setmenu_id == 0){
+            DB::statement('update order_details set status_id=2, order_duration=? where id=?',[$date, $id]);
+        }
+        else{
+            $setMenu                        = OrderSetMenuDetail::find($id);
+            $orderDetail                    = OrderDetail::find($setMenu->order_detail_id);
+            if($orderDetail->status_id == 1){
+                $orderDetail->order_duration    = $date;
+                $orderDetail->status_id         = 2;
+                $orderDetail->save();
+            }
+
+            DB::statement('update order_setmenu_detail set status_id=2, order_duration=? where id=?',[$date, $id]);
+
+            
+        }
+
+    $output     = array('message'=>'success');
+    return \Response::json($output);
+    }
+
     public function update($item_id,$setmenu_id)
     {
         $carbon = Carbon::now();
@@ -340,8 +365,9 @@ class OrderViewController extends Controller
                 DB::statement('update order_details set status_id =3, cooking_time=? where id=?',[$date,$order_detail_id]);
             }
         }
-
-        return redirect()->action('Kitchen\OrderViewController@tableView');
+        $output     = array('message'=>'success');
+        return \Response::json($output);
+        // return redirect()->action('Kitchen\OrderViewController@tableView');
     }
 
     public function CookingItemFromProductView($item_id)
@@ -350,7 +376,9 @@ class OrderViewController extends Controller
         $date    = $carbon->toDateTimeString();
        
         DB::statement('update order_details set status_id=2, order_duration=? where id=?',[$date, $item_id]);
-        return redirect()->action('Kitchen\OrderViewController@productView');
+        $output     = array('message'=>'success');
+        return \Response::json($output);
+        // return redirect()->action('Kitchen\OrderViewController@productView');
     }
 
     public function CookedItemFromProductView($item_id)
@@ -360,8 +388,9 @@ class OrderViewController extends Controller
         $date   = $carbon->toDateTimeString();
 
         $db = DB::statement('update order_details set status_id=3, cooking_time=? where id=?', [$date,$item_id]);
-
-        return redirect()->action('Kitchen\OrderViewController@productView');
+        $output     = array('message'=>'success');
+        return \Response::json($output);
+        // return redirect()->action('Kitchen\OrderViewController@productView');
     }
 
     public function CookingSetMenuItemFromProductView($id){
@@ -376,8 +405,9 @@ class OrderViewController extends Controller
         if($order_detail->status == 1){
             DB::statement('update order_details set status_id =2, order_duration=? where id=?',[$date,$order_detail_id]);
         }
-
-        return redirect()->action('Kitchen\OrderViewController@productView');
+        $output     = array('message'=>'success');
+        return \Response::json($output);
+        // return redirect()->action('Kitchen\OrderViewController@productView');
     }
 
     public function CookedSetMenuItemFromProductView($id){
@@ -407,12 +437,14 @@ class OrderViewController extends Controller
         if($count_with_status == $count_without_status){
             DB::statement('update order_details set status_id =3, cooking_time=? where id=?',[$date,$order_detail_id]);
         }
-
-        return redirect()->action('Kitchen\OrderViewController@productView');
+        $output     = array('message'=>'success');
+        return \Response::json($output);
+        // return redirect()->action('Kitchen\OrderViewController@productView');
     }
 
     public function CancelUpdateFromTableView()
     {
+        
         $id             = Input::get('order_details_id');
         $setmenu_id     = Input::get('setmenu_id');
         $date           = date('Y-m-d H:m:i');
@@ -420,7 +452,7 @@ class OrderViewController extends Controller
         $order_detail   = Orderdetail::find($id);
         $order_id       = $order_detail->order_id;
         $price          = $order_detail->amount_with_discount;   
-
+        
         if($setmenu_id != 0){
             $setObj = OrderSetMenuDetail::where('order_detail_id',$id)->where('setmenu_id','=',$setmenu_id)->get();
             foreach($setObj as $set){
@@ -468,7 +500,10 @@ class OrderViewController extends Controller
             
             $order_detail->save();
         }
-        return redirect()->action('Kitchen\OrderViewController@tableView');
+        // return redirect()->action('Kitchen\OrderViewController@tableView');
+        
+        $output     = array('message'=>'success');
+        return \Response::json($output);
     }
 
     public function CancelUpdateFromProductView()
@@ -528,6 +563,8 @@ class OrderViewController extends Controller
 
             $order_detail->save();
         }
-        return redirect()->action('Kitchen\OrderViewController@productView');
+        $output     = array('message'=>'success');
+        return \Response::json($output);
+        // return redirect()->action('Kitchen\OrderViewController@productView');
     }
 }

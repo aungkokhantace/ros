@@ -8,6 +8,8 @@ use App\Http\Requests;
 use Auth;
 use App\Http\Controllers\Controller;
 use App\RMS\Order\Order;
+use App\RMS\OrderTable\OrderTable;
+use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\Item\Item;
 use App\RMS\Config\Config;
@@ -39,12 +41,42 @@ class InvoiceController extends Controller
     {
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
-        $orders 	= $this->InvoiceRepository->getinvoice();
+        $orderRepo 	= $this->InvoiceRepository->getinvoice();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            $orders[$key]   = $order;
+        }
         if (Auth::guard('Cashier')->check()) {
             $role_id      = Auth::guard('Cashier')->user()->role_id;
         }
+        // dd($orders);
         $roleArr['role'][]    = $role_id;
-        return view('cashier.invoice.index',compact('orders'));
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone')->first();
+        return view('cashier.invoice.index',compact('orders','config'));
 
     } 
 
@@ -77,13 +109,13 @@ class InvoiceController extends Controller
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier        = $this->InvoiceRepository->cashier($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone')->first();
        
         return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier'));
     }
 
     public function invoicePaid($id) {
-        $orders = $this->InvoiceRepository->getorder($id);
+        $order = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
         $addon  = array();
@@ -106,7 +138,7 @@ class InvoiceController extends Controller
         $payments        = $this->InvoiceRepository->getPayment($id);
         $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge')->first();
 
-        return view('cashier.invoice.payment',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments'));
+        return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments'));
     }
     //InvoiceRequest
     public function invoiceAddpaid(Request $request)
@@ -134,27 +166,7 @@ class InvoiceController extends Controller
         } else {
             $all_total_with_foc     = $all_total;    
         }
-        // if ($foc <= 0) {
-        //     $foc = null;
-        //     $total_price_foc = null;
-        // } else {
 
-        //     $total_price = $orders->total_price;
-        //     $tax = $config->tax;
-        //     $service = $config->service;
-        //     $room_charge = $config->room_charge;
-        //     $total_price_foc = $total_price - $foc;
-        //     $tax_foc = $total_price_foc/$tax;
-        //     $service_focs = $total_price_foc/$service;
-
-        //     $services = $service_focs;
-        //     if (count($rooms) > 0) {
-        //         $services = $service_focs + $room_charge;
-        //     }
-
-        //     $all_total = $total_price_foc + $tax_foc + $services;
-        //     $refund = $payment - $all_total;
-        // }
         $paramObj                   = Order::find($id);
         $paramObj->status           = $status;
         $paramObj->payment_amount   = $payment;
@@ -162,10 +174,12 @@ class InvoiceController extends Controller
         $paramObj->foc_amount       = $foc;
         $paramObj->all_total_amount = $all_total_with_foc;
         $result                     = $this->InvoiceRepository->update($paramObj,$input,$refund);
-
+        //Get Update ID
+        $param                      = $id;
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-            return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
-                ->withMessage(FormatGenerator::message('Success', 'Item have been paid ...'));
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                return redirect('Cashier/invoice/paid/' . $param)->with('status', 'Payment Update');
+            }
         }
         else{
             return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
@@ -192,6 +206,12 @@ class InvoiceController extends Controller
             $output     = array('message'=>'faile');
             return \Response::json($output);
         }
+    }
+
+    public function redirectRequest($id)
+    {
+        return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
+                ->withMessage(FormatGenerator::message('Fail', 'Table did not update ...'));
     }
 
     public function checkManager($managerLogin,$managerPass) {

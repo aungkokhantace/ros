@@ -77,7 +77,7 @@ class syncAPIController extends ApiGuardController
         }
        
         if($key == $activate_key){
-            $category = DB::select("SELECT id,name,status,parent_id,kitchen_id,mobile_image FROM category WHERE status = '1' ");
+            $category = DB::select("SELECT id,name,status,parent_id,kitchen_id,mobile_image,image FROM category WHERE status = '1' ");
             $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status FROM set_menu WHERE status = '1'");
             $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item");
         

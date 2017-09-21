@@ -54,17 +54,73 @@
                 })
             }
 
-            $('#autoDiv').on('click', '.start', function(e){
-//                window.location.href = "/Kitchen/getStartID/" +$(this).attr('id')+"/"+$(this).parents('tr').find('.txt_duration').val();
-                window.location.href = "/Kitchen/getStartID/" +$(this).attr('id');
+            // $('#autoDiv').on('click', '.start', function(e){
+            //     window.location.href = "/Kitchen/getStartID/" +$(this).attr('id');
 
+            // });
+
+            $('#autoDiv').on('click', '.start', function(e){
+                var itemID      = $(this).attr('id');
+                $(document).ready(function(){
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Kitchen/getStart/ajaxRequest/' + itemID,
+                        success: function (Response) {
+                            var returnResp        = Response.message;
+                            if (returnResp == 'success') {
+                                console.log(Response);
+                                ajaxCall();
+                            }
+                        }
+                    });
+                });
             });
 
             $('#autoDiv').on('click', '.complete',function (e) {
 //                window.location.href = "/Kitchen/getCompleteID/" + $(this).attr('id')+"/"+$(this).parents('tr').find('.txt_cooking_duration').val();
-                window.location.href = "/Kitchen/getCompleteID/" + $(this).attr('id');
+                // window.location.href = "/Kitchen/getCompleteID/" + $(this).attr('id');
+                var itemID      = $(this).attr('id');
+                $(document).ready(function(){
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Kitchen/getCompleteID/' + itemID,
+                        success: function (Response) {
+                            var returnResp        = Response.message;
+                            if (returnResp == 'success') {
+                                console.log(Response);
+                                ajaxCall();
+                            }
+                        }
+                    });
+                });
 
             });
+
+            $('#autoDiv').on('click', '.cancel_item',function (e) {
+                var formID      = $(this).closest("form").attr('id');
+                var data        = $('#' + formID).serialize();
+                var modalID     = $(this).attr('id') + 'modal';
+                console.log(data);
+                $(document).ready(function(){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Kitchen/getCancelID/TableView',
+                        data: data,
+                        dataType: "json",
+                        success: function (Response) {
+                            var returnResp        = Response.message;
+                            if (returnResp == 'success') {
+                                ajaxCall();
+                                $("#" + modalID).modal("hide");
+                                $('body').removeClass('modal-open');
+                                $('.modal-backdrop').remove();
+                            }
+                        }
+                    });
+                });
+
+            });
+
             // $('#autoDiv').on('click','.cancel',function(e){
             //     alert('hi');
             // });

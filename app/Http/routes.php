@@ -369,6 +369,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('kitchen/ajaxRequestProduct','Kitchen\OrderViewController@ajaxRequestProduct');
             Route::get('getCompleteID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@update');
             Route::get('getStartID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@start');
+            Route::get('getStart/ajaxRequest/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@itemStart');
 
             Route::get('productView/CookedItem/{item_id}', 'Kitchen\OrderViewController@CookedItemFromProductView');
             Route::get('productView/CookingItem/{item_id}', 'Kitchen\OrderViewController@CookingItemFromProductView');
