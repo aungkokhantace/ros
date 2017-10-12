@@ -162,6 +162,9 @@ class downloadAPIController extends ApiGuardController
 					$order_detail->order_room = $room_arr;
 					unset($room_arr);
 					$room_arr = array();
+
+					//For Android to know old item
+					$order_detail->state 	= 'old';
 				}
 			}
 			if(isset($order_raw) && count($order_raw) > 0){

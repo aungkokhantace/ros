@@ -649,12 +649,55 @@ thead label{color: #FFFFFF;}
 #body{
      padding: 10px;
      padding-bottom:50px;   /* Height of the footer */
-    background-color:#eee;
+    /*background-color:#eee;*/
+    background-color: #fff;
+}
+#autoDiv .table-responsive {
+    border: 0!important;
+}
+#autoDiv table tr th,
+#autoDiv table tr td {
+    text-align: center;
+    vertical-align: middle;
+}
+#autoDiv table tbody tr td:nth-child(1) {
+    padding-left: 2%;
+    text-align: left;
+}
+#autoDiv table tbody {
+    background: #E2E2E2;
+}
+#autoDiv table tbody tr:nth-child(1) td {
+    border-top: 0;
+}
+#autoDiv table tbody tr td {
+    border-top: 3px solid #fff;
 }
 .tr_header{
-    background-color: #F3A42E;
+    /*background-color: #F3A42E;*/
+    background-color: #555658;
 }
-#daily_chart_div{
+.tr_header>td {
+    color: #fff;
+    border-left: 1px solid #F07022;
+}
+/*.table>thead>tr:first-child>td {   
+    border-bottom: 3px solid #fff;
+}*/
+.table>thead>tr:nth-child(2)>td {   
+    border-top: 3px solid #fff;
+}
+.table>thead>tr:first-child>td {
+    padding: 0!important;
+}
+.table>thead>tr>td img {
+    width: 180px;
+    height: 80px;
+}
+.txt-l {
+    text-align: left!important;
+}
+#daily_chart_div {
     width : 100%;
     height  : 500px;
 }
@@ -667,26 +710,38 @@ thead label{color: #FFFFFF;}
 }
 .report-th th{color: #FFFFFF;}
 .complete{
-    background-color: #68A219;
+    background-color: #68A219;/*
     border: none;
-    padding: 5px;
+    padding: 5px;*/
     color: #fff;
 }
+.start ,
+.cancel,
+.complete {
+    width: 100px;
+    padding: 5px 0;
+    text-align: center;
+    border: 1px solid #966D61;
+    border-radius: 2px;
+}
 .start{
-    background-color: #e87e7e;
+    background-color: #e87e7e;/*
     border:none;
-    padding:5px;
+    padding:5px;*/
     color:#fff;
 }
 .cancel{
-    background-color:#D84315;
+    background-color:#D84315;/*
     border:none;
-    padding:5px;
+    padding:5px;*/
     color:#fff !important;
 }
 .tdname{
-    background-color:#E87E7E;
+  /*  background-color:#E87E7E;*/
+    background-color:#F47123;
     color:#fff;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 .sticky{
@@ -1010,3 +1065,52 @@ body {padding: 0 0 30pt 0;}
   z-index: -1;
 }
 /*--================== End Theodore CSS ==================--*/
+
+/*-----------------------------------------------------------------------------------------------------------------
+order page 
+-------------------------------------------------------------------------------------------------------------------*/
+.order-pg {
+    width: 90%;
+    margin: 0 auto;
+}
+.order-tb {
+    background: #57595B;
+    color: #fff;
+}
+.order-tb table tr td {
+    border: 0!important;
+    padding: 0!important;
+    vertical-align: middle;
+    line-height: 1.6;
+    font-size: 14px;
+}
+.order-tb table tr td img {
+    width: 100px;
+    height: 80px;
+}
+.table-box {
+    padding: 10px 14px!important;
+    border-bottom: 2px solid #F27021;
+}
+.table-box:last-child {
+    border-bottom: 0;
+}
+.order-tb table tr td.table-type {
+    font-size: 20px;
+}
+.order-tb table tr td.table-type span {
+    font-weight: bold;
+}
+.order-tb table tr td.food-type {
+    color: #F17320;
+    font-size: 18px;
+}
+.order-tb table tr td.ver-top {
+    vertical-align: top;
+}
+.order-tb table tr.pad-t20>td {
+    padding-top: 20px!important;
+}
+.mgr-b20 {
+    margin-bottom: 20px;
+}

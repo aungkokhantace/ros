@@ -22,6 +22,21 @@
                 }
             })
         }
-    </script>
+</script>
+
+<script>
+    var socket = io.connect( 'http://'+window.location.hostname+':3000' );
+    socket.emit('new_count_message', { 
+        new_count_message: data.new_count_message
+    });
+
+    socket.emit('new_message', { 
+        name: data.name,
+        email: data.email,
+        subject: data.subject,
+        created_at: data.created_at,
+        id: data.id
+    });
+</script>
 
 @endsection

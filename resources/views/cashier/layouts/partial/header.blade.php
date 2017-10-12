@@ -60,6 +60,9 @@
         });
     </script>
 
+    {!! Html::script('js/jquery-1.11.2.min.js') !!}
+    {!! Html::script('js/bootstrap.min.js') !!}
+    {!! Html::script('node_modules/socket.io/node_modules/socket.io-client/socket.io.js') !!}
 </head>
 
 <body>

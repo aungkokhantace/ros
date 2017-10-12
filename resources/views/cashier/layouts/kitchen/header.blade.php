@@ -48,7 +48,7 @@
             }, 2000);
         });
     </script>
-
+    {!! Html::script('node_modules/socket.io/node_modules/socket.io-client/socket.io.js') !!}
 </head>
 
 <body>

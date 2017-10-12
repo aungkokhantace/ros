@@ -362,6 +362,8 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('logout', 'Cashier\Auth\AuthController@logout');
         Route::group(['middleware' => 'custom:Cashier'], function () {
             Route::get('kitchen', 'Kitchen\OrderViewController@tableView');
+            Route::get('kitchen/design', 'Kitchen\OrderViewController@tableViewDesign');
+            Route::get('kitchen/ajaxOrderRequest', 'Kitchen\OrderViewController@ajaxOrderRequest');
             Route::get('kitchen/ajaxRequest','Kitchen\OrderViewController@ajaxRequest');
             Route::get('getCompleteID','Kitchen\OrderViewController@tableView');
             Route::get('getStartID','Kitchen\OrderViewController@tableView');
