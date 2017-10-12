@@ -256,7 +256,6 @@
         </script>
 
         <script>
-
         function isEmpty() {
             var amount      = $('.amount').map(function() { return this.value; }).get();
             var isValid     = true;
@@ -385,6 +384,30 @@
         {
             window.location.href = "/Cashier/invoice";
         }
+        </script>
+
+        <script>
+            var socket = io.connect( 'http://'+window.location.hostname+':3333' );
+            $('#btn-payment').on('click',function(e){
+                e.preventDefault();
+                var form = $(this).parents('form');
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this payment!",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#86CCEB",
+                    confirmButtonText: "Confirm",
+                    closeOnConfirm: false
+                }, function(isConfirm){
+                    if (isConfirm) {
+                        socket.emit('order_payment', { 
+                            order_payment   : 'order_payment'
+                        });
+                        form.submit();
+                    }
+                });
+            });
         </script>
     </div>
 @endsection

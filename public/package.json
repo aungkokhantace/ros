@@ -1,0 +1,16 @@
+{
+  "name": "node-server",
+  "version": "1.0.0",
+  "description": "node-server",
+  "main": "public/index.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^1.7.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shwekayin",
+  "license": "ISC"
+}

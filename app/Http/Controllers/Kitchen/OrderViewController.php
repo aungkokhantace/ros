@@ -37,8 +37,8 @@ class OrderViewController extends Controller
         $tables             = $this->OrderRepository->orderTable();
         $rooms              = $this->OrderRepository->orderRoom();
         $extra              = $this->OrderRepository->orderExtra();
-        $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '1'");
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id
+        $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '1' ORDER BY id DESC");
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
@@ -66,7 +66,6 @@ class OrderViewController extends Controller
         foreach ($ordersRaw as $key => $order) {
             $orders[$order->id]   = $order;
         }
-
         foreach ($orders as $key => $order) {
             $order_id = $order->id;
             $orderItemList = array();
@@ -106,6 +105,94 @@ class OrderViewController extends Controller
         }
         return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
+    
+    public function tableViewDesign() {
+        return view('kitchen.kitchen_design');
+    }
+
+    public function ajaxOrderRequest()
+    {
+        $id                 = Auth::guard('Cashier')->user()->kitchen_id;
+        $kitchen            = Kitchen::find($id);
+        $tables             = $this->OrderRepository->orderTable();
+        $rooms              = $this->OrderRepository->orderRoom();
+        $extra              = $this->OrderRepository->orderExtra();
+        $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '1' ORDER BY id DESC");
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image
+                                          FROM `order_details`
+                                          LEFT JOIN `items` ON order_details.item_id=items.id
+                                          LEFT JOIN `category` ON category.id = items.category_id
+                                          WHERE order_details.status_id IN (1,2) ");
+        
+        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image
+                                          FROM `order_setmenu_detail`
+                                          LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
+                                          LEFT JOIN `category` ON category.id = items.category_id
+                                          WHERE order_setmenu_detail.status_id IN (1,2) ");
+
+        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
+        $categoryIdArr      = array();
+        foreach($categoryRaw as $category){
+            array_push($categoryIdArr,$category->id);
+        }
+
+        // looping for orders
+        $results        = array();
+        $orders         = array();
+        $order_details  = array();
+        $set_menus      = array();
+        $categories     = array();
+
+        foreach ($ordersRaw as $key => $order) {
+            $orders[$order->id]   = $order;
+        }
+
+        foreach ($orders as $key => $order) {
+            $order_id = $order->id;
+            $orderItemList = array();
+
+            foreach ($order_detailsRaw as $keyOD => $order_detail) {
+
+                $order_detail_id            = $order_detail->id;
+                $item_id                    = $order_detail->item_id;
+                $setmenu_id                 = $order_detail->setmenu_id;
+                $order_detail_order_id      = $order_detail->order_id;
+                $order_detail_category_id   = $order_detail->category_id;
+
+                if($order_detail_order_id == $order_id){
+                    // Set Menu Case
+                    if($item_id == 0){
+
+                        foreach ($set_menusRaw as $keySM => $set_menu) {
+                            
+                            $setMenuOrderDetailId   = $set_menu->order_detail_id;
+                            $setMenuSetMenuId       = $set_menu->setmenu_id;
+                            $setMenuItemId          = $set_menu->item_id;
+                            $setCategoryId          = $set_menu->category_id;
+                            
+                            if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId && in_array($setCategoryId,$categoryIdArr)){
+                                // need to add the item array
+                                array_push($orderItemList,$set_menu);
+                            }
+                        }
+                    }
+                    // normal item case
+                    if($setmenu_id == 0 && in_array($order_detail_category_id,$categoryIdArr)){
+                        array_push($orderItemList,$order_detail);
+                    }
+                }
+            }
+            $orders[$key]->items = $orderItemList;
+        }
+        foreach($orders as $orderKey=>$orderValue)
+        {
+            if(isset($orderValue->items) && count($orderValue->items) > 0)
+            {
+                $orderItem[$orderKey]  = $orderValue;
+            }
+        }
+        return \Response::json(($orderItem));
+    }
 
     public function ajaxRequest(Request $request)
     {
@@ -115,20 +202,20 @@ class OrderViewController extends Controller
         $rooms               = $this->OrderRepository->orderRoom();
         $extra               = $this->OrderRepository->orderExtra(); 
 
-        $ordersRaw           = DB::select("SELECT * FROM `order` WHERE status = '1'");
-
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id
+        $ordersRaw           = DB::select("SELECT * FROM `order` WHERE status = '1' ORDER BY id DESC");
+        
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           WHERE order_details.status_id IN (1,2) ");
 
-        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id
+        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           WHERE order_setmenu_detail.status_id IN (1,2) ");
-
+        
         $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
         $categoryIdArr      = array();
         foreach($categoryRaw as $category){
@@ -160,19 +247,17 @@ class OrderViewController extends Controller
                 $setmenu_id                 = $order_detail->setmenu_id;
                 $order_detail_order_id      = $order_detail->order_id;
                 $order_detail_category_id   = $order_detail->category_id;
-
+                
                 if($order_detail_order_id == $order_id){
                     // Set Menu Case
                     if($item_id == 0){
-
                         foreach ($set_menusRaw as $keySM => $set_menu) {
-
+                        
                             $setMenuOrderDetailId   = $set_menu->order_detail_id;
                             $setMenuSetMenuId       = $set_menu->setmenu_id;
                             $setMenuItemId          = $set_menu->item_id;
                             $setCategoryId          = $set_menu->category_id;
-
-                            if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId && in_array($setCategoryId,$categoryIdArr)){
+                            if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId){
                                 // need to add the item array
                                 array_push($orderItemList,$set_menu);
                             }
@@ -187,7 +272,7 @@ class OrderViewController extends Controller
 
             $orders[$key]->items = $orderItemList;
         }
-        return view('kitchen.tableview')->with('tables',$tables)->with('orders',$orders)->with('rooms',$rooms)->with('extra',$extra)->render();
+        return view('kitchen.realtime_tableview')->with('tables',$tables)->with('orders',$orders)->with('rooms',$rooms)->with('extra',$extra)->render();
 
     }
     public function productView()
@@ -197,7 +282,7 @@ class OrderViewController extends Controller
         $tables          = $this->OrderRepository->orderTable();
         $rooms           = $this->OrderRepository->orderRoom();
         $extra           = $this->OrderRepository->orderExtra(); 
-        $itemsMater      = DB::select("SELECT id,name FROM `items`");
+        $itemsMater      = DB::select("SELECT id,name,image FROM `items`");
         $product         = array();
         foreach($itemsMater as $item){
             $item_id = $item->id;
@@ -229,13 +314,14 @@ class OrderViewController extends Controller
                 $tempItem                   = array();
                 $tempItem['item_id']        = $item_id;
                 $tempItem['item_name']      = $item->name;
+                $tempItem['item_image']     = $item->image;
                 $tempItem['product_order']  = $orderDetails;   
                 $tempItem['setmenu']        = $setMenus;            
                 $product[]                  = $tempItem;
 
             }
         }
-        //dd($product);
+        
         return view('kitchen.productView')->with('product',$product)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
     public function ajaxRequestProduct(Request $request)
@@ -246,7 +332,7 @@ class OrderViewController extends Controller
         $rooms           = $this->OrderRepository->orderRoom();
         $extra           = $this->OrderRepository->orderExtra(); 
 
-        $itemsMater      = DB::select("SELECT id,name FROM `items`");
+        $itemsMater      = DB::select("SELECT id,name,image FROM `items`");
         $product         = array();
 
         foreach($itemsMater as $item){
@@ -276,12 +362,13 @@ class OrderViewController extends Controller
                 $tempItem                   = array();
                 $tempItem['item_id']        = $item_id;
                 $tempItem['item_name']      = $item->name;
+                $tempItem['item_image']      = $item->image;
                 $tempItem['product_order']  = $orderDetails;   
                 $tempItem['setmenu']        = $setMenus;            
                 $product[]                  = $tempItem;
             }
         }
-        return view('kitchen/product')->with('product',$product)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra)->render();
+        return view('kitchen/realtime_product')->with('product',$product)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra)->render();
     }
 
     public function start($id,$setmenu_id)
@@ -324,12 +411,16 @@ class OrderViewController extends Controller
             }
 
             DB::statement('update order_setmenu_detail set status_id=2, order_duration=? where id=?',[$date, $id]);
-
             
         }
-
-    $output     = array('message'=>'success');
-    return \Response::json($output);
+    //Get User Click ID Name
+    $clickID    = $id . "/" . $setmenu_id;
+    $orders     = Orderdetail::where('id','=',$id)->get()->toArray();
+    foreach($orders as $key => $order) {
+        $output             = $order;
+        $output['click_id'] = $clickID;
+    }
+    return \Response::json(($output));
     }
 
     public function update($item_id,$setmenu_id)
@@ -502,7 +593,7 @@ class OrderViewController extends Controller
         }
         // return redirect()->action('Kitchen\OrderViewController@tableView');
         
-        $output     = array('message'=>'success');
+        $output     = array('message'=>'success','order_id'=> $order_id);
         return \Response::json($output);
     }
 
@@ -563,7 +654,7 @@ class OrderViewController extends Controller
 
             $order_detail->save();
         }
-        $output     = array('message'=>'success');
+        $output     = array('message'=>'success','order_id'=> $order_id);
         return \Response::json($output);
         // return redirect()->action('Kitchen\OrderViewController@productView');
     }

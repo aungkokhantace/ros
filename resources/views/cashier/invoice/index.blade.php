@@ -131,7 +131,7 @@
                 closeOnConfirm: false
             }, function(isConfirm){
                 if (isConfirm) {
-                    cancelOrder(id);    
+                    cancelOrder(id);
                 };
             });
         } else {
@@ -178,6 +178,10 @@
                     if (message == 'success') {
                         swal.close();
                         $(".tr-" + id).fadeOut('5000');
+                        var socket = io.connect( 'http://'+window.location.hostname+':3333' );
+                        socket.emit('order_update', { 
+                            order_update   : 'order_update'
+                        });
                     }
                 }
             });

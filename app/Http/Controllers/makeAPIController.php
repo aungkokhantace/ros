@@ -372,42 +372,51 @@ class MakeAPIController extends ApiGuardController
         $tempObj            = Input::all();
         $tableRaw           = $tempObj['table'];
         $tables             = json_decode($tableRaw);
-
         foreach($tables as $t){
             $table_id           = $t->table_id;
             $status             = $t->status;
             $booking_id         = $t->booking_id;
+            $old_data           = $t->old;
 
-            if($booking_id == 'null'){
-                $table              = Table::find($table_id);
-                $table->status      = $status;
-                $table->save();
-            }else{
-                $table              = Table::find($table_id);
-                $table->status      = $status;
-                $table->save();
-                
-                $booking_table      = BookingTable::where('booking_id','=',$booking_id)->get();
-                foreach($booking_table as $table){
-                    if($table->table_id == $t->table_id){
-                        $bookingTable               = BookingTable::find($table->id);
-                        $bookingTable               = Utility::addDeletedBy($bookingTable);
-                        $bookingTable->deleted_at   = date('Y-m-d H:m:i');
-                        $bookingTable->save();
+            $table_status       = 0;
+            if ($old_data == 0) {
+                $table_id_attr      = Table::find($table_id);
+                $table_status       = $table_id_attr->status;
+            }
+            if ($table_status == 1) {
+                $output             = array("message" => "Fail");
+                return Response::json($output);
+            } else {
+                if($booking_id == 'null'){
+                    $table              = Table::find($table_id);
+                    $table->status      = $status;
+                    $table->save();
+                }else{
+                    $table              = Table::find($table_id);
+                    $table->status      = $status;
+                    $table->save();
+                    
+                    $booking_table      = BookingTable::where('booking_id','=',$booking_id)->get();
+                    foreach($booking_table as $table){
+                        if($table->table_id == $t->table_id){
+                            $bookingTable               = BookingTable::find($table->id);
+                            $bookingTable               = Utility::addDeletedBy($bookingTable);
+                            $bookingTable->deleted_at   = date('Y-m-d H:m:i');
+                            $bookingTable->save();
+                        }
+                    }
+
+                    $b_table = BookingTable::where('booking_id','=',$booking_id)->where('deleted_at','=',null)->count();
+                    if($b_table == 0){
+                        $booking            = Booking::find($booking_id);
+                        $booking            = Utility::addDeletedBy($booking);
+                        $booking->deleted_at= date('Y-m-d H:m:i');
+                        $booking->save();
                     }
                 }
-
-                $b_table = BookingTable::where('booking_id','=',$booking_id)->where('deleted_at','=',null)->count();
-                if($b_table == 0){
-                    $booking            = Booking::find($booking_id);
-                    $booking            = Utility::addDeletedBy($booking);
-                    $booking->deleted_at= date('Y-m-d H:m:i');
-                    $booking->save();
-                }
+                $output             = array("message" => "Success");
             }
         }
-        
-        $output             = array("message" => "Success");
         return Response::json($output);
     }
 
@@ -418,30 +427,39 @@ class MakeAPIController extends ApiGuardController
             $room_id            = $rooms->room_id;
             $status             = $rooms->status;
             $booking_id         = $rooms->booking_id;
-            if($booking_id == 'null'){
-                $room              = Room::find($room_id);
-                $room->status      = $status;
-                $room->save();
-            }else{
-                $room              = Room::find($room_id);
-                $room->status      = $status;
-                $room->save();
-                $booking_room      = BookingRoom::where('booking_id','=',$booking_id)->get();
-                foreach($booking_room as $room){
-                    if($room->room_id == $room_id){
-                        $bookingRoom               = BookingRoom::find($room->id);
-                        $bookingRoom               = Utility::addDeletedBy($bookingRoom);
-                        $bookingRoom->deleted_at   = date('Y-m-d H:m:i');
-                        $bookingRoom->save();
-                    }
-                }
-                $booking            = Booking::find($booking_id);
-                $booking            = Utility::addDeletedBy($booking);
-                $booking->deleted_at= date('Y-m-d H:m:i');
-                $booking->save();
+            $old_data           = $rooms->old;
+            $room_status       = 0;
+            if ($old_data == 0) {
+                $room_id_attr      = Room::find($room_id);
+                $room_status       = $room_id_attr->status;
             }
-
-        $output             = array("message" => "Success");
+            if ($room_status == 1) {
+                $output             = array("message" => "Fail");
+            } else {
+                if($booking_id == 'null'){
+                    $room              = Room::find($room_id);
+                    $room->status      = $status;
+                    $room->save();
+                }else{
+                    $room              = Room::find($room_id);
+                    $room->status      = $status;
+                    $room->save();
+                    $booking_room      = BookingRoom::where('booking_id','=',$booking_id)->get();
+                    foreach($booking_room as $room){
+                        if($room->room_id == $room_id){
+                            $bookingRoom               = BookingRoom::find($room->id);
+                            $bookingRoom               = Utility::addDeletedBy($bookingRoom);
+                            $bookingRoom->deleted_at   = date('Y-m-d H:m:i');
+                            $bookingRoom->save();
+                        }
+                    }
+                    $booking            = Booking::find($booking_id);
+                    $booking            = Utility::addDeletedBy($booking);
+                    $booking->deleted_at= date('Y-m-d H:m:i');
+                    $booking->save();
+                }
+                $output             = array("message" => "Success");
+            }
         return Response::json($output);
     }
 
@@ -451,62 +469,55 @@ class MakeAPIController extends ApiGuardController
         // $order_id           = $temp['order_id'];
         // $tableObj           = json_decode($tempRaw);
 
-        $order_id           = $temp['order_id'];
-        $transfer_from_table_id = $temp['transfer_from_table_id'];
-        $transfer_to_table_id = $temp['transfer_to_table_id'];
+        $order_id                           = $temp['order_id'];
+        $transfer_from_table_id             = $temp['transfer_from_table_id'];
+        $transfer_to_table_id               = $temp['transfer_to_table_id'];
+        $transfer_to_table_status_attr      = Table::find($transfer_to_table_id);
+        $transfer_to_table_status           = $transfer_to_table_status_attr->status;
+        if ($transfer_to_table_status == 1) {
+            $output             = array("message" => "Fail");
+        } else {
+            $from_table         = Table::find($transfer_from_table_id);
+            $from_table->status = 0;
+            $from_table->save();
+            $to_table           = Table::find($transfer_to_table_id);
+            $to_table->status   = 1;
+            $to_table->save();
 
-        $from_table         = Table::find($transfer_from_table_id);
-        $from_table->status = 0;
-        $from_table->save();
-        $to_table           = Table::find($transfer_to_table_id);
-        $to_table->status   = 1;
-        $to_table->save();
+            OrderTable::where('order_id','=',$order_id)
+                        ->where('table_id','=',$transfer_from_table_id)
+                        ->update(['table_id'=> $transfer_to_table_id]);
 
-
-        // $order_table        = OrderTable::where('order_id',$order_id)
-        //                       ->where('table_id',$transfer_from_table_id)
-        //                       ->first();
-
-        // $order_table->table_id = $transfer_to_table_id;
-        // $order_table->save();
-
-        OrderTable::where('order_id','=',$order_id)
-                    ->where('table_id','=',$transfer_from_table_id)
-                    ->update(['table_id'=> $transfer_to_table_id]);
-
-        $output             = array("message" => "Success");
+            $output             = array("message" => "Success");
+        }
         return Response::json($output);
     }
 
     public function room_transfer(){
         $temp                   = Input::all();
-        // $tempRaw            = $temp['room_transfer'];
-        // $order_id           = $temp['order_id'];
-        // $roomObj            = json_decode($tempRaw);
 
         $order_id               = $temp['order_id'];
         $transfer_from_room_id  = $temp['transfer_from_room_id'];
-        $transfer_to_room_id    = $temp['transfer_to_room_id'];       
-       
-        $from_room              = Room::find($transfer_from_room_id);
-        $from_room->status      = 0;
-        $from_room->save();
+        $transfer_to_room_id    = $temp['transfer_to_room_id'];
+        $transfer_to_room_status_attr      = Room::find($transfer_to_room_id);
+        $transfer_to_room_status           = $transfer_to_room_status_attr->status;       
+        if ($transfer_to_room_status == 1) {
+            $output             = array("message" => "Fail");
+        } else {
+            $from_room              = Room::find($transfer_from_room_id);
+            $from_room->status      = 0;
+            $from_room->save();
 
-        $to_room                = Room::find($transfer_to_room_id);
-        $to_room->status        = 1;
-        $to_room->save();
+            $to_room                = Room::find($transfer_to_room_id);
+            $to_room->status        = 1;
+            $to_room->save();
 
-        /*
-        $order_room             = OrderRoom::where('order_id','=',$order_id)->where('room_id','=',$transfer_from_room_id)->first();
-        $order_room->order_id   = $order_id;
-        $order_room->room_id    = $transfer_to_room_id;
-        $order_room->save();*/
+            OrderRoom::where('order_id','=',$order_id)
+                        ->where('room_id','=',$transfer_from_room_id)
+                        ->update(['room_id'=> $transfer_to_room_id]);
 
-        OrderRoom::where('order_id','=',$order_id)
-                    ->where('room_id','=',$transfer_from_room_id)
-                    ->update(['room_id'=> $transfer_to_room_id]);
-
-        $output                 = array("message" => "Success");
+            $output                 = array("message" => "Success");
+        }
         return Response::json($output);
     }
 
