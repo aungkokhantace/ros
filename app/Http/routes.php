@@ -233,7 +233,6 @@ Route::group(['middleware' => 'web'], function () {
 
                 Route::get('invoice','Cashier\Invoice\InvoiceController@invoiceList');
                 Route::get('invoice/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxInvoiceRequest');
-                Route::get('ajaxRequest','Cashier\Invoice\InvoiceController@ajaxCall');
                 Route::get('invoice/detail/{id}','Cashier\Invoice\InvoiceController@invoicedetail');
                 Route::get('invoice/detail/print/{id}','Cashier\Invoice\InvoiceController@invoicePrint');
                 Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');

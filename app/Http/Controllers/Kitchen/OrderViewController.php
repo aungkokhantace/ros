@@ -38,7 +38,7 @@ class OrderViewController extends Controller
         $rooms              = $this->OrderRepository->orderRoom();
         $extra              = $this->OrderRepository->orderExtra();
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '1' ORDER BY id DESC");
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image 
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id

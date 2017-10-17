@@ -202,7 +202,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 			$tempObj->save();
 
 			$order_id = $tempObj->id;
-			$table_id = Utility::getTableId($order_id);;
+			$table_id = Utility::getTableId($order_id);
 			if (count($table_id) > 0) {
 				foreach($table_id as $table) {
 					$id = $table->table_id;
