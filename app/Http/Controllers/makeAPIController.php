@@ -204,7 +204,7 @@ class MakeAPIController extends ApiGuardController
         $temp       = Input::all();
         $ordersRaw  = $temp['orderID'];
         $orders     = json_decode($ordersRaw);
-        
+
         $dt         = Carbon::now();
         foreach($orders as $order) {
             $order_id           = $order->order_id;
@@ -225,6 +225,131 @@ class MakeAPIController extends ApiGuardController
         $order->save();
 
         foreach ($order_details as $order_detail) {
+            $order_state        = $order_detail->state;
+            //$order_state = old (Do nothing), new (Add new), edit (Update)
+            if ($order_state == 'new') {
+                $temp = new Orderdetail();
+                $temp->order_id             = $order_id;
+                $temp->item_id              = $order_detail->item_id;
+                $temp->order_detail_id      = $order_detail->order_detail_id;
+                $temp->setmenu_id           = $order_detail->set_id;
+                $temp->quantity             = $order_detail->quantity;
+                $temp->order_type_id        = $order_detail->order_type_id;
+                $temp->discount_amount      = $order_detail->discount_amount;
+                $temp->exception            = $order_detail->exception;
+                $temp->promotion_id         = $order_detail->promotion_id;
+                $temp->amount               = $order_detail->price;
+                $temp->amount_with_discount = $order_detail->amount;
+                $temp->order_time           = $dt->toDateTimeString();
+                $temp->status_id            = $order_detail->status;
+                $temp->take_item            = $order_detail->take_item;
+                $temp->save();
+            
+                $set_item = $order_detail->set_item;
+                foreach($set_item as $item){
+                    $set = new OrderSetMenuDetail();
+                    $set->order_detail_id = $temp->id;
+                    $set->setmenu_id      = $item->set_menu_id;
+                    $set->item_id         = $item->item_id;
+                    $set->order_type_id   = $temp->order_type_id;
+                    $set->exception       = $temp->exception;
+                    $set->order_time      = $dt->toDateTimeString();
+                    $set->status_id       = $temp->status_id;
+                    $set->quantity        = "1";
+                    $set->save();
+                }
+            
+                $extra = $order_detail->extra;
+                foreach ($extra as $e) {
+                    $extra = new OrderExtra();
+                    $extra->order_detail_id         = $temp->id;
+                    $extra->extra_id                = $e->extra_id;
+                    $extra->quantity                = $e->quantity;
+                    $extra->amount                  = $e->amount;
+                    // $extra->total_extra_amount      = $e->total_extra_amount;
+                    $extra->save();
+                }
+            }
+
+            if ($order_state == 'edit') {
+                //Update Orderdetail
+                $order_detail_id = $order_detail->order_detail_id;
+                $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
+                $detail_id                  = $detail->id;
+                $temp                       = $detail;
+                $temp->order_id             = $order_id;
+                $temp->item_id              = $order_detail->item_id;
+                $temp->order_detail_id      = $order_detail->order_detail_id;
+                $temp->setmenu_id           = $order_detail->set_id;
+                $temp->quantity             = $order_detail->quantity;
+                $temp->order_type_id        = $order_detail->order_type_id;
+                $temp->discount_amount      = $order_detail->discount_amount;
+                $temp->exception            = $order_detail->exception;
+                $temp->promotion_id         = $order_detail->promotion_id;
+                $temp->amount               = $order_detail->price;
+                $temp->amount_with_discount = $order_detail->amount;
+                $temp->order_time           = $dt->toDateTimeString();
+                $temp->status_id            = $order_detail->status;
+                $temp->take_item            = $order_detail->take_item;
+                $temp->save();
+
+                //OrderSetMenuDetail
+                $set_item                   = $order_detail->set_item;
+                foreach($set_item as $item){
+                    $set_detail = OrderSetMenuDetail::where('order_detail_id','=',$detail_id)
+                                                     ->where('setmenu_id','=',$item->set_menu_id)
+                                                     ->first();
+                    if($set_detail == null){
+                        $set = new OrderSetMenuDetail();
+                        $set->order_detail_id = $temp->id;
+                        $set->setmenu_id      = $item->set_menu_id;
+                        $set->item_id         = $item->item_id;
+                        $set->order_type_id   = $temp->order_type_id;
+                        $set->exception       = $temp->exception;
+                        $set->order_time      = $dt->toDateTimeString();
+                        $set->status_id       = $temp->status_id;
+                        $set->quantity        = "1";
+                        $set->save();
+                    }
+                    else{
+                        $set                  = $set_detail;
+                        $set->order_detail_id = $temp->id;
+                        $set->setmenu_id      = $item->set_menu_id;
+                        $set->item_id         = $item->item_id;
+                        $set->order_type_id   = $temp->order_type_id;
+                        $set->exception       = $temp->exception;
+                        $set->order_time      = $dt->toDateTimeString();
+                        $set->status_id       = $temp->status_id;
+                        $set->save();
+                    }
+                }
+
+                //Order_Extra
+                $extra      = $order_detail->extra;
+                foreach ($extra as $e) {
+                    $order_extra = OrderExtra::where('order_detail_id','=',$detail_id)
+                                            ->where('extra_id','=',$e->extra_id)
+                                            ->first();
+                    if($order_extra == null){
+                        $extra                  = new OrderExtra();
+                        $extra->order_detail_id = $temp->id;
+                        $extra->extra_id        = $e->extra_id;
+                        $extra->quantity        = $e->quantity;
+                        $extra->amount          = $e->amount;
+                        $extra->save();
+                    }
+                    else{
+                        $extra                  = $order_extra;
+                        $extra->order_detail_id = $temp->id;
+                        $extra->extra_id        = $e->extra_id;
+                        $extra->quantity        = $e->quantity;
+                        $extra->amount          = $e->amount;
+                        $extra->save();
+                    }
+
+                }
+            }
+            /*
             $order_detail_id = $order_detail->order_detail_id;
             $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();   //check order_detail is already exist or not
             if($detail == null){ //If new order_detail, create order_detail
@@ -347,7 +472,8 @@ class MakeAPIController extends ApiGuardController
                 }
 
             }
-           
+           */
+
         }
 
         $output = array("message" => "Success");

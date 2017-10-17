@@ -387,7 +387,7 @@
         </script>
 
         <script>
-            var socket = io.connect( 'http://'+window.location.hostname+':3333' );
+            var socket = socketConnect();
             $('#btn-payment').on('click',function(e){
                 e.preventDefault();
                 var form = $(this).parents('form');

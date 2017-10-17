@@ -211,19 +211,21 @@
 
             $('#divAuto').on('click', '.start', function(e){
                 var itemID      = $(this).attr('id');
-                var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                socket.emit('start_cooking', 'start_cooking');
                 $(document).ready(function  (){
                     $.ajax({
                         type: 'GET',
                         url: '/Kitchen/getStart/ajaxRequest/' + itemID,
                         success: function (Response) {
-                            // alert('Succ');
+                            //Socket Emit
+                            var socketKey        = "start_cooking";
+                            var socketValue      = "start_cooking";
+                            socketEmit(socketKey,socketValue);
                         }
                     });
                 });
             });
-
+            
+            
         
             $('#divAuto').on('click', '.complete',function (e) {
                 var itemID      = $(this).attr('id');
@@ -234,9 +236,10 @@
                         success: function (Response) {
                             var returnResp        = Response.message;
                             if (returnResp == 'success') {
-                                console.log(Response);
-                                var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                                socket.emit('cooking_complete','cooking_complete');
+                                //Socket Emit
+                                var socketKey        = "cooking_complete";
+                                var socketValue      = "cooking_complete";
+                                socketEmit(socketKey,socketValue);
                             }
                         }
                     });
@@ -248,7 +251,6 @@
                 var formID      = $(this).closest("form").attr('id');
                 var data        = $('#' + formID).serialize();
                 var modalID     = $(this).attr('id') + 'modal';
-                console.log(data);
                 $(document).ready(function(){
                     $.ajax({
                         type: 'POST',
@@ -263,20 +265,16 @@
                                 $("#" + modalID).modal("hide");
                                 $('body').removeClass('modal-open');
                                 $('.modal-backdrop').remove();
-                                var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                                socket.emit('order_cancel',{
-                                    'order_cancel' : order_id
-                                });
+                                //Socket Emit
+                                var socketKey        = "order_cancel";
+                                var socketValue      = {order_cancel : order_id};
+                                socketEmit(socketKey,socketValue);
                             }
                         }
                     });
                 });
 
             });
-
-            // $('#divAuto').on('click','.cancel',function(e){
-            //     alert('hi');
-            // });
 
             $('#viewBy').change(function (e) {
                 var url = 'getTableView?view=' + $(this).value();
@@ -287,46 +285,23 @@
 
     <script>
         $(document).ready(function(){
-            var socket  = io.connect( 'http://'+window.location.hostname+':3333' );
-            socket.on('user_connected',function(data){
-                // console.log('Socket User Connected! ');
-                ajaxCall();
-            });
+            var url     = "/Kitchen/kitchen/ajaxRequest";//Json Callback Url
+            var div     = "divAuto";//Put div id inside html response
+            //Order Cancel Socket
+            var invoice_update      = "invoice_update";
+            socketOn(invoice_update,url,div);
 
-            socket.on('invoice_update',function(data){
-                // console.log('Invoice Update ');
-                ajaxCall();
-            });
-
-            //Order Start Cooking Socket
-            socket.on('cooked',function(data){
-                console.log('Cooked');
-                ajaxCall();
-            });
+            //Order start Cooking Socket
+            var cooked      = "cooked";
+            socketOn(cooked,url,div);
 
             //Order Cancel Socket
-            socket.on('order_remove',function(data){
-                console.log('Order Remove');
-                ajaxCall();
-            });
+            var order_remove      = "order_remove";
+            socketOn(order_remove,url,div);
 
             //Order Cooking Done
-            socket.on('cooking_done',function(data){
-                console.log('Cooking Done');
-                ajaxCall();
-            });
-            
-            function ajaxCall() {
-                $.ajax({
-                    type: 'GET',
-                    url: '/Kitchen/kitchen/ajaxRequest',
-                    success: function (Response) {
-                        console.log(Response);
-                        $('#divAuto').html('');
-                        $('#divAuto').append(Response);
-                    }
-                })
-            }
+            var cooking_done      = "cooking_done";
+            socketOn(cooking_done,url,div);
         });
     </script>
 @endsection

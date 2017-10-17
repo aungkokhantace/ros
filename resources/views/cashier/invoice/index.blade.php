@@ -45,7 +45,9 @@
         <div class="row">
             <div class="col-md-12 tbl-container" id="invoice_list">
                 @if (isset($orders))
+                <div id="invoice-wrapper">
                     @include('cashier.invoice.invoice')
+                </div>
                 @elseif (isset($ordersCancel))
                     @include('cashier.invoice.invoice_cancel')
                 @endif
@@ -116,8 +118,7 @@
 @endif
 
 <script>
-    $('.order-cancel').on('click',function(e){
-        e.preventDefault();
+    $(document).on('click', '.order-cancel', function(e) {
         var id      = this.id;
         var role    = '<?php echo $roleCheck; ?>';
         if (role == 'Admin') {
@@ -178,10 +179,10 @@
                     if (message == 'success') {
                         swal.close();
                         $(".tr-" + id).fadeOut('5000');
-                        var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                        socket.emit('order_update', { 
-                            order_update   : 'order_update'
-                        });
+                        //Socket Emit
+                        var socketKey        = "order_update";
+                        var socketValue      = {order_update : 'order_update'};
+                        socketEmit(socketKey,socketValue);
                     }
                 }
             });
@@ -194,6 +195,14 @@
         $('#invoice-form').on('change',function() {
             this.form.submit();
         });
+
+        var url     = "/Cashier/ajaxRequest";//Json Callback Url
+        var div     = "invoice-wrapper";//Put div id inside html response
+
+        //Invoice Cancel
+        var invoice_update      = "invoice_update";
+        socketOn(invoice_update,url,div);
+
     });
 </script>
 @endsection
