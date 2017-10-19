@@ -44,7 +44,7 @@ class OrderViewController extends Controller
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           WHERE order_details.status_id IN (1,2) ");
         
-        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id
+        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id

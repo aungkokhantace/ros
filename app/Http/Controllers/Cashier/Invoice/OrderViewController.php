@@ -131,6 +131,7 @@ class OrderViewController extends Controller
             $orderValue['count_cooking']    = $count_cooking;
             $orderValue['count_cooked']     = $count_cooked;
             $orderValue['count_taken']      = $count_taken;
+            $orderValue['status']           = $value->status;
 
             $order_arr[$groupKey]   = $orderValue;
             $count_start            = 0;
@@ -138,8 +139,7 @@ class OrderViewController extends Controller
             $count_cooked           = 0;
             $count_taken            = 0;
         }
-        return view('cashier/foodorderlist/order')->with('orders',$orders)->with('groupedOrders',$order_arr)
-           ->with('tables',$tables)->with('rooms',$rooms)->render();
+        return view('cashier.foodorderlist.real_time_kitchen_view')->with('groupedOrders',$order_arr)->with('tables',$tables)->with('rooms',$rooms);
     }
 
     public function detail($order_id,$order_status){
