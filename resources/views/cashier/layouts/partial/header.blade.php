@@ -75,7 +75,7 @@
                 {{--@if($headerData->logo != "")--}}
                 @if($headerData != "")
                     @if($headerData->logo != "")
-                        <img id="filename" class="bottom image header_logo" src="../../../uploads/{{$headerData->logo}}">
+                        <img id="filename" class="bottom image header_logo" src="/uploads/{{$headerData->logo}}">
                     @else
                         <img id="filename" class="bottom image header_logo" src="assets/images/acepluslogo.png" style="height: 60px; margin-top:30px;">
                     @endif

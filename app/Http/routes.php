@@ -232,7 +232,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::group(['middleware'=>'report:Cashier'],function(){
 
                 Route::get('invoice','Cashier\Invoice\InvoiceController@invoiceList');
-                 Route::get('ajaxRequest','Cashier\Invoice\InvoiceController@ajaxRequest');
+                Route::get('ajaxRequest','Cashier\Invoice\InvoiceController@ajaxRequest');
                 Route::get('invoice/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxInvoiceRequest');
                 Route::get('invoice/detail/{id}','Cashier\Invoice\InvoiceController@invoicedetail');
                 Route::get('invoice/detail/print/{id}','Cashier\Invoice\InvoiceController@invoicePrint');
@@ -240,6 +240,8 @@ Route::group(['middleware' => 'web'], function () {
                 Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
                 Route::get('invoice/cancel','Cashier\Invoice\InvoiceController@invoiceCancel');
                 Route::get('invoice/cancel/{id}','Cashier\Invoice\InvoiceController@orderCancel');
+                Route::get('invoice/sort/{sortby}/{increase}','Cashier\Invoice\InvoiceController@invoiceListSort');
+                Route::get('invoice/sort/{sortby}/{increase}/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxListSort');
                 Route::get('invoice/manager/confirm/{username}/{password}','Cashier\Invoice\InvoiceController@checkManager');
 
                 //Sale Summary Report & Excel Download

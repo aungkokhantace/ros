@@ -25,6 +25,15 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		return $orders;
 	}
 
+	public function getinvoicesort($sortBy,$sortTo)
+	{
+		
+		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `refund`,`created_at`,`payment_amount`,`status`
+		from `order` where `deleted_at` is null AND status = 1 OR status = 2 order by `$sortBy` $sortTo");
+		
+		return $orders;
+	}
+
 	public function getinvoiceCancel() {
 		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`payment_amount`,`status`
 		from `order` where `deleted_at` is null AND status = 3 order by `order_time` desc");
