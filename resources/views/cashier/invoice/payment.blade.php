@@ -376,6 +376,8 @@
         {
             var clickID     = clicked_id;
             var printID     = clickID + "-print-table";
+            console.log(printID);
+            console.log(document.getElementById(printID));
             printElement(document.getElementById(printID));
         }
 

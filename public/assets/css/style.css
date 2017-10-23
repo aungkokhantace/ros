@@ -1043,16 +1043,6 @@ thead label{color: #FFFFFF;}
     padding:0 !important;
 }
 
-
-.print-invoice {
-    width:100% !important;
-    font-size:15px;
-    line-height:30px !important;
-}
-.print-invoice tr td {
-    padding:7px 0px !important;
-    margin-bottom: 10px;
-}
 .btn-lg {
     width:100px;
 }
@@ -1064,6 +1054,8 @@ body {padding: 0 0 30pt 0;}
 .modal-backdrop {
   z-index: -1;
 }
+
+
 /*--================== End Theodore CSS ==================--*/
 
 /*-----------------------------------------------------------------------------------------------------------------

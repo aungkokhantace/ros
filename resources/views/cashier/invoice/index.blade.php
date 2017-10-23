@@ -33,7 +33,7 @@
                             <select id="invoice-form" class="form-control" onchange="sortingOrder()">
                             @if (isset($sortBy))
                                 <option value="">Invoice List</option>
-                                <option value="/cancel">Cancel Invoice List</option>
+                                <option value="/cancel" @if ($sortBy == 'cancel' AND $amount == '') {{'selected'}} @endif >Cancel Invoice List</option>
                                 <option value="/sort/time/increase" @if ($sortBy == 'time' AND $amount == 'increase') {{'selected'}} @endif >Sort By Lastest Order Time</option>
                                 <option value="/sort/time/decrease" @if ($sortBy == 'time' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Early Order Time</option>
                                 <option value="/sort/price/increase" @if ($sortBy == 'price' AND $amount == 'increase') {{'selected'}} @endif>Sort By Maximum Order Price</option>
@@ -182,6 +182,7 @@
     {
         var clickID     = clicked_id;
         var printID     = clickID + "-print-table";
+        var test        = document.getElementById(printID);
         printElement(document.getElementById(printID));
     }
 

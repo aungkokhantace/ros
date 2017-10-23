@@ -295,7 +295,7 @@ class InvoiceController extends Controller
         $cashier        = $this->InvoiceRepository->cashier($id);
         $cards          = $this->InvoiceRepository->getCard();
         $payments        = $this->InvoiceRepository->getPayment($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge')->first();
+        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->first();
 
         return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments'));
     }
@@ -305,7 +305,7 @@ class InvoiceController extends Controller
         // $request->validate();
         $input              = Input::all();
         $id                 = Input::get('id');
-        $config             = Config::select('tax','service','room_charge')->first();
+        $config             = Config::select('restaurant_name','email','logo','website','address','phone')->first();
         $orders             = $this->InvoiceRepository->getorder($id);
         $tax_foc            = $orders->tax_amount;
         $services           = $orders->service_amount;
@@ -350,7 +350,10 @@ class InvoiceController extends Controller
         $today          = Carbon::now();
     	$cur_date       = Carbon::parse($today)->format('Y-m-d');
         $ordersCancel 	= $this->InvoiceRepository->getinvoiceCancel();
-        return view('cashier.invoice.index',compact('ordersCancel'));
+        //Flag for Invoice Type
+        $sortBy         = "cancel";
+        $amount         = "";
+        return view('cashier.invoice.index',compact('ordersCancel','sortBy','amount'));
     }
     public function orderCancel($id) {
         $status                     = 3;

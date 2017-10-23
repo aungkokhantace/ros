@@ -6,7 +6,7 @@
             <th><label>Date</label></th>
             <th><label>View Detail</label></th>
             <th><label>Status</label></th>
-            <th><label>Cancel</label></th>
+            <th><label>Action</label></th>
         </tr>
     </thead>
     <tbody>
