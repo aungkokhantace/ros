@@ -69,10 +69,11 @@ class MakeAPIController extends ApiGuardController
                     $userRepo = new UserRepository();
                     $userRepo->changeDisableToEnable($id, $cur);
                     $role = User::find($id);
-                    
+                    $username   = $role->user_name;
+
                     $r = $role->roles->name;
                     if ($r == "Waiter") {
-                        $output = array("message" => "Success","waiter_id"=>$id);
+                        $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r);
                         return Response::json($output);
                     } else {
                         $output = array("message" => "Fail");

@@ -219,13 +219,13 @@
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
-            socketOn(invoice_update,url,div);
+            socketOnTable(invoice_update,url,div);
         } else {
             var url     = "/Cashier/invoice/sort/" + sortID + 'ajaxInvoiceRequest';//Json Callback Url
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
-            socketOn(invoice_update,url,div);
+            socketOnTable(invoice_update,url,div);
         }
 
     });

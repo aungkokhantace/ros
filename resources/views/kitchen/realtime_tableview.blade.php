@@ -4,7 +4,7 @@
         @foreach($orders as $orderKey=>$orderValue)
             @if(isset($orderValue->items) && count($orderValue->items) > 0)
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mgr-b20">
-                <h3 class="pricing-title">Order No. <span>{{ $orderValue->id }}</span></h3>
+                <h3 class="pricing-title @if (count($orderValue->items) > 1) {{ 'down-arrow' }} @endif">Order No. <span>{{ $orderValue->id }}</span></h3>
                 <div class="table-wrapper order-tb">
                     <div class="table-box table-responsive">
                         <table class="table">
@@ -36,7 +36,10 @@
                                  <td rowspan="2"><img src="/uploads/{{ $item->image }}" alt="food"></td> 
                             </tr>
                             <tr>
-                                <td class="food-type">{{ $item->name }}<br>
+                                <td class="food-type">{{ $item->name }}
+                                @if($item->has_continent == '1')
+                                    {{ "($item->continent_name)" }}
+                                @endif<br>
                                 @if($item->setmenu_id != '0')
                                     {{ "(SetMenu)" }}
                                 @endif
@@ -125,16 +128,16 @@
                             <tr class="tr-row">
                                 <td>
                                     <div class="product-name tr-row" data-ordertime="{{ $item->order_time }}">
-                                        Start Time : {{ date('h:m:s A', strtotime($item->order_time)) }}<br />
-                                        @if($item->status_id == '1')
+                                        OrderTime : {{ date('h:i:s A', strtotime($item->order_time)) }}<br />
+                                        <!-- @if($item->status_id == '1')
                                             <div>
                                                 CookingTime : <span class="duration"></span>
                                                 <input type="hidden" name="duration" class="txt_duration" />
                                             </div>
-                                        @endif
+                                        @endif -->
 
                                         @if($item->status_id =='2')
-                                            OrderTime : {{ date('h:m:s A', strtotime($item->order_duration)) }}
+                                            Start Time : {{ date('h:i:s A', strtotime($item->order_duration)) }}<br />
                                         @endif
 
                                         @if($item->status_id =='2')
@@ -146,6 +149,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            
                             <tr>
                                 <td>&nbsp;</td>
                             </tr>

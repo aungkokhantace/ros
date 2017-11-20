@@ -38,9 +38,9 @@
     };
     $(document).ready(function(){
         var t = $('#example1').DataTable( {
-            "ordering":false,
+            "ordering":true,
             "columnDefs": [ {
-                "searchable": false,
+                "searchable": true,
                 "orderable": false,
                 "targets": 0
             } ],
@@ -52,15 +52,9 @@
                 cell.innerHTML = i+1;
             } );
         } ).draw();
-
-        $('#invoice').DataTable( {
-            "ordering":false,
-            "columnDefs": [ {
-                "searchable": false,
-                "orderable": false,
-                "targets": 0
-            } ],
-            "order": [[ 1, 'asc' ]]
+        // $('#example1').DataTable();
+        $('#invoice').DataTable({
+            "order": [[ 0, 'desc' ], [ 1, 'asc' ]]
         } );
 
 

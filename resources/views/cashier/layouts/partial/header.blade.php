@@ -22,7 +22,7 @@
     <link href="/assets/css/multiple-select.css" rel="stylesheet">
     <link href="/assets/css/jktCuteDropdown.css" refl="stylesheet">
     
-    <link href="assets/js/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="/assets/js/datatables/dataTables.bootstrap.css" rel="stylesheet">
 
     <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css">
     <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/font-awesome/css/font-awesome.min.css">
@@ -37,12 +37,12 @@
     <script src="/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js"></script>
     <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="/assets/plugins/jquery-cookie/jquery.cookie.js"></script>
-    <script src="/assets/js/table-manage-tabletools.demo.min.js"></script>
+    <!-- <script src="/assets/js/table-manage-tabletools.demo.min.js"></script> -->
     <script src="/assets/plugins/gritter/js/jquery.gritter.js"></script>
     <script src="/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
     <script src="/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
     <script src="/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-    <script src="/assets/js/czMore/jquery.czMore-1.5.3.2.js"></script>
+    <script src="/assets/js/czMore/js/jquery.czMore-1.5.3.2.js"></script>
     <script>
         $(document).ready(function() {
             //check for notification
@@ -59,9 +59,6 @@
             }, 2000);
         });
     </script>
-
-    {!! Html::script('js/jquery-1.11.2.min.js') !!}
-    {!! Html::script('js/bootstrap.min.js') !!}
     <!-- {!! Html::script('node_modules/socket.io/node_modules/socket.io-client/socket.io.js') !!} -->
     {!! Html::script('node_modules/socket.io-client/dist/socket.io.js') !!}
     {!! Html::script('/assets/js/socket-io/socket_functions.js') !!}
@@ -83,10 +80,13 @@
                     <img id="filename" class="bottom image header_logo" src="assets/images/acepluslogo.png" style="height: 60px; margin-top:30px;">
                 @endif
             </div>
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <h1 class="header-title"><b>Restaurant</b> Ordering System</h1>
             </div>
-            <div class="col-md-2 logout">
+            <div class="col-md-4 logout">
+                @if (Auth::guard('Cashier')->user())
+                    {{Auth::guard('Cashier')->user()->user_name . " (" . Auth::guard('Cashier')->user()->roles->name . ")" }}
+                @endif
                 <a href="/Cashier/updateDataBeforeLogout" class="logout-font">
                     <span class="glyphicon glyphicon-user"></span> <span class="logout">Logout</span>
                 </a>

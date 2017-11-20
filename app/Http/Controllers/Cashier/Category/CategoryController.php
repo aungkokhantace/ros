@@ -41,20 +41,33 @@ class CategoryController extends Controller
      public function store(CreateCategoryRequest $request){
         $name                   = $request->get('name');
         $category               = $request->get('parent_category');
-        $kitchen                = $request->get('kitchen');
+        //if Parent Category
+        if ($category == 0) {
+            $kitchen                = $request->get('kitchen');
+        } else {
+            $kitchen_attr           = $this->CategoryRepository->getKitchenByCat($category);
+            $kitchen                = $kitchen_attr->kitchen_id; 
+        }
         $file                   = $request->file('fileupload');
         $imagedata              = file_get_contents($file);
         $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
         $file->move('uploads', $photo);
          // resizing image
          $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
-
+        if ($category == 0) {
+            $group_id           = uniqid();
+        } else {
+            $parent_category    = Category::find($category);
+            $group_id           = $parent_category->group_id;
+        }
+        
         $status                 = Input::get('status');
         $description            = Input::get('description');
         $paramObj               = new Category();
         $paramObj->name         = $name;
         $paramObj->parent_id    = $category;
         $paramObj->kitchen_id   = $kitchen;
+        $paramObj->group_id     = $group_id;
         $paramObj->image        = $photo;
         $paramObj->mobile_image = base64_encode($image->encoded);
         $paramObj->status       = $status;
@@ -105,11 +118,10 @@ class CategoryController extends Controller
         $editcategory        = $this->CategoryRepository->find($id);
         $title               = 'Edit Category';
         //start generating subtree of current category
-        $result              =  $this->CategoryRepository->find($id);
-        $result->subcategory = $this->disabledcategoriesTree($result);
+        $result              = $this->CategoryRepository->find($id);
+        // $result->subcategory = $this->disabledcategoriesTree($result);
         $selected            = $editcategory->parent_id;
         $kitchen=$this->CategoryRepository->getKitchen();
-
         return view('cashier.category.category', ['categories' => $cats])->with('editcategory',$editcategory)
             ->with('selected',$selected)->with('title',$title)->with('subtree',$result)->with('kitchen',$kitchen);
     }
@@ -123,6 +135,10 @@ class CategoryController extends Controller
         $description        = Input::get('description');
         $category           = Input::get('parent_category');
         $kitchen            = $request->get('kitchen');
+        
+        $parent_category    = Category::find($id);
+        $group_id           = $parent_category->group_id;
+
         $oldname            = $this->CategoryRepository->find(Input::get('id'));
         $lower_old_name     = strtolower($oldname->name); //to change old name from database to lower
         $all_category_name  = $this->CategoryRepository->getAllCategoryName();
@@ -166,6 +182,7 @@ class CategoryController extends Controller
                 $paramObj->name         = $name;
                 $paramObj->parent_id    = $category;
                 $paramObj->kitchen_id   = $kitchen;
+                $paramObj->group_id     = $group_id;
                 $paramObj->image        = $photo;
                 $paramObj->mobile_image = base64_encode($image->encoded);
                 $paramObj->status       = $status;
@@ -187,6 +204,7 @@ class CategoryController extends Controller
                 $paramObj->name         = $name;
                 $paramObj->parent_id    = $category;
                 $paramObj->kitchen_id   = $kitchen;
+                $paramObj->group_id     = $group_id;
                 $paramObj->status       = $status;
                 $paramObj->description  = $description;
                 $result = $this->CategoryRepository->updateCategory($paramObj);

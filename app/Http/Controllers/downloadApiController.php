@@ -102,7 +102,7 @@ class downloadAPIController extends ApiGuardController
 		}
 
 		if($key == $activate_key){
-			$order_raw			= DB::select("SELECT * FROM `order` WHERE id = $order_id AND deleted_at IS NULL");
+			$order_raw			= DB::select("SELECT os.*,u.user_name FROM `order` os,`users` u WHERE os.id = $order_id AND os.user_id = u.id AND os.deleted_at IS NULL");
 			$order_detail_raw 	= DB::select("SELECT * FROM `order_details` WHERE order_id = $order_id AND deleted_at IS NULL");
 			$order_setmenu_raw	= DB::select("SELECT * FROM `order_setmenu_detail` WHERE deleted_at IS NULL");
 			$order_extra_raw	= DB::select("SELECT extra_id,order_detail_id,quantity,amount FROM `order_extra` WHERE deleted_at IS NULL");

@@ -85,7 +85,16 @@ class UserController extends Controller
         $password   = trim(bcrypt(Input::get('login_password')));
         $roleId     = Input::get('userType');
         $kitchenId  = Input::get('kitchen');
-        $result = $this->userRepository->store($name,$staffId,$password,$roleId, $kitchenId,$id);
+
+        $paramObj               = new User();
+        $paramObj->user_name    = $name;
+        $paramObj->staff_id     = $staffId;
+        $paramObj->password     = $password;
+        $paramObj->role_id      = $roleId;
+        $paramObj->kitchen_id   = $kitchenId;
+        $paramObj->status       = 1;
+
+        $result = $this->userRepository->store($paramObj);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
             return redirect()->action('Cashier\Staff\UserController@index')

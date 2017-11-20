@@ -35,7 +35,7 @@ class ItemRepository implements ItemRepositoryInterface
                 $paramObj->stock_code = $stock_code;
                 $paramObj->save();
             } else {
-                $count       = count($input['continent']);
+                $count      = count($input['continent']);
                 $maxID      = DB::table('items')->max('id');
                 $uniqID     = uniqid();
                 $groupID    = $uniqID . $maxID;

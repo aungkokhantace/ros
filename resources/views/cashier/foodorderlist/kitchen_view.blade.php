@@ -30,6 +30,14 @@ $(document).ready(function(){
     var cooking_done      = "cooking_done";
     socketOn(cooking_done,url,div);
 
+    //Taken By Waiter
+    var take      = "take";
+    socketOn(take,url,div);
+
+    //Payment Done
+    var payment_done      = "payment_done";
+    socketOn(payment_done,url,div);
+
 });
 </script>
 

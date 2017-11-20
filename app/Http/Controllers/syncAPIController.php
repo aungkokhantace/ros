@@ -102,7 +102,7 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $addon = DB::select("SELECT id,food_name,category_id,image,price,status,mobile_image FROM add_on WHERE status = '1'");
+            $addon = DB::select("SELECT id,food_name,category_id,image,price,status,mobile_image FROM add_on WHERE status = '1' AND deleted_at IS NULL");
        
             $output = array("addon" => $addon);
             return Response::json($output);

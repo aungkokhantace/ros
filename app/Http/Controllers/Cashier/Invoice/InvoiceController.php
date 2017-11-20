@@ -13,6 +13,7 @@ use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\Item\Item;
 use App\RMS\Config\Config;
+use App\Status\StatusConstance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Input;
 use PDF;
@@ -302,6 +303,7 @@ class InvoiceController extends Controller
     //InvoiceRequest
     public function invoiceAddpaid(Request $request)
     {
+        $order_paid_status  = StatusConstance::ORDER_PAID_STATUS;
         // $request->validate();
         $input              = Input::all();
         $id                 = Input::get('id');
@@ -318,7 +320,7 @@ class InvoiceController extends Controller
         $paymentfoc         = $payment + $foc;
         $total_price_foc    = $all_total - $foc;
         $refund             = $paymentfoc - $all_total;
-        $status             = 2;
+        $status             = $order_paid_status;
 
         if ($foc > 0) {
             $all_total_with_foc     = $all_total - $foc;
@@ -356,7 +358,8 @@ class InvoiceController extends Controller
         return view('cashier.invoice.index',compact('ordersCancel','sortBy','amount'));
     }
     public function orderCancel($id) {
-        $status                     = 3;
+        $order_cancel_status        = StatusConstance::ORDER_CANCEL_STATUS;
+        $status                     = $order_cancel_status;
         $paramObj                   = Order::find($id);
         $paramObj->status           = $status;
         $result                     = $this->InvoiceRepository->updateOrder($paramObj);

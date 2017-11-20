@@ -15,7 +15,11 @@
                                     <thead class="header">
                                         <tr>
                                             <td class="tdname">
-                                                <h4>{{$p['item_name']}}</h4>
+                                                <h4>{{$p['item_name']}}
+                                                    @if ($p['has_continent'] == 1)
+                                                    ( {{ $p['continent']}} )
+                                                    @endif
+                                                </h4>
                                             </td>
                                             <td colspan="3" class="txt-l">
                                                 <img src="/uploads/{{$p['item_image']}}" alt="food">
@@ -70,15 +74,15 @@
                                                 @endforeach
                                             </td>
                                             <td class="td-row" data-ordertime = "{{ $item->order_time}}">
-                                                {{ date('h:m:s A', strtotime($item->order_time)) }}
+                                                {{ date('h:i:s A', strtotime($item->order_time)) }}
                                             </td>
                                             <td >
-                                                @if($item->status_id == '1')
+                                                <!-- @if($item->status_id == '1')
                                                     <span class="duration"></span>
                                                     <input type="hidden" name="duration" class="txt_duration"/>
-                                                @endif
+                                                @endif -->
                                                 @if($item->status_id =='2')
-                                                    {{ date('h:m:s A', strtotime($item->order_duration)) }}
+                                                    {{ date('h:i:s A', strtotime($item->order_duration)) }}
                                                 @endif
                                             </td>
                                             <td>
@@ -305,9 +309,12 @@
                     success: function (Response) {
                         var returnResp        = Response.message;
                         if (returnResp == 'success') {
-                            console.log(Response);
-                            var socket      = io.connect( 'http://'+window.location.hostname+':3333' );
-                            socket.emit('start_cooking', 'start_cooking');
+                            //Socket Emit
+                            var socketKey        = "start_cooking";
+                            var socketValue      = "start_cooking";
+                            socketEmit(socketKey,socketValue)
+                            // var socket      = io.connect( 'http://'+window.location.hostname+':3333' );
+                            // socket.emit('start_cooking', 'start_cooking');
                         }
                     }
                 });
@@ -322,8 +329,12 @@
                         success: function (Response) {
                             var returnResp        = Response.message;
                             if (returnResp == 'success') {
-                                var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                                socket.emit('cooking_complete','cooking_complete');
+                                //Socket Emit
+                                var socketKey        = "cooking_complete";
+                                var socketValue      = "cooking_complete";
+                                socketEmit(socketKey,socketValue)
+                                // var socket = io.connect( 'http://'+window.location.hostname+':3333' );
+                                // socket.emit('cooking_complete','cooking_complete');
                             }
                         }
                     });
@@ -391,36 +402,25 @@
     </script>
 
     <script>
-    $(document).ready(function(){
-        var socket  = io.connect( 'http://'+window.location.hostname+':3333' );
-        socket.on('cooked',function(data){
-            console.log('Cooked');
-            ajaxCall();
-        });
+        $(document).ready(function(){
+            var url     = "/Kitchen/kitchen/ajaxRequestProduct";//Json Callback Url
+            var div     = "autoDiv";//Put div id inside html response
+            //Order Cancel Socket
+            var invoice_update      = "invoice_update";
+            socketOn(invoice_update,url,div);
 
-        //Order Cooking Done
-        socket.on('cooking_done',function(data){
-            console.log('Cooking Done');
-            ajaxCall();
-        });
-        //Order Cancel
-        socket.on('order_remove',function(data){
-            console.log('Order Remove');
-            ajaxCall();
-        });
+            //Order start Cooking Socket
+            var cooked      = "cooked";
+            socketOn(cooked,url,div);
 
-        function ajaxCall() {
-            $.ajax({
-                type:'GET',
-                url:'/Kitchen/kitchen/ajaxRequestProduct',
-                success: function(Response) {
-                    console.log(Response);
-                    $('#autoDiv').html('');
-                    $('#autoDiv').append(Response);
-                }
-            });
-        }
-    });
+            //Order Cancel Socket
+            var order_remove      = "order_remove";
+            socketOn(order_remove,url,div);
+
+            //Order Cooking Done
+            var cooking_done      = "cooking_done";
+            socketOn(cooking_done,url,div);
+        });
     </script>
 @endsection
 

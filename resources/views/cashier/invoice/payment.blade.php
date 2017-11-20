@@ -20,7 +20,7 @@
     {{--tables--}}
     <div class="container">
         <div class="row">
-            {!! Form::open(array('url' => '/Cashier/invoice/add_paid', 'method' => 'post','id' => '#myForm' , 'files' => false)) !!}
+            {!! Form::open(array('url' => '/Cashier/invoice/add_paid', 'method' => 'post','id' => 'myForm' , 'files' => false)) !!}
             {{ Form::hidden('id', $order->order_id) }}
             {{ Form::hidden('all_total', $order->all_total_amount) }}
             <div class="col-md-8">
@@ -234,7 +234,7 @@
                 @if ($order->payment_amount <= 0)
                 <div class="row">
                     <div class="col-md-10">
-                        <button type="submit" class="btn btn-default btn-md paid_btn pull-right" id="btn-payment">
+                        <button type="submit" class="btn btn-default btn-md paid_btn pull-right" id="btn-payment" disabled>
                             <span><i class="fa fa-usd" aria-hidden="true"></i>&nbsp;&nbsp;Paid</span>
                         </button>
                     </div>
@@ -247,8 +247,14 @@
         @include('cashier.invoice.payment_print')
         @if (session('status'))
             <script>
+                //If Redirect Back from controller socket send and print box show
+                var socketKey        = "order_payment_done";
+                var socketValue      = {order_payment_done : 'order_payment_done'};
+                socketEmit(socketKey,socketValue);
+
                 var modal   = $('.modal').attr('id');
                 $('#' + modal).modal('show');
+
             </script>
         @endif
         <script type="text/javascript">
@@ -261,9 +267,19 @@
             var isValid     = true;
             $(".amount").each(function() {
                 
-                var element = $(this);
-                if (element.val() == "") {
+                var element         = $(this);
+                var inputvalue      = element.val();
+                if (inputvalue == "") {
                     isValid = false;
+                    alert('Enter Payment Value');
+                }
+                if (inputvalue.match(/[a-zA-Z]/i)) {
+                    isValid = false;
+                    alert('Payment Must be Integer');
+                }
+                if (inputvalue.match(/[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g)) {
+                    isValid = false;
+                    alert('Payment Must be Integer');
                 }
             });
             return isValid;
@@ -296,10 +312,11 @@
             //Total Sum From input
             var total   = getItems();
 
-            //If Pay amount is Greater than Payment Disable Add button
+            //If Pay amount is Greater than Payment Disable Add button And Enable Paid Button
             if (total >= payment) {
             checkAdd     = false;
             $('.add-amount').attr('disabled','disabled'); 
+            $('#btn-payment').prop('disabled', false);
             var refund   = total - payment;
             $('#refund').text(refund);
             } else {
@@ -389,7 +406,6 @@
         </script>
 
         <script>
-            var socket = socketConnect();
             $('#btn-payment').on('click',function(e){
                 e.preventDefault();
                 var form = $(this).parents('form');
@@ -403,13 +419,43 @@
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {
-                        socket.emit('order_payment', { 
-                            order_payment   : 'order_payment'
-                        });
-                        form.submit();
+
+                            var socketKey2        = "order_payment";
+                            var socketValue2      = {order_payment : 'order_payment'};
+                            socketEmit(socketKey2,socketValue2);
+
+                            var invoiceID        = document.getElementsByName("id")[0].value;
+                            var socketKey       = "invoice_id";
+                            var socketValue     = {invoice_id : invoiceID};
+                            socketEmit(socketKey,socketValue);
+
+                            //When Socket Emit Success Form Submit
+                            var port    = getSocketPort();
+                            var socket  = io.connect( 'http://'+window.location.hostname  +':' + port);
+                            socket.on('invoice_payment', function(data) {
+                                form.submit();
+                            });
                     }
                 });
+                return false;
             });
+
+            function submitForm() {
+                document.forms["myForm"].submit();
+            }
+
+            function socketSendByOrder() {
+                var invoiceID        = document.getElementsByName("id")[0].value;
+                var socketKey       = "invoice_id";
+                var socketValue     = {invoice_id : invoiceID};
+                socketEmit(socketKey,socketValue);
+            }
+            function socketSend() {
+                //Socket Emit
+                var socketKey        = "order_payment";
+                var socketValue      = {order_payment : 'order_payment'};
+                socketEmit(socketKey,socketValue);
+            }
         </script>
     </div>
 @endsection

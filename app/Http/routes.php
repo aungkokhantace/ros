@@ -262,6 +262,7 @@ Route::group(['middleware' => 'web'], function () {
 
                 Route::get('yearlySaleSummaryExport','Cashier\Report\SaleSummaryReportController@yearlySaleSummaryExport');    
                 Route::post('searchYearlySummary','Cashier\Report\SaleSummaryReportController@searchYearlySummary');
+                Route::get('searchYearlySummaryExport/{from_year}','Cashier\Report\SaleSummaryReportController@searchYearSummaryExport');
                 Route::get('yearlySale/{year}','Cashier\Report\SaleSummaryReportController@yearlySale');
                 Route::get('yearlySaleExport/{year}','Cashier\Report\SaleSummaryReportController@yearlySaleExport');
 

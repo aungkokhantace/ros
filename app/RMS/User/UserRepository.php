@@ -19,14 +19,14 @@ use App\RMS\Utility;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function store($name,$staffId,$password,$roleId,$kitchenId,$id)
+    public function store($paramObj)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
-            DB::table('users')->insert(['user_name'=>$name,'staff_id'=>$staffId,'password'=>$password,'role_id'=>$roleId,
-                'kitchen_id'=>$kitchenId,'created_by'=>$id]);
+            $tempObj        = Utility::addCreatedBy($paramObj);
+            $tempObj->save();
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }

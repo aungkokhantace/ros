@@ -4996,7 +4996,11 @@ a {
 .pricing-title span {
   font-weight: bold;
 }
-
+.down-arrow {
+  background-image: url('/assets/images/down-arrow.png');
+  background-repeat: no-repeat;
+  background-position: center right;
+}
 .pricing-table.recommended .pricing-title {
 	background: #2db3cb;
 }
@@ -5075,6 +5079,43 @@ a {
    padding:5px 10px 5px 0;
 }
 
+/** Invoice Detail CSS */
+.invoice-wrapper {
+  font-family:'Courier New',Times New Roman;
+  font-weight: bold;
+  width:350px;
+  margin:0 auto;
+}
+.invoice-title {
+  background:#5CB85C;
+  height:50px;
+  color:#ffffff;
+  line-height:50px;
+}
+.invoice-table-wrapper {
+  border:1px solid #E8E8E8;
+  border-top:0px;
+  padding:0px 10px;
+}
+.print-invoice {
+  border-collapse: collapse;
+  margin:0 auto;
+}
+.td-config {
+  text-align:center;
+  font-size:13px;
+  line-height:25px;
+}
+.tr-bottom-dashed {
+  border-bottom:1px dashed black;
+}
+.i-title {
+  font-size:13px;
+  line-height:25px;
+}
+.i-title td {
+  height:25px;
+}
 /** ================
  * Responsive
  ===================*/

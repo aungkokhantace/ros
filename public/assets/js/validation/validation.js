@@ -32,6 +32,10 @@ $(document).ready(function() {
                 equalTo     : "Password and Confirm Password must match."
             },
             userType    : "Staff Type is required."
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     //For Staff Entry Form
@@ -55,6 +59,10 @@ $(document).ready(function() {
                 required    : "Confirm Password is required.",
                 equalTo     : "Password and Confirm Password must match."
             }
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     //For Staff Edit Form
@@ -68,6 +76,10 @@ $(document).ready(function() {
             name        : "Staff Name is required.",
             staff_id    : "Staff ID is required.",
             userType    : "Staff Type is required."
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     //For Staff Type Entry and edit Form
@@ -89,6 +101,10 @@ $(document).ready(function() {
                 error.insertAfter( element ); // standard behaviour
             }
         },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
     });
     //For Category
     $('#categoryForm').validate({
@@ -103,6 +119,10 @@ $(document).ready(function() {
             kitchen     : "Kitchen is required.",
             image       : "Category Image is required.",
             description : "Description is required."
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     $('#category_browse').on('change',function(){
@@ -132,6 +152,10 @@ $(document).ready(function() {
             },
             filename       : "Item Image is required.",
             description    : "Item Description is required."
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     $('#item_browse').on('change',function(){
@@ -161,6 +185,10 @@ $(document).ready(function() {
                 required : "Add-on Price is requried.",
                 number : "Add-on Price must be numeric."
             }
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     $('#extra_browse').on('change',function(){
@@ -197,6 +225,10 @@ $(document).ready(function() {
                 required : "Discount Amount is required.",
                 number   :"Discount Amount must be numeric."
             }
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     //For Set Menu
@@ -228,7 +260,10 @@ $(document).ready(function() {
                 error.insertAfter( element ); // standard behaviour
             }
         },
-
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
     });
 
     $('#set_browse').on('change',function(){
@@ -265,7 +300,10 @@ $(document).ready(function() {
             birthday        : "Birthday is required",
             member_card_no  : 'Member Card No. is required'
         },
-
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
     });
 
     //For Table
@@ -287,6 +325,10 @@ $(document).ready(function() {
                 error.insertAfter( element ); // standard behaviour
             }
         },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
     });
     //For Room
     $('#roomForm').validate({
@@ -297,6 +339,10 @@ $(document).ready(function() {
         messages: {
             room_name   : "Room Name is required.",
             capacity    : "Capacity is required."
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     //For General Setting
@@ -310,6 +356,10 @@ $(document).ready(function() {
             tax         : "Tax must be numeric",
             service     : "Service must be numeric",
             room_charge : "Room charge must be numeric"
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
         }
     });
     //For Profile
@@ -354,7 +404,10 @@ $(document).ready(function() {
                 error.insertAfter( element ); // standard behaviour
             }
         },
-
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
     });
     $('#sell_item').change(function() {
         var dd = $('#sell_item').val();
@@ -404,7 +457,10 @@ $(document).ready(function() {
                 number: "Phone Number must be numeric."
             },
         },
-        
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
         
     });
 
@@ -469,6 +525,11 @@ $(document).ready(function() {
                 number: "Phone Number should be number only"
             },
         },
+
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
     });
 
     //For Permission(Module)
@@ -479,6 +540,12 @@ $(document).ready(function() {
         messages: {
             module_name     : "Module is required",
         },
+
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+        
     });
 });
 

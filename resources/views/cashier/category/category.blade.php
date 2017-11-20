@@ -26,7 +26,7 @@
         <div class="form-group">
             <label for="product" class="col-sm-3 form-label left-align label-font">Parent Category</label>
             <div class="col-sm-7">
-                <select name="parent_category" id="" class="form-control">
+                <select name="parent_category" id="parent_category" class="form-control" onchange="getCatID()">
                     @if(isset($editcategory))
                        <option value="0">None</option>
                         {!! generateCategoryListsForEdit($categories,$editcategory->id,$selected,$subtree, $parentId=0, $indent=0) !!}
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="kitchen">
             <label for="product" class="col-sm-3 form-label left-align label-font">Kitchen<span class="require">*</span></label>
             <div class="col-sm-7">
                 <select name="kitchen" id="kitchen" class="form-control">
@@ -113,4 +113,17 @@
         </div>
         {!! Form::close() !!}
     </div>
+
+    <script>
+        function getCatID() {
+            var category    = document.getElementById("parent_category").value;
+            $(document).ready(function(){
+                if (category == 0) {
+                    $('#kitchen').show();
+                } else {
+                    $('#kitchen').hide();  
+                }
+            });
+        }
+    </script>
 @endsection

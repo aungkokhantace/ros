@@ -31,7 +31,7 @@ class LocationController extends Controller
     }
 
     public function create(){
-        return view('cashier.location.location');
+        return view('cashier.Location.location');
     }
 
     public function store(LocationEntryRequest $request){

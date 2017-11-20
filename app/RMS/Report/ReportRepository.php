@@ -6,6 +6,7 @@ use App\RMS\MemberType\MemberType;
 use Illuminate\Support\Facades\DB;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\Order\Order;
+use App\Status\StatusConstance;
 class ReportRepository implements ReportRepositoryInterface
 {
     public function getStartDate(){
@@ -23,6 +24,7 @@ class ReportRepository implements ReportRepositoryInterface
     //Item Report
     public function getItemReport($start_date, $end_date)
     {
+        $order_paid_status             = StatusConstance::ORDER_PAID_STATUS;
         $orders = DB::table('order_details')
             ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -31,7 +33,7 @@ class ReportRepository implements ReportRepositoryInterface
                 DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'))
             ->whereBetween('order.order_time', [$start_date->min,$end_date->max])
             ->where('order_details.item_id','!=','null')
-            ->where('order.status','=','1')
+            ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
             ->whereNotNull('order_details.item_id')
             ->groupBy('order_details.item_id')
@@ -42,6 +44,7 @@ class ReportRepository implements ReportRepositoryInterface
     }
 
     public function getExcel($start, $end){
+        $order_paid_status             = StatusConstance::ORDER_PAID_STATUS;
         $orders = Orderdetail::
             leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -50,7 +53,7 @@ class ReportRepository implements ReportRepositoryInterface
                  'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
             ->whereBetween('order.order_time', [$start->min, $end->max])
             ->where('order_details.item_id','!=','null')
-            ->where('order.status','=','1')
+            ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
             ->whereNotNull('order_details.item_id')
             ->groupBy('order_details.item_id')
@@ -63,6 +66,7 @@ class ReportRepository implements ReportRepositoryInterface
     public function getItemReportWithDate($start_date,$end_date,$number,$from_amount,$to_amount){
         $start_date     = $start_date.' 00:00:00';
         $end_date       = $end_date.' 23:00:00';
+        $order_paid_status           = StatusConstance::ORDER_PAID_STATUS;
         if($number == "" && $from_amount == "" && $to_amount == ""){
             $orders = DB::table('order_details')
                 ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
@@ -71,7 +75,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
                 DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'),DB::raw('SUM(order_details.amount_with_discount) as net_price') )
                 ->whereBetween('order.order_time', [$start_date, $end_date])
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->where('order_details.item_id','!=','null')
                 ->whereNotNull('order_details.item_id')
@@ -80,6 +84,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->get();
         }
         elseif($number == "" && $from_amount != "" && $to_amount != ""){
+            $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $orders = DB::table('order_details')
                 ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -87,7 +92,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
                     DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->where('order_details.item_id','!=','null')
                 ->whereNotNull('order_details.item_id')
@@ -98,6 +103,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->get();
         }
         elseif($number != "" && $from_amount == "" && $to_amount == ""){
+            $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $orders = DB::table('order_details')
                 ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -105,7 +111,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
                     DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->where('order_details.item_id','!=','null')
                 ->whereNotNull('order_details.item_id')
@@ -115,6 +121,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->get();
         }
         else{
+            $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $orders = DB::table('order_details')
                 ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -122,7 +129,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
                 DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->where('order_details.item_id','!=','null')
                 ->whereNotNull('order_details.item_id')
@@ -139,6 +146,7 @@ class ReportRepository implements ReportRepositoryInterface
     //END
 
     public function getExcelWithDateAndNumber($start_date, $end_date,$number){
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
         $orders = Orderdetail::
         leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -150,7 +158,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
             ->whereBetween('order.order_time', [$start_date, $end_date])
             ->where('order_details.item_id','!=','null')
-            ->where('order.status','=','1')
+            ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
             ->whereNotNull('order_details.item_id')
             ->groupBy('order_details.item_id')
@@ -161,6 +169,7 @@ class ReportRepository implements ReportRepositoryInterface
     }
 
     public function getExcelWithDateAndAmount($start_date,$end_date,$from_amount,$to_amount){
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
         $orders = Orderdetail::
         leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -172,7 +181,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
             ->whereBetween('order.order_time', [$start_date, $end_date])
             ->where('order_details.item_id','!=','null')
-            ->where('order.status','=','1')
+            ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
             ->whereNotNull('order_details.item_id')
             ->groupBy('order_details.item_id')
@@ -185,6 +194,7 @@ class ReportRepository implements ReportRepositoryInterface
     }
 
     public function getExcelWithDate($start_date, $end_date,$number,$from_amount,$to_amount){
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $orders = Orderdetail::
             leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -196,7 +206,7 @@ class ReportRepository implements ReportRepositoryInterface
                  'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.item_id','!=','null')
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
@@ -210,7 +220,7 @@ class ReportRepository implements ReportRepositoryInterface
     }
 
     public function getExcelWithDateWithNull($start_date, $end_date){
-        
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
         $orders = Orderdetail::
             leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -222,7 +232,7 @@ class ReportRepository implements ReportRepositoryInterface
                  'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.item_id','!=','null')
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
@@ -235,13 +245,14 @@ class ReportRepository implements ReportRepositoryInterface
     //Set Menu
     public function getset($start,$end)
     {
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
         $sub_orders = Orderdetail::
             leftjoin('set_menu', 'set_menu.id', '=', 'order_details.setmenu_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
             ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount_with_discount) As Amount'),
                 DB::raw('(SUM(order_details.quantity))*(order_details.amount_with_discount) as TotalAmount'))
             ->where('order_details.setmenu_id','!=','null')
-            ->where('order.status','=','1')
+            ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
             ->whereNotNUll('order_details.setmenu_id')
             ->groupBy('order_details.setmenu_id')
@@ -253,6 +264,7 @@ class ReportRepository implements ReportRepositoryInterface
 
     public function fav_set_date_report($start_date,$end_date,$number)
     {
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
         $start_date = $start_date.' 00:00:00';
         $end_date   = $end_date.' 23:00:00';
         if($number == ""){
@@ -264,7 +276,7 @@ class ReportRepository implements ReportRepositoryInterface
                       DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.setmenu_id','!=','null')
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->whereNotNull('order_details.setmenu_id')
                 ->groupBy('order_details.setmenu_id')
@@ -272,6 +284,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->get();
         }
         else{
+            $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $sub_orders = Orderdetail::
                 leftjoin('set_menu', 'set_menu.id', '=', 'order_details.setmenu_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -280,7 +293,7 @@ class ReportRepository implements ReportRepositoryInterface
                       DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.setmenu_id','!=','null')
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->whereNotNull('order_details.setmenu_id')
                 ->groupBy('order_details.setmenu_id')
@@ -297,6 +310,7 @@ class ReportRepository implements ReportRepositoryInterface
     {
         $start_date = $start_date.' 00:00:00';
         $end_date   = $end_date.' 23:00:00';
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
 
             $sub_orders = Orderdetail::
             leftjoin('set_menu', 'set_menu.id', '=', 'order_details.setmenu_id')
@@ -306,7 +320,7 @@ class ReportRepository implements ReportRepositoryInterface
                       DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.item_id','!=','null')
-                ->where('order.status','=','1')
+                ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->whereNotNull('order_details.setmenu_id')
                 ->groupBy('order_details.setmenu_id')

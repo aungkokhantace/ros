@@ -51,9 +51,17 @@ io.on('connection', function (socket) {
   });
   //Socket Fire From Order Paid
   socket.on('order_payment', function( data ) {
-    console.log('Success Invoice Order Paid');
+    console.log('Success Invoice Order Paids');
 
     io.sockets.emit( 'invoice_update','invoice_update');
+  });
+
+  //Socket Invoice Paid
+  socket.on('invoice_id', function( data ) {
+    console.log('Success Invoice Paid By IDssss');
+    console.log(data);
+    var invoiceID     = data.invoice_id;
+    io.sockets.emit( 'invoice_payment',{'invoice_id' : invoiceID});
   });
 
   //Socket Fire From Order Create
@@ -80,4 +88,17 @@ io.on('connection', function (socket) {
     io.sockets.emit( 'cooking_done','cooking_done');
   });
 
+  //Socket Fire From Order Create
+  socket.on('taken_by', function( data ) {
+    console.log('Taken By Waiter');
+
+    io.sockets.emit( 'take','take');
+  });
+
+  //Socket Fire From Order Payment Button Click
+  socket.on('order_payment_done', function( data ) {
+    console.log('Order Payment Button Done');
+
+    io.sockets.emit( 'payment_done','payment_done');
+  });
 });

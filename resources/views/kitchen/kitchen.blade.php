@@ -11,7 +11,7 @@
                     @foreach($orders as $orderKey=>$orderValue)
                         @if(isset($orderValue->items) && count($orderValue->items) > 0)
                         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mgr-b20">
-                            <h3 class="pricing-title">Order No. <span>{{ $orderValue->id }}</span></h3>
+                            <h3 class="pricing-title @if (count($orderValue->items) > 1) {{ 'down-arrow' }} @endif ">Order No. <span>{{ $orderValue->id }}</span></h3>
                             <div class="table-wrapper order-tb">
                                 <div class="table-box table-responsive">
                                     <table class="table">
@@ -43,7 +43,11 @@
                                             <td rowspan="2"><img src="/uploads/{{ $item->image }}" alt="food"></td> 
                                         </tr>
                                         <tr>
-                                            <td class="food-type">{{ $item->name }}<br>
+                                            <td class="food-type">{{ $item->name }} 
+                                            @if($item->has_continent == '1')
+                                                {{ "($item->continent_name)" }}
+                                            @endif
+                                            <br>
                                             @if($item->setmenu_id != '0')
                                                 {{ "(SetMenu)" }}
                                             @endif
@@ -132,16 +136,16 @@
                                         <tr class="tr-row">
                                             <td>
                                                 <div class="product-name tr-row" data-ordertime="{{ $item->order_time }}">
-                                                    Start Time : {{ date('h:m:s A', strtotime($item->order_time)) }}<br />
-                                                    @if($item->status_id == '1')
+                                                    OrderTime : {{ date('h:i:s A', strtotime($item->order_time)) }}<br />
+                                                    <!-- @if($item->status_id == '1')
                                                         <div>
                                                             CookingTime : <span class="duration"></span>
                                                             <input type="hidden" name="duration" class="txt_duration" />
                                                         </div>
-                                                    @endif
+                                                    @endif -->
 
                                                     @if($item->status_id =='2')
-                                                        OrderTime : {{ date('h:m:s A', strtotime($item->order_duration)) }}
+                                                        Start Time : {{ date('h:i:s A', strtotime($item->order_duration)) }}<br />
                                                     @endif
 
                                                     @if($item->status_id =='2')
@@ -212,15 +216,28 @@
             $('#divAuto').on('click', '.start', function(e){
                 var itemID      = $(this).attr('id');
                 $(document).ready(function  (){
-                    $.ajax({
-                        type: 'GET',
-                        url: '/Kitchen/getStart/ajaxRequest/' + itemID,
-                        success: function (Response) {
-                            //Socket Emit
-                            var socketKey        = "start_cooking";
-                            var socketValue      = "start_cooking";
-                            socketEmit(socketKey,socketValue);
-                        }
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this payment!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+                        if (isConfirm) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/getStart/ajaxRequest/' + itemID,
+                                success: function (Response) {
+                                    //Socket Emit
+                                    var socketKey        = "start_cooking";
+                                    var socketValue      = "start_cooking";
+                                    socketEmit(socketKey,socketValue);
+                                    swal.close();
+                                }
+                            });
+                        };
                     });
                 });
             });
@@ -230,18 +247,31 @@
             $('#divAuto').on('click', '.complete',function (e) {
                 var itemID      = $(this).attr('id');
                 $(document).ready(function(){
-                    $.ajax({
-                        type: 'GET',
-                        url: '/Kitchen/getCompleteID/' + itemID,
-                        success: function (Response) {
-                            var returnResp        = Response.message;
-                            if (returnResp == 'success') {
-                                //Socket Emit
-                                var socketKey        = "cooking_complete";
-                                var socketValue      = "cooking_complete";
-                                socketEmit(socketKey,socketValue);
-                            }
-                        }
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this payment!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+                        if (isConfirm) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/getCompleteID/' + itemID,
+                                success: function (Response) {
+                                    var returnResp        = Response.message;
+                                    if (returnResp == 'success') {
+                                        //Socket Emit
+                                        var socketKey        = "cooking_complete";
+                                        var socketValue      = "cooking_complete";
+                                        socketEmit(socketKey,socketValue);
+                                        swal.close();
+                                    }
+                                }
+                            });
+                        };
                     });
                 });
 
@@ -302,6 +332,10 @@
             //Order Cooking Done
             var cooking_done      = "cooking_done";
             socketOn(cooking_done,url,div);
+
+            //Invoice Payment Socket
+            var payment_done      = "payment_done";
+            socketOn(payment_done,url,div);
         });
     </script>
 @endsection

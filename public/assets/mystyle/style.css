@@ -251,10 +251,25 @@ nav.nav-color .container{
     border-color: green !important;
 
 }
-th.sorting_disabled {
+th.sorting_disabled, th.sorting_desc, th.sorting_asc, th.sorting {
     background-color: #f3a42e !important;
-    color:#000;
+    color:#FFFFF1;
     font-weight:900;
+}
+
+th.sorting {
+    background-image: url("/assets/images/sort_both.png");
+}
+
+th.sorting_desc {
+    background-image: url("/assets/images/sort_desc.png");
+}
+
+th.sorting_asc {
+    background-image: url("/assets/images/sort_asc.png");
+}
+.dataTable > thead > tr > th[class*="sort"]:after{
+    content: "" !important;
 }
 /*--============================================--*/
 
