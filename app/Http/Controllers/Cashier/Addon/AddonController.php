@@ -97,12 +97,6 @@ class AddonController extends Controller
         $category_id = Input::get('category_id');
         $description = Input::get('description');
         $price       = Input::get('price');
-         //Check if Add on is already exit in category and unique
-        $add_on_count            = Addon::where('food_name','=',$food_name)->where('category_id','=',$category_id)->get()->count();
-        if ($add_on_count > 0) {
-            alert()->warning('Item already Exit in Category.')->persistent('Close');
-            return redirect()->back()->withInput();
-        }
         
         $status      = Input::get('status');
         $id          = Input::get('id');
