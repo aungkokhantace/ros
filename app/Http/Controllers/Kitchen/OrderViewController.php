@@ -360,8 +360,8 @@ class OrderViewController extends Controller
             FROM order_setmenu_detail AS os
             INNER JOIN order_details AS od1 ON os.order_detail_id = od1.id
             INNER JOIN `order` AS o ON od1.order_id = o.id
-            LEFT JOIN order_tables AS ot ON ot.order_id = o.id
-            LEFT JOIN tables AS t ON ot.table_id = t.id
+            -- LEFT JOIN order_tables AS ot ON ot.order_id = o.id
+            -- LEFT JOIN tables AS t ON ot.table_id = t.id
             INNER JOIN items AS i ON i.id = os.item_id
             INNER JOIN category AS c ON i.category_id = c.id
             WHERE o.status IN ($order_status,$order_paid_status) AND
@@ -431,8 +431,8 @@ class OrderViewController extends Controller
             FROM order_setmenu_detail AS os
             INNER JOIN order_details AS od1 ON os.order_detail_id = od1.id
             INNER JOIN `order` AS o ON od1.order_id = o.id
-            LEFT JOIN order_tables AS ot ON ot.order_id = o.id
-            LEFT JOIN tables AS t ON ot.table_id = t.id
+            -- LEFT JOIN order_tables AS ot ON ot.order_id = o.id
+            -- LEFT JOIN tables AS t ON ot.table_id = t.id
             INNER JOIN items AS i ON i.id = os.item_id
             INNER JOIN category AS c ON i.category_id = c.id
             WHERE o.status IN ($order_status,$order_paid_status) AND 

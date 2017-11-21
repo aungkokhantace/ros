@@ -75,7 +75,7 @@
                                 @foreach($promotion_item as $item)
                                     @if($item->promotion_id == $pro->id)
                                         {{ $item->items->name }}
-                                    <@end></@end>if
+                                    @endif
                                 @endforeach
                             </td>
                             <td> {{ $pro->sell_item_qty }}</td>

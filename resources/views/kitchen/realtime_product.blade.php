@@ -101,7 +101,7 @@
                                             <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
                                         </div>
                                         <div class="modal-body">
-                                            {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal', 'id' => $item->order_detail_id . "-" . $item->setmenu_id . "form")) !!}
+                                            {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $item->order_detail_id . "-" . $item->setmenu_id . "form")) !!}
 
                                             @if(isset($item->setmenu_id) && $item->setmenu_id != 0)
                                                 <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">

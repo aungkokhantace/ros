@@ -472,7 +472,7 @@ class syncAPIController extends ApiGuardController
             {
                 if ($sync->table_name == "category") {
                     if ($syncs[$key]->version > $temp['category']) {
-                        $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image FROM category WHERE status='1'");
+                        $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image,image FROM category WHERE status='1'");
 
                         $returnArr['category'] = $category;
                     }
@@ -480,7 +480,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
-                        $item = DB::select("SELECT id,name,price,status,category_id,mobile_image FROM items WHERE status='1'");
+                        $item = DB::select("SELECT id,name,price,status,category_id,mobile_image,image FROM items WHERE status='1'");
                        
                         $returnArr['items'] = $item;
                     }
@@ -488,7 +488,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "add_on") {
                     if ($sync->version > $temp['add_on']) {
-                        $addon = DB::select("SELECT id,food_name,category_id,price,status,mobile_image FROM add_on WHERE status='1'");
+                        $addon = DB::select("SELECT id,food_name,category_id,price,status,mobile_image,image FROM add_on WHERE status='1'");
                         
                         $returnArr['addon'] = $addon;
                     }
@@ -504,7 +504,7 @@ class syncAPIController extends ApiGuardController
            
                     if ($sync->table_name == "set_menu") {
                     if ($sync->version > $temp['set_menu']) {
-                        $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image FROM set_menu  WHERE status='1'");
+                        $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image,image FROM set_menu  WHERE status='1'");
                         $returnArr['set_menu'] = $set_menu;
                     }
                 }
