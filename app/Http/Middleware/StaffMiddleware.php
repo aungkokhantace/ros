@@ -16,6 +16,7 @@ class StaffMiddleware
 
         $role_id = Auth::guard($guard)->user()->role_id;
         $role    = Permission::select('module_id')->where('role_id','=',$role_id)->get();
+        $array   = array();
         foreach($role as $r){
             $array[] = $r->module_id;
         }
