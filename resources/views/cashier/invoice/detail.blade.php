@@ -95,12 +95,12 @@
                             </tr>
 
                             <tr class="i-title">
-                                <td colspan="3">Service Amount</td>
+                                <td colspan="3">Service Tax ({{ $config->service}} %)</td>
                                 <td class="text-right">{{ $orders->service_amount }}</td>
                             </tr>
 
                             <tr class="i-title">
-                                <td colspan="3">Tax Amount</td>
+                                <td colspan="3">GST ({{$config->tax}} %)</td>
                                 <td class="text-right">{{ $orders->tax_amount }}</td>
                             </tr>
                             

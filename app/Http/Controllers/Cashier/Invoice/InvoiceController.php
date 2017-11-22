@@ -76,7 +76,7 @@ class InvoiceController extends Controller
         }
         // dd($orders);
         $roleArr['role'][]    = $role_id;
-        $config         = Config::select('restaurant_name','email','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         return view('cashier.invoice.index',compact('orders','config'));
 
     } 
@@ -134,7 +134,7 @@ class InvoiceController extends Controller
         }
         // dd($orders);
         $roleArr['role'][]    = $role_id;
-        $config         = Config::select('restaurant_name','email','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         return view('cashier.invoice.index',compact('orders','config','sortBy','amount'));
 
     }
@@ -192,7 +192,7 @@ class InvoiceController extends Controller
         }
         // dd($orders);
         $roleArr['role'][]    = $role_id;
-        $config         = Config::select('restaurant_name','email','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         return view('cashier.invoice.real_time_invoice',compact('orders','config'));
 
     }
@@ -235,7 +235,7 @@ class InvoiceController extends Controller
         }
         // dd($orders);
         $roleArr['role'][]    = $role_id;
-        $config         = Config::select('restaurant_name','email','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         return view('cashier.invoice.real_time_invoice',compact('orders','config'));
 
     }
@@ -269,7 +269,7 @@ class InvoiceController extends Controller
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier        = $this->InvoiceRepository->cashier($id);
-        $config         = Config::select('restaurant_name','email','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
        
         return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier'));
     }
@@ -307,7 +307,7 @@ class InvoiceController extends Controller
         // $request->validate();
         $input              = Input::all();
         $id                 = Input::get('id');
-        $config             = Config::select('restaurant_name','email','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         $orders             = $this->InvoiceRepository->getorder($id);
         $tax_foc            = $orders->tax_amount;
         $services           = $orders->service_amount;
@@ -418,7 +418,7 @@ class InvoiceController extends Controller
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier         = $this->InvoiceRepository->cashier($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
 
         $html ='<h1>Invoice Detail</h1>
                 <table >
