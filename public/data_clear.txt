@@ -1,0 +1,7 @@
+TRUNCATE TABLE `order`;
+TRUNCATE TABLE `order_details`;
+TRUNCATE TABLE `order_extra`;
+TRUNCATE TABLE `order_room`;
+TRUNCATE TABLE `order_setmenu_detail`;
+TRUNCATE TABLE `order_tables`;
+TRUNCATE TABLE `payment`;

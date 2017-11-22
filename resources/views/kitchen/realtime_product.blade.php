@@ -118,7 +118,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
-                                                    <input type="button" name="submit" value="Save" class="btn btn-primary pop-up-button cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">
+                                                    <button type="button" name="submit" class="btn btn-primary pop-up-button cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">Save</button>
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                                 </div>
                                             </div>

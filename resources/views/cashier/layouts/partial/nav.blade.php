@@ -53,7 +53,7 @@
                        aria-expanded="false">General<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/Cashier/Config/general_config">Configurations</a></li>
-                        <li><a href="/Cashier/Promotion/index">Promotions</a></li>
+                        <!-- <li><a href="/Cashier/Promotion/index">Promotions</a></li> -->
                         <li><a href="/Cashier/Discount/index">Discount</a></li>
                         <li><a href="/Cashier/Pricehistory/all">Price Histories</a></li>
                     </ul>
