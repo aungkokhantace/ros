@@ -123,13 +123,13 @@
                 </div><div class="spacer-10px"></div>
 
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-10 paid_mem_info">
                         <div class="paid-post-box">
                             member card number : {{($order->member_id)}}
                         </div>
                     </div>
-                </div><div class="spacer-10px"></div>
+                </div><div class="spacer-10px"></div> -->
 
                 <div class="row">
                     <div class="col-md-10 paid_mem_info">
