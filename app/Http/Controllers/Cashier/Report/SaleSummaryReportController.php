@@ -159,14 +159,14 @@ class SaleSummaryReportController extends Controller
                 $sum_foc=0;
                 foreach($orders as $order){
                     $sum_amount     += $order->Amount;
-                    $sum_payment    += $order->PayAmount;
-                    $sum_refund     += $order->RefundAmount;
-                    $sum_service    += $order->ServiceAmount;
-                    $sum_tax        += $order->TaxAmount;
-                    $sum_discount   += $order->DiscountAmount;
-                    $sum_foc        += $order->FocAmount;
+                    $sum_payment    += $order->Payment;
+                    $sum_refund     += $order->Refund;
+                    $sum_service    += $order->Service;
+                    $sum_tax        += $order->Tax;
+                    $sum_discount   += $order->Discount;
+                    $sum_foc        += $order->Foc;
                 }
-                $sheet->appendRow(array('','Total',$sum_amount,$sum_payment,$sum_refund,$sum_service,$sum_tax,$sum_discount,$sum_foc));
+                $sheet->appendRow(array('','','','Total',$sum_amount,$sum_payment,$sum_refund,$sum_service,$sum_tax,$sum_discount,$sum_foc));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
                 });

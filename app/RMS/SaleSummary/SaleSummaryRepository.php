@@ -39,9 +39,10 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         return $orders;
     }
     public function YearlySaleSummary(){
-         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(
-        DB::raw('YEAR(order.order_time)as Year'),DB::raw('SUM(order.all_total_amount) as Amount, SUM(order.payment_amount) as PayAmount,SUM(order.refund) as RefundAmount,
+        DB::raw('YEAR(order.order_time)as Year'),DB::raw('SUM(order.all_total_amount) as Amount, 
+        SUM(order.payment_amount) as PayAmount,SUM(order.refund) as RefundAmount,
         SUM(order.service_amount) as ServiceAmount,SUM(order.tax_amount) as TaxAmount,
         SUM(order.total_discount_amount) as DiscountAmount,SUM(order.foc_amount) as FocAmount'))
         ->groupBy(DB::raw('YEAR(order.order_time)'))
@@ -53,14 +54,18 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
     }
 
     public function dailySale($d,$m){
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Orderdetail::
             leftjoin('order', 'order.id', '=', 'order_details.order_id')
             ->leftjoin('users','users.id','=','order.user_id')
             ->select('order.id as Invoice_id',DB::raw('DATE_FORMAT(order.order_time,"%d-%m-%Y")as Date'),
-                'users.user_name as Staff',DB::raw('SUM(order_details.quantity) as Quantity'),'order.all_total_amount as Amount')
+                'users.user_name as Staff',DB::raw('SUM(order_details.quantity) as Quantity'),
+                'order.all_total_amount as Amount','order.payment_amount as Payment',
+                'order.refund as Refund','order.service_amount as Service','order.tax_amount as Tax',
+                'order.total_discount_amount as Discount','order.foc_amount as Foc')
             ->where(DB::raw('MONTH(order.order_time)'),'=',$m)
             ->where(DB::raw('Date(order.order_time)'),'=',$d)
-            ->where('order.status',2)
+            ->where('order.status',$order_paid_status)
             ->where('order_details.deleted_at',NULL)
             ->groupBy('order_details.order_id')
             ->orderBy('invoice_id')
