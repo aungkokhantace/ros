@@ -186,7 +186,7 @@
                                                         @endforeach
                                                     </td>
                                                     <td class="td-row" data-ordertime = "{{ $setmenu->order_time}}">
-                                                        {{ date('h:m:s A', strtotime($setmenu->order_time)) }}
+                                                        {{ date('h:i:s A', strtotime($setmenu->order_time)) }}
                                                     </td>
                                                     <td >
                                                         @if($setmenu->status_id == '1')
@@ -194,7 +194,7 @@
                                                             <input type="hidden" name="duration" class="txt_duration"/>
                                                         @endif
                                                         @if($setmenu->status_id =='2')
-                                                            {{ date('h:m:s A', strtotime($setmenu->order_duration)) }}
+                                                            {{ date('h:i:s A', strtotime($setmenu->order_duration)) }}
                                                         @endif
                                                     </td>
                                                     <td>

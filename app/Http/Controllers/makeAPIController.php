@@ -101,7 +101,6 @@ class MakeAPIController extends ApiGuardController
         $orders     = json_decode($ordersRaw);
         $dt         = Carbon::now();
         foreach($orders as $order) {
-
             $user_id                = $order->user_id;
             $take_id                = $order->take_id;
             $order_id               = $order->order_id;
@@ -169,6 +168,7 @@ class MakeAPIController extends ApiGuardController
             $temp->save();
             
             $set_item = $order_detail->set_item;
+            $quantity = $order_detail->quantity;
             foreach($set_item as $item){
                 $set = new OrderSetMenuDetail();
                 $set->order_detail_id = $temp->id;
@@ -178,7 +178,7 @@ class MakeAPIController extends ApiGuardController
                 $set->exception       = $temp->exception;
                 $set->order_time      = $dt->toDateTimeString();
                 $set->status_id       = $temp->status_id;
-                $set->quantity        = "1";
+                $set->quantity        = $quantity;
                 $set->save();
             }
 
