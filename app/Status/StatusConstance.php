@@ -31,6 +31,22 @@ class StatusConstance
     //Table Status
     const TABLE_AVAILABLE_STATUS                = 0; //TABLE AVAILABLE STATUS
     const TABLE_UNAVAILABLE_STATUS              = 1; //TABLE UNAVAILABLE STATUS
+    const TABLE_WARNING_STATUS                  = 2; //TABLE WARNING STATUS
+    const TABLE_WAITING_STATUS                  = 3; //TABLE WAITING STATUS
+
+    //Table Active Status
+    const TABLE_ACTIVE_STATUS                   = 1; //TABLE AVAILABLE STATUS
+    const TABLE_INACTIVE_STATUS                 = 0; //TABLE AVAILABLE STATUS
+
+     //Room Active Status
+    const ROOM_ACTIVE_STATUS                    = 1; //TABLE AVAILABLE STATUS
+    const ROOM_INACTIVE_STATUS                  = 0; //TABLE AVAILABLE STATUS
+
+    //Booking Status
+    const BOOKING_DEFAULT_STATUS                = 0; //BOOKING DEFAULT STATUS
+    const BOOKING_WARNING_STATUS                = 2; //BOOKING WARNING STATUS
+    const BOOKING_WAITING_STATUS                = 3; //BOOKING WAITING STATUS
+    const BOOKING_DONE_STATUS                   = 4; //BOOKING DONE STATUS
 
     //Room Status
     const ROOM_AVAILABLE_STATUS                 = 0; //ROOM AVAILABLE STATUS

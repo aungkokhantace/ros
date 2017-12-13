@@ -89,11 +89,28 @@ class TableController extends Controller
     //delete table one row or multiple row
     public function delete($id)
     {
-        $new_string = explode(',', $id);
-        foreach ($new_string as $id) {
-            $this->tableRepository->table_delete($id);
-        }
+        $tables     = $this->tableRepository->table_delete($id);
         return redirect()->action('Cashier\Table\TableController@index'); //to redirect listing page
+    }
+
+    public function active($id)
+    {
+        $tables     = $this->tableRepository->table_active($id);
+        return redirect()->action('Cashier\Table\TableController@index')
+        ->withMessage(FormatGenerator::message('Success', 'Table Active create ...')); //to redirect listing page
+    }
+
+    public function inactive($id)
+    {
+        $get_table      = Table::find($id);
+        $table_status   = $get_table->status;
+        if ($table_status == 1) {
+            alert()->warning('Table is Not Avaiable!')->persistent('Close');
+            return back();
+        }
+        $tables     = $this->tableRepository->table_inactive($id);
+        return redirect()->action('Cashier\Table\TableController@index')
+        ->withMessage(FormatGenerator::message('Fail', 'Table Inactive create ...')); //to redirect listing page
     }
 
     //get data from edit form
@@ -152,7 +169,14 @@ class TableController extends Controller
     }
 
  
-    
+    public function table_enabled($id){
+        $new_string = explode(',', $id);
+        foreach($new_string as $id){
+            $this->tableRepository->table_enabled($id);
+        }
+
+        return redirect()->action('Cashier\Table\TableController@index');
+    }
     
     
 

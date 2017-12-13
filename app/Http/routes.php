@@ -16,6 +16,7 @@ Route::group(['middleware' => 'web'], function () {
     });
     Route::get('login', 'Cashier\Auth\AuthController@getLoginForm');
     Route::post('login', 'Cashier\Auth\AuthController@postDataForCashierLogin');
+    Route::get('socketRequest','Cashier\Booking\BookingController@socketRequest');
 
     Route::group(['prefix' => 'Cashier'], function(){
         Route::get('logout', 'Cashier\Auth\AuthController@logout');
@@ -156,7 +157,9 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Room/edit/{id}', 'Cashier\Room\RoomController@edit');
                 Route::post('Room/update', 'Cashier\Room\RoomController@update');
                 Route::get('Room/delete/{ids}', 'Cashier\Room\RoomController@delete');
-
+                Route::get('Room/room_enabled/{id}', 'Cashier\Room\RoomController@roomenabled');
+                Route::get('Room/active/{id}', 'Cashier\Room\RoomController@active');
+                Route::get('Room/inactive/{id}', 'Cashier\Room\RoomController@inactive');
             });
             //End Room
 
@@ -177,6 +180,9 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Table/edit/{id}', 'Cashier\Table\TableController@edit');
                 Route::post('Table/update', 'Cashier\Table\TableController@update');
                 Route::get('Table/delete/{id}', 'Cashier\Table\TableController@delete');
+                Route::get('Table/table_enabled/{id}', 'Cashier\Table\TableController@table_enabled');
+                Route::get('Table/active/{id}', 'Cashier\Table\TableController@active');
+                Route::get('Table/inactive/{id}', 'Cashier\Table\TableController@inactive');
 
             });
             //End table
@@ -225,6 +231,8 @@ Route::group(['middleware' => 'web'], function () {
                 Route::post('Profile/update','Cashier\Config\ProfileController@update');
                 Route::post('Profile/store','Cashier\Config\ProfileController@store');
                 Route::get('Pricehistory/{type?}/{id?}','Cashier\Log\PricelogController@search');
+                Route::get('Confighistory','Cashier\Log\ConfiglogController@index');
+                Route::get('Discounthistory','Cashier\Log\DiscountlogController@index');
             });
             //End config
 
@@ -237,11 +245,22 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('invoice/detail/{id}','Cashier\Invoice\InvoiceController@invoicedetail');
                 Route::get('invoice/detail/print/{id}','Cashier\Invoice\InvoiceController@invoicePrint');
                 Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');
+                Route::get('invoice/paid/ajaxPaymentRequest/{id}','Cashier\Invoice\InvoiceController@ajaxPaymentRequest');
                 Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
                 Route::get('invoice/cancel','Cashier\Invoice\InvoiceController@invoiceCancel');
                 Route::get('invoice/cancel/{id}','Cashier\Invoice\InvoiceController@orderCancel');
-                Route::get('invoice/sort/{sortby}/{increase}','Cashier\Invoice\InvoiceController@invoiceListSort');
-                Route::get('invoice/sort/{sortby}/{increase}/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxListSort');
+                Route::get('invoice/sort/time/increase','Cashier\Invoice\InvoiceController@invoiceTimeIncrease');
+                Route::get('invoice/sort/time/decrease','Cashier\Invoice\InvoiceController@invoiceTimeDecrease');
+                Route::get('invoice/sort/price/increase','Cashier\Invoice\InvoiceController@invoicePriceIncrease');
+                Route::get('invoice/sort/price/decrease','Cashier\Invoice\InvoiceController@invoicePriceDecrease');
+                Route::get('invoice/sort/order/increase','Cashier\Invoice\InvoiceController@invoiceOrderIncrease');
+                Route::get('invoice/sort/order/decrease','Cashier\Invoice\InvoiceController@invoiceOrderDecrease');
+                Route::get('ajaxInvoiceTimeIncrease','Cashier\Invoice\InvoiceController@ajaxInvoiceTimeIncrease');
+                Route::get('ajaxInvoiceTimeDecrease','Cashier\Invoice\InvoiceController@ajaxInvoiceTimeDecrease');
+                Route::get('ajaxInvoicePriceIncrease','Cashier\Invoice\InvoiceController@ajaxInvoicePriceIncrease');
+                Route::get('ajaxInvoicePriceDecrease','Cashier\Invoice\InvoiceController@ajaxInvoicePriceDecrease');
+                Route::get('ajaxInvoiceOrderIncrease','Cashier\Invoice\InvoiceController@ajaxInvoiceOrderIncrease');
+                Route::get('ajaxInvoiceOrderDecrease','Cashier\Invoice\InvoiceController@ajaxInvoiceOrderDecrease');
                 Route::get('invoice/manager/confirm/{username}/{password}','Cashier\Invoice\InvoiceController@checkManager');
 
                 //Sale Summary Report & Excel Download
@@ -420,6 +439,8 @@ Route::post('api/v1/syncs', 'syncAPIController@sync_table');
 
 //API Post Method
 Route::post('api/v1/login', 'makeAPIController@login');
+//First Time Login
+Route::post('api/v1/first_time_login', 'makeAPIController@first_time_login');
 
 Route::post('api/v1/create_voucher','makeAPIController@create_voucher');
 Route::post('api/v1/add_new_to_voucher','makeAPIController@add_new_to_voucher');

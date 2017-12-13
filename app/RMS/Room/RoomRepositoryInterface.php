@@ -16,4 +16,6 @@ interface RoomRepositoryInterface
     public function getRoomById($id);
     public function update($paramObj);
     public function deleteRoomData($room_id);
+    public function room_active($id);
+    public function room_inactive($id);
 }

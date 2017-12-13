@@ -20,7 +20,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('table_message', function( data ) {
-    console.log('Success Function');
+    console.log('Success Function Table');
 
     io.sockets.emit( 'tableChange','tableChange');
   });
@@ -100,5 +100,12 @@ io.on('connection', function (socket) {
     console.log('Order Payment Button Done');
 
     io.sockets.emit( 'payment_done','payment_done');
+  });
+
+  //Socket Fire From Order Edit
+  socket.on('order_edit', function( data ) {
+    console.log('Order Edit');
+
+    io.sockets.emit( 'edit','edit');
   });
 });

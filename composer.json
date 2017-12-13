@@ -12,7 +12,9 @@
         "maatwebsite/excel": "~2.1.0",
         "chrisbjr/api-guard": "3.1.*",
         "intervention/image": "dev-master",
-        "elibyy/tcpdf-laravel": "5.2.*"
+        "elibyy/tcpdf-laravel": "5.2.*",
+        "spatie/laravel-paginateroute": "^2.6",
+        "doctrine/dbal": "^2.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

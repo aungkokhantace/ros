@@ -6,6 +6,8 @@ use App\RMS\Infrastructure\Forms\LoginFormRequest;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\RMS\Permission\Permission;
+use App\RMS\Permission\PermissionRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -49,6 +51,17 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($this->getFailedLoginMessage());
         }
         else{
+            // $array      = array('name' => 'shwekayin');
+            // $request->session()->push('key', $array);
+            $role_id        = Auth::guard('Cashier')->user()->role_id;
+            $permissionMod  = new PermissionRepository();
+            $permissions    = $permissionMod->getModuleArr($role_id);
+            // dd($permissions);
+            $module     = array();
+            foreach($permissions as $key => $permission) {
+                $module     = $permission['module_id'];
+                $request->session()->push('module',$module);
+            }
             return redirect('Cashier/userAuth');
         }
     }

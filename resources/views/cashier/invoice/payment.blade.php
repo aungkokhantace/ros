@@ -19,7 +19,7 @@
     </div>
     {{--tables--}}
     <div class="container">
-        <div class="row">
+        <div class="row" id="autoDiv">
             {!! Form::open(array('url' => '/Cashier/invoice/add_paid', 'method' => 'post','id' => 'myForm' , 'files' => false)) !!}
             {{ Form::hidden('id', $order->order_id) }}
             {{ Form::hidden('all_total', $order->all_total_amount) }}
@@ -74,7 +74,9 @@
                 </table>
 
             </div>
-
+            @if ($order->payment_amount > 0)
+                @include('cashier.invoice.paid')
+            @else
             <div class="col-md-4">
 
                 <div class="row">
@@ -220,7 +222,19 @@
                         <span class="paid_mem_info" id="Service">{{ number_format($order->service_amount)}}</span>
                     </div>
                 </div><div class="spacer-10px"></div>
+                
+                @if(isset($rooms))
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="paid_mem_info">Room Charge:</span>
+                    </div>
 
+                    <div class="col-md-4 text-right">
+                        <span class="paid_mem_info">{{ number_format($order->room_charge)}}</span>
+                    </div>
+                </div><div class="spacer-10px"></div>
+                @endif
+                
                 <div class="row">
                     <div class="col-md-6">
                         <span class="paid_mem_info">Net Amount:</span>
@@ -241,8 +255,9 @@
                 </div><div class="spacer-10px"></div>
                 @endif
             </div>
+            @endif
+            {!! Form::close() !!}
         </div>
-        {!! Form::close() !!}
 
         @include('cashier.invoice.payment_print')
         @if (session('status'))
@@ -456,6 +471,11 @@
                 var socketValue      = {order_payment : 'order_payment'};
                 socketEmit(socketKey,socketValue);
             }
+            var id      = document.getElementsByName("id")[0].value;
+            var url     = "/Cashier/invoice/paid/ajaxPaymentRequest/" + id;//Json Callback Url
+            var div     = "autoDiv";//Put div id inside html response
+            var edit      = "edit";
+            socketOn(edit,url,div);
         </script>
     </div>
 @endsection

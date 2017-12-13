@@ -93,6 +93,12 @@
                                 <td colspan="3">Total: (Exclusive Tax)</td>
                                 <td class="text-right">{{ number_format($orders->total_price) }}</td>
                             </tr>
+                            @if(isset($rooms))
+                                <tr class="i-title">
+                                    <td colspan="3">Room Charge</td>
+                                    <td class="text-right">{{ $orders->room_charge }}</td>
+                                </tr>
+                            @endif
 
                             <tr class="i-title">
                                 <td colspan="3">Service Tax ({{ $config->service}} %)</td>
@@ -115,10 +121,12 @@
                             </tr>
 
 
+                            @foreach($payments as $payment)
                             <tr class="tr-bottom-dashed i-title">
-                                <td colspan="3">Paid Cash</td>
-                                <td class="text-right">{{ number_format($orders->payment_amount) }}</td>
+                                <td colspan="3">Paid {{ $payment['name'] }}</td>
+                                <td class="text-right">{{ number_format($payment['paid_amount']) }}</td>
                             </tr>
+                            @endforeach
 
                             <tr class="tr-bottom-dashed i-title">
                                 <td colspan="3">Change</td>

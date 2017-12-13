@@ -15,9 +15,18 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(DB::raw('DATE(order.order_time)as Day'),
         DB::raw('Month(order.order_time)as Month'),
-        DB::raw('SUM(order.all_total_amount) as Amount, SUM(order.payment_amount) as PayAmount,SUM(order.refund) as RefundAmount,
-        SUM(order.service_amount) as ServiceAmount,SUM(order.tax_amount) as TaxAmount,
-        SUM(order.total_discount_amount) as DiscountAmount,SUM(order.foc_amount) as FocAmount'))
+        DB::raw(
+        '
+        SUM(order.total_extra_price) as ExtraAmount,
+        SUM(order.total_discount_amount) as DiscountAmount,
+        SUM(order.total_price) as PriceAmount,
+        SUM(order.room_charge) as RoomAmount,
+        SUM(order.service_amount) as ServiceAmount,
+        SUM(order.tax_amount) as TaxAmount,
+        SUM(order.foc_amount) as FocAmount,
+        SUM(order.all_total_amount) as Amount,
+        SUM(order.payment_amount) as PayAmount
+        '))
         ->groupBy(DB::raw('DAY(order.order_time)'))
         ->whereYear('order.order_time','=',date('Y'))
         ->where('order.status','=',$order_paid_status)
@@ -28,9 +37,18 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
     public function MonthlySaleSummary(){
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(DB::raw('MONTH(order.order_time)as Month'),
-        DB::raw('YEAR(order.order_time)as Year'),DB::raw('SUM(order.all_total_amount) as Amount,SUM(order.payment_amount) as PayAmount,SUM(order.refund) as RefundAmount,
-        SUM(order.service_amount) as ServiceAmount,SUM(order.tax_amount) as TaxAmount,
-        SUM(order.total_discount_amount) as DiscountAmount,SUM(order.foc_amount) as FocAmount'))
+        DB::raw('YEAR(order.order_time)as Year'),
+        DB::raw('
+        SUM(order.total_extra_price) as ExtraAmount,
+        SUM(order.total_discount_amount) as DiscountAmount,
+        SUM(order.total_price) as PriceAmount,
+        SUM(order.room_charge) as RoomAmount,
+        SUM(order.service_amount) as ServiceAmount,
+        SUM(order.tax_amount) as TaxAmount,
+        SUM(order.foc_amount) as FocAmount,
+        SUM(order.all_total_amount) as Amount,
+        SUM(order.payment_amount) as PayAmount
+        '))
         ->groupBy(DB::raw('MONTH(order.order_time)'))
         ->whereYear('order.order_time','=',date('Y'))
         ->where('order.status','=',$order_paid_status)
@@ -41,10 +59,18 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
     public function YearlySaleSummary(){
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(
-        DB::raw('YEAR(order.order_time)as Year'),DB::raw('SUM(order.all_total_amount) as Amount, 
-        SUM(order.payment_amount) as PayAmount,SUM(order.refund) as RefundAmount,
-        SUM(order.service_amount) as ServiceAmount,SUM(order.tax_amount) as TaxAmount,
-        SUM(order.total_discount_amount) as DiscountAmount,SUM(order.foc_amount) as FocAmount'))
+        DB::raw('YEAR(order.order_time)as Year'),
+        DB::raw('
+        SUM(order.total_extra_price) as ExtraAmount,
+        SUM(order.total_discount_amount) as DiscountAmount,
+        SUM(order.total_price) as PriceAmount,
+        SUM(order.room_charge) as RoomAmount,
+        SUM(order.service_amount) as ServiceAmount,
+        SUM(order.tax_amount) as TaxAmount,
+        SUM(order.foc_amount) as FocAmount,
+        SUM(order.all_total_amount) as Amount,
+        SUM(order.payment_amount) as PayAmount
+        '))
         ->groupBy(DB::raw('YEAR(order.order_time)'))
         ->whereYear('order.order_time','=',date('Y'))
         ->where('order.status','=',$order_paid_status)
@@ -78,9 +104,17 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(DB::raw('DATE(order.order_time)as Day'),
             DB::raw('Month(order.order_time)as Month'),
-            DB::raw('SUM(order.all_total_amount) as Amount,SUM(order.payment_amount) as PayAmount,SUM(order.refund) as RefundAmount,
-        SUM(order.service_amount) as ServiceAmount,SUM(order.tax_amount) as TaxAmount,
-        SUM(order.total_discount_amount) as DiscountAmount,SUM(order.foc_amount) as FocAmount'))
+            DB::raw('
+            SUM(order.total_extra_price) as ExtraAmount,
+            SUM(order.total_discount_amount) as DiscountAmount,
+            SUM(order.total_price) as PriceAmount,
+            SUM(order.room_charge) as RoomAmount,
+            SUM(order.service_amount) as ServiceAmount,
+            SUM(order.tax_amount) as TaxAmount,
+            SUM(order.foc_amount) as FocAmount,
+            SUM(order.all_total_amount) as Amount,
+            SUM(order.payment_amount) as PayAmount
+        '))
             ->groupBy(DB::raw('DAY(order.order_time)'))
             ->whereDate('order.order_time','>=',$from_date)
             ->whereDate('order.order_time','<=',$to_date)
@@ -93,9 +127,17 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(DB::raw('MONTH(order.order_time)as Month'),
         DB::raw('YEAR(order.order_time)as Year'),
-        DB::raw("SUM(order.all_total_amount)as Amount, SUM(order.payment_amount) as PayAmount,SUM(order.refund) as RefundAmount,
-        SUM(order.service_amount) as ServiceAmount,SUM(order.tax_amount) as TaxAmount,
-        SUM(order.total_discount_amount) as DiscountAmount,SUM(order.foc_amount) as FocAmount"))
+        DB::raw("
+        SUM(order.total_extra_price) as ExtraAmount,
+        SUM(order.total_discount_amount) as DiscountAmount,
+        SUM(order.total_price) as PriceAmount,
+        SUM(order.room_charge) as RoomAmount,
+        SUM(order.service_amount) as ServiceAmount,
+        SUM(order.tax_amount) as TaxAmount,
+        SUM(order.foc_amount) as FocAmount,
+        SUM(order.all_total_amount) as Amount,
+        SUM(order.payment_amount) as PayAmount
+        "))
         ->groupBy(DB::raw('MONTH(order.order_time)'))
         ->whereBetween('order.order_time', [$from_date,$to_date])
         ->where('order.status','=',$order_paid_status)->get();

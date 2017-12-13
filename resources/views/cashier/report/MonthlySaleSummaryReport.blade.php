@@ -76,20 +76,24 @@
                         <tr class="report-th">
                             <th>Year</th>
                             <th>Month</th>
-                            <th>Total Amount</th>
-                            <th>Total Payment Amount</th>
-                            <th>Total Refund Amount</th>
+                            <th>Total Extra Price</th>
+                            <th>Total Discount Amount</th>
+                            <th>Total Price</th>
+                            <th>Total Room Charge</th>
                             <th>Total Service Amount</th>
                             <th>Total Tax Amount</th>
-                            <th>Total Discount Amount</th>
                             <th>Total FOC Amount</th>
+                            <th>Total All Amount</th>
+                            <th>Total Payment Amount</th>
                             <th>View Detail</th>
                         </tr>
                         </thead>
                         <?php 
                         $sum_amount=0;
+                        $sum_extra=0;
+                        $sum_price=0;
+                        $sum_room=0;
                         $sum_payment=0;
-                        $sum_refund=0;
                         $sum_service=0;
                         $sum_tax=0;
                         $sum_discount=0;
@@ -99,20 +103,24 @@
                             <tr class="tr-row active">
                                 <td>{{ $order->Year }}</td>
                                 <td>{{ date("F", mktime(0, 0, 0, $order->Month, 10)) }}</td>
-                                <td class="money-align">{{ number_format($order->Amount) }}</td>
-                                <td class="money-align">{{ number_format($order->PayAmount) }}</td>
-                                <td class="money-align">{{ number_format($order->RefundAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->ExtraAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->DiscountAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->PriceAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->RoomAmount) }}</td>
                                 <td class="money-align">{{ number_format($order->ServiceAmount) }}</td>
                                 <td class="money-align">{{ number_format($order->TaxAmount) }}</td>
-                                <td class="money-align">{{ number_format($order->DiscountAmount) }}</td>
                                 <td class="money-align">{{ number_format($order->FocAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->Amount) }}</td>
+                                <td class="money-align">{{ number_format($order->PayAmount) }}</td>
                                 <td>
                                     <a href="{{'/Cashier/monthlySale/'.$order->Year.'/'.$order->Month}}">View Detail</a>
                                 </td>
                                 <?php 
                                 $sum_amount     += $order->Amount;
+                                $sum_extra      += $order->ExtraAmount;
+                                $sum_price      += $order->PriceAmount;
+                                $sum_room       += $order->RoomAmount;
                                 $sum_payment    += $order->PayAmount;
-                                $sum_refund     += $order->RefundAmount;
                                 $sum_service    += $order->ServiceAmount;
                                 $sum_tax        += $order->TaxAmount;
                                 $sum_discount   += $order->DiscountAmount;
@@ -124,13 +132,15 @@
                             <td class="money-align" colspan="2">
                                 Total Amount
                             </td>
-                            <td class="money-align">{{number_format($sum_amount)}}</td>
-                            <td class="money-align">{{number_format($sum_payment)}}</td>
-                            <td class="money-align">{{number_format($sum_refund)}}</td>
+                            <td class="money-align">{{number_format($sum_extra)}}</td>
+                            <td class="money-align">{{number_format($sum_discount)}}</td>
+                            <td class="money-align">{{number_format($sum_price)}}</td>
+                            <td class="money-align">{{number_format($sum_room)}}</td>
                             <td class="money-align">{{number_format($sum_service)}}</td>
                             <td class="money-align">{{number_format($sum_tax)}}</td>
-                            <td class="money-align">{{number_format($sum_discount)}}</td>
                             <td class="money-align">{{number_format($sum_foc)}}</td>
+                            <td class="money-align">{{number_format($sum_amount)}}</td>
+                            <td class="money-align">{{number_format($sum_payment)}}</td>
                             <td></td>
                         </tr>
                     </table>

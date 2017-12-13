@@ -36,4 +36,5 @@
 
     </tbody>
 </table>
+<div class="pagination-div">{{ $orderRepo->links() }}</div>
 

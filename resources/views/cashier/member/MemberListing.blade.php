@@ -1,4 +1,4 @@
-@extends('Cashier.layouts.master')
+@extends('cashier.layouts.master')
 @section('title','Member Listing')
 @section('content')
 

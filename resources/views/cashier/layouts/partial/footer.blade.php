@@ -54,7 +54,8 @@
         } ).draw();
         // $('#example1').DataTable();
         $('#invoice').DataTable({
-            "order": [[ 0, 'desc' ], [ 1, 'asc' ]]
+            "paging":   false,
+            "ordering": false
         } );
 
 

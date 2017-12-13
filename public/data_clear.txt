@@ -5,3 +5,6 @@ TRUNCATE TABLE `order_room`;
 TRUNCATE TABLE `order_setmenu_detail`;
 TRUNCATE TABLE `order_tables`;
 TRUNCATE TABLE `payment`;
+TRUNCATE TABLE `tablet_activation`;
+UPDATE tables SET status = 0;
+UPDATE rooms SET status = 0;

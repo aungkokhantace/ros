@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Controller;
 use Chrisbjr\ApiGuard\Http\Controllers\ApiGuardController;
 use App\User;
+use App\RMS\Activation\Activation;
 use App\RMS\Role\Role;
 use App\RMS\Category\Category;
 use App\RMS\Addon\Addon;
@@ -94,6 +95,53 @@ class MakeAPIController extends ApiGuardController
         
     }
 
+    public function first_time_login()
+    {
+        $temp       = Input::all();
+        
+        $teblet_id  = Input::get('tabletId');
+        $key        = Input::get('site_activation_key');
+        $site_activation_key = Config::all();
+
+        $activate_key = 0;
+        foreach($site_activation_key as $k){
+           $activate_key = $k->site_activation_key;
+        }
+
+        if ($activate_key == $key) {
+            $has_activation     = Activation::where('tablet_id','=',$teblet_id)
+                                  ->where('activation_key','=',$key)
+                                  ->whereNull('deleted_at')
+                                  ->get()
+                                  ->count();
+            if ($has_activation <= 0) {
+                $paramObj                   = new Activation();
+                $paramObj->tablet_id        = $teblet_id;
+                $paramObj->activation_key   = $key;
+                $paramObj->save();
+                //Get Inserted ID
+                $insertID     = $paramObj->id;
+                $row_count    = 0;
+                $output       = array(
+                                "tablet_generated_id" => $insertID,
+                                "order_id" => $row_count
+                                );
+                return Response::json($output); 
+            } else {
+                $tablet_generate        = DB::table('tablet_activation')->where('tablet_id', $teblet_id)->first();
+                $row_count    = Order::where('tablet_id','=',$teblet_id)->get()->count();
+                $output       = array(
+                                "tablet_generated_id" => $tablet_generate->id,
+                                "order_id" => $row_count
+                                );
+                return Response::json($output);
+            }
+        } else {
+            $output     = array("message" => "Wrong Activation Key");
+            return Response::json($output); 
+        }
+    }
+
     public function create_voucher()
     {
         $temp       = Input::all();
@@ -108,13 +156,14 @@ class MakeAPIController extends ApiGuardController
             $total_discount_amount  = $order->discount_amount;
             $total_price            = $order->total_price;
             $service_amount         = $order->service_amount;
+            $room_charge            = $order->room_charge;
             $tax_amount             = $order->tax_amount;
             $all_total_amount       = $order->net_price;
             $order_tables           = $order->order_table;
             $order_rooms            = $order->order_room;
             $order_details          = $order->order_detail;
             $order_status           = $order->order_status;
-
+            $tablet_id              = $order->tablet_id;
         }
         $order                          = new Order();
         $order->id                      = $order_id;
@@ -125,10 +174,12 @@ class MakeAPIController extends ApiGuardController
         $order->total_discount_amount   = $total_discount_amount;
         $order->total_price             = $total_price;
         $order->service_amount          = $service_amount;
+        $order->room_charge             = $room_charge;
         $order->tax_amount              = $tax_amount;
         $order->all_total_amount        = $all_total_amount;
+        $order->tablet_id               = $tablet_id;
         $order->status                  = $order_status;
-
+        
         $order->save();
 
         if(isset($order_tables)){
@@ -137,15 +188,29 @@ class MakeAPIController extends ApiGuardController
                 $temp->order_id = $order_id;
                 $temp->table_id = $table->table_id;
                 $temp->save();
+            
+                //Update Table Status
+                $table_id       = $table->table_id;
+                $status         = $table->table_status;
+                $tblObj         = Table::find($table_id);
+                $tblObj->status = $status;
+                $tblObj->save();   
             }
         }
-
+        
         if(isset($order_rooms)){
             foreach($order_rooms as $room){
                 $temp           = new OrderRoom();
                 $temp->order_id = $order_id;
                 $temp->room_id  = $room->room_id;
                 $temp->save();
+
+                //Update Room Table
+                $room_id        = $room->room_id;
+                $status         = $room->room_status;
+                $tblObj         = Room::find($room_id);
+                $tblObj->status = $status;
+                $tblObj->save();
             }
         }
         

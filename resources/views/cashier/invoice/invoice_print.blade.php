@@ -44,7 +44,7 @@
                     
                     <tbody style="font-size:13px;line-height:25px;">
                         @foreach($order->order_detail as $detail)
-                        <tr>
+                        <tr style="vertical-align: text-top;">
                             <td style="height:25px;"> {{$detail->quantity }}</td>
                             <td style="height:25px;">
                                 @if(isset($detail->item_name))
@@ -80,6 +80,13 @@
                             <td style="text-align:right;height:25px;">{{ number_format($order->total_price) }}</td>
                         </tr>
 
+                        @if(isset($order->room))
+                            <tr class="i-title">
+                                <td colspan="3">Room Charge</td>
+                                <td class="text-right">{{ $order->room_charge }}</td>
+                            </tr>
+                        @endif
+
                         <tr>
                             <td colspan="3" style="height:25px;">Service Tax ({{ $config->service}} %)</td>
                             <td style="text-align:right;height:25px;">{{ $order->service_amount }}</td>
@@ -99,10 +106,14 @@
                             <td colspan="3" style="height:25px;">Net Amount</td>
                             <td style="text-align:right;height:25px;">{{ number_format($order->all_total_amount) }} </td>
                         </tr>
-
-
+                        @foreach($order->paid as $pay)
+                        <tr class="tr-bottom-dashed i-title">
+                            <td colspan="3">Paid {{ $pay['name'] }}</td>
+                            <td class="text-right">{{ number_format($pay['paid_amount']) }}</td>
+                        </tr>
+                        @endforeach
                         <tr style="border-bottom:1px dashed black;">
-                            <td colspan="3" style="height:25px;">Paid Cash</td>
+                            <td colspan="3" style="height:25px;">Toatal Payment</td>
                             <td style="text-align:right;height:25px;">{{ number_format($order->payment_amount) }}</td>
                         </tr>
 

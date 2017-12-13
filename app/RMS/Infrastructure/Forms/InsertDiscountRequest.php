@@ -17,7 +17,7 @@ class InsertDiscountRequest extends Request
         return [
             'from_date'      => 'required|date|before:to_date',
             'to_date'        => 'required|date|after:from_date',
-            'product'        => 'required',
+            'product'        => 'required|unique:discount,item_id,NULL,id,deleted_at,NULL',
             'name'           =>'required',
             'amount'         => 'required|numeric'
         ];

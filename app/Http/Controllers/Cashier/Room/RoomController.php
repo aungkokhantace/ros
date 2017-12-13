@@ -106,5 +106,32 @@ class RoomController extends Controller
         return redirect()->action('Cashier\Room\RoomController@index');
     }
 
+    public function roomenabled($id){
+        $new_string = explode(',', $id);
+        foreach($new_string as $id){
+            $this->roomRepository->roomenabled($id);
+        }
 
+        return redirect()->action('Cashier\Room\RoomController@index');
+    }
+
+    public function active($id)
+    {
+        $rooms     = $this->roomRepository->room_active($id);
+        return redirect()->action('Cashier\Room\RoomController@index')
+        ->withMessage(FormatGenerator::message('Success', 'Room Active create ...')); //to redirect listing page
+    }
+
+    public function inactive($id)
+    {
+        $get_room      = Room::find($id);
+        $room_status   = $get_room->status;
+        if ($room_status == 1) {
+            alert()->warning('Table is Not Avaiable!')->persistent('Close');
+            return back();
+        }
+        $rooms     = $this->roomRepository->room_inactive($id);
+        return redirect()->action('Cashier\Room\RoomController@index')
+        ->withMessage(FormatGenerator::message('Fail', 'Room Inactive create ...')); //to redirect listing page
+    }
 }

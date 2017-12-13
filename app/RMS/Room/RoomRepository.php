@@ -12,6 +12,7 @@ namespace App\RMS\Room;
 use App\RMS\Utility;
 use Illuminate\Support\Facades\DB;
 use App\RMS\ReturnMessage;
+use App\Status\StatusConstance;
 class RoomRepository implements RoomRepositoryInterface
 {
     public function store($paramObj){
@@ -66,6 +67,27 @@ class RoomRepository implements RoomRepositoryInterface
         $tempObj                = Room::find($room_id);
         $tempObj                = Utility::addDeletedBy($tempObj);
         $tempObj->deleted_at    = date('Y-m-d H:m:i');
+        $tempObj->save();
+    }
+
+    public function roomenabled($id){
+        $room_enable    = StatusConstance::ROOM_AVAILABLE_STATUS;
+        DB::table('rooms')
+            ->where('id',$id)
+            ->update(['status'=>$room_enable]);
+    }
+
+    public function room_active($id){
+        $status     = StatusConstance::ROOM_ACTIVE_STATUS;
+        $tempObj    = Room::find($id);
+        $tempObj->active = $status;
+        $tempObj->save();
+    }
+
+    public function room_inactive($id){
+        $status     = StatusConstance::ROOM_INACTIVE_STATUS;
+        $tempObj    = Room::find($id);
+        $tempObj->active = $status;
         $tempObj->save();
     }
 }

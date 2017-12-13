@@ -25,7 +25,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     }
 
     public function getAllCategory(){
-        $categories = Category::where('parent_id','=',0)->get();
+        $categories = Category::whereNull('deleted_at')->get();
         return $categories;
     }
 
@@ -207,6 +207,12 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function getKitchenByCat($catID) {
         $kitchen    = Category::select('kitchen_id')->where('id','=',$catID)->first();
         return $kitchen;   
+    }
+
+    public function getLevelByParentCat($category) {
+        $level_attr  = Category::select('level')->where('id','=',$category)->first();
+        $level       = $level_attr->level;
+        return $level;
     }
 
 }

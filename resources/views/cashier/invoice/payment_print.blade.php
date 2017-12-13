@@ -23,12 +23,15 @@
                                 Addr: {{ $config->address}}<br /><br />
                                 <span style="float:left">Invoice No: {{ $order->order_id}}</span><br/>
                                 <span style="float:left">Invoice Date:{{$order->order_time}}</span><br/>
-                                @if(isset($order->table))
-                                    Table No : {{ $order->table }}
+                                @if(isset($tables))
+                                    @foreach($tables as $table)
+                                        Table No : {{ $table->table_no }}
+                                    @endforeach
                                 @endif
-
-                                @if(isset($order->room))
-                                    Room No : {{ $order->room }}
+                                @if(isset($rooms))
+                                    @foreach($rooms as $room)
+                                        Room No : {{ $room->room_name }}
+                                    @endforeach
                                 @endif
                             </td>
                         </tr>
@@ -43,7 +46,7 @@
                     
                     <tbody style="font-size:13px;line-height:25px;">
                         @foreach($order_detail as $detail)
-                        <tr>
+                        <tr style="vertical-align: text-top;">
                             <td style="height:25px;"> {{$detail->quantity }}</td>
                             <td style="height:25px;">
                                 @if(isset($detail->item_name))
@@ -93,16 +96,29 @@
                             <td colspan="3" style="height:25px;">Discount</td>
                             <td style="text-align:right;height:25px;">{{ $order->total_discount_amount }}</td>
                         </tr>
-
+                        
+                        @if(count($rooms) > 0)
+                            <tr style="border-bottom:1px dashed black;">
+                                <td colspan="3" style="height:25px;">Room Charge</td>
+                                <td style="text-align:right;height:25px;">{{ number_format($order->room_charge) }} </td>
+                            </tr>
+                        @endif
                         <tr style="border-bottom:1px dashed black;">
                             <td colspan="3" style="height:25px;">Net Amount</td>
                             <td style="text-align:right;height:25px;">{{ number_format($order->all_total_amount) }} </td>
                         </tr>
 
 
-                        <tr style="border-bottom:1px dashed black;">
-                            <td colspan="3" style="height:25px;">Paid Cash</td>
-                            <td style="text-align:right;height:25px;">{{ number_format($order->payment_amount) }}</td>
+                        @foreach($payments as $payment)
+                        <tr class="tr-bottom-dashed i-title">
+                            <td colspan="3">Paid {{ $payment['name'] }}</td>
+                            <td class="text-right">{{ number_format($payment['paid_amount']) }}</td>
+                        </tr>
+                        @endforeach
+
+                        <tr class="tr-bottom-dashed i-title">
+                            <td colspan="3">Total Payment</td>
+                            <td class="text-right">{{ number_format($order->payment_amount) }}</td>
                         </tr>
 
                         <tr style="border-bottom:1px dashed black;">

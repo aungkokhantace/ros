@@ -41,17 +41,6 @@ function socketOnTable(name,url,divID) {
                 console.log(Response);
                 $('#' + divID).html('');
                 $('#' + divID).append(Response);
-                
-                //For Invoice List data show with pagination
-                $('#invoice').DataTable( {
-                    "ordering":false,
-                    "columnDefs": [ {
-                        "searchable": false,
-                        "orderable": false,
-                        "targets": 0
-                    } ],
-                    "order": [[ 1, 'asc' ]]
-                } );
             }
         });
     });

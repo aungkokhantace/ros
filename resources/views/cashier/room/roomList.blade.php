@@ -13,6 +13,8 @@
                 </div>
                 <div class="col-md-9">
                     <div class="buttons">
+                        <input type="image" class="img_btn" src="../../../assets/images/enable.png" onclick="roomenable();">
+
                         <button type="button"  onclick='room_create();' class="btn btn-default btn-md first_btn">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </button>
@@ -41,6 +43,7 @@
                             <th>Room Name</th>
                             <th>Capacity</th>
                             <th>Room Status</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -56,6 +59,13 @@
                                     @if($room->status == 0) {{"Available"}}
                                     @else {{"Serve"}}
                                     @endif
+                                </td>
+                                <td>
+                                @if($room->active == 1)
+                                {{ "Enable"}}
+                                @else
+                                {{ "Disable "}}
+                                @endif
                                 </td>
                             </tr>
                         @endforeach

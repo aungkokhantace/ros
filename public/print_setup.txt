@@ -1,0 +1,14 @@
+In Firefox
+
+------------ Direct Print Set Up -------------
+- In Firefox
+Go to about:config
+Search print_silent
+Right click => New => boolean
+Enter print.always_print_silent
+select true
+
+In Chrome
+Go to chrome://flags
+Search print
+Disable

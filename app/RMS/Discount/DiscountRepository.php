@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\RMS\Item\Item;
 use App\RMS\Discount\DiscountModel;
+use App\RMS\Discount\DiscountLog;
 use App\RMS\ReturnMessage;
 class DiscountRepository implements DiscountRepositoryInterface
 {
@@ -30,6 +31,7 @@ class DiscountRepository implements DiscountRepositoryInterface
         try {
             $tempObj        = Utility::addCreatedBy($paramObj);
             $tempObj->save();
+            $this->storeDiscountLog($tempObj);
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -47,6 +49,7 @@ class DiscountRepository implements DiscountRepositoryInterface
         $tempObj = Utility::addDeletedBy($tempObj);
         $tempObj->deleted_at = date('Y-m-d H:m:i');
         $tempObj->save();
+        $this->deleteDiscountLog($tempObj);
     }
     public function getItem()
     {
@@ -68,15 +71,76 @@ class DiscountRepository implements DiscountRepositoryInterface
         try {
             $tempObj        = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+            $this->updateDiscountLog($tempObj);
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
         catch(Exception $e){
-
             $returnedObj['aceplusStatusMessage'] = $e->getMessage();
             return $returnedObj;
         }
 
 
+    }
+
+    public function storeDiscountLog($tempObj){
+        try {
+            $paramObj               = new DiscountLog();
+            $paramObj->name         = $tempObj->name;
+            $paramObj->amount       = $tempObj->amount;
+            $paramObj->type         = $tempObj->type;
+            $paramObj->start_date   = $tempObj->start_date;
+            $paramObj->end_date     = $tempObj->end_date;
+            $paramObj->item_id      = $tempObj->item_id;
+            $updateObj              = Utility::addCreatedBy($paramObj);
+            //Set Updated By and Updated at Null
+            $updateObj->updated_by  = 0;
+            $updateObj->updated_at = Null;
+            $updateObj->save();
+        } 
+        catch(Exception $e){
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
+    }
+
+    public function updateDiscountLog($tempObj){
+        try {
+            $paramObj               = new DiscountLog();
+            $paramObj->name         = $tempObj->name;
+            $paramObj->amount       = $tempObj->amount;
+            $paramObj->type         = $tempObj->type;
+            $paramObj->start_date   = $tempObj->start_date;
+            $paramObj->end_date     = $tempObj->end_date;
+            $paramObj->item_id      = $tempObj->item_id;
+            $updateObj              = Utility::addUpdatedBy($paramObj);
+            $updateObj->created_at = Null;
+            $updateObj->save();
+        } 
+        catch(Exception $e){
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
+    }
+
+    public function deleteDiscountLog($tempObj){
+        try {
+            $paramObj               = new DiscountLog();
+            $paramObj->name         = $tempObj->name;
+            $paramObj->amount       = $tempObj->amount;
+            $paramObj->type         = $tempObj->type;
+            $paramObj->start_date   = $tempObj->start_date;
+            $paramObj->end_date     = $tempObj->end_date;
+            $paramObj->item_id      = $tempObj->item_id;
+            $updateObj              = Utility::addDeletedBy($paramObj);
+            $updateObj->deleted_at  = date('Y-m-d H:m:i');
+            $updateObj->created_at  = Null;
+            $updateObj->updated_at  = Null;
+            $updateObj->save();
+        } 
+        catch(Exception $e){
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
     }
 }

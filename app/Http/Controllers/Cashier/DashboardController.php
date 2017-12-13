@@ -17,14 +17,14 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $member     = Member::all()->count();
         $set        = SetMenu::where('status',1)->count();
         $item       = Item::where('status',1)->count();
         $category   = Category::where('status',1)->count();
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
-    
+
         $orders = Order::select(DB::raw('DATE_FORMAT(order_time,"%b") as month'),DB::raw('sum(all_total_amount) as total'))
         ->where('order_time','>=',DB::raw('DATE_ADD(now(),INTERVAL - 12 MONTH)'))
         ->where('status',$order_paid_status)->whereYear('order_time','=',date('Y'))
