@@ -764,7 +764,6 @@ class OrderViewController extends Controller
             $order_detail->message   = $message;
 
             $order_detail->save();
-
         }else{
             $order_detail   = Orderdetail::find($id);
 

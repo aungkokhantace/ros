@@ -230,9 +230,6 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Profile/company_profile','Cashier\Config\ProfileController@profile');
                 Route::post('Profile/update','Cashier\Config\ProfileController@update');
                 Route::post('Profile/store','Cashier\Config\ProfileController@store');
-                Route::get('Pricehistory/{type?}/{id?}','Cashier\Log\PricelogController@search');
-                Route::get('Confighistory','Cashier\Log\ConfiglogController@index');
-                Route::get('Discounthistory','Cashier\Log\DiscountlogController@index');
             });
             //End config
 
@@ -377,6 +374,16 @@ Route::group(['middleware' => 'web'], function () {
 
 
             });
+
+             //Start Log Middleware
+            Route::group(['middleware'=>'log:Cashier'],function(){
+                Route::get('Pricehistory/{type?}/{id?}','Cashier\Log\PricelogController@search');
+                Route::get('Confighistory','Cashier\Log\ConfiglogController@index');
+                Route::get('Discounthistory','Cashier\Log\DiscountlogController@index');
+                Route::get('SyncApi','Cashier\Log\ApilistController@sync');
+                Route::get('MakeApi','Cashier\Log\ApilistController@make');
+                Route::get('DownloadApi','Cashier\Log\ApilistController@down');
+            });
             //End Kitchen Setup
             Route::get('Unauthorized','Cashier\DashboardController@authorized');
        });
@@ -419,7 +426,7 @@ Route::get('api/v1/kitchen_cancel','makeAPIController@kitchen_cancel');
 Route::get('api/v1/order_status','makeAPIController@order_status');
 Route::get('api/v1/setmenu_order_status','makeAPIController@setmenu_order_status');
 //syncControll
-Route::post('api/v1/user', 'syncAPIController@user');
+Route::post('api/v1/user', 'syncAPIController@user');//fns
 Route::post('api/v1/category','syncAPIController@category');
 Route::post('api/v1/addon','syncAPIController@addon');
 Route::post('api/v1/item', 'syncAPIController@item');

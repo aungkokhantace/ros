@@ -166,7 +166,7 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu WHERE status = '1'");
+            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu WHERE status = '1' AND deleted_at IS NULL");
             $output = array("set_menu" => $set_menu);
             return Response::json($output);
         }else{
@@ -187,7 +187,7 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item");
+            $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
             $output = array("set_item" => $set_item);
             return Response::json($output);
         }else{
@@ -241,6 +241,7 @@ class syncAPIController extends ApiGuardController
             //Get tables and Status From Booking Table
             $booking        = Booking::leftjoin('booking_table','booking.id','=','booking_table.booking_id')
                               ->select('booking.status as status','booking_table.table_id as table_id')
+                              ->where('booking_date','=',$cur_date)
                               ->whereIn('booking.status',$array)
                               ->get();
             $tables = DB::select("SELECT id,table_no,status FROM tables WHERE active = '$active_status' AND deleted_at IS NULL");
@@ -551,7 +552,7 @@ class syncAPIController extends ApiGuardController
             {
                 if ($sync->table_name == "category") {
                     if ($syncs[$key]->version > $temp['category']) {
-                        $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image,image FROM category WHERE status='1'");
+                        $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image,image FROM category WHERE status='1' AND deleted_at IS NULL");
 
                         $returnArr['category'] = $category;
                     }
@@ -559,7 +560,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
-                        $item = DB::select("SELECT id,name,price,status,category_id,mobile_image,image FROM items WHERE status='1'");
+                        $item = DB::select("SELECT id,name,price,status,category_id,mobile_image,image FROM items WHERE status='1' AND deleted_at IS NULL");
                        
                         $returnArr['items'] = $item;
                     }
@@ -567,7 +568,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "add_on") {
                     if ($sync->version > $temp['add_on']) {
-                        $addon = DB::select("SELECT id,food_name,category_id,price,status,mobile_image,image FROM add_on WHERE status='1'");
+                        $addon = DB::select("SELECT id,food_name,category_id,price,status,mobile_image,image FROM add_on WHERE status='1' AND deleted_at IS NULL");
                         
                         $returnArr['addon'] = $addon;
                     }
@@ -583,28 +584,28 @@ class syncAPIController extends ApiGuardController
            
                     if ($sync->table_name == "set_menu") {
                     if ($sync->version > $temp['set_menu']) {
-                        $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image,image FROM set_menu  WHERE status='1'");
+                        $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image,image FROM set_menu  WHERE status='1' AND deleted_at IS NULL");
                         $returnArr['set_menu'] = $set_menu;
                     }
                 }
 
                 if($sync->table_name == "set_item"){
                     if($sync->version > $temp['set_item']){
-                        $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item");
+                        $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
                         $returnArr['set_item'] = $set_item;
                     }
                 }
 
                 if ($sync->table_name == "rooms") {
                     if ($sync->version > $temp['rooms']) {
-                        $room = DB::select("SELECT id,room_name,status FROM rooms");
+                        $room = DB::select("SELECT id,room_name,status FROM rooms WHERE deleted_at IS NULL");
                         $returnArr['room'] = $room;
                     }
                 }
 
                 if ($sync->table_name == "tables") {
                     if ($sync->version > $temp['tables']) {
-                        $table = DB::select("SELECT id,table_no,status FROM tables");
+                        $table = DB::select("SELECT id,table_no,status FROM tables WHERE deleted_at IS NULL");
                         $returnArr['table'] = $table;
                     }
                 }

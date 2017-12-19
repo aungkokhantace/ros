@@ -104,9 +104,6 @@
                     @if (in_array('7',session()->get('module')))
                         <li><a href="/Cashier/Discount/index">Discount</a></li>
                     @endif
-                        <li><a href="/Cashier/Pricehistory/all">Price Histories</a></li>
-                        <li><a href="/Cashier/Confighistory">Config Histories</a></li>
-                        <li><a href="/Cashier/Discounthistory">Discount Histories</a></li>
                     </ul>
                 </li>
                 @endif 
@@ -133,6 +130,19 @@
                         <li><a href="/Cashier/memberFavaourite/0">Member Favourite Food Report</a></li>
                     @endif
                     </ul>
+                </li>
+                @endif
+
+                @if (in_array('23',session()->get('module')))
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Log<span class="caret"></span></a>
+                       <ul class="dropdown-menu">
+                            <li><a href="/Cashier/Pricehistory/all">Price Histories</a></li>
+                            <li><a href="/Cashier/Confighistory">Config Histories</a></li>
+                            <li><a href="/Cashier/Discounthistory">Discount Histories</a></li>
+                            <li><a href="/Cashier/SyncApi">Api List</a></li>
+                       </ul>
                 </li>
                 @endif
             </ul>

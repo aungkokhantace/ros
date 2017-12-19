@@ -336,6 +336,14 @@
             //Invoice Payment Socket
             var payment_done      = "payment_done";
             socketOn(payment_done,url,div);
+
+            //Table Transfer
+            var tableChange      = "tableChange";
+            socketOn(tableChange,url,div);
+
+            //Order Eidt
+            var edit      = "edit";
+            socketOn(edit,url,div);
         });
     </script>
 @endsection

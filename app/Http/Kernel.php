@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'orderList'=>\App\Http\Middleware\OrderListMiddleware::class,
         'kitchen'=>\App\Http\Middleware\KitchenMiddleware::class,
         'profile'=>\App\Http\Middleware\ProfileMiddleware::class,
+        'log'=>\App\Http\Middleware\LogMiddleware::class,
     ];
 }

@@ -848,14 +848,16 @@ class InvoiceController extends Controller
         }
     }
 
-    public function invoiceCancel() {
+    public function invoiceCancel(Request $request) {
+        $page           = $request->get('page');
         $today          = Carbon::now();
     	$cur_date       = Carbon::parse($today)->format('Y-m-d');
         $ordersCancel 	= $this->InvoiceRepository->getinvoiceCancel();
+        $ordersCancel  = $ordersCancel->setPath('cancel');
         //Flag for Invoice Type
         $sortBy         = "cancel";
         $amount         = "";
-        return view('cashier.invoice.index',compact('ordersCancel','sortBy','amount'));
+        return view('cashier.invoice.index',compact('ordersCancel','sortBy','amount','page'));
     }
     public function orderCancel($id) {
         $order_cancel_status        = StatusConstance::ORDER_CANCEL_STATUS;

@@ -113,9 +113,12 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 	public function getinvoiceCancel() {
 		$order_cancel_status    = StatusConstance::ORDER_CANCEL_STATUS;
-		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`total_discount_amount`,`payment_amount`,`status`
-		from `order` where `deleted_at` is null AND status = $order_cancel_status order by `order_time` desc");
-		
+		// $orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`total_discount_amount`,`payment_amount`,`status`
+		// from `order` where `deleted_at` is null AND status = $order_cancel_status order by `order_time` desc");
+		$orders 	= Order::where('status',$order_cancel_status)
+					->orderBy('id', 'desc')
+					->whereNull('deleted_at')
+					->paginate(10);
 		return $orders;
 	}
 

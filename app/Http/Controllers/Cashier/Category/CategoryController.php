@@ -308,7 +308,11 @@ class CategoryController extends Controller
                         ->whereRaw('level = (select max(`level`) from category)')
                         ->where('group_id','=',$group_id)
                         ->first();
-        $max_level      = $max_level_attr->level;
+        if (count($max_level_attr) <= 0) {
+            $max_level      = 0;
+        } else {
+            $max_level      = $max_level_attr->level;
+        }   
         return $max_level;
     }
     //To generate category tree for disabling all children

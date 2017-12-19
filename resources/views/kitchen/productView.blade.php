@@ -2,7 +2,6 @@
 @section('title','Order View')
 @section('content')
     {{--title--}}
-    
     <div class="container">
         <div class="row">
             <div id="body">
@@ -189,10 +188,6 @@
                                                         {{ date('h:i:s A', strtotime($setmenu->order_time)) }}
                                                     </td>
                                                     <td >
-                                                        @if($setmenu->status_id == '1')
-                                                            <span class="duration"></span>
-                                                            <input type="hidden" name="duration" class="txt_duration"/>
-                                                        @endif
                                                         @if($setmenu->status_id =='2')
                                                             {{ date('h:i:s A', strtotime($setmenu->order_duration)) }}
                                                         @endif
@@ -222,7 +217,7 @@
                                                                         <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
                                                                     </div>
                                                                     <div class="modal-body">
-                                                                        {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal')) !!}
+                                                                        {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $setmenu->order_detail_id . "-" . $setmenu->setmenu_id . "form")) !!}
 
                                                                         @if(isset($setmenu->setmenu_id) && $setmenu->setmenu_id != 0)
                                                                             <input type="hidden" name="order_details_id" value="{{$setmenu->order_detail_id}}">
@@ -239,7 +234,7 @@
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
-                                                                                <input type="submit" name="submit" value="Save" class="btn btn-primary pop-up-button">
+                                                                                <input type="button" name="submit" value="Save" class="btn btn-primary pop-up-button cancel_product">
                                                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                                                             </div>
                                                                         </div>
@@ -271,7 +266,6 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-        
             var myVar = setInterval(myTimer ,1000);
             function myTimer() {
                 $("table tr.tr-row").each(function () {
@@ -375,6 +369,7 @@
             $('#autoDiv').on('click', '.cancel_product',function (e) {
                 var formID      = $(this).closest("form").attr('id');
                 var data        = $('#' + formID).serialize();
+                console.log(data);
                 var modalID     = $(this).attr('id') + 'modal';
                 $.ajax({
                     type: 'POST',
@@ -388,11 +383,15 @@
                             $("#" + modalID).modal("hide");
                             $('body').removeClass('modal-open');
                             $('.modal-backdrop').remove();
-                            var socket = io.connect( 'http://'+window.location.hostname+':3333' );
+                            var port   = getSocketPort();
+                            var socket = io.connect( 'http://'+window.location.hostname+':' + port );
                             socket.emit('order_cancel',{
                                 'order_cancel' : order_id
                             });
                         }
+                    },
+                    error: function(Response) {
+                        alert('hihi');
                     }
                 });
 
@@ -420,6 +419,14 @@
             //Order Cooking Done
             var cooking_done      = "cooking_done";
             socketOn(cooking_done,url,div);
+
+            //Table Transfer
+            var tableChange      = "tableChange";
+            socketOn(tableChange,url,div);
+
+            //Order Edit
+            var edit      = "edit";
+            socketOn(edit,url,div);
         });
     </script>
 @endsection

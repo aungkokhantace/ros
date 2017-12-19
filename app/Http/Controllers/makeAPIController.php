@@ -34,6 +34,7 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\BookingTable\BookingTable;
 use App\RMS\BookingRoom\BookingRoom;
+use App\Status\StatusConstance;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -337,6 +338,7 @@ class MakeAPIController extends ApiGuardController
                 }
             }
             else{
+                $quantity                   = $order_detail->quantity;
                 //Update Orderdetail
                 $detail_id                  = $detail->id;
                 $temp                       = $detail;
@@ -360,7 +362,7 @@ class MakeAPIController extends ApiGuardController
                 $set_item                   = $order_detail->set_item;
                 foreach($set_item as $item){
                     $set_detail = OrderSetMenuDetail::where('order_detail_id','=',$detail_id)
-                                                     ->where('setmenu_id','=',$item->set_menu_id)
+                                                     ->where('item_id','=',$item->item_id)
                                                      ->first();
                     if($set_detail == null){
                         $set = new OrderSetMenuDetail();
@@ -371,7 +373,7 @@ class MakeAPIController extends ApiGuardController
                         $set->exception       = $temp->exception;
                         $set->order_time      = $dt->toDateTimeString();
                         $set->status_id       = $temp->status_id;
-                        $set->quantity        = "1";
+                        $set->quantity        = $quantity;
                         $set->save();
                     }
                     else{
@@ -383,6 +385,7 @@ class MakeAPIController extends ApiGuardController
                         $set->exception       = $temp->exception;
                         $set->order_time      = $dt->toDateTimeString();
                         $set->status_id       = $temp->status_id;
+                        $set->quantity        = $quantity;
                         $set->save();
                     }
                 }
@@ -424,7 +427,7 @@ class MakeAPIController extends ApiGuardController
     public function cancel(){
         $status = Input::all();
         
-        $order = Orderdetaill::select('status','message')->where('status','=', 6)->get();
+        $order = Orderdetail::select('status_id','message')->where('status_id','=', 6)->get();
         $output = array("order" => $order);
         return Response::json($output);
     }
@@ -775,7 +778,7 @@ class MakeAPIController extends ApiGuardController
             ->select('order.id as voucher_no','tables.table_no as table_name','rooms.room_name')
             ->whereIn('order.id',$voucherArray)
             ->get()->toArray();
-
+    
         // $orderDetails      = Orderdetail::leftjoin('order','order.id','=','order_details.order_id')
         //     ->leftjoin('items','items.id','=','order_details.item_id')
         //     ->leftjoin('order_setmenu_detail','order_setmenu_detail.order_detail_id','=','order_details.id')
@@ -794,7 +797,16 @@ class MakeAPIController extends ApiGuardController
         //     ->where('order_setmenu_detail.waiter_status',NULL)            
         //     ->get()->toArray(); 
 
-        $getOrderDetails     = DB::select("SELECT i.name as item_name,sm.set_menus_name,od.id,od.order_id,od.order_detail_id,ot.type as order_type, od.status_id as status,od.cooking_time,od.message,osd.item_id as set_item_id,od.cancel_status FROM order_details as od  LEFT JOIN items as i ON i.id = od.item_id LEFT JOIN order_setmenu_detail as osd ON osd.order_detail_id = od.id LEFT JOIN set_menu as sm ON sm.id = osd.setmenu_id LEFT JOIN order_type as ot ON ot.id = od.order_type_id WHERE od.status_id = 3 OR od.status_id = 6 OR osd.status_id = 3 OR osd.status_id = 6 AND od.cancel_status = NULL OR od.waiter_status = NULL OR osd.cancel_status = NULL OR osd.waiter_status = NULL  ");
+        $getOrderDetails     = DB::select("SELECT i.name as item_name,sm.set_menus_name,od.id,od.order_id,
+                                od.order_detail_id,ot.type 
+                            as order_type, od.status_id as status,od.cooking_time,od.message,osd.item_id 
+                            as set_item_id,od.cancel_status FROM order_details as od  LEFT JOIN items 
+                            as i ON i.id = od.item_id LEFT JOIN order_setmenu_detail 
+                            as osd ON osd.order_detail_id = od.id LEFT JOIN set_menu 
+                            as sm ON sm.id = osd.setmenu_id LEFT JOIN order_type 
+                            as ot ON ot.id = od.order_type_id WHERE od.status_id = 3 OR od.status_id = 6 
+                            OR osd.status_id = 3 OR osd.status_id = 6 AND od.cancel_status = NULL 
+                            OR od.waiter_status = NULL OR osd.cancel_status = NULL OR osd.waiter_status = NULL  ");
         $orderDetails = array();
         foreach($getOrderDetails as $order){
 
@@ -845,23 +857,22 @@ class MakeAPIController extends ApiGuardController
         $take               = json_decode($tempRaw);
         $waiter_id          = $take->waiter_id;
         $order_detail_ids   = $take->order_detail_id;
-        
+        $status             = StatusConstance::ORDER_DETAIL_DELIEVERED_STATUS;
         foreach($order_detail_ids as $order_detail_id){
 
             if($order_detail_id->set_id == "null"){
                 $order_details                  = Orderdetail::where('id',$order_detail_id->detail_id)->first();
 
-                $order_details->status_id       = 4;
+                $order_details->status_id       = $status;
                 $order_details->waiter_id       = $waiter_id;
                 $order_details->waiter_status   = "take";
                 $order_details->save();
             }else{
-    
                 $order_setmenu_detail = OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id->detail_id)
                 ->where('setmenu_id','=',$order_detail_id->set_id)
                 ->where('item_id','=',$order_detail_id->set_item_id)->first();   
 
-                $order_setmenu_detail->status_id = 4;
+                $order_setmenu_detail->status_id = $status;
                 $order_setmenu_detail->waiter_id = $waiter_id;
                 $order_setmenu_detail->waiter_status = "take";
                 $order_setmenu_detail->save();
@@ -875,7 +886,7 @@ class MakeAPIController extends ApiGuardController
                 $order_setmenu_with_status      = DB::table('order_setmenu_detail')
                     ->where('order_detail_id',$order_detail_id->detail_id)
                     ->where('setmenu_id',$order_detail_id->set_id)
-                    ->where('status_id','=',4)
+                    ->where('status_id','=',$status)
                     ->get();
                 $count_with_status              = count($order_setmenu_with_status);
 
