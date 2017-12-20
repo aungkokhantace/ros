@@ -592,6 +592,8 @@ class SaleSummaryReportController extends Controller
         Excel::create('YearlySaleReport', function($excel)use($orders) {
             $excel->sheet('YearlySale Report', function($sheet)use($orders) {
                 $sheet->fromArray($orders);
+                $sum_quantity = 0;
+                $sum_extra = 0;
                 $sum_amount=0;
                 $sum_payment=0;
                 $sum_refund=0;
@@ -599,16 +601,20 @@ class SaleSummaryReportController extends Controller
                 $sum_tax=0;
                 $sum_discount=0;
                 $sum_foc=0;
+                $room_charge = 0;
                 foreach($orders as $order){
+                    $sum_quantity   += $order->Quantity;
                     $sum_amount     += $order->Amount;
                     $sum_payment    += $order->PayAmount;
+                    $sum_extra      += $order->Extra;
                     $sum_refund     += $order->RefundAmount;
                     $sum_service    += $order->ServiceAmount;
                     $sum_tax        += $order->TaxAmount;
                     $sum_discount   += $order->DiscountAmount;
                     $sum_foc        += $order->FocAmount;
+                    $room_charge    += $order->RoomCharge;
                 }
-                $sheet->appendRow(array('Total',$sum_amount,$sum_payment,$sum_refund,$sum_service,$sum_tax,$sum_discount,$sum_foc));
+                $sheet->appendRow(array('Total','','',$sum_quantity,$sum_amount,$sum_payment,$sum_refund,$sum_service,$sum_tax,$room_charge,$sum_foc,$sum_discount));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
                 });

@@ -166,8 +166,20 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         $orders = Orderdetail::
             leftjoin('order', 'order.id', '=', 'order_details.order_id')
             ->leftjoin('users','users.id','=','order.user_id')
-            ->select('order.id as Invoice_id',DB::raw('DATE_FORMAT(order.order_time,"%d-%m-%Y")as Date'),
-                'users.user_name as Staff',DB::raw('SUM(order_details.quantity) as Quantity'),'order.all_total_amount as Amount')
+            ->select('order.id as Invoice_id',
+            DB::raw('DATE_FORMAT(order.order_time,"%d-%m-%Y")as Date'),
+                'users.user_name as Staff',
+                DB::raw('SUM(order_details.quantity) as Quantity'),
+                'order.all_total_amount as Amount',
+                'order.payment_amount as PayAmount',
+                'order.total_extra_price as Extra',
+                'order.refund as RefundAmount',
+                'order.service_amount as ServiceAmount',
+                'order.tax_amount as TaxAmount',
+                'order.room_charge as RoomCharge',
+                'order.foc_amount as FocAmount',
+                'order.total_discount_amount as DiscountAmount'
+                )
             ->whereYear('order.order_time','=',$year)
             ->where('order.status',2)
             ->where('order_details.deleted_at',NULL)
