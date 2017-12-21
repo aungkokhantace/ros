@@ -16,6 +16,6 @@ class OrderTypeTableSeeder extends Seeder
         DB::table('order_type')->insert([
         	'id' =>'2',
         	'type'=>'Parcek',
-        ])
+        ]);
     }
 }

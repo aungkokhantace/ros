@@ -140,7 +140,7 @@ class moduleTableSeeder extends Seeder
             'created_by'=>'1',
         ]);
         DB::table('modules')->insert([
-            'id'=>'22',
+            'id'=>'23',
             'module'=>'Log',
             'view'=>'cashier',
             'created_by'=>'1',
