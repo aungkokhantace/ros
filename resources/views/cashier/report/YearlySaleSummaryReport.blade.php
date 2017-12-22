@@ -74,15 +74,14 @@
                         <thead class="thead_report">
                         <tr class="report-th">
                             <th>Year</th>
-                            <th>Total Extra Price</th>
                             <th>Total Discount Amount</th>
-                            <th>Total Price</th>
-                            <th>Total Room Charge</th>
-                            <th>Total Service Amount</th>
                             <th>Total Tax Amount</th>
+                            <th>Total Service Amount</th>
                             <th>Total FOC Amount</th>
+                            <th>Total Room Charge</th>
+                            <th>Total Extra Price</th>
+                            <th>Total Price</th>
                             <th>Total All Amount</th>
-                            <th>Total Payment Amount</th>
                             <th>View Detail</th>
                         </tr>
                         </thead>
@@ -100,15 +99,14 @@
                         @foreach($orders as $order)
                             <tr class="tr-row active">
                                 <td>{{ $order->Year }}</td>
-                                <td class="money-align">{{ number_format($order->ExtraAmount) }}</td>
                                 <td class="money-align">{{ number_format($order->DiscountAmount) }}</td>
-                                <td class="money-align">{{ number_format($order->PriceAmount) }}</td>
-                                <td class="money-align">{{ number_format($order->RoomAmount) }}</td>
-                                <td class="money-align">{{ number_format($order->ServiceAmount) }}</td>
                                 <td class="money-align">{{ number_format($order->TaxAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->ServiceAmount) }}</td>
                                 <td class="money-align">{{ number_format($order->FocAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->RoomAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->ExtraAmount) }}</td>
+                                <td class="money-align">{{ number_format($order->PriceAmount) }}</td>
                                 <td class="money-align">{{ number_format($order->Amount) }}</td>
-                                <td class="money-align">{{ number_format($order->PayAmount) }}</td>
                                 <td>
                                     <a href="{{'/Cashier/yearlySale/'.$order->Year}}">View Detail</a>
                                 </td>
@@ -129,15 +127,14 @@
                             <td class="money-align" colspan="1">
                                 Total Amount
                             </td>
-                            <td class="money-align">{{number_format($sum_extra)}}</td>
                             <td class="money-align">{{number_format($sum_discount)}}</td>
-                            <td class="money-align">{{number_format($sum_price)}}</td>
-                            <td class="money-align">{{number_format($sum_room)}}</td>
-                            <td class="money-align">{{number_format($sum_service)}}</td>
                             <td class="money-align">{{number_format($sum_tax)}}</td>
+                            <td class="money-align">{{number_format($sum_service)}}</td>
                             <td class="money-align">{{number_format($sum_foc)}}</td>
+                            <td class="money-align">{{number_format($sum_room)}}</td>
+                            <td class="money-align">{{number_format($sum_extra)}}</td>
+                            <td class="money-align">{{number_format($sum_price)}}</td>
                             <td class="money-align">{{number_format($sum_amount)}}</td>
-                            <td class="money-align">{{number_format($sum_payment)}}</td>
                             <td></td>
                         </tr>
                     </table>

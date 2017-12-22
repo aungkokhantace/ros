@@ -47,16 +47,21 @@ class SaleReportController extends Controller
                 $sum_tax=0;
                 $sum_discount=0;
                 $sum_foc=0;
+                $sum_room = 0;
+                $sum_extra = 0;
+                $sum_quantity = 0;
                 foreach($orders as $order){
+                    $sum_discount   += $order->Discount;
+                    $sum_tax        += $order->Tax;
+                    $sum_service    += $order->Service;
+                    $sum_foc        += $order->Foc;
                     $sum_amount     += $order->Amount;
                     $sum_payment    += $order->Payment;
-                    $sum_refund     += $order->Refund;
-                    $sum_service    += $order->Service;
-                    $sum_tax        += $order->Tax;
-                    $sum_discount   += $order->Discount;
-                    $sum_foc        += $order->Foc;
+                    $sum_room       += $order->RoomCharge;
+                    $sum_extra      += $order->Extra;
+                    $sum_quantity   += $order->Quantity;
                 }
-                $sheet->appendRow(array('', '','','Total',$sum_amount,$sum_payment,$sum_refund,$sum_service,$sum_tax,$sum_discount,$sum_foc));
+                $sheet->appendRow(array('', '','Total',$sum_quantity,$sum_discount,$sum_tax,$sum_service,$sum_room,$sum_foc,$sum_extra,$sum_amount));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
                 });
@@ -103,17 +108,22 @@ class SaleReportController extends Controller
                 $sum_tax=0;
                 $sum_discount=0;
                 $sum_foc=0;
+                $sum_quantity = 0;
+                $sum_room = 0;
+                $sum_extra = 0;
                 foreach($orders as $order){
                     $sum_amount     += $order->Amount;
-                    $sum_payment    += $order->Payment;
                     $sum_refund     += $order->Refund;
                     $sum_service    += $order->Service;
                     $sum_tax        += $order->Tax;
                     $sum_discount   += $order->Discount;
                     $sum_foc        += $order->Foc;
+                    $sum_quantity   += $order->Quantity;
+                    $sum_room       += $order->RoomCharge;
+                    $sum_extra      += $order->Extra;
                 }
                 $sheet->appendRow(array(
-                    '', '','','Total',$sum_amount,$sum_payment,$sum_refund,$sum_service,$sum_tax,$sum_discount,$sum_foc
+                    '', '','Total',$sum_quantity,$sum_discount,$sum_tax,$sum_service,$sum_room,$sum_foc,$sum_extra,$sum_amount
                 ));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');

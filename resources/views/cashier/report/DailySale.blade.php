@@ -29,13 +29,13 @@
                             <th>Date</th>
                             <th>Staff</th>
                             <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Payment</th>
-                            <th>Refund</th>
-                            <th>Service</th>
-                            <th>Tax</th>
                             <th>Discount</th>
+                            <th>Tax</th>
+                            <th>Service</th>
                             <th>FOC</th>
+                            <th>Room Charge</th>
+                            <th>Extra</th>
+                            <th>Price</th>
                             <th>View Detail</th>
                             <th>View Payment</th>
                         </tr>
@@ -49,6 +49,8 @@
                             $discount   = 0;
                             $foc        = 0;
                             $total = 0;
+                            $room       = 0;
+                            $extra      = 0;
                         ?>
                         @foreach($orders as $order)
                         <tr class="tr-row">
@@ -56,36 +58,41 @@
                             <td>{{ $order->Date }}</td>
                             <td>{{ $order->Staff }}</td>
                             <td>{{ $order->Quantity}}</td>
-                            <td class="money-align">{{ number_format($order->Amount)}}</td>
-                            <td class="money-align">{{ number_format($order->Payment)}}</td>
-                            <td class="money-align">{{ number_format($order->Refund)}}</td>
-                            <td class="money-align">{{ number_format($order->Service)}}</td>
-                            <td class="money-align">{{ number_format($order->Tax)}}</td>
                             <td class="money-align">{{ number_format($order->Discount)}}</td>
+                            <td class="money-align">{{ number_format($order->Tax)}}</td>
+                            <td class="money-align">{{ number_format($order->Service)}}</td>
                             <td class="money-align">{{ number_format($order->Foc)}}</td>
+                            <td class="money-align">{{ number_format($order->Room)}}</td>
+                            <td class="money-align">{{ number_format($order->Extra)}}</td>
+                            <td class="money-align">{{ number_format($order->Amount)}}</td>
+                            
+                            
+                            
+                            
                             <td><a href="/Cashier/invoice/detail/{{ $order->Invoice_id }}">View</a></td>
                             <td><a href="/Cashier/invoice/paid/{{ $order->Invoice_id }}">View</a></td>
                         </tr>
                         <?php 
-                            $total      += $order->Amount; 
-                            $payment    += $order->Payment; 
+                            $total      += $order->Amount;
                             $refund     += $order->Refund;  
                             $service    += $order->Service;
                             $tax        += $order->Tax;
                             $discount   += $order->Discount;
                             $foc        += $order->Foc;
+                            $room       += $order->Room;
+                            $extra      += $order->Extra;
                         ?>
                         @endforeach
                         <tr>
                             <td colspan="3"></td>
                             <td class="money-align">All Total</td>
-                            <td class="money-align">{{number_format($total)}}</td>
-                            <td class="money-align">{{number_format($payment)}}</td>
-                            <td class="money-align">{{number_format($refund)}}</td>
-                            <td class="money-align">{{number_format($service)}}</td>
-                            <td class="money-align">{{number_format($tax)}}</td>
                             <td class="money-align">{{number_format($discount)}}</td>
+                            <td class="money-align">{{number_format($tax)}}</td>
+                            <td class="money-align">{{number_format($service)}}</td>
                             <td class="money-align">{{number_format($foc)}}</td>
+                            <td class="money-align">{{number_format($room)}}</td>
+                            <td class="money-align">{{number_format($extra)}}</td>
+                            <td class="money-align">{{number_format($total)}}</td>
                             <td></td>
                             <td></td>
                         </tr>

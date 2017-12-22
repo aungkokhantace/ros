@@ -29,15 +29,13 @@
                             <th>Date</th>
                             <th>Staff</th>
                             <th>Quantity</th>
-                            <th>Amount</th>
-                            <th>Payment</th>
-                            <th>Extra</th>
-                            <th>Refund</th>
-                            <th>Service</th>
-                            <th>Tax</th>
-                            <th>Room Charge</th>
-                            <th>Foc</th>
                             <th>Discount</th>
+                            <th>Tax</th>
+                            <th>Service</th>
+                            <th>Foc</th>
+                            <th>Room Charge</th>
+                            <th>Extra</th>
+                            <th>Total Amount</th>  
                         </tr>
                         </thead>
                         <?php
@@ -58,15 +56,13 @@
                             <td>{{ $order->Date }}</td>
                             <td>{{ $order->Staff }}</td>
                             <td>{{ $order->Quantity}}</td>
-                            <td class="money-align">{{ number_format($order->Amount)}}</td>
-                            <td class="money-align">{{ number_format($order->PayAmount)}}</td>
-                            <td class="money-align">{{ number_format($order->Extra)}}</td>
-                            <td class="money-align">{{ number_format($order->RefundAmount)}}</td>
-                            <td class="money-align">{{ number_format($order->ServiceAmount)}}</td>
-                            <td class="money-align">{{ number_format($order->TaxAmount)}}</td>
-                            <td class="money-align">{{ number_format($order->RoomCharge)}}</td>
-                            <td class="money-align">{{ number_format($order->FocAmount)}}</td>
                             <td class="money-align">{{ number_format($order->DiscountAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->TaxAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->ServiceAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->FocAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->RoomCharge)}}</td>
+                            <td class="money-align">{{ number_format($order->Extra)}}</td>
+                            <td class="money-align">{{ number_format($order->Amount)}}</td>    
                         </tr>
                         <?php 
                         $total +=  $order->Amount; 
@@ -83,15 +79,13 @@
                         <tr>
                             <td colspan="3"></td>
                             <td class="money-align">Total Price</td>
-                            <td class="money-align">{{number_format($total)}}</td>
-                            <td class="money-align">{{number_format($total_payment)}}</td>
-                            <td class="money-align">{{number_format($total_extra)}}</td>
-                            <td class="money-align">{{number_format($total_refund)}}</td>
-                            <td class="money-align">{{number_format($total_service)}}</td>
-                            <td class="money-align">{{number_format($total_tax)}}</td>
-                            <td class="money-align">{{number_format($total_room)}}</td>
-                            <td class="money-align">{{number_format($total_foc)}}</td>
                             <td class="money-align">{{number_format($total_discount)}}</td>
+                            <td class="money-align">{{number_format($total_tax)}}</td>
+                            <td class="money-align">{{number_format($total_service)}}</td>
+                            <td class="money-align">{{number_format($total_foc)}}</td>
+                            <td class="money-align">{{number_format($total_room)}}</td>
+                            <td class="money-align">{{number_format($total_extra)}}</td>
+                            <td class="money-align">{{number_format($total)}}</td>
                         </tr>
                     </table>
                 </div>

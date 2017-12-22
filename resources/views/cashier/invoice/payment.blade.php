@@ -422,6 +422,7 @@
 
         <script>
             $('#btn-payment').on('click',function(e){
+                alert('eeeeee');
                 e.preventDefault();
                 var form = $(this).parents('form');
                 swal({
@@ -455,9 +456,9 @@
                 return false;
             });
 
-            function submitForm() {
-                document.forms["myForm"].submit();
-            }
+            // function submitForm() {
+            //     document.forms["myForm"].submit();
+            // }
 
             function socketSendByOrder() {
                 var invoiceID        = document.getElementsByName("id")[0].value;
@@ -471,11 +472,11 @@
                 var socketValue      = {order_payment : 'order_payment'};
                 socketEmit(socketKey,socketValue);
             }
-            var id      = document.getElementsByName("id")[0].value;
-            var url     = "/Cashier/invoice/paid/ajaxPaymentRequest/" + id;//Json Callback Url
-            var div     = "autoDiv";//Put div id inside html response
+            // var id      = document.getElementsByName("id")[0].value;
+            // var url     = "/Cashier/invoice/paid/ajaxPaymentRequest/" + id;//Json Callback Url
+            // var div     = "autoDiv";//Put div id inside html response
             var edit      = "edit";
-            socketOn(edit,url,div);
+            socketOnPayment(edit);
         </script>
     </div>
 @endsection
