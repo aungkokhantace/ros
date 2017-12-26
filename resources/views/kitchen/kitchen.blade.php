@@ -249,7 +249,7 @@
                 $(document).ready(function(){
                     swal({
                         title: "Are you sure?",
-                        text: "You will not be able to recover this payment!",
+                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
                         confirmButtonColor: "#86CCEB",

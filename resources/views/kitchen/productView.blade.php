@@ -295,73 +295,121 @@
                 var url = 'getTableView?view='+ $(this).value();
             })
             $('#autoDiv').on('click', '.start_duration_item',function(e){
-                // window.location.href = "/Kitchen/productView/CookingItem/" +$(this).attr('id');
                 var itemID      = $(this).attr('id');
-                $.ajax({
-                    type: 'GET',
-                    url: '/Kitchen/productView/CookingItem/' + itemID,
-                    success: function (Response) {
-                        var returnResp        = Response.message;
-                        if (returnResp == 'success') {
-                            //Socket Emit
-                            var socketKey        = "start_cooking";
-                            var socketValue      = "start_cooking";
-                            socketEmit(socketKey,socketValue)
-                            // var socket      = io.connect( 'http://'+window.location.hostname+':3333' );
-                            // socket.emit('start_cooking', 'start_cooking');
-                        }
-                    }
+
+                $(document).ready(function  (){
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this payment!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+                        if (isConfirm) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/productView/CookingItem/' + itemID,
+                                success: function (Response) {
+                                    var returnResp        = Response.message;
+                                    if (returnResp == 'success') {
+                                        //Socket Emit
+                                        var socketKey        = "start_cooking";
+                                        var socketValue      = "start_cooking";
+                                        socketEmit(socketKey,socketValue);
+                                        swal.close();
+                                    }
+                                }
+                            });
+                        };
+                    });
                 });
             });
             $('#autoDiv').on('click','.complete_duration_item', function (e) {
                 // window.location.href = "/Kitchen/productView/CookedItem/" + $(this).attr('id');
                 var itemID      = $(this).attr('id');
                 $(document).ready(function(){
-                    $.ajax({
-                        type: 'GET',
-                        url: '/Kitchen/productView/CookedItem/' + itemID,
-                        success: function (Response) {
-                            var returnResp        = Response.message;
-                            if (returnResp == 'success') {
-                                //Socket Emit
-                                var socketKey        = "cooking_complete";
-                                var socketValue      = "cooking_complete";
-                                socketEmit(socketKey,socketValue)
-                                // var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                                // socket.emit('cooking_complete','cooking_complete');
-                            }
-                        }
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this item!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+                        if (isConfirm) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/productView/CookedItem/' + itemID,
+                                success: function (Response) {
+                                    var returnResp        = Response.message;
+                                    if (returnResp == 'success') {
+                                        //Socket Emit
+                                        var socketKey        = "cooking_complete";
+                                        var socketValue      = "cooking_complete";
+                                        socketEmit(socketKey,socketValue);
+                                        swal.close();
+                                    }
+                                }
+                            });
+                        };
                     });
                 });
             });
             $('#autoDiv').on('click','.start_duration_setmenu',function(e){
-                // window.location.href = "/Kitchen/productView/CookingSetMenuItem/" +$(this).attr('id');
                 var itemID      = $(this).attr('id');
-                $.ajax({
-                    type: 'GET',
-                    url: '/Kitchen/productView/CookingSetMenuItem/' + itemID,
-                    success: function (Response) {
-                        var returnResp        = Response.message;
-                        if (returnResp == 'success') {
-                            var socket      = io.connect( 'http://'+window.location.hostname+':3333' );
-                            socket.emit('start_cooking', 'start_cooking');
-                        }
-                    }
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this item!",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#86CCEB",
+                    confirmButtonText: "Confirm",
+                    closeOnConfirm: false
+                }, function(isConfirm){
+                    if (isConfirm) {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/Kitchen/productView/CookingSetMenuItem/' + itemID,
+                            success: function (Response) {
+                                var returnResp        = Response.message;
+                                if (returnResp == 'success') {
+                                    var socket      = io.connect( 'http://'+window.location.hostname+':3333' );
+                                    socket.emit('start_cooking', 'start_cooking');
+                                    swal.close();
+                                }
+                            }
+                        });
+                    };
                 });
             });
             $('#autoDiv').on('click','.complete_duration_setmenu',function(e){
-                // window.location.href = "/Kitchen/productView/CookedSetMenuItem/" +$(this).attr('id');
                 var itemID      = $(this).attr('id');
-                $.ajax({
-                    type: 'GET',
-                    url: '/Kitchen/productView/CookedSetMenuItem/' + itemID,
-                    success: function (Response) {
-                        var returnResp        = Response.message;
-                        if (returnResp == 'success') {
-                            var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                            socket.emit('cooking_complete','cooking_complete');
-                        }
-                    }
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this item!",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#86CCEB",
+                    confirmButtonText: "Confirm",
+                    closeOnConfirm: false
+                }, function(isConfirm){
+                    if (isConfirm) {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/Kitchen/productView/CookedSetMenuItem/' + itemID,
+                            success: function (Response) {
+                                var returnResp        = Response.message;
+                                if (returnResp == 'success') {
+                                    var socket = io.connect( 'http://'+window.location.hostname+':3333' );
+                                    socket.emit('cooking_complete','cooking_complete');
+                                    swal.close();
+                                }
+                            }
+                        });
+                    };
                 });
             });
 
