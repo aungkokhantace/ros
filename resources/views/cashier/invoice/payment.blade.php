@@ -422,7 +422,6 @@
 
         <script>
             $('#btn-payment').on('click',function(e){
-                alert('eeeeee');
                 e.preventDefault();
                 var form = $(this).parents('form');
                 swal({
