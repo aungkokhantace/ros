@@ -242,4 +242,114 @@ array ထဲ ထည္႕ေပါင္းလုိက္တယ္။</li>
             </div>
         </div>
     </div><!-- End Collapse Section -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading" role="tab" id="headingTable">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTable" aria-expanded="true" aria-controls="collapseOne">
+                <p>URL - http://localhost:8080/api/v1/order_table</p>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTable" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTable">
+            <div class="panel-body">
+                <h4>URL</h4>
+                <b>http://localhost:8080/api/v1/order_table</b><br />
+                <p>Method -> POST</p><p>&nbsp;</p>
+                <h4>Description</h4>
+                <p>
+                ယခု Api က table id ကေနတစ္ဆင့္ order ေတြ ျပန္ခ်ေပးတာျဖစ္တယ္။
+                </p>
+                <ol>
+                    <li>Tablet ကေန ဆာဗာဘက္ကုိ site_activation_key ပုိ႔ေပးလုိက္တယ္။</li>
+                    <li>မွားရင္ Fail message response ျပန္တယ္</li>
+                    <li>မွန္ရင္ table id ကုိယူၿပီး order id json ျပန္ထုတ္ေပးတယ္။</li>
+                </ol>
+                <p>&nbsp;</p>
+                <h4>Sample Input String</h4>
+                <div class="sample-input">
+                    <table style="height: 44px; width: 451px;">
+                    <tbody>
+                    <tr>
+                    <td style="width: 215.383px;"><strong>Key</strong></td>
+                    <td style="width: 219.617px;">Value</td>
+                    </tr>
+                    <tr>
+                    <td style="width: 215.383px;">site_activation_key</td>
+                    <td style="width: 219.617px;">api</td>
+                    </tr>
+                    <tr>
+                    <td style="width: 215.383px;">table_id</td>
+                    <td style="width: 219.617px;">1</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                </div>
+                <p>&nbsp;</p>
+                <h4>Sample Output Json</h4>
+                <div class="sample-input">
+                    <pre>
+                    {
+                        "order_id": "1-0000001"
+                    }
+                    </pre> 
+                </div><!-- End sample-input -->
+            </div>
+        </div>
+    </div><!-- End Collapse Section -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading" role="tab" id="headingRoom">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseRoom" aria-expanded="true" aria-controls="collapseOne">
+                <p>URL - http://localhost:8080/api/v1/order_room</p>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseRoom" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingRoom">
+            <div class="panel-body">
+                <h4>URL</h4>
+                <b>http://localhost:8080/api/v1/order_room</b><br />
+                <p>Method -> POST</p><p>&nbsp;</p>
+                <h4>Description</h4>
+                <p>
+                ယခု Api က room id ကေနတစ္ဆင့္ order ေတြ ျပန္ခ်ေပးတာျဖစ္တယ္။
+                </p>
+                <ol>
+                    <li>Tablet ကေန ဆာဗာဘက္ကုိ site_activation_key ပုိ႔ေပးလုိက္တယ္။</li>
+                    <li>မွားရင္ Fail message response ျပန္တယ္</li>
+                    <li>မွန္ရင္ room id ကုိယူၿပီး order id json ျပန္ထုတ္ေပးတယ္။</li>
+                </ol>
+                <p>&nbsp;</p>
+                <h4>Sample Input String</h4>
+                <div class="sample-input">
+                    <table style="height: 44px; width: 451px;">
+                    <tbody>
+                    <tr>
+                    <td style="width: 215.383px;"><strong>Key</strong></td>
+                    <td style="width: 219.617px;">Value</td>
+                    </tr>
+                    <tr>
+                    <td style="width: 215.383px;">site_activation_key</td>
+                    <td style="width: 219.617px;">api</td>
+                    </tr>
+                    <tr>
+                    <td style="width: 215.383px;">room_id</td>
+                    <td style="width: 219.617px;">1</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                </div>
+                <p>&nbsp;</p>
+                <h4>Sample Output Json</h4>
+                <div class="sample-input">
+                    <pre>
+                    {
+                        "room_table": "1-0000001"
+                    }
+                    </pre> 
+                </div><!-- End sample-input -->
+            </div>
+        </div>
+    </div><!-- End Collapse Section -->
 </div><!-- End Panel Group -->

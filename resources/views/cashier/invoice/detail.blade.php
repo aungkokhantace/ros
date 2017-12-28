@@ -73,16 +73,15 @@
 
                                 @foreach($addon as $add)
                                     @if($detail->order_detail_id == $add['order_detail_id'])
-                                        {{ $add['food_name']}}
                                         <tr class="i-title">
-                                            <td></td>
+                                            <td>{{ $add['quantity']}}</td>
                                             <td>{{ $add['food_name']}}</td>
-                                            <td></td>
                                             <td class="text-right">{{ $add['amount']}}</td>
+                                            <td class="text-right">{{number_format($add['quantity'] * $add['amount'])}}</td>
                                         </tr>
                                     @endif
 
-                                @endforeach 
+                                @endforeach  
 
                             @endforeach
                             <tr class="tr-bottom-dashed i-title">
@@ -115,6 +114,10 @@
                                 <td class="text-right">{{ $orders->total_discount_amount }}</td>
                             </tr>
                             
+                            <tr class="tr-bottom-dashed i-title">
+                                <td colspan="3">FOC</td>
+                                <td class="text-right">{{ $orders->foc_amount }}</td>
+                            </tr>
                             <tr class="tr-bottom-dashed i-title">
                                 <td colspan="3">Net Amount</td>
                                 <td class="text-right">{{ number_format($orders->all_total_amount) }} </td>

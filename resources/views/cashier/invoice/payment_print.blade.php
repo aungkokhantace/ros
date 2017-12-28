@@ -65,10 +65,10 @@
                             @foreach($amount as $am)
                                 @if($detail->order_detail_id == $am['order_detail_id'])
                                 <tr style="font-size:13px;line-height:15px;">
-                                    <td style="height:15px;"></td>
+                                    <td style="height:15px;">{{ $am['quantity']}}</td>
                                     <td>{{ $am['food_name']}}</td>
-                                    <td style="height:15px;"></td>
                                     <td style="text-align:right;height:15px;">{{ $am['amount']}}</td>
+                                    <td style="text-align:right;height:15px;">{{ $am['quantity'] * $am['amount'] }}</td>
                                 </tr>
                                 @endif
                             @endforeach 
@@ -95,6 +95,11 @@
                         <tr style="border-bottom:1px dashed black;">
                             <td colspan="3" style="height:25px;">Discount</td>
                             <td style="text-align:right;height:25px;">{{ $order->total_discount_amount }}</td>
+                        </tr>
+
+                        <tr style="border-bottom:1px dashed black;">
+                            <td colspan="3" style="height:25px;">FOC</td>
+                            <td style="text-align:right;height:25px;">{{ $order->foc_amount }}</td>
                         </tr>
                         
                         @if(count($rooms) > 0)
