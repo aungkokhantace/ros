@@ -26,7 +26,7 @@
                     </td>
                     <td>
                     @if($order->status == 2)
-                        <button type="button" class="btn btn-warning btn-print" id = '{{$order->id}}' data-toggle="modal" data-target="#printModal" data-id="{{$order->id}}">Print</button> 
+                        <button type="button" class="btn btn-warning btn-print" id = '{{$order->id}}' data-toggle="modal" data-target="#printModal" data-id="{{$order->id}}" onclick="printInvoice('{{$order->id}}')">Print</button> 
                     @else
                         <button type="submit" class="btn btn-danger order-cancel" id = '{{$order->id}}' data-toggle="modal" data-target="#myModal" data-id="{{$order->id}}">Cancel</button>
                     @endif

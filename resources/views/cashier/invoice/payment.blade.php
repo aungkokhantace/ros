@@ -471,11 +471,10 @@
                 var socketValue      = {order_payment : 'order_payment'};
                 socketEmit(socketKey,socketValue);
             }
-            // var id      = document.getElementsByName("id")[0].value;
-            // var url     = "/Cashier/invoice/paid/ajaxPaymentRequest/" + id;//Json Callback Url
-            // var div     = "autoDiv";//Put div id inside html response
+
+            var payment_id = document.getElementsByName("id")[0].value;
             var edit      = "edit";
-            socketOnPayment(edit);
+            socketOnPayment(edit,payment_id);
         </script>
     </div>
 @endsection

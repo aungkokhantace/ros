@@ -158,12 +158,19 @@
 
     });
 
-    $('.btn-print').on('click',function(e){
-        e.preventDefault();
-        var id      = this.id;
+    // $('.btn-print').on('click',function(e){
+    //     // alert('hihi');
+    //     e.preventDefault();
+    //     var id      = this.id;
+    //     var modal   = id + '-print';
+    //     $('#' + modal).modal('show');
+    // });
+
+    function printInvoice(invoice) {
+        var id      = invoice;
         var modal   = id + '-print';
         $('#' + modal).modal('show');
-    });
+    }
 
     function printElement(e) {
         var ifr = document.createElement('iframe');

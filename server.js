@@ -104,8 +104,8 @@ io.on('connection', function (socket) {
 
   //Socket Fire From Order Edit
   socket.on('order_edit', function( data ) {
-    console.log('Order Edit');
+    console.log(data);
 
-    io.sockets.emit( 'edit','edit');
+    io.sockets.emit( 'edit',data);
   });
 });

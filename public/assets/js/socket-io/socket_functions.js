@@ -30,23 +30,25 @@ function socketOn(name,url,divID) {
     });
 }
 
-function socketOnPayment(name) {
+function socketOnPayment(name,id) {
     var port    = getSocketPort();
     var socket  = io.connect( 'http://'+window.location.hostname  +':' + port);
      socket.on( name, function( data ) {
-        swal({
-            title: "Order Update !",
-            text: "New Order Update !",
-            type: "success",
-            showCancelButton: false,
-            confirmButtonColor: "#86CCEB",
-            confirmButtonText: "OK",
-            closeOnConfirm: true
-        }, function(isConfirm){
-            if (isConfirm) {
-                location.reload();
-            }
-        });
+         if (id == data) {
+            swal({
+                title: "Order Update !",
+                text: "New Order Update !",
+                type: "success",
+                showCancelButton: false,
+                confirmButtonColor: "#86CCEB",
+                confirmButtonText: "OK",
+                closeOnConfirm: true
+            }, function(isConfirm){
+                if (isConfirm) {
+                    location.reload();
+                }
+            });
+         }
     });
 }
 
