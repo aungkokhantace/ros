@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Input;
 use App\RMS\Category\Category;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\Payment\Payment;
+use App\RMS\Item\Continent;
 use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
@@ -154,7 +155,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		->leftjoin('items','items.id','=','order_details.item_id')
 		->leftjoin('set_menu','set_menu.id','=','order_details.setmenu_id')
 		->leftjoin('users','users.id','=','order.user_id')
-		->select('items.name as item_name','set_menu.set_menus_name as set_name','order_details.quantity',
+		->select('items.name as item_name','items.has_continent','items.continent_id','set_menu.set_menus_name as set_name','order_details.quantity',
 				'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id',
 				'users.user_name','order.id',
 			'order_details.amount_with_discount')->where('order_id','=',$id)
@@ -333,5 +334,10 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 			$returnedObj['aceplusStatusMessage'] = $e->getMessage();
 			return $returnedObj;
 		}
+	}
+	
+	public function getContinent() {
+		$continent  = Continent::select('id','name')->get();
+		return $continent;
 	}
 }

@@ -43,6 +43,13 @@
                             <td class="text-center">
                                 @if(isset($detail->item_name))
                                     {{$detail->item_name}}
+                                     @if ($detail->has_continent)
+                                        @foreach($continent as $con)
+                                            @if ($detail->continent_id == $con->id)
+                                                ({{ $con->name }})
+                                            @endif
+                                        @endforeach
+                                    @endif
                                 @else
                                     {{ $detail->set_name }}
                                 @endif

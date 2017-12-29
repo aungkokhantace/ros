@@ -44,6 +44,7 @@ class InvoiceController extends Controller
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoice();
+        $continent  = $this->InvoiceRepository->getContinent();
         //Get Order with table and room
         $orders     = array();
         foreach($orderRepo as $key => $order) {
@@ -80,7 +81,7 @@ class InvoiceController extends Controller
         }
         $roleArr['role'][]    = $role_id;
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','page'));
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','continent'));
 
     } 
 
@@ -725,6 +726,7 @@ class InvoiceController extends Controller
         $orders = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
+        $continent  = $this->InvoiceRepository->getContinent();
         $addon  = array();
         foreach($add as $dd){
             foreach($dd as $d){
@@ -743,13 +745,14 @@ class InvoiceController extends Controller
         $cashier        = $this->InvoiceRepository->cashier($id);
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         $payments        = $this->InvoiceRepository->getPayment($id);
-        return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','payments'));
+        return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','payments','continent'));
     }
 
     public function invoicePaid($id) {
         $order = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
+        $continent  = $this->InvoiceRepository->getContinent();
         $addon  = array();
         foreach($add as $dd){
             foreach($dd as $d){
@@ -770,7 +773,7 @@ class InvoiceController extends Controller
         $payments        = $this->InvoiceRepository->getPayment($id);
         $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->first();
     
-        return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments'));
+        return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent'));
     }
 
     public function ajaxPaymentRequest($id) {

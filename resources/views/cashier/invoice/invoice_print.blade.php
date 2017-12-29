@@ -46,9 +46,16 @@
                         @foreach($order->order_detail as $detail)
                         <tr style="vertical-align: text-top;">
                             <td style="height:25px;"> {{$detail->quantity }}</td>
-                            <td style="height:25px;">
+                            <td style="height:25px;font-family:zawgyi-one">
                                 @if(isset($detail->item_name))
                                     {{$detail->item_name}}
+                                    @if ($detail->has_continent)
+                                        @foreach($continent as $con)
+                                            @if ($detail->continent_id == $con->id)
+                                                ({{ $con->name }})
+                                            @endif
+                                        @endforeach
+                                    @endif
                                 @else
                                     {{ $detail->set_name }}
                                 @endif
