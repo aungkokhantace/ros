@@ -413,7 +413,7 @@ class syncAPIController extends ApiGuardController
         }
 
         if($key == $activate_key){
-            $discount = DB::select("SELECT amount,type,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date'");
+            $discount = DB::select("SELECT amount,type,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date' AND deleted_at IS NULL");
             $output = array("discount" => $discount);
             return Response::json($output);
         }else{

@@ -304,15 +304,12 @@ class CategoryController extends Controller
 
     function getMaxLevelByGroupID($group_id)
     {
-        $max_level_attr = Category::select('level')
-                        ->whereRaw('level = (select max(`level`) from category)')
-                        ->where('group_id','=',$group_id)
-                        ->first();
-        if (count($max_level_attr) <= 0) {
-            $max_level      = 0;
-        } else {
-            $max_level      = $max_level_attr->level;
-        }   
+        // $max_level_attr = Category::select('level')
+        //                 ->whereRaw('level = (select max(`level`) from category)')
+        //                 ->where('group_id','=',$group_id)
+        //                 ->first();
+        $max_level    = Category::where('group_id','=',$group_id)->max('level');
+           
         return $max_level;
     }
     //To generate category tree for disabling all children
