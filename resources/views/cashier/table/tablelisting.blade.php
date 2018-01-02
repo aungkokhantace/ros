@@ -13,7 +13,8 @@
                 </div>
                 <div class="col-md-9">
                     <div class=" buttons">
-                        <input type="image" class="img_btn" src="../../../assets/images/enable.png" onclick="table_enable();">
+                        <input type="image" class="img_btn" src="../../../assets/images/enable.png" onclick="table_active();">
+                        <input class="img_btn" src="../../../assets/images/disable.png" onclick="table_disable();" type="image">
                         <button type="button"  onclick='table_create();' class="btn btn-default btn-md first_btn">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </button>

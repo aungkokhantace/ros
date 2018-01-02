@@ -110,7 +110,7 @@ class TableController extends Controller
         }
         $tables     = $this->tableRepository->table_inactive($id);
         return redirect()->action('Cashier\Table\TableController@index')
-        ->withMessage(FormatGenerator::message('Fail', 'Table Inactive create ...')); //to redirect listing page
+        ->withMessage(FormatGenerator::message('Success', 'Table Inactive create ...')); //to redirect listing page
     }
 
     //get data from edit form

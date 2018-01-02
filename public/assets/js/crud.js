@@ -219,6 +219,38 @@ function table_edit() {
         window.location = "/Cashier/Table/edit/" + data;
 }
 
+function table_active() {
+    var data = [];
+    $("input[name='table_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one item to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one item to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Table/active/" + data;
+}
+
+function table_disable() {
+    var data = [];
+    $("input[name='table_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one item to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one item to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Table/inactive/" + data;
+}
+
 function item_edit() {
 
     var data = [];
@@ -257,7 +289,37 @@ function room_edit() {
         window.location = "/Cashier/Room/edit/" + data;
 }
 
+function room_enable() {
+    var data = [];
+    $("input[name='room_check']:checked").each(function () {
+        data.push($(this).val());
+    });
 
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one item to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one item to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Room/active/" + data;
+}
+
+function room_disable() {
+    var data = [];
+    $("input[name='room_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one item to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one item to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Room/inactive/" + data;
+}
 
 function sub_menus_edit() {
 

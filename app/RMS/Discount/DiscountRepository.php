@@ -16,6 +16,7 @@ use App\RMS\Item\Item;
 use App\RMS\Discount\DiscountModel;
 use App\RMS\Discount\DiscountLog;
 use App\RMS\ReturnMessage;
+use App\RMS\Item\Continent;
 class DiscountRepository implements DiscountRepositoryInterface
 {
     public function getAllUser()
@@ -143,4 +144,9 @@ class DiscountRepository implements DiscountRepositoryInterface
             return $returnedObj;
         }
     }
+
+    public function getContinent() {
+		$continent  = Continent::select('id','name')->get();
+		return $continent;
+	}
 }
