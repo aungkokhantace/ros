@@ -78,9 +78,9 @@ class syncAPIController extends ApiGuardController
         }
        
         if($key == $activate_key){
-            $category = DB::select("SELECT id,name,status,parent_id,kitchen_id,image FROM category WHERE status = '1' ");
-            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status FROM set_menu WHERE status = '1'");
-            $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item");
+            $category = DB::select("SELECT id,name,status,parent_id,kitchen_id,image FROM category WHERE status = '1' AND deleted_at IS NULL");
+            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status FROM set_menu WHERE status = '1' AND deleted_at IS NULL");
+            $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
         
             $output = array("category" => $category,"set_menu"=>$set_menu,"set_item"=>$set_item);
             return Response::json($output);
@@ -125,7 +125,7 @@ class syncAPIController extends ApiGuardController
            $activate_key = $k->site_activation_key;
         }
         if($key == $activate_key){
-            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' ");
+            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' AND deleted_at IS NULL");
             $output = array("items" => $item);
             return Response::json($output);
         }else{
@@ -560,8 +560,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
-                        $item = DB::select("SELECT id,name,price,status,category_id,mobile_image,image FROM items WHERE status='1' AND deleted_at IS NULL");
-                       
+                        $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' AND deleted_at IS NULL");
                         $returnArr['items'] = $item;
                     }
                 }
