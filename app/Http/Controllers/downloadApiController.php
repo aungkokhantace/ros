@@ -33,6 +33,7 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\BookingTable\BookingTable;
 use App\RMS\BookingRoom\BookingRoom;
+use App\Status\StatusConstance;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -96,7 +97,8 @@ class downloadAPIController extends ApiGuardController
 		$order_id				= $temp['order_id'];
 		$site_activation_key    = Config::all();
 		$activate_key           = 0;
-
+		//Order Extra Status
+		$extra_status 			= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
 		foreach($site_activation_key as $k){
 			$activate_key = $k->site_activation_key;
 		}
@@ -105,7 +107,7 @@ class downloadAPIController extends ApiGuardController
 			$order_raw			= DB::select("SELECT os.*,u.user_name FROM `order` os,`users` u WHERE os.id = '$order_id' AND os.user_id = u.id AND os.deleted_at IS NULL");
 			$order_detail_raw 	= DB::select("SELECT * FROM `order_details` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$order_setmenu_raw	= DB::select("SELECT * FROM `order_setmenu_detail` WHERE deleted_at IS NULL");
-			$order_extra_raw	= DB::select("SELECT extra_id,order_detail_id,quantity,amount FROM `order_extra` WHERE deleted_at IS NULL");
+			$order_extra_raw	= DB::select("SELECT extra_id,order_detail_id,quantity,amount FROM `order_extra` WHERE status = '$extra_status' AND deleted_at IS NULL");
 			$order_table_raw	= DB::select("SELECT order_id,table_id FROM `order_tables` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$order_room_raw		= DB::select("SELECT order_id,room_id FROM `order_room` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$set_menu_arr		= array();

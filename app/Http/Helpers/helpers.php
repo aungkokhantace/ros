@@ -126,7 +126,7 @@ if (! function_exists('generateItemCategoryList')) {
 
 
 if (! function_exists('submenusitems')) {
-    function submenusitems(array $elements, array $items, $parentId = 0, $indent = 0)
+    function submenusitems(array $elements, array $items, $parentId = 0, $indent = 0, array $continents)
     {
         foreach ($elements as $key => $element) {
             if ($element['parent_id'] == $parentId) {
@@ -138,18 +138,25 @@ if (! function_exists('submenusitems')) {
                         echo '<option value="' . $item['id'] . '">';
                         echo ($indent != 0) ? str_repeat("&nbsp;&nbsp; ", $indent) : '';
                         echo $item['name'];
+                        if ($item['has_continent'] == 1) {
+                            foreach($continents as $key => $continent) {
+                                if ($continent['id'] == $item['continent_id']) {
+                                    echo "(" . $continent['name'] . ")";
+                                }
+                            }
+                        }
                         echo '</option>';
                     }
                 }
 
-                $children = submenusitems($elements, $items, $element['id'], $indent + 1);
+                $children = submenusitems($elements, $items, $element['id'], $indent + 1, $continents);
             }
         }
     }
 }
 
 if (! function_exists('submenusitemsEdit')) {
-    function submenusitemsEdit(array $elements, array $items, $parentId = 0, $indent = 0, $sub_item)
+    function submenusitemsEdit(array $elements, array $items, $parentId = 0, $indent = 0, $sub_item, array $continents)
     {
         foreach ($elements as $key => $element) {
             if ($element['parent_id'] == $parentId) {
@@ -166,10 +173,17 @@ if (! function_exists('submenusitemsEdit')) {
                         }
                         echo ($indent != 0) ? str_repeat("&nbsp;&nbsp; ", $indent) : '';
                         echo $item['name'];
+                        if ($item['has_continent'] == 1) {
+                            foreach($continents as $key => $continent) {
+                                if ($continent['id'] == $item['continent_id']) {
+                                    echo "(" . $continent['name'] . ")";
+                                }
+                            }
+                        }
                         echo '</option>';
                     }
                 }
-                $children = submenusitemsEdit( $elements, $items, $element['id'], $indent + 1,$sub_item);
+                $children = submenusitemsEdit( $elements, $items, $element['id'], $indent + 1,$sub_item, $continents);
             }
         }
     }

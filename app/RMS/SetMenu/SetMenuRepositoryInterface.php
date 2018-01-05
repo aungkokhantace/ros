@@ -13,9 +13,9 @@ interface SetMenuRepositoryInterface
 {
     public function getCategories();
     public function getItems();
+    public function getContinent();
     public function getKitchen();
     public function store($paramObj,$items);
-
     public function getSetItem();
     public function getAllItem();
     public function delete($id);

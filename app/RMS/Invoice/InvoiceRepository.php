@@ -185,10 +185,16 @@ class InvoiceRepository implements InvoiceRepositoryInterface
     }
 
 	public function getaddon($id){
+		$status 		= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
 		$order_details = Orderdetail::where('order_id','=', $id)->where('deleted_at','=',NULL)->get();
 		$addon = array();
 		foreach($order_details as $order){
-			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.*','add_on.food_name')->where('order_extra.order_detail_id','=',$order->id)->where('order_extra.deleted_at','=',NULL)->get()->toArray();
+			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')
+						->select('order_extra.*','add_on.food_name')
+						->where('order_extra.order_detail_id','=',$order->id)
+						->where('order_extra.status','=',$status)
+						->where('order_extra.deleted_at','=',NULL)
+						->get()->toArray();
 			array_push($addon, $tempAddon);
 			
 		}
@@ -197,10 +203,11 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	}
 
 	public function getaddonAmount($id){
+		$status 		= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
 		$order_details = Orderdetail::where('order_id','=', $id)->where('deleted_at','=',NULL)->get();
 		$addon = array();
 		foreach($order_details as $order){
-			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.*',DB::raw('SUM(order_extra.amount) as amount'),'add_on.food_name')->where('order_extra.order_detail_id','=',$order->id)->where('order_extra.deleted_at','=',NULL)->groupBy('order_extra.order_detail_id')->get()->toArray();
+			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.*',DB::raw('SUM(order_extra.amount) as amount'),'add_on.food_name')->where('order_extra.order_detail_id','=',$order->id)->where('order_extra.status','=',$status)->where('order_extra.deleted_at','=',NULL)->groupBy('order_extra.order_detail_id')->get()->toArray();
 			array_push($addon, $tempAddon);
 			
 		}

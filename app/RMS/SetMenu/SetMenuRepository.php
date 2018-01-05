@@ -16,6 +16,8 @@ use App\RMS\ReturnMessage;
 use App\RMS\Member\Member;
 use App\RMS\SetMenu\SetMenu;
 use App\RMS\SetItem\SetItem;
+use App\RMS\Item\Continent;
+use App\Status\StatusConstance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
@@ -29,9 +31,15 @@ class SetMenuRepository implements SetMenuRepositoryInterface
 
 
     public function getItems(){
-        $items = Item::select('id', 'category_id', 'name')->whereNull('deleted_at')->where('status','=',1)->get()->toArray();
+        $status  = StatusConstance::ITEM_AVAILABLE_STATUS;
+        $items = Item::select('id', 'category_id', 'name','continent_id','has_continent')->whereNull('deleted_at')->where('status','=',$status)->get()->toArray();
 
         return $items;
+    }
+
+    public function getContinent() {
+        $continent  = Continent::whereNull('deleted_at')->get()->toArray();
+        return $continent;
     }
 
     public function getKitchen(){

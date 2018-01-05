@@ -51,4 +51,12 @@ class StatusConstance
     //Room Status
     const ROOM_AVAILABLE_STATUS                 = 0; //ROOM AVAILABLE STATUS
     const ROOM_UNAVAILABLE_STATUS               = 1; //ROOM UNAVAILABLE STATUS
+
+    //Order Extra Status
+    const ORDER_EXTRA_AVAILABLE_STATUS          = 1; //ORDER EXTRA AVAILABLE STATUS
+    const ORDER_EXTRA_UNAVAILABLE_STATUS        = 0; //ORDER EXTRA UNAVAILABLE STATUS
+
+    //Item Status
+    const ITEM_AVAILABLE_STATUS                 = 1; //ITEM AVAILABLE STATUS
+    const ITEM_UNAVAILABLE_STATUS               = 0; //ITEM UNAVAILABLE STATUS
 }

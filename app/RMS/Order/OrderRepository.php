@@ -82,7 +82,9 @@ class OrderRepository implements OrderRepositoryInterface
     }
 
     public function orderExtra(){
+        $status 			= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
         $extras = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.order_detail_id','order_extra.extra_id','order_extra.quantity','order_extra.amount','add_on.food_name')
+        ->where('order_extra.status','=',$status)
         ->whereNull('order_extra.deleted_at')
         ->get();
 

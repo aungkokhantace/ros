@@ -25,9 +25,9 @@
                 <div>
                 <select name="item[]" id="Category" multiple="multiple">
                     @if(isset($resource))
-                        {!! submenusitemsEdit($category,$items,$parentId=0, $indent=0,$set_item) !!}
+                        {!! submenusitemsEdit($category,$items,$parentId=0, $indent=0,$set_item,$continents) !!}
                     @else
-                        {!! submenusitems($category,$items,$parentId=0,$index=0) !!}
+                        {!! submenusitems($category,$items,$parentId=0,$index=0,$continents) !!}
                     @endif
                 </select>
                 <p class="text-danger" id="items_err">{{ $errors->first("item[]") }}</p>

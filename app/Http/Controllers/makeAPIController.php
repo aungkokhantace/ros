@@ -281,6 +281,7 @@ class MakeAPIController extends ApiGuardController
             $net_price          = $order->net_price;
             $order_details      = $order->order_detail;
             $discount_amount    = $order->discount_amount;
+            $extra_price        = $order->extra_price;
         }
         
         $order                          = Order::find($order_id);
@@ -294,6 +295,7 @@ class MakeAPIController extends ApiGuardController
             $order->tax_amount              = $tax_amount;
             $order->all_total_amount        = $net_price;
             $order->total_discount_amount   = $discount_amount;
+            $order->total_extra_price       = $extra_price;
             $order->save();
 
             foreach ($order_details as $order_detail) {
@@ -410,12 +412,21 @@ class MakeAPIController extends ApiGuardController
                             $extra->save();
                         }
                         else{
-                            $extra                  = $order_extra;
-                            $extra->order_detail_id = $temp->id;
-                            $extra->extra_id        = $e->extra_id;
-                            $extra->quantity        = $e->quantity;
-                            $extra->amount          = $e->amount;
-                            $extra->save();
+                            // $extra                  = $order_extra;
+                            // $extra->order_detail_id = $temp->id;
+                            // $extra->extra_id        = $e->extra_id;
+                            // $extra->quantity        = $e->quantity;
+                            // $extra->amount          = $e->amount;
+                            // $extra->save();
+                            //Update Extra
+                            $extra_update   = DB::table('order_extra')
+                                            ->where('order_detail_id', $detail_id)
+                                            ->where('extra_id',$e->extra_id)
+                                            ->update([
+                                                'quantity' => $e->quantity,
+                                                'amount' => $e->amount,
+                                                'status' => $e->status
+                                                ]);
                         }
 
                     }
