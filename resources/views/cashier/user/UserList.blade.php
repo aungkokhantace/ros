@@ -13,6 +13,10 @@
                 </div>
                 <div class="col-md-9">
                     <div class="buttons">
+                        @if (Auth::guard('Cashier')->user()->role_id == 1)
+                            <input class="img_btn" src="../../../assets/images/enable.png" onclick="user_active();" type="image">
+                            <input class="img_btn" src="../../../assets/images/disable.png" onclick="user_disable();" type="image">
+                        @endif
                         <button type="button"  onclick='user_create();' class="btn btn-default btn-md first_btn">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </button>
@@ -41,11 +45,11 @@
                                 <th>Status</th>
                                 <th>Staff Type</th>
                                 <th>Change Password</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
 
                         <tbody>
-
                         @foreach($users as $user)
                             <tr class="active">
                                 <td><input type="checkbox" class="user_source" name="usercheck" value="{{ $user->id }}" id="all">
@@ -68,6 +72,12 @@
                                 </td>
                                 <td>{{ $user->roles->name }}</td>
                                 <td><a href="/Cashier/Password/{{$user->id}}">{{ "Change Password "}}</a></td>
+                                <td>@if ($user->status == 1)
+                                        Enable
+                                    @else
+                                        Disable
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\User;
 use App\RMS\Role\Role;
+use App\Status\StatusConstance;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\RMS\ReturnMessage;
 use App\RMS\Utility;
@@ -132,5 +133,19 @@ class UserRepository implements UserRepositoryInterface
     {
         $kitchens=Kitchen::get();
         return $kitchens;
+    }
+
+    public function active($id) {
+        $status     = StatusConstance::USER_AVAILABLE_STATUS;
+        $tempObj    = User::find($id);
+        $tempObj->status = $status;
+        $tempObj->save();
+    }
+
+    public function inactive($id) {
+        $status     = StatusConstance::USER_UNAVAILABLE_STATUS;
+        $tempObj    = User::find($id);
+        $tempObj->status = $status;
+        $tempObj->save();
     }
 }

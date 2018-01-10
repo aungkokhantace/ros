@@ -37,6 +37,8 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Staff/edit/{id}', 'Cashier\Staff\UserController@edit');
                 Route::post('Staff/update', 'Cashier\Staff\UserController@update');
                 Route::get('Staff/delete/{id}', 'Cashier\Staff\UserController@delete');
+                Route::get('Staff/active/{id}', 'Cashier\Staff\UserController@active');
+                Route::get('Staff/inactive/{id}', 'Cashier\Staff\UserController@inactive');
                 Route::get('Password/{id}','Cashier\Staff\UserController@profile');
                 Route::post('Password/Change','Cashier\Staff\UserController@updateProfile');
 

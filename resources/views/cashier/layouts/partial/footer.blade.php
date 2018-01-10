@@ -2,6 +2,7 @@
 <div id="footer">
     <p class="footer-status">&copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/">
             AcePlus Solutions.,Co Ltd</a></p>
+    <p class="text-danger text-right">Git Version {!! gitVersion() !!}</p>
 </div>
 <!-- End Footer -->
 {{--<script src="/assets/js/bootstrap.min.js"></script>

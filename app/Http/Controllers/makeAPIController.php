@@ -67,19 +67,26 @@ class MakeAPIController extends ApiGuardController
             if ($validation) {
                 if (Auth::guard('Cashier')->check()) {
                     $id = Auth::guard('Cashier')->user()->id;
-                    $cur = Carbon::now();
-                    $userRepo = new UserRepository();
-                    $userRepo->changeDisableToEnable($id, $cur);
-                    $role = User::find($id);
-                    $username   = $role->user_name;
+                    //Check User Status
+                    $status  = Auth::guard('Cashier')->user()->status;
+                    if ($status == 1) {
+                        $cur = Carbon::now();
+                        $userRepo = new UserRepository();
+                        $userRepo->changeDisableToEnable($id, $cur);
+                        $role = User::find($id);
+                        $username   = $role->user_name;
 
-                    $r = $role->roles->name;
-                    if ($r == "Waiter") {
-                        $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r);
-                        return Response::json($output);
+                        $r = $role->roles->name;
+                        if ($r == "Waiter") {
+                            $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r);
+                            return Response::json($output);
+                        } else {
+                            $output = array("message" => "Fail");
+                            return Response::json($output);
+                        }
                     } else {
-                        $output = array("message" => "Fail");
-                        return Response::json($output);
+                       $output = array("message" => "User Disable");
+                        return Response::json($output); 
                     }
                 } else {
                     $output = array("message" => "Fail");

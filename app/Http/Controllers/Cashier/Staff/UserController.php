@@ -38,7 +38,6 @@ class UserController extends Controller
         $roles      = $this->userRepository->getRoles();
         $kitchens   = $this->userRepository->getKitchens();
         $cur_time   = Carbon::now();
-
         return view('cashier.user.UserList')->with('users', $users)
             ->with('roles', $roles)->with('cur_time', $cur_time)
             ->with('kitchens',$kitchens);
@@ -112,6 +111,26 @@ class UserController extends Controller
         $kitchens   = $this->userRepository->getKitchens();
 
         return view('cashier.user.User')->with('user', $user)->with('roles', $roles)->with('kitchens',$kitchens);
+    }
+
+    public function active($id) {
+        if (Auth::guard('Cashier')->user()->role_id !== 1) {
+            alert()->warning('You have no permission in this action!')->persistent('Close');
+            return back();
+        }
+        $user     = $this->userRepository->active($id);
+        return redirect()->action('Cashier\Staff\UserController@index')
+        ->withMessage(FormatGenerator::message('Success', 'User Active ...')); //to redirect listing page
+    }
+
+    public function inactive($id) {
+        if (Auth::guard('Cashier')->user()->role_id !== 1) {
+            alert()->warning('You have no permission in this action!')->persistent('Close');
+            return back();
+        }
+        $user     = $this->userRepository->inactive($id);
+        return redirect()->action('Cashier\Staff\UserController@index')
+        ->withMessage(FormatGenerator::message('Success', 'User Inactive ...')); //to redirect listing page
     }
 
     public function update(UserEditFormRequest $request){
@@ -198,7 +217,7 @@ class UserController extends Controller
     public function updateDataBeforeLogout(Request $request){ //before logout, update status field 1 to 0
         if (Auth::guard('Cashier')->check()){
             $id         = Auth::guard('Cashier')->user()->id;
-            $this->userRepository->changeEnableToDisable($id);
+            // $this->userRepository->changeEnableToDisable($id);
             $role       = User::find($id);
             $r          = $role->roles->name;
 

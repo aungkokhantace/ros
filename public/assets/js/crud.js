@@ -235,6 +235,22 @@ function table_active() {
         window.location = "/Cashier/Table/active/" + data;
 }
 
+function user_active() {
+    var data = [];
+    $("input[name='usercheck']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one User to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one User to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Staff/active/" + data;
+}
+
 function table_disable() {
     var data = [];
     $("input[name='table_check']:checked").each(function () {
@@ -249,6 +265,22 @@ function table_disable() {
     }
     else
         window.location = "/Cashier/Table/inactive/" + data;
+}
+
+function user_disable() {
+    var data = [];
+    $("input[name='usercheck']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one user to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one user to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Staff/inactive/" + data;
 }
 
 function item_edit() {

@@ -59,4 +59,8 @@ class StatusConstance
     //Item Status
     const ITEM_AVAILABLE_STATUS                 = 1; //ITEM AVAILABLE STATUS
     const ITEM_UNAVAILABLE_STATUS               = 0; //ITEM UNAVAILABLE STATUS
+
+    //User Status
+    const USER_AVAILABLE_STATUS                 = 1; //USER AVAILABLE STATUS
+    const USER_UNAVAILABLE_STATUS               = 0; //USER UNAVAIABLE STATUS
 }
