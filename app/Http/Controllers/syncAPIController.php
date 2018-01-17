@@ -515,7 +515,7 @@ class syncAPIController extends ApiGuardController
             $syncs = SyncsTable::select('id', 'table_name', 'version')->get();
             $returnObj = array();
             foreach($syncs as $sync){
-                if($sync->table_name == "category" || $sync->table_name == "items" || $sync->table_name == "set_menu" || $sync->table_name == "set_item" || $sync->table_name =="discount" || $sync->table_name == "members" || $sync->table_name == "add_on" || $sync->table_name == "rooms" || $sync->table_name == "tables" || $sync->table_name == "booking" || $sync->table_nam == "config" || $sync->table_name == "promotions" || $sync->table_name == "promotion_items" || $sync->table_name == "config"){
+                if($sync->table_name == "category" || $sync->table_name == "items" || $sync->table_name == "set_menu" || $sync->table_name == "set_item" || $sync->table_name =="discount" || $sync->table_name == "members" || $sync->table_name == "add_on" || $sync->table_name == "rooms" || $sync->table_name == "tables" || $sync->table_name == "booking" || $sync->table_nam == "config" || $sync->table_name == "promotions" || $sync->table_name == "promotion_items" || $sync->table_name == "config" || $sync->table_name == "continent"){
 
                     $returnObj[] = $sync;
                 }
@@ -547,7 +547,7 @@ class syncAPIController extends ApiGuardController
         if($key == $activate_key)
         {
             $syncs = DB::select("SELECT table_name,version FROM syncs_tables");
-
+        
             foreach ($syncs as $key => $sync) 
             {
                 if ($sync->table_name == "category") {
@@ -686,6 +686,13 @@ class syncAPIController extends ApiGuardController
                         $returnArr['discount'] = $discount;
                     }
                 }
+
+                if ($sync->table_name == "continent") {
+                    if ($syncs[$key]->version > $temp['continent']) {
+                        $continent = DB::select("SELECT id,name,description FROM continent WHERE deleted_at IS NULL");
+                        $returnArr['continent'] = $continent;
+                    }
+                }
             }
             
             if (!array_key_exists('category', $returnArr)) {
@@ -729,6 +736,9 @@ class syncAPIController extends ApiGuardController
             }
             if (!array_key_exists('discount', $returnArr)) {
                 $returnArr['discount'] = array();
+            }
+            if (!array_key_exists('continent', $returnArr)) {
+                $returnArr['continent'] = array();
             }
              return Response::json($returnArr);
         }else{
