@@ -83,16 +83,16 @@ class ReportController extends Controller
         if($start_date == "1970-01-01"||$end_date == "1970-01-01"){
             alert()->warning('Please Choose Date!')->persistent('Close');
 //            return back();
-            return redirect()->action('Cashier\ReportController@itemReport');
+            return redirect()->action('Cashier\Report\ReportController@itemReport');
         }
         elseif(($from_amt != "" && $to_amt == "") || ($from_amt == "" && $to_amt != "")){
             alert()->warning('Please Choose Amount!')->persistent('Close');
-            return redirect()->action('Cashier\ReportController@itemReport');
+            return redirect()->action('Cashier\Report\ReportController@itemReport');
 //            return back();
         }
         elseif($to_amt < $from_amt){
             alert()->warning('End Amount must be greater than Start Amount!')->persistent('Close');
-            return redirect()->action('Cashier\ReportController@itemReport');
+            return redirect()->action('Cashier\Report\ReportController@itemReport');
         }
         else{
             $orders = $this->reportRepository->getItemReportWithDate($start_date, $end_date,$number,$from_amount,$to_amount);

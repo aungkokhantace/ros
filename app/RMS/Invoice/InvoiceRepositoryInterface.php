@@ -9,6 +9,9 @@ namespace App\RMS\Invoice;
 interface InvoiceRepositoryInterface
 {
     public function getinvoice();
+    public function getinvoiceCancel();
+    public function getCard();
+    public function getPayment($id);
     public function getdetail($id);
     public function getaddon($id);
     public function getorder($id);
@@ -16,4 +19,7 @@ interface InvoiceRepositoryInterface
     public function orderTable($id);
     public function orderRoom($id);
     public function cashier($id);
+    public function addpaid($id);
+    public function updateOrder($paramObj);
+    public function update($id,$input,$refund);
 }

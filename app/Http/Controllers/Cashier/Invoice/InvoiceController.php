@@ -3,7 +3,9 @@ namespace App\Http\Controllers\Cashier\Invoice;
 use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use App\RMS\Invoice\InvoiceRepositoryInterface;
+use App\RMS\Infrastructure\Forms\InvoiceRequest;
 use App\Http\Requests;
+use Auth;
 use App\Http\Controllers\Controller;
 use App\RMS\Order\Order;
 use App\RMS\Orderdetail\Orderdetail;
@@ -15,6 +17,11 @@ use PDF;
 use Excel;
 use App;
 use App\RMS\Utility;
+use Response;
+use Hash;
+use App\User;
+use App\RMS\FormatGenerator As FormatGenerator;
+use App\RMS\ReturnMessage As ReturnMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection as Collection;
 
@@ -33,6 +40,10 @@ class InvoiceController extends Controller
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orders 	= $this->InvoiceRepository->getinvoice();
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
         return view('cashier.invoice.index',compact('orders'));
 
     } 
@@ -71,6 +82,135 @@ class InvoiceController extends Controller
         return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier'));
     }
 
+    public function invoicePaid($id) {
+        $orders = $this->InvoiceRepository->getorder($id);
+        $add    = $this->InvoiceRepository->getaddon($id);
+        $total  = $this->InvoiceRepository->getaddonAmount($id);
+        $addon  = array();
+        foreach($add as $dd){
+            foreach($dd as $d){
+                $addon[] = $d;
+            }
+        }
+        $amount = array();
+        foreach($total as $t){
+            foreach($t as $tt){
+                $amount[] = $tt;
+            }
+        }
+        $order_detail   = $this->InvoiceRepository->getdetail($id);
+        $tables         = $this->InvoiceRepository->orderTable($id);
+        $rooms          = $this->InvoiceRepository->orderRoom($id);
+        $cashier        = $this->InvoiceRepository->cashier($id);
+        $cards          = $this->InvoiceRepository->getCard();
+        $payments        = $this->InvoiceRepository->getPayment($id);
+        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge')->first();
+
+        return view('cashier.invoice.payment',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments'));
+    }
+    //InvoiceRequest
+    public function invoiceAddpaid(Request $request)
+    {
+        // $request->validate();
+        $input              = Input::all();
+        $id                 = Input::get('id');
+        $config             = Config::select('tax','service','room_charge')->first();
+        $orders             = $this->InvoiceRepository->getorder($id);
+        $tax_foc            = $orders->tax_amount;
+        $services           = $orders->service_amount;
+        $rooms              = $this->InvoiceRepository->orderRoom($id);
+        $tables             = $this->InvoiceRepository->orderTable($id);
+        $payment_arr        = Input::get('amount');
+        $payment            = array_sum($payment_arr);
+        $foc                = (int)(Input::get('foc'));
+        $all_total          = $orders->all_total_amount;
+        $paymentfoc         = $payment + $foc;
+        $total_price_foc    = $all_total - $foc;
+        $refund             = $paymentfoc - $all_total;
+        $status             = 2;
+
+        if ($foc > 0) {
+            $all_total_with_foc     = $all_total - $foc;
+        } else {
+            $all_total_with_foc     = $all_total;    
+        }
+        // if ($foc <= 0) {
+        //     $foc = null;
+        //     $total_price_foc = null;
+        // } else {
+
+        //     $total_price = $orders->total_price;
+        //     $tax = $config->tax;
+        //     $service = $config->service;
+        //     $room_charge = $config->room_charge;
+        //     $total_price_foc = $total_price - $foc;
+        //     $tax_foc = $total_price_foc/$tax;
+        //     $service_focs = $total_price_foc/$service;
+
+        //     $services = $service_focs;
+        //     if (count($rooms) > 0) {
+        //         $services = $service_focs + $room_charge;
+        //     }
+
+        //     $all_total = $total_price_foc + $tax_foc + $services;
+        //     $refund = $payment - $all_total;
+        // }
+        $paramObj                   = Order::find($id);
+        $paramObj->status           = $status;
+        $paramObj->payment_amount   = $payment;
+        $paramObj->refund           = $refund;
+        $paramObj->foc_amount       = $foc;
+        $paramObj->all_total_amount = $all_total_with_foc;
+        $result                     = $this->InvoiceRepository->update($paramObj,$input,$refund);
+
+        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+            return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
+                ->withMessage(FormatGenerator::message('Success', 'Item have been paid ...'));
+        }
+        else{
+            return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
+                ->withMessage(FormatGenerator::message('Fail', 'Table did not update ...'));
+        }
+    }
+
+    public function invoiceCancel() {
+        $today          = Carbon::now();
+    	$cur_date       = Carbon::parse($today)->format('Y-m-d');
+        $ordersCancel 	= $this->InvoiceRepository->getinvoiceCancel();
+        return view('cashier.invoice.index',compact('ordersCancel'));
+    }
+    public function orderCancel($id) {
+        $status                     = 3;
+        $paramObj                   = Order::find($id);
+        $paramObj->status           = $status;
+        $result                     = $this->InvoiceRepository->updateOrder($paramObj);
+        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+            $output     = array('message'=>'success');
+            return \Response::json($output);
+        }
+        else{
+            $output     = array('message'=>'faile');
+            return \Response::json($output);
+        }
+    }
+
+    public function checkManager($managerLogin,$managerPass) {
+        // $manager_raw    = DB::select("SELECT password FROM `users` WHERE user_name = '$managerLogin' AND deleted_at IS NULL");
+        $manager_user      = User::select('password')
+                            ->where('user_name','=',$managerLogin)
+                            ->where('role_id','=','1')
+                            ->orwhere('role_id','=','2')
+                            ->orwhere('role_id','=','3')
+                            ->whereNull('deleted_at')->first();
+        if ($manager_user && Hash::check($managerPass, $manager_user->password)) {
+            $output     = array('message'=>'success');
+            return \Response::json($output);
+        } else {
+            $output     = array('message'=>'fail');
+            return \Response::json($output);    
+        }
+        
+    }
     public function invoiceprint($id){
         $orders = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
@@ -194,6 +334,5 @@ class InvoiceController extends Controller
         return redirect('/');
     }
 
-       
 }
 

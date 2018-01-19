@@ -51,7 +51,7 @@ class MakeAPIController extends ApiGuardController
         $password = $temp['password'];
         $key      = $temp['site_activation_key'];
         $site_activation_key = Config::all();
-
+        
         $activate_key = 0;
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
@@ -98,7 +98,6 @@ class MakeAPIController extends ApiGuardController
         $temp       = Input::all();
         $ordersRaw  = $temp['orderID'];
         $orders     = json_decode($ordersRaw);
-        
         $dt         = Carbon::now();
         foreach($orders as $order) {
 
@@ -114,9 +113,9 @@ class MakeAPIController extends ApiGuardController
             $order_tables           = $order->order_table;
             $order_rooms            = $order->order_room;
             $order_details          = $order->order_detail;
+            $order_status           = $order->order_status;
 
         }
-
         $order                          = new Order();
         $order->id                      = $order_id;
         $order->user_id                 = $user_id;
@@ -128,6 +127,7 @@ class MakeAPIController extends ApiGuardController
         $order->service_amount          = $service_amount;
         $order->tax_amount              = $tax_amount;
         $order->all_total_amount        = $all_total_amount;
+        $order->status                  = $order_status;
 
         $order->save();
 
@@ -184,10 +184,12 @@ class MakeAPIController extends ApiGuardController
             $extra = $order_detail->extra;
             foreach ($extra as $e) {
                 $extra = new OrderExtra();
-                $extra->order_detail_id = $temp->id;
-                $extra->extra_id = $e->extra_id;
-                $extra->quantity = $e->quantity;
-                $extra->amount = $e->amount;
+                $extra->order_detail_id         = $temp->id;
+                $extra->extra_id                = $e->extra_id;
+                $extra->quantity                = $e->quantity;
+                $extra->amount                  = $e->amount;
+                $extra->amount                  = $e->amount;
+                // $extra->total_extra_amount      = $e->total_extra_amount;
                 $extra->save();
             }
 
@@ -205,19 +207,21 @@ class MakeAPIController extends ApiGuardController
         
         $dt         = Carbon::now();
         foreach($orders as $order) {
-            $order_id       = $order->order_id;
-            $total_price    = $order->total_price;
-            $service_amount = $order->service_amount;
-            $tax_amount     = $order->tax_amount;
-            $net_price      = $order->net_price;
-            $order_details  = $order->order_detail;
+            $order_id           = $order->order_id;
+            $total_price        = $order->total_price;
+            $service_amount     = $order->service_amount;
+            $tax_amount         = $order->tax_amount;
+            $net_price          = $order->net_price;
+            $order_details      = $order->order_detail;
+            $discount_amount    = $order->discount_amount;
         }
         
-        $order                      = Order::find($order_id);
-        $order->total_price         = $total_price;
-        $order->service_amount      = $service_amount;
-        $order->tax_amount          = $tax_amount;
-        $order->all_total_amount    = $net_price;
+        $order                          = Order::find($order_id);
+        $order->total_price             = $total_price;
+        $order->service_amount          = $service_amount;
+        $order->tax_amount              = $tax_amount;
+        $order->all_total_amount        = $net_price;
+        $order->total_discount_amount   = $discount_amount;
         $order->save();
 
         foreach ($order_details as $order_detail) {
@@ -258,10 +262,11 @@ class MakeAPIController extends ApiGuardController
                 $extra = $order_detail->extra;
                 foreach ($extra as $e) {
                     $extra = new OrderExtra();
-                    $extra->order_detail_id = $temp->id;
-                    $extra->extra_id = $e->extra_id;
-                    $extra->quantity = $e->quantity;
-                    $extra->amount = $e->amount;
+                    $extra->order_detail_id         = $temp->id;
+                    $extra->extra_id                = $e->extra_id;
+                    $extra->quantity                = $e->quantity;
+                    $extra->amount                  = $e->amount;
+                    // $extra->total_extra_amount      = $e->total_extra_amount;
                     $extra->save();
                 }
             }
@@ -423,8 +428,8 @@ class MakeAPIController extends ApiGuardController
                 $room->save();
                 $booking_room      = BookingRoom::where('booking_id','=',$booking_id)->get();
                 foreach($booking_room as $room){
-                    if($room->room_id == $r->room_id){
-                        $bookingRoom               = BookingRoom::find($table->id);
+                    if($room->room_id == $room_id){
+                        $bookingRoom               = BookingRoom::find($room->id);
                         $bookingRoom               = Utility::addDeletedBy($bookingRoom);
                         $bookingRoom->deleted_at   = date('Y-m-d H:m:i');
                         $bookingRoom->save();
@@ -433,7 +438,7 @@ class MakeAPIController extends ApiGuardController
                 $booking            = Booking::find($booking_id);
                 $booking            = Utility::addDeletedBy($booking);
                 $booking->deleted_at= date('Y-m-d H:m:i');
-                $booking->save();    
+                $booking->save();
             }
 
         $output             = array("message" => "Success");
@@ -458,10 +463,16 @@ class MakeAPIController extends ApiGuardController
         $to_table->save();
 
 
-        $order_table        = OrderTable::where('order_id',$order_id)->where('table_id',$transfer_from_table_id)->first();
+        // $order_table        = OrderTable::where('order_id',$order_id)
+        //                       ->where('table_id',$transfer_from_table_id)
+        //                       ->first();
 
-        $order_table->table_id = $transfer_to_table_id;
-        $order_table->save();
+        // $order_table->table_id = $transfer_to_table_id;
+        // $order_table->save();
+
+        OrderTable::where('order_id','=',$order_id)
+                    ->where('table_id','=',$transfer_from_table_id)
+                    ->update(['table_id'=> $transfer_to_table_id]);
 
         $output             = array("message" => "Success");
         return Response::json($output);

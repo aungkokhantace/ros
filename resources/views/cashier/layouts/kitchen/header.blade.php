@@ -68,7 +68,7 @@
                 @endif
             </div>
             <div class="col-md-8">
-                <h1 class="header-title"><b>Restaurant</b> Management System</h1>
+                <h1 class="header-title"><b>Restaurant</b> Ordering System</h1>
             </div>
             <div class="col-md-2 logout">
                 <a href="/Cashier/updateDataBeforeLogout" class="logout-font">

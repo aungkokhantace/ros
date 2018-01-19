@@ -42,6 +42,7 @@
     <script src="/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
     <script src="/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
     <script src="/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="/assets/js/czMore/jquery.czMore-1.5.3.2.js"></script>
     <script>
         $(document).ready(function() {
             //check for notification
@@ -78,7 +79,7 @@
                 @endif
             </div>
             <div class="col-md-8">
-                <h1 class="header-title"><b>Restaurant</b> Management System</h1>
+                <h1 class="header-title"><b>Restaurant</b> Ordering System</h1>
             </div>
             <div class="col-md-2 logout">
                 <a href="/Cashier/updateDataBeforeLogout" class="logout-font">

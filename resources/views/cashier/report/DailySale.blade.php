@@ -33,8 +33,8 @@
                         </tr>
                         </thead>
                         <?php
-                              $amount = 0;
-                             $total = 0;
+                            $amount = 0;
+                            $total = 0;
                         ?>
                         @foreach($orders as $order)
                         <tr class="tr-row">

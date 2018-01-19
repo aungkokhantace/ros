@@ -27,7 +27,7 @@ class LocationController extends Controller
     }
     public function index(){
         $locations = Location::all();
-        return view('cashier.location.index')->with('locations', $locations);
+        return view('cashier.Location.index')->with('locations', $locations);
     }
 
     public function create(){

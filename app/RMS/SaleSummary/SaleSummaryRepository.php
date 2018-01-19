@@ -15,7 +15,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         DB::raw('Month(order.order_time)as Month'),DB::raw('SUM(order.all_total_amount) as Amount'))
         ->groupBy(DB::raw('DAY(order.order_time)'))
         ->whereYear('order.order_time','=',date('Y'))
-        ->where('order.status','=',1)
+        ->where('order.status','=',2)
         ->get();
         
         return $orders;
@@ -25,7 +25,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         DB::raw('YEAR(order.order_time)as Year'),DB::raw('SUM(order.all_total_amount) as Amount'))
         ->groupBy(DB::raw('MONTH(order.order_time)'))
         ->whereYear('order.order_time','=',date('Y'))
-        ->where('order.status','=',1)
+        ->where('order.status','=',2)
         ->get();
 
         return $orders;
@@ -35,7 +35,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         DB::raw('YEAR(order.order_time)as Year'),DB::raw('SUM(order.all_total_amount) as Amount'))
         ->groupBy(DB::raw('YEAR(order.order_time)'))
         ->whereYear('order.order_time','=',date('Y'))
-        ->where('order.status','=',1)
+        ->where('order.status','=',2)
         ->get();
 
         return $orders;
@@ -49,7 +49,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
                 'users.user_name as Staff',DB::raw('SUM(order_details.quantity) as Quantity'),'order.all_total_amount as Amount')
             ->where(DB::raw('MONTH(order.order_time)'),'=',$m)
             ->where(DB::raw('Date(order.order_time)'),'=',$d)
-            ->where('order_details.status_id',5)
+            ->where('order.status',2)
             ->where('order_details.deleted_at',NULL)
             ->groupBy('order_details.order_id')
             ->orderBy('invoice_id')
@@ -64,7 +64,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
             ->groupBy(DB::raw('DAY(order.order_time)'))
             ->whereDate('order.order_time','>=',$from_date)
             ->whereDate('order.order_time','<=',$to_date)
-            ->where('order.status','=',1)
+            ->where('order.status','=',2)
             ->get();
         return $orders;
     }
@@ -72,7 +72,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
     public function searchMonthlySummary($from_date,$to_date){
         $orders = Order::select(DB::raw('MONTH(order.order_time)as Month'),
         DB::raw('YEAR(order.order_time)as Year'),DB::raw("SUM(order.all_total_amount)as Amount"))->groupBy(DB::raw('MONTH(order.order_time)'))->whereBetween('order.order_time', [$from_date,$to_date])
-        ->where('order.status','=','1')->get();
+        ->where('order.status','=','2')->get();
         return $orders;
     }    
     public function sale($year,$month) //checked
@@ -84,7 +84,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
                 'users.user_name as Staff',DB::raw('SUM(order_details.quantity) as Quantity'),'order.all_total_amount as Amount')
             ->where(DB::raw('MONTH(order.order_time)'),'=',$month)
             ->whereYear('order.order_time','=',$year)
-            ->where('order_details.status_id',5)
+            ->where('order.status',2)
             ->where('order_details.deleted_at',NULL)
             ->groupBy('order_details.order_id')
             ->orderBy('invoice_id')
@@ -101,7 +101,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
             ->select('order.id as Invoice_id',DB::raw('DATE_FORMAT(order.order_time,"%d-%m-%Y")as Date'),
                 'users.user_name as Staff',DB::raw('SUM(order_details.quantity) as Quantity'),'order.all_total_amount as Amount')
             ->whereYear('order.order_time','=',$year)
-            ->where('order_details.status_id',5)
+            ->where('order.status',2)
             ->where('order_details.deleted_at',NULL)
             ->groupBy('order_details.order_id')
             ->orderBy('invoice_id')

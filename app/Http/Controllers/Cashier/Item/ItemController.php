@@ -7,6 +7,8 @@ use App\RMS\Infrastructure\Forms\ItemEditRequest;
 use App\RMS\Item\ItemRepositoryInterface;
 use Illuminate\Http\Request;
 use App\RMS\Item\Item;
+use App\RMS\Utility;
+use App\RMS\Item\Continent;
 use Auth;
 use App\RMS\Category\Category;
 use App\Http\Requests;
@@ -58,37 +60,44 @@ class ItemController extends Controller
         foreach($parents as $parent){
             array_push($parent_id_arr,$parent->parent_id);
         }
-        return view('cashier.item.item', ['categories' => $result],['parent_id_arr'=>$parent_id_arr]);
-
+        $continent_arr  = $this->ItemRepository->getContinent();
+        return view('cashier.item.item')->with(array('categories'=>$result, 'parent_id_arr'=>$parent_id_arr,'continent_arr'=>$continent_arr));
     }
-
-    public function store(ItemEntryRequest $request)
+    //ItemEntryRequest
+    public function store(Request $request)
     {
-        $request->validate();
-
+        // $request->validate();
+        $input                  = $request->all();
         $name                   = $request->get('name');
         $category               = Input::get('parent_category');
         $description            = $request->get('description');
+        $check                  = $request->get('check');
         $price                  = $request->get('price');
-        $file                   = $request->file('fileupload');
+        $check                  = $request->get('check');
         $cooking_time           = Input::get('standard_cooking_time');
-        $imagedata              = file_get_contents($file);
-        $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
-        $file->move('uploads', $photo );
-        // resizing image
-        $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+        if ($check == 0) {
+            $file                   = $request->file('fileupload');
+            $imagedata              = file_get_contents($file);
+            $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move('uploads', $photo );
+            // resizing image
+            $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+        }
 
         $status                             = Input::get('status');
         $paramObj                           = new Item();
         $paramObj->name                     = $name;
-        $paramObj->image                    = $photo;
-        $paramObj->mobile_image             = base64_encode($image->encoded);
+        if ($check == 0) {
+            $paramObj->image                    = $photo;
+            $paramObj->mobile_image             = base64_encode($image->encoded);
+        }
         $paramObj->description              = $description;
         $paramObj->price                    = $price;
         $paramObj->status                   = $status;
         $paramObj->category_id              = $category;
         $paramObj->standard_cooking_time    = $cooking_time;
-        $result = $this->ItemRepository->store($paramObj);
+        $paramObj->has_continent            = $check;
+        $result = $this->ItemRepository->store($paramObj,$input);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
             return redirect()->action('Cashier\Item\ItemController@index')
@@ -113,13 +122,25 @@ class ItemController extends Controller
         foreach($parents as $parent){
             array_push($parent_id_arr,$parent->parent_id);
         }
-         return view('cashier.item.item', ['categories' => $result])->with('record', $record)->with('r_cat', $r_cat)->with('parent_id_arr',$parent_id_arr);
-    }
+        $continent_arr  = $this->ItemRepository->getContinent();
+        $has_continent  = $record->has_continent;
+        $continent_items = [];
+        if ($has_continent == 1) {
+            $groupID            = $record->group_id;
+            $continent_items    = $this->ItemRepository->getContinentByGroupID($groupID);
+        }
 
-    public function update(ItemEditRequest $request)
+         return view('cashier.item.item', ['categories' => $result])->with('record', $record)
+                ->with('r_cat', $r_cat)
+                ->with('parent_id_arr',$parent_id_arr)
+                ->with('continent_arr',$continent_arr)
+                ->with('continent_items',$continent_items);
+    }
+    //ItemEditRequest
+    public function update(Request $request)
     {
         $category_id = "";
-        $request->validate();
+        // $request->validate();
         $id=$request->get('id');
 
         $name           = $request->get('name');
@@ -130,6 +151,8 @@ class ItemController extends Controller
         $status         = $request->get('status');
         $cooking_time   = Input::get('standard_cooking_time');
         $oldname        = $this->ItemRepository->find(Input::get('id'));
+        $oldprice       = $oldname->price;
+
         $lower_old_name = strtolower($oldname->name); //to change old name from database to lower
         $flag = 1;
 
@@ -149,11 +172,96 @@ class ItemController extends Controller
             }
         }
 
-//        user is allowed to edit
+//       user is allowed to edit
         if($flag == 1){
-         $file = $request->file('fileupload');
+        $checkConti           = count($request->get('continent-price'));
+        if ($checkConti > 0) {
+            $group_id_attr    = DB::table('items')->select('group_id')
+                                ->WHERE('id','=',$id)
+                                ->first();
+            $group_id         =  $group_id_attr->group_id;
+
+            // $itemsObj         = DB::table('items')
+            //                     ->select('id','image','mobile_image','stock_code')
+            //                     ->WHERE('group_id','=',$group_id)
+            //                     ->get();
+            $file             = $request->file('input-file-preview');
+            $itemID           = $request->get('item-id');
+            $continents       = $request->get('continent');
+            $continentPrice   = $request->get('continent-price');
+            $oldItemCount     = Item::where('group_id','=',$group_id)
+                                ->whereNull('deleted_at')
+                                ->get()
+                                ->count();
+            //Check if User add new Continent
+            $flagItem         = 0;
+            if (count($itemID) > count($continents)) {
+                $flagItem     = 1;
+            }
+            $count = 0;
+            foreach($continents as $key => $continent) {
+                $count                  = $count + 1;
+                if ($count <= $oldItemCount) {
+                    $postID                 = $itemID[$key];
+                    $paramObj               = Item::find($postID);
+                    //Get Old Price for Price History
+                    $oldprice               = $paramObj->price;
+                    $paramObj->name         = $name;
+                    $paramObj->description  = $description;
+                    $paramObj->price        = $continentPrice[$key];
+                    $paramObj->continent_id = $continent;
+                    $paramObj->category_id  = $category;
+                    $paramObj->standard_cooking_time = $cooking_time;
+
+                    //For File Upload
+                    if ($file[$key] != null) {
+                        $imagedata              = file_get_contents($file[$key]);
+                        $photo  = uniqid().'.'.$file[$key]->getClientOriginalExtension();
+                        $file[$key]->move('uploads', $photo);
+                        
+                        // resizing image
+                        $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+                        $mobileImg = base64_encode($image->encoded);
+                        $paramObj->image        = $photo;
+                        $paramObj->mobile_image = $mobileImg;
+                    }
+
+                    $result = $this->ItemRepository->updateContinent($paramObj,$oldprice);
+                } else {
+                    $imagedata              = file_get_contents($file[$key]);
+                    $photo  = uniqid().'.'.$file[$key]->getClientOriginalExtension();
+                    $file[$key]->move('uploads', $photo);
+                    
+                    // resizing image
+                    $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+                    $mobileImg = base64_encode($image->encoded);
+
+                    $paramObj               = new Item();
+                    $paramObj->name         = $name;
+                    $paramObj->description  = $description;
+                    $paramObj->price        = $continentPrice[$key];
+                    $paramObj->continent_id = $continent;
+                    $paramObj->category_id  = $category;
+                    $paramObj->standard_cooking_time = $cooking_time;
+                    $paramObj->image        = $photo;
+                    $paramObj->mobile_image = $mobileImg;
+                    $paramObj->group_id     = $group_id;
+                    $paramObj->has_continent= 1;
+                    $paramObj->status       = 1;
+                    $result = $this->ItemRepository->updateNewContinent($paramObj);
+                }
+            }
+
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                return redirect()->action('Cashier\Item\ItemController@index')
+                    ->withMessage(FormatGenerator::message('Success', 'Item updated ...'));
+            }
+
+        } else {
+            //Not Comtinent item
+            $file = $request->file('fileupload');
             //if users want to upload new photo,"if" condition will work.and if users don't want to upload new photo,'else' function will work
-                if($file != null){
+            if($file != null){
                     $imagedata              = file_get_contents($file);
                     $name                   = Input::get('name');
                     $photo  = uniqid().'.'.$file->getClientOriginalExtension();
@@ -172,7 +280,7 @@ class ItemController extends Controller
                     $paramObj->status                   = $status;
                     $paramObj->category_id              = $category;
                     $paramObj->standard_cooking_time    = $cooking_time;
-                    $result = $this->ItemRepository->updateAllItem($paramObj);
+                    $result = $this->ItemRepository->updateAllItem($paramObj,$oldprice);
 
                     if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                         return redirect()->action('Cashier\Item\ItemController@index')
@@ -204,7 +312,7 @@ class ItemController extends Controller
                 $paramObj->status                = $status;
                 $paramObj->category_id           = $category;
                 $paramObj->standard_cooking_time = $cooking_time;
-                $result = $this->ItemRepository->updateItem($paramObj);
+                $result = $this->ItemRepository->updateItem($paramObj,$oldprice);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Cashier\Item\ItemController@index')
@@ -214,6 +322,8 @@ class ItemController extends Controller
                     return redirect()->action('Cashier\Item\ItemController@index')
                         ->withMessage(FormatGenerator::message('Fail', 'Item did not update ...'));
                 }
+        }
+                
 
             }
         }

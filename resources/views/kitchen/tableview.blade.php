@@ -46,7 +46,7 @@
         @foreach($orderValue->items as $key => $item)
             <tr class="tr-row"  data-ordertime = "{{ $item->order_time }}">
                 <td>
-                    {{ $item->name }} 
+                    {{ $item->name }}
                     @if($item->setmenu_id != '0')
                         {{ "(SetMenu)" }}
                     @endif</td>
@@ -64,8 +64,10 @@
                 <td>{{ $item->remark}}</td>
                 <td>
                     @foreach($extra as $ex)
-                        @if($ex->order_detail_id == $item->id)
-                            {{ $ex->food_name }},
+                        @if($ex->order_detail_id == $item->id && $item->setmenu_id == 0)
+                            {{ $ex->food_name }}
+                        @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
+                            {{ $ex->food_name }}
                         @endif
                     @endforeach
                 </td>

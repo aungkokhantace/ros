@@ -719,6 +719,9 @@ function table_delete() {
 }
 //table delete
 
+
+//Payment Confirmation
+
 //room delete
 function room_delete() {
     var data = [];
@@ -804,7 +807,7 @@ function sub_menus_delete() {
                 text: "You will not be able to recover this record!",
                 type: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#DD6B55 ",
+                confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Confirm",
                 cancelButtonText: "Cancel",
                 closeOnConfirm: false,
@@ -1025,6 +1028,115 @@ function permission_cancel(){
 function Promotion_Cancel_Form(){
     window.location.href = '/Cashier/Promotion/index';
 }
+
+
+//Sweet Alert By theodore
+$('#btn-payment').on('click',function(e){
+    e.preventDefault();
+    var form = $(this).parents('form');
+    swal({
+        title: "Are you sure?",
+        text: "You will not be able to recover this payment!",
+        type: "success",
+        showCancelButton: true,
+        confirmButtonColor: "#86CCEB",
+        confirmButtonText: "Confirm",
+        closeOnConfirm: false
+    }, function(isConfirm){
+        if (isConfirm) form.submit();
+    });
+});
+
+// function confirmCancle() {
+//     var id  = $(this).attr('id');
+//     alert(id);
+    // $(document).ready(function(){
+    //     $.ajax({
+    //         url: 'invoice/cancel/' + id,
+    //         type: 'get',
+    //         contentType: 'application/x-www-form-urlencoded',
+    //         success: function (response) {
+    //             //service.php response
+    //             console.log(response);
+    //         }
+    //     });
+    // });    
+// }
+
+// $('.order-cancel').on('click',function(e){
+//     e.preventDefault();
+//     var id      = this.id;
+//     var role    = '<?php echo $roleCheck; ?>';
+//     alert(role);
+//     swal({
+//         title: "Are you sure?",
+//         text: "You will not be able to recover this payment!",
+//         type: "success",
+//         showCancelButton: true,
+//         confirmButtonColor: "#86CCEB",
+//         confirmButtonText: "Confirm",
+//         closeOnConfirm: false
+//     }, function(isConfirm){
+//         if (isConfirm) {
+//              $(document).ready(function(){
+//                 $.ajax({
+//                     url: 'invoice/cancel/' + id,
+//                     type: 'get',
+//                     contentType: 'application/x-www-form-urlencoded',
+//                     success: function (data) {
+//                         var message = data.message;
+//                         if (message == 'success') {
+//                             swal.close();
+//                             $(".tr-" + id).fadeOut('5000');
+//                         }
+//                     }
+//                 });
+//             });    
+//         };
+//     });
+
+// });
+
+
+function checkRole() {
+    $(document).ready(function(){
+        var managerLogin    = $('#adm-user').val();
+        var managerPass     = $('#adm-pass').val();
+        var orderId         = $('#orderId').val();
+        if (managerLogin == '' || managerPass == '') {
+            $("#error-blank").fadeTo(1000,1).fadeOut(5000);
+        } else {
+                $.ajax({
+                    url: 'invoice/manager/confirm/' + managerLogin + '/' + managerPass,
+                    type: 'get',
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function (data) {
+                        var message = data.message;
+                        if(message == 'success') {
+                            swal({
+                                title: "Are you sure?",
+                                text: "You will not be able to recover this payment!",
+                                type: "success",
+                                showCancelButton: true,
+                                confirmButtonColor: "#86CCEB",
+                                confirmButtonText: "Confirm",
+                                closeOnConfirm: false
+                            }, function(isConfirm){
+                                if (isConfirm) {
+                                    cancelOrder(orderId);
+                                    $("#manager-modal .close").click();   
+                                };
+                            });
+                        } else {
+                            $("#error-wrong").fadeTo(1000,1).fadeOut(5000);    
+                        }
+                    }
+                });
+        }
+    });
+}
+
+
 
 
 

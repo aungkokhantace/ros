@@ -63,7 +63,7 @@ class SaleReportController extends Controller
         }else{
            
             $orders = Order::leftjoin('order_details','order_details.order_id','=','order.id')->leftjoin('users','users.id','=','order.user_id')->select('order.id as invoice_id','order.order_time','users.user_name','order.all_total_amount as Amount', DB::raw('SUM(order_details.quantity) as Quantity'))->whereBetween('order.order_time',[$from,$to])
-            ->where('order.status','1')
+            ->where('order.status','2')
             ->where('order_details.deleted_at',NULL)
             ->groupBy('order.id')
             ->orderBy('order.order_time','desc')

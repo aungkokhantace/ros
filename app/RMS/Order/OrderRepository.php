@@ -21,12 +21,14 @@ class OrderRepository implements OrderRepositoryInterface
         ->leftjoin('set_menu','set_menu.id','=','order_details.setmenu_id')
         ->leftjoin('category','category.id','=','items.category_id')
         ->leftjoin('users','users.id','=','order.user_id')
-        ->select('order.take_id','order_details.order_id','order_type.type as order_type','set_menu.set_menus_name','items.name','order_details.order_time','order_details.item_id','order_details.setmenu_id','order_details.status_id as order_status','order_details.exception','order_details.id as order_details_id','order_details.order_duration')
+        ->select('order.take_id','order.status','order_details.order_id','order_type.type as order_type','set_menu.set_menus_name','items.name','order_details.order_time','order_details.item_id','order_details.setmenu_id','order_details.status_id as order_status','order_details.exception','order_details.id as order_details_id','order_details.order_duration')
         ->where(function($query){
-            $query->where('order_details.status_id','=',1)->orwhere('order_details.status_id','=',2)
+            $query->where('order.status', '=', 1)->where('order_details.status_id','=',1)->orwhere('order_details.status_id','=',2)
             ->orwhere('order_details.status_id','=',3)->orwhere('order_details.status_id','=',4);
            
-        })->get();
+        })
+        ->orderBy('order.created_at', 'desc')
+        ->get();
        
         return $orders;
     }

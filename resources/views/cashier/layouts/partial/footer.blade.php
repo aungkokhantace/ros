@@ -125,5 +125,5 @@
     });
     });
 </script>
-
+<script src="/assets/js/multi-row.js"></script>
 </body>

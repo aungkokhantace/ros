@@ -124,8 +124,28 @@ class syncAPIController extends ApiGuardController
            $activate_key = $k->site_activation_key;
         }
         if($key == $activate_key){
-            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image FROM items WHERE status = '1' ");
+            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' ");
             $output = array("items" => $item);
+            return Response::json($output);
+        }else{
+            $output = array("Message" => "Unauthorized");
+            return Response::json($output);       
+        }
+    }
+
+    public function continent()
+    {
+        $temp = Input::all();
+        $key  = $temp['site_activation_key'];
+        $site_activation_key = Config::all();
+
+        $activate_key = 0;
+        foreach($site_activation_key as $k){
+           $activate_key = $k->site_activation_key;
+        }
+        if($key == $activate_key){
+            $continent  = DB::select("SELECT id,name FROM continent WHERE deleted_at IS NULL ");
+            $output     = array("continents" => $continent);
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
@@ -145,7 +165,7 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu");
+            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu WHERE status = '1'");
             $output = array("set_menu" => $set_menu);
             return Response::json($output);
         }else{
@@ -188,7 +208,7 @@ class syncAPIController extends ApiGuardController
         }
        
         if($key == $activate_key){
-            $config = DB::select("SELECT tax,service,booking_warning_time,booking_waiting_time,booking_service_time,restaurant_name,logo,mobile_logo,email,website,phone,address,message,remark,mobile_image FROM config");
+            $config = DB::select("SELECT tax,service,booking_warning_time,booking_waiting_time,booking_service_time,room_charge,restaurant_name,logo,mobile_logo,email,website,phone,address,message,remark,mobile_image FROM config");
         
         $output = array("config" => $config);
         return Response::json($output);
@@ -316,13 +336,12 @@ class syncAPIController extends ApiGuardController
 
         $today                  = Carbon::now();
         $cur_date               = Carbon::parse($today)->format('Y-m-d');
-
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
 
         if($key == $activate_key){
-            $discount = DB::select("SELECT amount,type,item_id FROM discount WHERE $cur_date >= start_date AND $cur_date <= end_date");
+            $discount = DB::select("SELECT amount,type,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date'");
             $output = array("discount" => $discount);
             return Response::json($output);
         }else{
@@ -436,7 +455,6 @@ class syncAPIController extends ApiGuardController
     {
         $returnArr              = array();
         $temp                   = Input::all();
-
         $key                    = $temp['site_activation_key'];
         $site_activation_key    = Config::all();
         $activate_key           = 0;
@@ -457,7 +475,6 @@ class syncAPIController extends ApiGuardController
                         $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image FROM category WHERE status='1'");
 
                         $returnArr['category'] = $category;
-
                     }
                 }
 
@@ -485,7 +502,7 @@ class syncAPIController extends ApiGuardController
                     }
                 }
            
-                if ($sync->table_name == "set_menu") {
+                    if ($sync->table_name == "set_menu") {
                     if ($sync->version > $temp['set_menu']) {
                         $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image FROM set_menu  WHERE status='1'");
                         $returnArr['set_menu'] = $set_menu;
@@ -564,7 +581,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "config") {
                     if ($sync->version > $temp['config']) {
-                        $config = DB::select("SELECT tax,service,booking_warning_time,booking_waiting_time,booking_service_time,restaurant_name,logo,mobile_logo,email,
+                        $config = DB::select("SELECT tax,service,booking_warning_time,room_charge,booking_waiting_time,booking_service_time,restaurant_name,logo,mobile_logo,email,
                             website,phone,address,message,remark,mobile_image FROM config");
                         $returnArr['config'] = $config;
                     }
@@ -585,8 +602,8 @@ class syncAPIController extends ApiGuardController
                 }
 
                 if ($sync->table_name == "discount") {
-                    if ($syncs[$key]->version > $temp['discount'] && $syncs[$key]->version < $temp['discount']) {
-                        $discount = DB::select("SELECT id,name,amount,type,start_date,end_date,item_id FROM discount WHERE $cur_date >= start_date AND $cur_date <= end_date");
+                    if ($syncs[$key]->version > $temp['discount']) {
+                        $discount = DB::select("SELECT id,name,amount,type,start_date,end_date,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date'");
                         $returnArr['discount'] = $discount;
                     }
                 }

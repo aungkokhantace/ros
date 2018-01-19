@@ -224,6 +224,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Profile/company_profile','Cashier\Config\ProfileController@profile');
                 Route::post('Profile/update','Cashier\Config\ProfileController@update');
                 Route::post('Profile/store','Cashier\Config\ProfileController@store');
+                Route::get('Pricehistory/{type?}/{id?}','Cashier\Log\PricelogController@search');
             });
             //End config
 
@@ -234,6 +235,11 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('invoice/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxInvoiceRequest');
                 Route::get('invoice/detail/{id}','Cashier\Invoice\InvoiceController@invoicedetail');
                 Route::get('invoice/detail/print/{id}','Cashier\Invoice\InvoiceController@invoicePrint');
+                Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');
+                Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
+                Route::get('invoice/cancel','Cashier\Invoice\InvoiceController@invoiceCancel');
+                Route::get('invoice/cancel/{id}','Cashier\Invoice\InvoiceController@orderCancel');
+                Route::get('invoice/manager/confirm/{username}/{password}','Cashier\Invoice\InvoiceController@checkManager');
 
                 //Sale Summary Report & Excel Download
                 Route::get('saleSummaryReport','Cashier\Report\SaleSummaryReportController@saleSummary');
@@ -391,6 +397,7 @@ Route::post('api/v1/user', 'syncAPIController@user');
 Route::post('api/v1/category','syncAPIController@category');
 Route::post('api/v1/addon','syncAPIController@addon');
 Route::post('api/v1/item', 'syncAPIController@item');
+Route::post('api/v1/continent', 'syncAPIController@continent');
 Route::post('api/v1/set_menu','syncAPIController@set_menu');
 Route::post('api/v1/set_item','syncAPIController@set_item');
 Route::post('api/v1/config','syncAPIController@config');
@@ -421,11 +428,11 @@ Route::post('api/v1/customer_cancel','makeAPIController@customer_cancel');
 Route::post('api/v1/post_kitchen_cancel','makeAPIController@post_kitchen_cancel');
 Route::post('api/v1/order_status','makeAPIController@order_status');
 
-Route::post('api/v1/download_voucher','downloadAPIController@download_voucher');
-Route::post('api/v1/download_voucher_detail','downloadAPIController@download_voucher_detail');
-Route::post('api/v1/order_table','downloadAPIController@order_table');
-Route::post('api/v1/order_room','downloadAPIController@order_room');
+Route::post('api/v1/download_voucher','downloadApiController@download_voucher');
+Route::post('api/v1/download_voucher_detail','downloadApiController@download_voucher_detail');
+Route::post('api/v1/order_table','downloadApiController@order_table');
+Route::post('api/v1/order_room','downloadApiController@order_room');
 
-Route::post('api/v1/download_order_table_with_order_id','downloadAPIController@order_table_with_order_id');
-Route::post('api/v1/download_order_room_with_order_id','downloadAPIController@order_room_with_order_id');
-Route::post('api/v1/download_order_table_status','downloadAPIController@download_order_table_status');
+Route::post('api/v1/download_order_table_with_order_id','downloadApiController@order_table_with_order_id');
+Route::post('api/v1/download_order_room_with_order_id','downloadApiController@order_room_with_order_id');
+Route::post('api/v1/download_order_table_status','downloadApiController@download_order_table_status');

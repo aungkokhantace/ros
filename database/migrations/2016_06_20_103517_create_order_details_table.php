@@ -15,7 +15,7 @@ class CreateOrderDetailsTable extends Migration
             $table->integer('item_id')->nullable();
             $table->integer('order_type_id');
             $table->integer('setmenu_id')->nullable();
-            $table->string('take_item',5);
+            $table->boolean('take_item');
             $table->integer('quantity');
             $table->string('exception')->nullable();
             $table->string('discount_amount')->nullable();
@@ -45,3 +45,4 @@ class CreateOrderDetailsTable extends Migration
         Schema::drop('order_details');
     }
 }
+>>>>>>> v1.0.3

@@ -37,5 +37,10 @@ class Item extends Model
     {
         return $this->hasMany('App\RMS\Orderdetail\Orderdetail');
     }
+
+    public function Continent()
+    {
+        return $this->belongsTo('App\RMS\Item\Continent', 'continent_id', 'id');
+    }
 }
 

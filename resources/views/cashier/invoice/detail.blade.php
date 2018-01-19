@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="container">
-           
+
             @if(count(Session::get('message')) != 0)
                 <div>
                 </div>
@@ -14,7 +14,7 @@
         <div class="row">
             {{--heading title--}}
 
-            
+
         </div>
     </div>
     {{--tables--}}
@@ -38,10 +38,10 @@
                             <th colspan="3">
                                 Invoice No: {{ $orders->order_id}}<br/>
                                 Invoice Date:{{$orders->order_time}}<br/>
-                               
+
                                 @if(isset($tables))
                                     @foreach($tables as $table)
-                                        Table No : {{ $table->table_no }} 
+                                        Table No : {{ $table->table_no }}
                                     @endforeach
                                 @endif
                                 @if(isset($rooms))
@@ -50,7 +50,7 @@
                                     @endforeach
                                 @endif
                                 <br/>
-                               Cashier Name: {{ $cashier->User->user_name}}
+
                             </th>
                         </tr>
                         <tr class="invoice_header" >
@@ -64,6 +64,7 @@
                             <th>Total Amount</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <?php $t=0; $tt=0; $sub_total=0;$add_qty=0; ?>
                         @foreach($order_detail as $detail)
@@ -89,12 +90,17 @@
 
                                 </td>
                                 <td>
+                                    <?php
+                                    $default_extra = '0.0';
+                                    ?>
                                     @foreach($amount as $am)
                                         @if($detail->order_detail_id == $am['order_detail_id'])
                                             {{ ($am['amount']) *($detail->quantity) }}
-                                        @endif     
+                                        @endif
+                                         <?php $default_extra = ''; ?>
                                     @endforeach
-                                   
+
+                                    {{ $default_extra }}
                                 </td>
                                 <td>{{$detail->discount_amount}}</td>
                                 <td > {{ number_format($detail->amount_with_discount)}} </td>
@@ -115,19 +121,26 @@
                         </tr>
                         <tr class="invoice_body inv_head">
                             <td colspan="6">Member Discount Amount</td>
-                            <td>{{($orders->member_discount)}}<span>%</span>
+                            <td>Total Amount<span>%</span>
                             <td><span>-</span>{{($orders->member_discount_amount)}}</td>
                         </tr>
+                        @if ($orders->foc_amount > 0)
+                        <tr class="invoice_body inv_head">
+                            <td colspan="7">Free of Charge</td>
+                            <td>{{($orders->foc_amount)}}</td>
+                        </tr>
+                        @endif
+                        
                         <tr class="invoice_body inv_head">
                             <td colspan="7">Net Amount</td>
                             <td>{{ number_format($orders->all_total_amount)}}</td>
-                        </tr>        
+                        </tr>
                     </tbody>
                 </table>
-                
+
             </div>
         </div>
     </div>
-  
+
 
 @endsection

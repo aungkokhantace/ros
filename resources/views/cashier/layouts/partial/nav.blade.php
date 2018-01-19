@@ -55,6 +55,7 @@
                         <li><a href="/Cashier/Config/general_config">Configurations</a></li>
                         <li><a href="/Cashier/Promotion/index">Promotions</a></li>
                         <li><a href="/Cashier/Discount/index">Discount</a></li>
+                        <li><a href="/Cashier/Pricehistory/all">Price Histories</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -66,7 +67,7 @@
                         <li><a href="/Cashier/invoice">Invoice List</a></li>
                         <li><a href="/Cashier/saleSummaryReport">Sale Summary Report</a></li>
                         <li><a href="/Cashier/saleReport">Sale Report</a></li>
-                        <li><a href="/Cashier/saleSummaryDetailReport">Category Sale Summary Detail Report</a></li>
+                        <!-- <li><a href="/Cashier/saleSummaryDetailReport">Category Sale Summary Detail Report</a></li> -->
                         <li><a href="/Cashier/itemReport">Best-selling Item Report</a></li>
                         <li><a href="/Cashier/favourite_set_menus">Best-selling Set Report</a></li>
                         <li><a href="/Cashier/memberFavaourite/0">Member Favourite Food Report</a></li>

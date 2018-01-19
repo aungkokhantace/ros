@@ -2,7 +2,7 @@
     <div class="col-md-6"></div>
     <div class="col-md-6">
         <div class="col-md-3">
-            <img src="/assets/images/icon_grey.png">Haven't Cook Yet
+            <img src="/assets/images/icon_grey.png">Haven't Cook Yets
         </div>
         <div class="col-md-3">
             <img src="/assets/images/icon_red.png">Cooking
@@ -17,6 +17,8 @@
 </div>
 @if(isset($groupedOrders) && count($groupedOrders) > 0)
 @foreach($groupedOrders as $group)
+
+    @if($group['status'] == 1)
     <div class="col-md-2 sticky">
         <table>
          @if($group['order_id'])
@@ -94,6 +96,7 @@
 
         </table>
     </div>
+    @endif
 @endforeach
 @endif
     <!-- Small modal -->

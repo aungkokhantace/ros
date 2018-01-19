@@ -27,8 +27,8 @@ class ConfigController extends Controller
     {
         $config=$this->ConfigRepository->getAllConfig();
         if($config == null){
-                    return view('cashier.config.config')->with('config',$config);
-                }
+            return view('cashier.config.config')->with('config',$config);
+        }
                 else if(($config->tax == 0.0 && $config->service == 0.0 && $config->room_charge == 0 && $config->booking_warning_time == "00:00:00" && $config->booking_waiting_time == "00:00:00" && $config->booking_service_time == "00:00:00" && $config->message == "" && $config->remark == "") && ($config->restaurant_name != "" || $config->logo != "" || $config->mobile_logo != "" || $config->website != "" || $config->phone != "" || $config->address != "")){
                     return view('cashier.config.config')->with('record',$config->id);
                 }
@@ -38,7 +38,7 @@ class ConfigController extends Controller
                     $service_time = strtotime($config->booking_service_time)-strtotime('Today');
                     return view('cashier.config.config')->with('config',$config)->with('warning_time',$warning_time)->with('waiting_time',$waiting_time)->with('service_time',$service_time);
                 }
-            }
+    }
 
     public function store(GeneralConfigRequest $request){
         $request->validate();

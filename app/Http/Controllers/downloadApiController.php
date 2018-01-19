@@ -59,7 +59,7 @@ class downloadAPIController extends ApiGuardController
         $result = array();
 
         if($key == $activate_key){
-        	$voucher = DB::select('SELECT id,take_id,order_time,total_extra_price,total_discount_amount,total_price ,all_total_amount FROM `order` WHERE status is NULL');
+        	$voucher = DB::select('SELECT id,take_id,order_time,total_extra_price,total_discount_amount,total_price ,all_total_amount,status FROM `order` WHERE status = 1');
         	$result   = $voucher;
         
         	$tables = DB::select('SELECT order_id,table_id FROM order_tables');
@@ -92,7 +92,6 @@ class downloadAPIController extends ApiGuardController
 
 	public function download_voucher_detail(){
 		$temp	= Input::all();
-
 		$key                    = $temp['site_activation_key'];
 		$order_id				= $temp['order_id'];
 		$site_activation_key    = Config::all();
@@ -103,7 +102,7 @@ class downloadAPIController extends ApiGuardController
 		}
 
 		if($key == $activate_key){
-			$order_raw			= DB::select("SELECT * FROM `order` WHERE id = $order_id AND status IS NULL AND deleted_at IS NULL");
+			$order_raw			= DB::select("SELECT * FROM `order` WHERE id = $order_id AND deleted_at IS NULL");
 			$order_detail_raw 	= DB::select("SELECT * FROM `order_details` WHERE order_id = $order_id AND deleted_at IS NULL");
 			$order_setmenu_raw	= DB::select("SELECT * FROM `order_setmenu_detail` WHERE deleted_at IS NULL");
 			$order_extra_raw	= DB::select("SELECT extra_id,order_detail_id,quantity,amount FROM `order_extra` WHERE deleted_at IS NULL");
@@ -193,7 +192,7 @@ class downloadAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-        	$order_table = OrderTable::leftjoin('order','order.id','=','order_tables.order_id')->select('order_tables.table_id','order_tables.order_id')->where('order.status','=',NULL)->where('order_tables.table_id','=',$table_id)->first();
+        	$order_table = OrderTable::leftjoin('order','order.id','=','order_tables.order_id')->select('order_tables.table_id','order_tables.order_id')->where('order.status','=',1)->where('order_tables.table_id','=',$table_id)->first();
         	if($order_table == null){
         		$output = array("order_id" => "NULL");
             	return Response::json($output);
@@ -221,7 +220,7 @@ class downloadAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $room_table = OrderRoom::leftjoin('order','order.id','=','order_room.order_id')->select('order_room.room_id','order_room.order_id')->where('order.status','=',NULL)->where('order_room.room_id','=',$room_id)->first();
+            $room_table = OrderRoom::leftjoin('order','order.id','=','order_room.order_id')->select('order_room.room_id','order_room.order_id')->where('order.status','=',1)->where('order_room.room_id','=',$room_id)->first();
             if($room_table == null){
             	$output = array("room_table" => "NULL");
             	return Response::json($output);
