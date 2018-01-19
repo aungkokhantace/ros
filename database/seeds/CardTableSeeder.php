@@ -28,7 +28,7 @@ class CardTableSeeder extends Seeder
 
         DB::table('card')->insert([
             'id'   => 4,
-            'name' =>'Master'
+            'name' =>'Credit'
         ]);
     }
 }

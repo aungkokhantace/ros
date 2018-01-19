@@ -10,10 +10,18 @@ use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetail;
 use App\RMS\Kitchen\Kitchen;
+use App\Status\StatusConstance;
 
 class OrderRepository implements OrderRepositoryInterface
 {
     public function getVoucher(){
+        //Status Lists
+        $order_status                      = StatusConstance::ORDER_CREATE_STATUS;
+        $order_detail_cooking_status       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+        $order_detail_cooked_status        = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        $order_detail_cooking_done_status  = StatusConstance::ORDER_DETAIL_COOKING_DONE_STATUS;
+        $order_detail_delievered_status    = StatusConstance::ORDER_DETAIL_DELIEVERED_STATUS;
+        
         $orders = Orderdetail::
         leftjoin('order','order_details.order_id','=','order.id')
         ->leftjoin('order_type','order_type.id','=','order_details.order_type_id')
@@ -22,9 +30,11 @@ class OrderRepository implements OrderRepositoryInterface
         ->leftjoin('category','category.id','=','items.category_id')
         ->leftjoin('users','users.id','=','order.user_id')
         ->select('order.take_id','order.status','order_details.order_id','order_type.type as order_type','set_menu.set_menus_name','items.name','order_details.order_time','order_details.item_id','order_details.setmenu_id','order_details.status_id as order_status','order_details.exception','order_details.id as order_details_id','order_details.order_duration')
-        ->where(function($query){
-            $query->where('order.status', '=', 1)->where('order_details.status_id','=',1)->orwhere('order_details.status_id','=',2)
-            ->orwhere('order_details.status_id','=',3)->orwhere('order_details.status_id','=',4);
+        ->where(function($query) use 
+        ($order_status,$order_detail_cooking_status,$order_detail_cooked_status,$order_detail_cooking_done_status,$order_detail_delievered_status) {
+            $query->where('order.status', '=',$order_status)->where('order_details.status_id','=',$order_detail_cooking_status)->orwhere('order_details.status_id','=',$order_detail_cooked_status)
+            ->orwhere('order_details.status_id','=',$order_detail_cooking_done_status)
+            ->orwhere('order_details.status_id','=',$order_detail_delievered_status);
            
         })
         ->orderBy('order.created_at', 'desc')
@@ -34,6 +44,9 @@ class OrderRepository implements OrderRepositoryInterface
     }
 
     public function getInvoice($id){
+        $order_detail_cooking_status       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+        $order_detail_cooked_status        = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        
         $orders = Orderdetail::
         leftjoin('order','order_details.order_id','=','order.id')
         ->leftjoin('order_type','order_type.id','=','order_details.order_type_id')
@@ -42,8 +55,8 @@ class OrderRepository implements OrderRepositoryInterface
         ->leftjoin('category','category.id','=','items.category_id')
         ->leftjoin('users','users.id','=','order.user_id')
         ->select('order.take_id','order_details.order_id','order_type.type as order_type','items.name','order_details.order_time','order_details.quantity','order_details.item_id','order_details.setmenu_id','order_details.status_id as order_status','order_details.exception','order_details.id as order_details_id','order_details.order_duration','order_details.remark')
-        ->where(function($query){
-            $query->where('order_details.status_id','=',1)->orwhere('order_details.status_id','=',2);
+        ->where(function($query) use ($order_detail_cooking_status,$order_detail_cooked_status) {
+            $query->where('order_details.status_id','=',$order_detail_cooking_status)->orwhere('order_details.status_id','=',$order_detail_cooked_status);
         })
         ->where(function($query) use($id){
             $query->where('category.kitchen_id','=',$id);
@@ -69,7 +82,11 @@ class OrderRepository implements OrderRepositoryInterface
     }
 
     public function orderExtra(){
-        $extras = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.order_detail_id','order_extra.extra_id','order_extra.quantity','order_extra.amount','add_on.food_name')->get();
+        $status 			= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
+        $extras = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.order_detail_id','order_extra.extra_id','order_extra.quantity','order_extra.amount','add_on.food_name')
+        ->where('order_extra.status','=',$status)
+        ->whereNull('order_extra.deleted_at')
+        ->get();
 
         return $extras;
     }

@@ -46,7 +46,6 @@ class Utility
 
     public static function updateSyncsTable($newObj)
     {
-
         $table_name = $newObj->getTable();
         $tempSyncTable = new SyncsTable();
         $syncTableName = $tempSyncTable->getTable();

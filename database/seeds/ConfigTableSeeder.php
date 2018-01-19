@@ -9,7 +9,7 @@ class ConfigTableSeeder extends Seeder
     {
         DB::table('config')->insert([
             'id' => '1',
-            'site_activation_key' => 'roXfvF8FeyLY',
+            'site_activation_key' => 'ap1',
             'tax'  => '10',
             'service'  =>'10',
             'room_charge'   => '1000',

@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
+@import url(/assets/css/google-font.css);
 /*!
  *   AdminLTE v2.3.3
  *   Author: Almsaeed Studio
@@ -4922,3 +4922,239 @@ table.text-center th {
     font-size: 16px;
 }
 
+/* For Order List table */
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+ul {
+	list-style-type: none;
+}
+
+a {
+	color: #e95846;
+	text-decoration: none;
+}
+
+.pricing-table-title {
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 2.6em;
+	color: #FFF;
+	margin-top: 15px;
+	text-align: left;
+	margin-bottom: 25px;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+}
+
+.pricing-table-title a {
+	font-size: 0.6em;
+}
+
+.clearfix:after {
+	content: '';
+	display: block;
+	height: 0;
+	width: 0;
+	clear: both;
+}
+/** ========================
+ * Contenedor
+ ============================*/
+.pricing-wrapper {
+	width: 960px;
+	margin: 40px auto 0;
+}
+
+.pricing-table {
+	margin: 0 10px;
+	text-align: center;
+  width: 400px;
+	float: left;
+	-webkit-box-shadow: 0 0 15px rgba(0,0,0,0.4);
+	box-shadow: 0 0 15px rgba(0,0,0,0.4);
+	-webkit-transition: all 0.25s ease;
+	-o-transition: all 0.25s ease;
+	transition: all 0.25s ease;
+}
+
+.pricing-title {
+	color: #FFF;
+  /*background: #e95846;*/
+	background: #F57020;
+	/*padding: 10px 0;*/
+  padding: 10px 0 10px 25px;
+	font-size: 20px;
+	text-transform: uppercase;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+  margin: 0;
+}
+.pricing-title span {
+  font-weight: bold;
+}
+.down-arrow {
+  background-image: url('/assets/images/down-arrow.png');
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+.pricing-table.recommended .pricing-title {
+	background: #2db3cb;
+}
+
+.pricing-table.recommended .pricing-action {
+	background: #2db3cb;
+}
+
+.pricing-table .price {
+  background: #403e3d;
+  color: #FFF;
+	font-size: 16px;
+	padding: 10px 0;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+}
+
+.pricing-table .price sup {
+	font-size: 0.4em;
+	position: relative;
+	left: 5px;
+}
+
+.table-list {
+	background: #2DB3CB;
+  color: #FFFF;
+  margin-bottom: 5px;
+  border:1px solid #1c7282;
+}
+.table-wrapper
+{
+  height:300px !important;
+  overflow-y:auto !important;
+  overflow-x: hidden;
+}
+.table-buy {
+	padding: 15px;
+	text-align: left;
+}
+
+.table-buy button {
+	float: left;
+	color: #FFF;
+  font-size: 15px;
+  width: 80px;
+  margin-bottom: 5px;
+}
+
+.table-buy .pricing-action {
+	float: right;
+	color: #FFF;
+	background: #e95846;
+	padding: 10px 16px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	font-weight: 700;
+	font-size: 1.4em;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+	-webkit-transition: all 0.25s ease;
+	-o-transition: all 0.25s ease;
+	transition: all 0.25s ease;
+}
+
+.table-buy .pricing-action:hover {
+	background: #cf4f3e;
+}
+
+.recommended .table-buy .pricing-action:hover {
+	background: #228799;	
+}
+
+.product-name {
+  font-size:15px;
+  text-align:left;
+  /*padding:5px 10px;*/
+   padding:5px 10px 5px 0;
+}
+
+/** Invoice Detail CSS */
+.invoice-wrapper {
+  font-family:'Courier New',Times New Roman;
+  font-weight: bold;
+  width:350px;
+  margin:0 auto;
+}
+.invoice-title {
+  background:#5CB85C;
+  height:50px;
+  color:#ffffff;
+  line-height:50px;
+}
+.invoice-table-wrapper {
+  border:1px solid #E8E8E8;
+  border-top:0px;
+  padding:0px 10px;
+}
+.print-invoice {
+  border-collapse: collapse;
+  margin:0 auto;
+}
+.print-invoice tr td {
+  background:#fff !important;
+}
+.td-config {
+  text-align:center;
+  font-size:13px;
+  line-height:25px;
+}
+.tr-bottom-dashed {
+  border-bottom:1px dashed black;
+}
+.i-title {
+  font-size:13px;
+  line-height:25px;
+}
+.i-title td {
+  height:25px;
+}
+.right {
+  text-align:right !important;
+}
+.mm-font {
+  font-family: zawgyi-one !important;
+}
+/** ================
+ * Responsive
+ ===================*/
+ @media only screen and (min-width: 768px) and (max-width: 959px) {
+ 	.pricing-wrapper {
+ 		width: 768px;
+ 	}
+
+ 	.pricing-table {
+     width: 236px;
+ 	}
+
+
+ }
+
+ @media only screen and (max-width: 767px) {
+ 	.pricing-wrapper {
+ 		width: 420px;
+ 	}
+
+ 	.pricing-table {
+ 		display: block;
+ 		float: none;
+ 		margin: 0 0 20px 0;
+ 		width: 100%;
+ 	}
+ }
+
+@media only screen and (max-width: 479px) {
+	.pricing-wrapper {
+		width: 300px;
+	}
+} 

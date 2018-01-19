@@ -8,9 +8,12 @@ use App\Http\Requests;
 use Auth;
 use App\Http\Controllers\Controller;
 use App\RMS\Order\Order;
+use App\RMS\OrderTable\OrderTable;
+use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\Item\Item;
 use App\RMS\Config\Config;
+use App\Status\StatusConstance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Input;
 use PDF;
@@ -35,18 +38,692 @@ class InvoiceController extends Controller
         $this->InvoiceRepository = $InvoiceRepository;
     }
     
-    public function invoiceList()
+    public function invoiceList(Request $request)
     {
+        $page       = $request->get('page');
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
-        $orders 	= $this->InvoiceRepository->getinvoice();
+        $orderRepo 	= $this->InvoiceRepository->getinvoice();
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
         if (Auth::guard('Cashier')->check()) {
             $role_id      = Auth::guard('Cashier')->user()->role_id;
         }
         $roleArr['role'][]    = $role_id;
-        return view('cashier.invoice.index',compact('orders'));
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','continent'));
 
     } 
+
+    public function invoiceTimeIncrease(Request $request) {
+        $page       = $request->get('page');
+    	$today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeIncrease();
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "time";
+        $amount         = "increase";
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+    }
+
+    public function invoiceTimeDecrease(Request $request) {
+        $page       = $request->get('page');
+    	$today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeDecrease();
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "time";
+        $amount         = "decrease";
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+    }
+
+    public function invoicePriceIncrease(Request $request) {
+        $page       = $request->get('page');
+    	$today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoicePriceIncrease();
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "price";
+        $amount         = "increase";
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+    }
+
+    public function invoicePriceDecrease(Request $request) {
+        $page       = $request->get('page');
+    	$today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoicePriceDecrease();
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "price";
+        $amount         = "decrease";
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+    }
+
+    public function invoiceOrderIncrease(Request $request) {
+        $page       = $request->get('page');
+    	$today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderIncrease();
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "order";
+        $amount         = "increase";
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+    }
+
+    public function invoiceOrderDecrease(Request $request) 
+    {
+        $page       = $request->get('page');
+    	$today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderDecrease();
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "order";
+        $amount         = "decrease";
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+    }
+
+    public function ajaxInvoiceTimeIncrease(Request $request)
+    {
+        $page       = $request->get('page');
+        $today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeIncrease();
+        $orderRepo  = $orderRepo->setPath('increase');
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "time";
+        $amount         = "increase";
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
+    }
+
+    public function ajaxInvoiceTimeDecrease(Request $request)
+    {
+        $page       = $request->get('page');
+        $today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeDecrease();
+        $orderRepo  = $orderRepo->setPath('decrease');
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "time";
+        $amount         = "decrease";
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
+    }
+
+    public function ajaxInvoicePriceIncrease(Request $request)
+    {
+        $page       = $request->get('page');
+        $today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoicePriceIncrease();
+        $orderRepo  = $orderRepo->setPath('increase');
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "price";
+        $amount         = "increase";
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
+    }
+
+    public function ajaxInvoicePriceDecrease(Request $request) {
+        $page       = $request->get('page');
+        $today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoicePriceDecrease();
+        $orderRepo  = $orderRepo->setPath('decrease');
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "price";
+        $amount         = "decrease";
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
+    }
+
+    public function ajaxInvoiceOrderIncrease(Request $request) {
+        $page       = $request->get('page');
+        $today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderIncrease();
+        $orderRepo  = $orderRepo->setPath('increase');
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "order";
+        $amount         = "increase";
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+    }
+
+    public function ajaxInvoiceOrderDecrease(Request $request) {
+        $page       = $request->get('page');
+        $today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderDecrease();
+        $orderRepo  = $orderRepo->setPath('increase');
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        //Flag For Sorting
+        $sortBy         = "order";
+        $amount         = "decrease";
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+    }
+
+    public function ajaxRequest(Request $request)
+    {
+        $page       = $request->get('page');
+        $today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoice();
+        $orderRepo  = $orderRepo->setPath('invoice');
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->first();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->first();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable->table_name;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom->room_name;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page'));
+
+    }
 
     public function ajaxInvoiceRequest()
     {
@@ -61,6 +738,7 @@ class InvoiceController extends Controller
         $orders = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
+        $continent  = $this->InvoiceRepository->getContinent();
         $addon  = array();
         foreach($add as $dd){
             foreach($dd as $d){
@@ -77,13 +755,41 @@ class InvoiceController extends Controller
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier        = $this->InvoiceRepository->cashier($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone')->first();
-       
-        return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier'));
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        $payments        = $this->InvoiceRepository->getPayment($id);
+        return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','payments','continent'));
     }
 
     public function invoicePaid($id) {
-        $orders = $this->InvoiceRepository->getorder($id);
+        $order = $this->InvoiceRepository->getorder($id);
+        $add    = $this->InvoiceRepository->getaddon($id);
+        $total  = $this->InvoiceRepository->getaddonAmount($id);
+        $continent  = $this->InvoiceRepository->getContinent();
+        $addon  = array();
+        foreach($add as $dd){
+            foreach($dd as $d){
+                $addon[] = $d;
+            }
+        }
+        $amount = array();
+        foreach($total as $t){
+            foreach($t as $tt){
+                $amount[] = $tt;
+            }
+        }
+        $order_detail   = $this->InvoiceRepository->getdetail($id);
+        $tables         = $this->InvoiceRepository->orderTable($id);
+        $rooms          = $this->InvoiceRepository->orderRoom($id);
+        $cashier        = $this->InvoiceRepository->cashier($id);
+        $cards          = $this->InvoiceRepository->getCard();
+        $payments        = $this->InvoiceRepository->getPayment($id);
+        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->first();
+    
+        return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent'));
+    }
+
+    public function ajaxPaymentRequest($id) {
+        $order = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
         $addon  = array();
@@ -104,17 +810,19 @@ class InvoiceController extends Controller
         $cashier        = $this->InvoiceRepository->cashier($id);
         $cards          = $this->InvoiceRepository->getCard();
         $payments        = $this->InvoiceRepository->getPayment($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge')->first();
+        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->first();
 
-        return view('cashier.invoice.payment',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments'));
+        return view('cashier.invoice.real_time_payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments'));
     }
+
     //InvoiceRequest
     public function invoiceAddpaid(Request $request)
     {
+        $order_paid_status  = StatusConstance::ORDER_PAID_STATUS;
         // $request->validate();
         $input              = Input::all();
         $id                 = Input::get('id');
-        $config             = Config::select('tax','service','room_charge')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         $orders             = $this->InvoiceRepository->getorder($id);
         $tax_foc            = $orders->tax_amount;
         $services           = $orders->service_amount;
@@ -127,34 +835,14 @@ class InvoiceController extends Controller
         $paymentfoc         = $payment + $foc;
         $total_price_foc    = $all_total - $foc;
         $refund             = $paymentfoc - $all_total;
-        $status             = 2;
+        $status             = $order_paid_status;
 
         if ($foc > 0) {
             $all_total_with_foc     = $all_total - $foc;
         } else {
             $all_total_with_foc     = $all_total;    
         }
-        // if ($foc <= 0) {
-        //     $foc = null;
-        //     $total_price_foc = null;
-        // } else {
 
-        //     $total_price = $orders->total_price;
-        //     $tax = $config->tax;
-        //     $service = $config->service;
-        //     $room_charge = $config->room_charge;
-        //     $total_price_foc = $total_price - $foc;
-        //     $tax_foc = $total_price_foc/$tax;
-        //     $service_focs = $total_price_foc/$service;
-
-        //     $services = $service_focs;
-        //     if (count($rooms) > 0) {
-        //         $services = $service_focs + $room_charge;
-        //     }
-
-        //     $all_total = $total_price_foc + $tax_foc + $services;
-        //     $refund = $payment - $all_total;
-        // }
         $paramObj                   = Order::find($id);
         $paramObj->status           = $status;
         $paramObj->payment_amount   = $payment;
@@ -162,10 +850,12 @@ class InvoiceController extends Controller
         $paramObj->foc_amount       = $foc;
         $paramObj->all_total_amount = $all_total_with_foc;
         $result                     = $this->InvoiceRepository->update($paramObj,$input,$refund);
-
+        //Get Update ID
+        $param                      = $id;
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-            return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
-                ->withMessage(FormatGenerator::message('Success', 'Item have been paid ...'));
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                return redirect('Cashier/invoice/paid/' . $param)->with('status', 'Payment Update');
+            }
         }
         else{
             return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
@@ -173,14 +863,20 @@ class InvoiceController extends Controller
         }
     }
 
-    public function invoiceCancel() {
+    public function invoiceCancel(Request $request) {
+        $page           = $request->get('page');
         $today          = Carbon::now();
     	$cur_date       = Carbon::parse($today)->format('Y-m-d');
         $ordersCancel 	= $this->InvoiceRepository->getinvoiceCancel();
-        return view('cashier.invoice.index',compact('ordersCancel'));
+        $ordersCancel  = $ordersCancel->setPath('cancel');
+        //Flag for Invoice Type
+        $sortBy         = "cancel";
+        $amount         = "";
+        return view('cashier.invoice.index',compact('ordersCancel','sortBy','amount','page'));
     }
     public function orderCancel($id) {
-        $status                     = 3;
+        $order_cancel_status        = StatusConstance::ORDER_CANCEL_STATUS;
+        $status                     = $order_cancel_status;
         $paramObj                   = Order::find($id);
         $paramObj->status           = $status;
         $result                     = $this->InvoiceRepository->updateOrder($paramObj);
@@ -192,6 +888,12 @@ class InvoiceController extends Controller
             $output     = array('message'=>'faile');
             return \Response::json($output);
         }
+    }
+
+    public function redirectRequest($id)
+    {
+        return redirect()->action('Cashier\Invoice\InvoiceController@invoiceList')
+                ->withMessage(FormatGenerator::message('Fail', 'Table did not update ...'));
     }
 
     public function checkManager($managerLogin,$managerPass) {
@@ -233,7 +935,7 @@ class InvoiceController extends Controller
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier         = $this->InvoiceRepository->cashier($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone')->first();
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
 
         $html ='<h1>Invoice Detail</h1>
                 <table >

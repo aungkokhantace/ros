@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 class PermissionTableSeeder extends Seeder
 {
     
-     public function run()
+    public function run()
     {
         DB::table('permissions')->insert([
             'id' =>'1',

@@ -17,7 +17,7 @@ class InsertExtraRequest extends Request
         
         return [
             'price' => 'required|numeric',
-            'food_name' => 'required|unique:add_on,food_name,NULL,id,deleted_at,NULL',
+            'food_name' => 'required',
             'category_id' => 'required',
             'description' => 'required',
             'fileupload' => 'required',

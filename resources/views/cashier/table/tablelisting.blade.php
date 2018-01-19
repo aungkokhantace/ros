@@ -13,6 +13,8 @@
                 </div>
                 <div class="col-md-9">
                     <div class=" buttons">
+                        <input type="image" class="img_btn" src="../../../assets/images/enable.png" onclick="table_active();">
+                        <input class="img_btn" src="../../../assets/images/disable.png" onclick="table_disable();" type="image">
                         <button type="button"  onclick='table_create();' class="btn btn-default btn-md first_btn">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </button>
@@ -44,6 +46,7 @@
                                 <th>Table Capacity</th>
                                 <th>Area</th>
                                 <th>Table Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -58,9 +61,18 @@
                                 <td>{{ $table->capacity }}</td>
                                 <td>{{$table->area}}</td>
                                 <td>
-                                    @if($table->status == 0) {{"Available"}}
-                                    @else{{"Serve"}}
+                                    @if($table->status == 0) 
+                                        {{"Available"}}
+                                    @else
+                                        {{"Serve"}}
                                     @endif
+                                </td>
+                                <td>
+                                @if($table->active == 1)
+                                {{ "Enable" }}
+                                @else 
+                                {{ "Disable"}}
+                                @endif
                                 </td>
                             </tr>
                         @endforeach

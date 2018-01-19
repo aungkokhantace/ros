@@ -38,7 +38,6 @@ class UserController extends Controller
         $roles      = $this->userRepository->getRoles();
         $kitchens   = $this->userRepository->getKitchens();
         $cur_time   = Carbon::now();
-
         return view('cashier.user.UserList')->with('users', $users)
             ->with('roles', $roles)->with('cur_time', $cur_time)
             ->with('kitchens',$kitchens);
@@ -85,7 +84,16 @@ class UserController extends Controller
         $password   = trim(bcrypt(Input::get('login_password')));
         $roleId     = Input::get('userType');
         $kitchenId  = Input::get('kitchen');
-        $result = $this->userRepository->store($name,$staffId,$password,$roleId, $kitchenId,$id);
+
+        $paramObj               = new User();
+        $paramObj->user_name    = $name;
+        $paramObj->staff_id     = $staffId;
+        $paramObj->password     = $password;
+        $paramObj->role_id      = $roleId;
+        $paramObj->kitchen_id   = $kitchenId;
+        $paramObj->status       = 1;
+
+        $result = $this->userRepository->store($paramObj);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
             return redirect()->action('Cashier\Staff\UserController@index')
@@ -103,6 +111,26 @@ class UserController extends Controller
         $kitchens   = $this->userRepository->getKitchens();
 
         return view('cashier.user.User')->with('user', $user)->with('roles', $roles)->with('kitchens',$kitchens);
+    }
+
+    public function active($id) {
+        if (Auth::guard('Cashier')->user()->role_id !== 1) {
+            alert()->warning('You have no permission in this action!')->persistent('Close');
+            return back();
+        }
+        $user     = $this->userRepository->active($id);
+        return redirect()->action('Cashier\Staff\UserController@index')
+        ->withMessage(FormatGenerator::message('Success', 'User Active ...')); //to redirect listing page
+    }
+
+    public function inactive($id) {
+        if (Auth::guard('Cashier')->user()->role_id !== 1) {
+            alert()->warning('You have no permission in this action!')->persistent('Close');
+            return back();
+        }
+        $user     = $this->userRepository->inactive($id);
+        return redirect()->action('Cashier\Staff\UserController@index')
+        ->withMessage(FormatGenerator::message('Success', 'User Inactive ...')); //to redirect listing page
     }
 
     public function update(UserEditFormRequest $request){
@@ -186,12 +214,15 @@ class UserController extends Controller
             }
         }
     }
-    public function updateDataBeforeLogout(){ //before logout, update status field 1 to 0
+    public function updateDataBeforeLogout(Request $request){ //before logout, update status field 1 to 0
         if (Auth::guard('Cashier')->check()){
             $id         = Auth::guard('Cashier')->user()->id;
-            $this->userRepository->changeEnableToDisable($id);
+            // $this->userRepository->changeEnableToDisable($id);
             $role       = User::find($id);
             $r          = $role->roles->name;
+
+            //Remove Module Session  
+            $request->session()->forget('module');
             if($r != "Kitchen"){
                     return redirect('Cashier/logout');
                 }

@@ -12,6 +12,8 @@ interface TableRepositoryInterface
     public function table_edit($id);
     public function update($paramObj);
     public function table_delete($id);
+    public function table_active($id);
+    public function table_inactive($id);
     public function saveBooking($paramObj,$table_id);
     public function saveBookingWithRoom($paramObj,$room_id);
     public function getTodayBooking($cur_date);

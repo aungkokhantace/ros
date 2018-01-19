@@ -57,33 +57,71 @@
             </div>
             <br/>
             <div class="row" id="autoDiv">
-                <div class="col-md-11">
+                <div class="col-md-12">
                     <table class="table table-bordered">
                         <thead class="thead_report">
                             <tr class="report-th">
-                                <th>Invoice ID</th>
+                                <th width="10%">Invoice ID</th>
                                 <th>Date</th>
                                 <th>Cashier</th>
                                 <th>Quantity</th>
+                                <th>Total Discount Amount</th>
+                                <th>Total Tax Amount</th>
+                                <th>Total Service Amount</th>
+                                <th>Total Room Charge</th>
+                                <th>Total FOC Amount</th>
+                                <th>Total Extra Price</th>
                                 <th>Total Amount</th>
                             </tr>
                         </thead>
 
-                        <?php $total = 0; ?>
+                        <?php 
+                        $sum_amount=0;
+                        $sum_payment=0;
+                        $sum_refund=0;
+                        $sum_service=0;
+                        $sum_tax=0;
+                        $sum_discount=0;
+                        $sum_foc=0; 
+                        $sum_room = 0;
+                        $sum_extra = 0;
+                        ?>
                         @foreach($orders as $order)
                             <tr class="tr-row active">
                                 <td>{{ $order->invoice_id }}</td>
                                 <td>{{ date('d-m-Y',strtotime($order->order_time)) }}</td>
                                 <td>{{ $order->user_name }}</td>
                                 <td>{{ $order->Quantity }}</td>
+                                <td class="money-align">{{ number_format($order->Discount) }}</td>
+                                <td class="money-align">{{ number_format($order->Tax) }}</td>
+                                <td class="money-align">{{ number_format($order->Service) }}</td>
+                                <td class="money-align">{{ number_format($order->RoomCharge) }}</td>
+                                <td class="money-align">{{ number_format($order->Foc) }}</td>
+                                <td class="money-align">{{ number_format($order->Extra) }}</td>
                                 <td class="money-align">{{ number_format($order->Amount) }}</td>
                             </tr>
-                            <?php $total += $order->Amount; ?>
+                            <?php 
+                            $sum_amount     += $order->Amount;
+                            $sum_payment    += $order->Payment;
+                            $sum_refund     += $order->Refund;
+                            $sum_service    += $order->Service;
+                            $sum_tax        += $order->Tax;
+                            $sum_discount   += $order->Discount;
+                            $sum_foc        += $order->Foc; 
+                            $sum_room       += $order->RoomCharge;
+                            $sum_extra      += $order->Extra;
+                            ?>
                         @endforeach
                         <tr class="active">
                             <td colspan="3"></td>
-                            <td class="money-align">Total Amount</td>
-                            <td class="money-align">{{number_format($total)}}</td>
+                            <td class="money-align">Total</td>
+                            <td class="money-align">{{number_format($sum_discount)}}</td>
+                            <td class="money-align">{{number_format($sum_tax)}}</td>
+                            <td class="money-align">{{number_format($sum_service)}}</td>
+                            <td class="money-align">{{number_format($sum_room)}}</td>
+                            <td class="money-align">{{number_format($sum_foc)}}</td>
+                            <td class="money-align">{{number_format($sum_extra)}}</td>
+                            <td class="money-align">{{number_format($sum_amount)}}</td> 
                         </tr>
                     </table>
                 </div>

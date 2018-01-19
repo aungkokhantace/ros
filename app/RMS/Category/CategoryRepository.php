@@ -25,7 +25,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     }
 
     public function getAllCategory(){
-        $categories = Category::all();
+        $categories = Category::whereNull('deleted_at')->get();
         return $categories;
     }
 
@@ -100,6 +100,15 @@ class CategoryRepository implements CategoryRepositoryInterface
         try {
             $tempObj        = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+
+            $categories     = Category::select('id')->where('group_id','=',$paramObj->group_id)->get();
+            foreach($categories as $category) {
+                $cat_id                 = $category->id;
+                $updateCat              = Category::find($cat_id);
+                $updateCat->kitchen_id  = $paramObj->kitchen_id;
+                $updateCatObj           = Utility::addUpdatedBy($updateCat);
+                $updateCatObj->save();
+            }
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -117,6 +126,15 @@ class CategoryRepository implements CategoryRepositoryInterface
         try {
             $tempObj        = Utility::addUpdatedBy($paramObj);
             $tempObj->save();
+
+            $categories     = Category::select('id')->where('group_id','=',$paramObj->group_id)->get();
+            foreach($categories as $category) {
+                $cat_id                 = $category->id;
+                $updateCat              = Category::find($cat_id);
+                $updateCat->kitchen_id  = $paramObj->kitchen_id;
+                $updateCatObj           = Utility::addUpdatedBy($updateCat);
+                $updateCatObj->save();
+            }
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -184,6 +202,17 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function getKitchen(){
         $kit = Kitchen::get();
         return $kit;
+    }
+
+    public function getKitchenByCat($catID) {
+        $kitchen    = Category::select('kitchen_id')->where('id','=',$catID)->first();
+        return $kitchen;   
+    }
+
+    public function getLevelByParentCat($category) {
+        $level_attr  = Category::select('level')->where('id','=',$category)->first();
+        $level       = $level_attr->level;
+        return $level;
     }
 
 }

@@ -31,6 +31,7 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\BookingTable\BookingTable;
 use App\RMS\BookingRoom\BookingRoom;
+use App\Status\StatusConstance;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -77,9 +78,9 @@ class syncAPIController extends ApiGuardController
         }
        
         if($key == $activate_key){
-            $category = DB::select("SELECT id,name,status,parent_id,kitchen_id,mobile_image FROM category WHERE status = '1' ");
-            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status FROM set_menu WHERE status = '1'");
-            $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item");
+            $category = DB::select("SELECT id,name,status,parent_id,kitchen_id,image FROM category WHERE status = '1' AND deleted_at IS NULL");
+            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status FROM set_menu WHERE status = '1' AND deleted_at IS NULL");
+            $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
         
             $output = array("category" => $category,"set_menu"=>$set_menu,"set_item"=>$set_item);
             return Response::json($output);
@@ -102,7 +103,7 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $addon = DB::select("SELECT id,food_name,category_id,image,price,status,mobile_image FROM add_on WHERE status = '1'");
+            $addon = DB::select("SELECT id,food_name,category_id,image,price,status,mobile_image FROM add_on WHERE status = '1' AND deleted_at IS NULL");
        
             $output = array("addon" => $addon);
             return Response::json($output);
@@ -124,7 +125,7 @@ class syncAPIController extends ApiGuardController
            $activate_key = $k->site_activation_key;
         }
         if($key == $activate_key){
-            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' ");
+            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' AND deleted_at IS NULL");
             $output = array("items" => $item);
             return Response::json($output);
         }else{
@@ -165,7 +166,7 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu WHERE status = '1'");
+            $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu WHERE status = '1' AND deleted_at IS NULL");
             $output = array("set_menu" => $set_menu);
             return Response::json($output);
         }else{
@@ -186,7 +187,7 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item");
+            $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
             $output = array("set_item" => $set_item);
             return Response::json($output);
         }else{
@@ -231,8 +232,43 @@ class syncAPIController extends ApiGuardController
         }
         
         if($key == $activate_key){
-            $table = DB::select("SELECT id,table_no,status FROM tables");
-            $output = array("table" => $table);
+            $cur_date      = date('Y-m-d');
+            $default_status         = StatusConstance::BOOKING_DEFAULT_STATUS;
+            $warning_status         = StatusConstance::BOOKING_WARNING_STATUS;
+            $waiting_status         = StatusConstance::BOOKING_WAITING_STATUS;
+            $active_status          = StatusConstance::TABLE_ACTIVE_STATUS;
+            $array          = array($default_status,$warning_status,$waiting_status);
+            //Get tables and Status From Booking Table
+            $booking        = Booking::leftjoin('booking_table','booking.id','=','booking_table.booking_id')
+                              ->select('booking.status as status','booking_table.table_id as table_id')
+                              ->where('booking_date','=',$cur_date)
+                              ->whereIn('booking.status',$array)
+                              ->get();
+            $tables = DB::select("SELECT id,table_no,status FROM tables WHERE active = '$active_status' AND deleted_at IS NULL");
+            $table_arr  = array();
+            foreach($tables as $key => $table) {
+
+                $table_id       = $table->id;
+                $table_no       = $table->table_no;
+                $status         = $table->status;
+
+                $table_arr[$key]['id']          = $table->id;
+                $table_arr[$key]['table_no']    = $table->table_no;
+                $booking_table_arr  = array();
+                foreach($booking as $book) {
+                    $booking_table_id       = $book->table_id;
+                    $booking_table_status   = $book->status;
+                    $booking_table_arr[$booking_table_id] = $booking_table_status;
+                }
+
+                //If Array Key Exit in table id
+                if (array_key_exists($table_id, $booking_table_arr)) {
+                    $table_arr[$key]['status']      = $booking_table_arr[$table_id];
+                } else {
+                    $table_arr[$key]['status']      = $table->status;
+                }
+            }
+            $output = array("table" => $table_arr);
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
@@ -252,8 +288,44 @@ class syncAPIController extends ApiGuardController
         }
 
         if($key == $activate_key){
-            $room = DB::select("SELECT id,room_name,status FROM rooms");
-            $output = array("room" => $room);
+             $cur_date      = date('Y-m-d');
+            $default_status         = StatusConstance::BOOKING_DEFAULT_STATUS;
+            $warning_status         = StatusConstance::BOOKING_WARNING_STATUS;
+            $waiting_status         = StatusConstance::BOOKING_WAITING_STATUS;
+            $active_status          = StatusConstance::ROOM_ACTIVE_STATUS;
+            $array          = array($default_status,$warning_status,$waiting_status);
+            //Get tables and Status From Booking Table
+            $booking        = Booking::leftjoin('booking_room','booking.id','=','booking_room.booking_id')
+                              ->select('booking.status as status','booking_room.room_id as room_id')
+                              ->whereIn('booking.status',$array)
+                              ->get();
+            $rooms = DB::select("SELECT id,room_name,status FROM rooms WHERE active = '$active_status' AND deleted_at IS NULL");
+            $room_arr  = array();
+
+            foreach($rooms as $key => $room) {
+
+                $room_id        = $room->id;
+                $room_name      = $room->room_name;
+                $status         = $room->status;
+
+                $room_arr[$key]['id']          = $room_id;
+                $room_arr[$key]['room_name']    = $room_name;
+                $booking_room_arr  = array();
+                foreach($booking as $book) {
+                    $booking_room_id       = $book->room_id;
+                    $booking_room_status   = $book->status;
+                    $booking_room_arr[$booking_room_id] = $booking_room_status;
+                }
+
+                //If Array Key Exit in table id
+                if (array_key_exists($room_id, $booking_room_arr)) {
+                    $room_arr[$key]['status']      = $booking_room_arr[$room_id];
+                } else {
+                    $room_arr[$key]['status']      = $room->status;
+                }
+            }
+
+            $output = array("room" => $room_arr);
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
@@ -341,7 +413,7 @@ class syncAPIController extends ApiGuardController
         }
 
         if($key == $activate_key){
-            $discount = DB::select("SELECT amount,type,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date'");
+            $discount = DB::select("SELECT amount,type,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date' AND deleted_at IS NULL");
             $output = array("discount" => $discount);
             return Response::json($output);
         }else{
@@ -365,12 +437,12 @@ class syncAPIController extends ApiGuardController
         if($key == $activate_key){
             $date  = Carbon::today();
                 $today = $date->toDateString();
-                $booking = DB::select("SELECT id,customer_name,from_time FROM booking WHERE booking_date = '$today' AND deleted_at is null ");
+                $booking = DB::select("SELECT id,customer_name,from_time,to_time FROM booking WHERE booking_date = '$today' AND deleted_at is null ");
                 //print_r($booking);exit();
                 
                 $table  = DB::select("SELECT booking_id,table_id FROM booking_table"); 
                 $room   = DB::select("SELECT booking_id,room_id FROM booking_room");
-
+    
                 $returnObj = array();
                 
                 if(isset($booking)){
@@ -380,7 +452,11 @@ class syncAPIController extends ApiGuardController
                     $returnObj[] = $obj;             
                     foreach($table as $booking_table => $t){                
                         if($booking_id == $t->booking_id){
-                           $returnObj[$key]->booking_table[] = $t;
+                            //Get Table Capicity
+                            $capacityObj  = Table::find($t->table_id);
+                            $capacity     = $capacityObj->capacity;
+                            $t->capicity  = $capacity;
+                            $returnObj[$key]->booking_table[] = $t;
                         }
 
                     }
@@ -388,6 +464,10 @@ class syncAPIController extends ApiGuardController
                     $bookingRoomArray = array();
                     foreach($room as $booking_room => $r){                
                         if($booking_id == $r->booking_id){
+                            //Get Room Capicity
+                            $capacityObj    = Room::find($r->room_id);
+                            $capacity       = $capacityObj->capacity;
+                            $r->capicity  = $capacity;
                             array_push( $bookingRoomArray, $r);
 
                         }
@@ -435,7 +515,7 @@ class syncAPIController extends ApiGuardController
             $syncs = SyncsTable::select('id', 'table_name', 'version')->get();
             $returnObj = array();
             foreach($syncs as $sync){
-                if($sync->table_name == "category" || $sync->table_name == "items" || $sync->table_name == "set_menu" || $sync->table_name == "set_item" || $sync->table_name =="discount" || $sync->table_name == "members" || $sync->table_name == "add_on" || $sync->table_name == "rooms" || $sync->table_name == "tables" || $sync->table_name == "booking" || $sync->table_nam == "config" || $sync->table_name == "promotions" || $sync->table_name == "promotion_items" || $sync->table_name == "config"){
+                if($sync->table_name == "category" || $sync->table_name == "items" || $sync->table_name == "set_menu" || $sync->table_name == "set_item" || $sync->table_name =="discount" || $sync->table_name == "members" || $sync->table_name == "add_on" || $sync->table_name == "rooms" || $sync->table_name == "tables" || $sync->table_name == "booking" || $sync->table_nam == "config" || $sync->table_name == "promotions" || $sync->table_name == "promotion_items" || $sync->table_name == "config" || $sync->table_name == "continent"){
 
                     $returnObj[] = $sync;
                 }
@@ -467,12 +547,12 @@ class syncAPIController extends ApiGuardController
         if($key == $activate_key)
         {
             $syncs = DB::select("SELECT table_name,version FROM syncs_tables");
-
+        
             foreach ($syncs as $key => $sync) 
             {
                 if ($sync->table_name == "category") {
                     if ($syncs[$key]->version > $temp['category']) {
-                        $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image FROM category WHERE status='1'");
+                        $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image,image FROM category WHERE status='1' AND deleted_at IS NULL");
 
                         $returnArr['category'] = $category;
                     }
@@ -480,15 +560,14 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
-                        $item = DB::select("SELECT id,name,price,status,category_id,mobile_image FROM items WHERE status='1'");
-                       
+                        $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' AND deleted_at IS NULL");
                         $returnArr['items'] = $item;
                     }
                 }
 
                 if ($sync->table_name == "add_on") {
                     if ($sync->version > $temp['add_on']) {
-                        $addon = DB::select("SELECT id,food_name,category_id,price,status,mobile_image FROM add_on WHERE status='1'");
+                        $addon = DB::select("SELECT id,food_name,category_id,price,status,mobile_image,image FROM add_on WHERE status='1' AND deleted_at IS NULL");
                         
                         $returnArr['addon'] = $addon;
                     }
@@ -504,28 +583,28 @@ class syncAPIController extends ApiGuardController
            
                     if ($sync->table_name == "set_menu") {
                     if ($sync->version > $temp['set_menu']) {
-                        $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image FROM set_menu  WHERE status='1'");
+                        $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image,image FROM set_menu  WHERE status='1' AND deleted_at IS NULL");
                         $returnArr['set_menu'] = $set_menu;
                     }
                 }
 
                 if($sync->table_name == "set_item"){
                     if($sync->version > $temp['set_item']){
-                        $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item");
+                        $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
                         $returnArr['set_item'] = $set_item;
                     }
                 }
 
                 if ($sync->table_name == "rooms") {
                     if ($sync->version > $temp['rooms']) {
-                        $room = DB::select("SELECT id,room_name,status FROM rooms");
+                        $room = DB::select("SELECT id,room_name,status FROM rooms WHERE deleted_at IS NULL");
                         $returnArr['room'] = $room;
                     }
                 }
 
                 if ($sync->table_name == "tables") {
                     if ($sync->version > $temp['tables']) {
-                        $table = DB::select("SELECT id,table_no,status FROM tables");
+                        $table = DB::select("SELECT id,table_no,status FROM tables WHERE deleted_at IS NULL");
                         $returnArr['table'] = $table;
                     }
                 }
@@ -607,6 +686,13 @@ class syncAPIController extends ApiGuardController
                         $returnArr['discount'] = $discount;
                     }
                 }
+
+                if ($sync->table_name == "continent") {
+                    if ($syncs[$key]->version > $temp['continent']) {
+                        $continent = DB::select("SELECT id,name,description FROM continent WHERE deleted_at IS NULL");
+                        $returnArr['continent'] = $continent;
+                    }
+                }
             }
             
             if (!array_key_exists('category', $returnArr)) {
@@ -650,6 +736,9 @@ class syncAPIController extends ApiGuardController
             }
             if (!array_key_exists('discount', $returnArr)) {
                 $returnArr['discount'] = array();
+            }
+            if (!array_key_exists('continent', $returnArr)) {
+                $returnArr['continent'] = array();
             }
              return Response::json($returnArr);
         }else{

@@ -15,7 +15,10 @@ interface DiscountRepositoryInterface
     public function store($paramObj);
     public function discount_delete($id);
     public function getItem();
+    public function getContinent();
     public function discount_edit($id);
     public function update($paramObj);
-
+    public function storeDiscountLog($tempObj);
+    public function updateDiscountLog($tempObj);
+    public function deleteDiscountLog($tempObj);
 }

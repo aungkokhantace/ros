@@ -48,6 +48,19 @@
                     }
                 })
             }
+
+             $(document).ready(function(){
+                //For Socket On
+                var url     = "/Cashier/Booking/roomRequest";//Json Callback Url
+                var div     = "room-frame";//Put div id inside html response
+                //Order Create Socket
+                var invoice_update      = "invoice_update";
+                socketOn(invoice_update,url,div);
+
+                //Invoice Payment Socket
+                var payment_done      = "payment_done";
+                socketOn(payment_done,url,div);
+            });
         });
     </script>
 @endsection

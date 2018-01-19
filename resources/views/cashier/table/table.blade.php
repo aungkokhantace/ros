@@ -17,13 +17,45 @@
             </div>
         </div>
 
-        <div class="form-group ">
+         <!-- <div class="form-group ">
             <label for="description" class="col-sm-3 control-label left-align label-font">Capacity<span class="require">*</span></label>
             <div class="col-sm-7">
                 <input type="text" class="form-control" name="capacity"  placeholder="Enter capacity" value="{{ isset($tables)? $tables->capacity:Request::old('capacity') }}">
                 <p class="text-danger">{{$errors->first('capacity')}}</p>
             </div>
+        </div>  -->
+
+        <div class="form-group ">
+            <label for="description" class="col-sm-3 control-label left-align label-font">Capacity<span class="require">*</span></label>
+            <div class="col-sm-7">
+                <select name="capacity" class="form-control">
+                @if(isset($tables))
+                    <option value="1" @if ($tables->capacity == '1') {{"selected"}} @endif >1</option>
+                    <option value="2" @if ($tables->capacity == '2') {{"selected"}} @endif >2</option>
+                    <option value="3" @if ($tables->capacity == '3') {{"selected"}} @endif>3</option>
+                    <option value="4" @if ($tables->capacity == '4') {{"selected"}} @endif >4</option>
+                    <option value="5" @if ($tables->capacity == '5') {{"selected"}} @endif>5</option>
+                    <option value="6" @if ($tables->capacity == '6') {{"selected"}} @endif>6</option>
+                    <option value="7" @if ($tables->capacity == '7') {{"selected"}} @endif>7</option>
+                    <option value="8" @if ($tables->capacity == '8') {{"selected"}} @endif>8</option>
+                    <option value="9" @if ($tables->capacity == '9') {{"selected"}} @endif>9</option>
+                    <option value="10" @if ($tables->capacity == '10') {{"selected"}} @endif>10</option>
+                @else
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                @endif
+                </select>
+            </div>
         </div>
+
         <div class="form-group">
             <label for="description" class="col-sm-3 control-label left-align label-font">Location<span class="require">*</span></label>
             <div class="col-sm-7">

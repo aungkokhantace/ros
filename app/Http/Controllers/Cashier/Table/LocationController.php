@@ -31,7 +31,7 @@ class LocationController extends Controller
     }
 
     public function create(){
-        return view('cashier.location.location');
+        return view('cashier.Location.location');
     }
 
     public function store(LocationEntryRequest $request){
@@ -57,7 +57,7 @@ class LocationController extends Controller
 
     public function edit($id){
         $location	=	Location::find($id);
-        return view('cashier.location.location')->with('location',$location);
+        return view('cashier.Location.location')->with('location',$location);
     }
 
     public function update(LocationEditRequest $request){

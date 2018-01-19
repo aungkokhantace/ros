@@ -8,6 +8,7 @@ use App\RMS\Location\Location;
 use App\RMS\Utility;
 use Illuminate\Support\Facades\DB;
 use App\RMS\Table\Table;
+use App\Status\StatusConstance;
 use App\RMS\ReturnMessage;
 class TableRepository implements  TableRepositoryInterface
 {
@@ -50,6 +51,23 @@ class TableRepository implements  TableRepositoryInterface
 
         $tempObj->save();
     }
+
+    public function table_active($id){
+        $status     = StatusConstance::TABLE_ACTIVE_STATUS;
+        $tempObj = Table::find($id);
+        $tempObj->active = $status;
+
+        $tempObj->save();
+    }
+
+    public function table_inactive($id){
+        $status     = StatusConstance::TABLE_INACTIVE_STATUS;
+        $tempObj = Table::find($id);
+        $tempObj->active = $status;
+
+        $tempObj->save();
+    }
+    
 
     public function table_edit($id){
         $tables=DB::table('tables')->find($id);
@@ -229,5 +247,12 @@ class TableRepository implements  TableRepositoryInterface
     public function get_locations(){
         $tempObj    = Location::all();
         return $tempObj;
+    }
+
+    public function table_enabled($id){
+        $table_enable    = StatusConstance::TABLE_AVAILABLE_STATUS;
+        DB::table('tables')
+            ->where('id',$id)
+            ->update(['status'=>$table_enable]);
     }
 }

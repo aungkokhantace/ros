@@ -3,7 +3,6 @@
 @section('content')
     <div class="row">
         <div class="container">
-
             @if(count(Session::get('message')) != 0)
                 <div>
                 </div>
@@ -19,23 +18,40 @@
                     @elseif (isset($ordersCancel))
                     <h3 class="h3 list-heading-align"><strong>Cancel Invoice Listing</strong></h3>
                     @endif
+
+                    @if (isset($sortBy))
+                    <input type="hidden" id="{{ $sortBy }}/{{ $amount }}/" class="sorting"/>
+                    @else
+                    <input type="hidden" id="no-sroting" class="sorting"/>
+                    @endif
+
                 </div>
                 <div class="col-md-9">
-                    @if(isset($orders))
-                    {!! Form::open(array('url' => 'Cashier/invoice/cancel' ,'method'=>'get', 'class'=> 'form-horizontal user-form-border')) !!}
-                    @elseif(isset($ordersCancel))
-                    {!! Form::open(array('url' => 'Cashier/invoice' ,'method'=>'get', 'class'=> 'form-horizontal user-form-border')) !!}
-                    @endif
                     <div class="col-md-3" style="padding:0;float:right;">
                         <div class="input-group" style="float:right;">
-                            <select id="invoice-form" class="form-control">
-                                <option @if(isset($orders)) {{ 'selected' }}@endif>Invoice List</option>
-                                <option @if(isset($ordersCancel)) {{ 'selected' }}@endif>Cancel Invoice List</option>
+                            <select id="invoice-form" class="form-control" onchange="sortingOrder()">
+                            @if (isset($sortBy))
+                                <option value="">Invoice List</option>
+                                <option value="/cancel" @if ($sortBy == 'cancel' AND $amount == '') {{'selected'}} @endif >Cancel Invoice List</option>
+                                <option value="/sort/time/increase" @if ($sortBy == 'time' AND $amount == 'increase') {{'selected'}} @endif >Sort By Lastest Order Time</option>
+                                <option value="/sort/time/decrease" @if ($sortBy == 'time' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Early Order Time</option>
+                                <option value="/sort/price/increase" @if ($sortBy == 'price' AND $amount == 'increase') {{'selected'}} @endif>Sort By Maximum Order Price</option>
+                                <option value="/sort/price/decrease" @if ($sortBy == 'price' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Minimum Order Price</option>
+                                <option value="/sort/order/increase" @if ($sortBy == 'order' AND $amount == 'increase') {{'selected'}} @endif>Sort By Lastest Order Number</option>
+                                <option value="/sort/order/decrease" @if ($sortBy == 'order' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Early Order Number</option>
+                            @else
+                                <option value="">Invoice List</option>
+                                <option value="/cancel">Cancel Invoice List</option>
+                                <option value="/sort/time/increase">Sort By Lastest Order Time</option>
+                                <option value="/sort/time/decrease">Sort By Early Order Time</option>
+                                <option value="/sort/price/increase">Sort By Maximum Order Price</option>
+                                <option value="/sort/price/decrease">Sort By Minimum Order Price</option>
+                                <option value="/sort/order/increase">Sort By Lastest Order Number</option>
+                                <option value="/sort/order/decrease">Sort By Early Order Number</option>
+                            @endif
                             </select>
                         </div>
                     </div>
-                    
-                    {!! Form::close() !!}
                 </div>
             </div>
         </div>
@@ -45,7 +61,9 @@
         <div class="row">
             <div class="col-md-12 tbl-container" id="invoice_list">
                 @if (isset($orders))
+                <div id="invoice-wrapper">
                     @include('cashier.invoice.invoice')
+                </div>
                 @elseif (isset($ordersCancel))
                     @include('cashier.invoice.invoice_cancel')
                 @endif
@@ -99,6 +117,11 @@
     </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+@if (isset($orders))
+    @foreach($orders as $order)
+        @include('cashier.invoice.invoice_print')
+    @endforeach
+@endif
 
 @if (Auth::guard('Cashier')->user()->role_id == 1 || Auth::guard('Cashier')->user()->role_id == 2 || Auth::guard('Cashier')->user()->role_id == 3)
     @php 
@@ -111,8 +134,7 @@
 @endif
 
 <script>
-    $('.order-cancel').on('click',function(e){
-        e.preventDefault();
+    $(document).on('click', '.order-cancel', function(e) {
         var id      = this.id;
         var role    = '<?php echo $roleCheck; ?>';
         if (role == 'Admin') {
@@ -126,7 +148,7 @@
                 closeOnConfirm: false
             }, function(isConfirm){
                 if (isConfirm) {
-                    cancelOrder(id);    
+                    cancelOrder(id);
                 };
             });
         } else {
@@ -136,10 +158,44 @@
 
     });
 
+    // $('.btn-print').on('click',function(e){
+    //     // alert('hihi');
+    //     e.preventDefault();
+    //     var id      = this.id;
+    //     var modal   = id + '-print';
+    //     $('#' + modal).modal('show');
+    // });
+
+    function printInvoice(invoice) {
+        var id      = invoice;
+        var modal   = id + '-print';
+        $('#' + modal).modal('show');
+    }
+
+    function printElement(e) {
+        var ifr = document.createElement('iframe');
+        ifr.style='height: 0; width: 0px; position: absolute'
+
+        document.body.appendChild(ifr);
+
+        $(e).clone().appendTo(ifr.contentDocument.body);
+        ifr.contentWindow.print();
+
+        ifr.parentElement.removeChild(ifr);
+    }
+
+    function print_click(clicked_id)
+    {
+        var clickID     = clicked_id;
+        var printID     = clickID + "-print-table";
+        var test        = document.getElementById(printID);
+        printElement(document.getElementById(printID));
+    }
+
     function cancelOrder(id) {
         $(document).ready(function(){
             $.ajax({
-                url: 'invoice/cancel/' + id,
+                url: '/Cashier/invoice/cancel/' + id,
                 type: 'get',
                 contentType: 'application/x-www-form-urlencoded',
                 success: function (data) {
@@ -147,6 +203,10 @@
                     if (message == 'success') {
                         swal.close();
                         $(".tr-" + id).fadeOut('5000');
+                        //Socket Emit
+                        var socketKey        = "order_update";
+                        var socketValue      = {order_update : 'order_update'};
+                        socketEmit(socketKey,socketValue);
                     }
                 }
             });
@@ -154,11 +214,70 @@
     }
 </script>
 
-    <script>
-        $(document).ready(function(){
-            $('#invoice-form').on('change',function() {
-                this.form.submit();
-            });
+<script>
+    $(document).ready(function(){
+        $('#invoice-form').on('change',function() {
+            this.form.submit();
         });
-    </script>
+        var sortID  = $('.sorting').attr('id');
+        if (sortID == 'no-sroting') {
+            var url     = "/Cashier/ajaxRequest?page=" + "<?php echo $page; ?>";//Json Callback Url
+            var div     = "invoice-wrapper";//Put div id inside html response
+            //Invoice Cancel
+            var invoice_update      = "invoice_update";
+            socketOnTable(invoice_update,url,div);
+        } 
+        if(sortID == 'time/increase/') {
+            var url     = "/Cashier/ajaxInvoiceTimeIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
+            var div     = "invoice-wrapper";//Put div id inside html response
+            //Invoice Cancel
+            var invoice_update      = "invoice_update";
+            socketOnTable(invoice_update,url,div);
+        } 
+        if (sortID == 'time/decrease/') {
+            var url     = "/Cashier/ajaxInvoiceTimeDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
+            var div     = "invoice-wrapper";//Put div id inside html response
+            //Invoice Cancel
+            var invoice_update      = "invoice_update";
+            socketOnTable(invoice_update,url,div);
+        }
+        if (sortID == 'price/increase/') {
+            var url     = "/Cashier/ajaxInvoicePriceIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
+            var div     = "invoice-wrapper";//Put div id inside html response
+            //Invoice Cancel
+            var invoice_update      = "invoice_update";
+            socketOnTable(invoice_update,url,div);
+        }
+
+        if (sortID == 'price/decrease/') {
+            var url     = "/Cashier/ajaxInvoicePriceDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
+            var div     = "invoice-wrapper";//Put div id inside html response
+            //Invoice Cancel
+            var invoice_update      = "invoice_update";
+            socketOnTable(invoice_update,url,div);
+        }
+
+        if (sortID == 'order/increase/') {
+            var url     = "/Cashier/ajaxInvoiceOrderIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
+            var div     = "invoice-wrapper";//Put div id inside html response
+            //Invoice Cancel
+            var invoice_update      = "invoice_update";
+            socketOnTable(invoice_update,url,div);
+        }
+
+        if (sortID == 'order/decrease/') {
+            var url     = "/Cashier/ajaxInvoiceOrderDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
+            var div     = "invoice-wrapper";//Put div id inside html response
+            //Invoice Cancel
+            var invoice_update      = "invoice_update";
+            socketOnTable(invoice_update,url,div);
+        }
+
+    });
+
+    function sortingOrder() {
+        var selectedOpt      = document.getElementById('invoice-form').value;
+        window.location.href = "/Cashier/invoice" + selectedOpt;
+    }
+</script>
 @endsection

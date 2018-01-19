@@ -8,10 +8,12 @@
  */
 interface UserRepositoryInterface
 {
-    public function store($name,$staffId,$password,$roleId,$kitchenId,$id);
+    public function store($paramObj);
     public function getUsers();
     public function getRoles();
     public function delete_users($id,$deleted_by);
+    public function active($id);
+    public function inactive($id);
     public function getID($id);
     public function updateWithUserType($id,$name,$staffId,$userType,$kitchenId,$updated_by);
     public function update($id,$name,$staffId,$updated_by);

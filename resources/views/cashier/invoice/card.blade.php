@@ -10,20 +10,20 @@
                 <div class="col-md-3">
                     <select class"form-control select" name="cardtype[]" onchange="checkCash(this)" id="cardSelect" disabled>
                         @foreach($cards as $card)
-                        <option value="{{ $card->id }}" @if($card->id == $payment->payment_type) {{ 'selected'}} @endif >{{ $card->name }}</option>
+                        <option value="{{ $card->id }}" @if($card->id == $payment['payment_type']) {{ 'selected'}} @endif >{{ $card->name }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="col-md-9">
-                @if ($payment->payment_type !== 2)
-                    <input type="text" name="card_id[]" value="{{ $payment->payment_card_id }}" placeholder="Enter Card Number" />
+                @if ($payment['payment_type'] !== 2)
+                    <input type="text" name="card_id[]" value="{{ $payment['payment_card_id'] }}" placeholder="Enter Card Number" />
                 @endif
                 </div>
             </div><div class="spacer-10px"></div>
             <div class="row">
                 <div class="col-md-11">
-                    <input type="text" name="amount[]" value="{{ $payment->paid_amount }}" placeholder="Enter Payment Amount" class="amount" style="width:100%;" id="amount-id"/>
+                    <input type="text" name="amount[]" value="{{ $payment['paid_amount'] }}" placeholder="Enter Payment Amount" class="amount" style="width:100%;" id="amount-id"/>
                 </div>
             </div><div class="spacer-10px"></div>
         </div> 

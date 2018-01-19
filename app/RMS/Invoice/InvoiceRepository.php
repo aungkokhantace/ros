@@ -7,28 +7,119 @@ use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\Table\Table;
 use App\RMS\Room\Room;
 use App\RMS\Utility;
+use App\Status\StatusConstance;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Input;
 use App\RMS\Category\Category;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\Payment\Payment;
+use App\RMS\Item\Continent;
 use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
 
 	public function getinvoice( )
 	{
-		
-		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`payment_amount`,`status`
-		from `order` where `deleted_at` is null AND status = 1 OR status = 2 order by `order_time` desc");
-		
+		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		// $orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `refund`,`created_at`,`total_discount_amount`,`payment_amount`,`status`,`room_charge`
+		// from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `order_time` desc");
+		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+					->orderBy('id', 'desc')
+					->whereNull('deleted_at')
+					->paginate(10);
+		return $orders;
+	}
+
+	public function getinvoiceTimeIncrease()
+	{
+		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+					->orderBy('created_at', 'desc')
+					->whereNull('deleted_at')
+					->paginate(10);
+		return $orders;
+	}
+
+	public function getinvoiceTimeDecrease()
+	{
+		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+					->orderBy('created_at', 'asc')
+					->whereNull('deleted_at')
+					->paginate(10);
+		return $orders;
+	}
+
+	public function getinvoicePriceIncrease()
+	{
+		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+					->orderBy('all_total_amount', 'desc')
+					->whereNull('deleted_at')
+					->paginate(10);
+		return $orders;
+	}
+
+	public function getinvoicePriceDecrease()
+	{
+		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+					->orderBy('all_total_amount', 'asc')
+					->whereNull('deleted_at')
+					->paginate(10);
+		return $orders;
+	}
+
+	public function getinvoiceOrderIncrease()
+	{
+		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+					->orderBy('id', 'desc')
+					->whereNull('deleted_at')
+					->paginate(10);
+		return $orders;
+	}
+
+	public function getinvoiceOrderDecrease()
+	{
+		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+					->orderBy('id', 'asc')
+					->whereNull('deleted_at')
+					->paginate(10);
+		return $orders;
+	}
+
+	public function getinvoicesort($sortBy,$sortTo)
+	{
+		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `refund`,`created_at`,`total_discount_amount`,`payment_amount`,`status`,`room_charge`
+		from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `$sortBy` $sortTo");
+		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+					->orderBy($sortBy,$sortTo)
+					->whereNull('deleted_at')
+					->paginate(10);
 		return $orders;
 	}
 
 	public function getinvoiceCancel() {
-		$orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`payment_amount`,`status`
-		from `order` where `deleted_at` is null AND status = 3 order by `order_time` desc");
-		
+		$order_cancel_status    = StatusConstance::ORDER_CANCEL_STATUS;
+		// $orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`total_discount_amount`,`payment_amount`,`status`
+		// from `order` where `deleted_at` is null AND status = $order_cancel_status order by `order_time` desc");
+		$orders 	= Order::where('status',$order_cancel_status)
+					->orderBy('id', 'desc')
+					->whereNull('deleted_at')
+					->paginate(10);
 		return $orders;
 	}
 
@@ -39,28 +130,36 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	}
 
 	public function getPayment($id) {
-		$payment = Payment::select('paid_amount','payment_type','payment_card_id','uuid')
-					->where('order_id','=',$id)->whereNull('deleted_at')->get();
+		$payment 	= Payment::join('card','payment.payment_type','=','card.id')
+					  ->select('payment.paid_amount as paid_amount','payment.payment_type as payment_type',
+					    'payment.payment_card_id as payment_card_id','payment.uuid as uuid','card.name as name')
+					  ->where('payment.order_id','=',$id)
+					  ->whereNull('payment.deleted_at')
+					  ->get()
+					  ->toArray();
 		return $payment;
 	}
 
 	public function getorder($id)
 	{
-		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc')->where('id',$id)->first();
+		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge')->where('id',$id)->first();
 		
 		return $orders;
 	}
 
 	public function getdetail($id){
+		$order_kitchen_cancel_status    = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $order_customer_cancel_status   = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
+
 		$order_details = Orderdetail::leftjoin('order','order_details.order_id','=','order.id')
 		->leftjoin('items','items.id','=','order_details.item_id')
 		->leftjoin('set_menu','set_menu.id','=','order_details.setmenu_id')
 		->leftjoin('users','users.id','=','order.user_id')
-		->select('items.name as item_name','set_menu.set_menus_name as set_name','order_details.quantity',
+		->select('items.name as item_name','items.has_continent','items.continent_id','set_menu.set_menus_name as set_name','order_details.quantity',
 				'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id',
 				'users.user_name','order.id',
 			'order_details.amount_with_discount')->where('order_id','=',$id)
-		->whereNotIn('status_id',[6,7])->get();
+		->whereNotIn('status_id',[$order_kitchen_cancel_status,$order_customer_cancel_status])->get();
 		return $order_details;
 		
 	}
@@ -86,10 +185,16 @@ class InvoiceRepository implements InvoiceRepositoryInterface
     }
 
 	public function getaddon($id){
+		$status 		= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
 		$order_details = Orderdetail::where('order_id','=', $id)->where('deleted_at','=',NULL)->get();
 		$addon = array();
 		foreach($order_details as $order){
-			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.*','add_on.food_name')->where('order_extra.order_detail_id','=',$order->id)->where('order_extra.deleted_at','=',NULL)->get()->toArray();
+			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')
+						->select('order_extra.*','add_on.food_name')
+						->where('order_extra.order_detail_id','=',$order->id)
+						->where('order_extra.status','=',$status)
+						->where('order_extra.deleted_at','=',NULL)
+						->get()->toArray();
 			array_push($addon, $tempAddon);
 			
 		}
@@ -98,10 +203,11 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	}
 
 	public function getaddonAmount($id){
+		$status 		= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
 		$order_details = Orderdetail::where('order_id','=', $id)->where('deleted_at','=',NULL)->get();
 		$addon = array();
 		foreach($order_details as $order){
-			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.*',DB::raw('SUM(order_extra.amount) as amount'),'add_on.food_name')->where('order_extra.order_detail_id','=',$order->id)->where('order_extra.deleted_at','=',NULL)->groupBy('order_extra.order_detail_id')->get()->toArray();
+			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.*',DB::raw('SUM(order_extra.amount) as amount'),'add_on.food_name')->where('order_extra.order_detail_id','=',$order->id)->where('order_extra.status','=',$status)->where('order_extra.deleted_at','=',NULL)->groupBy('order_extra.order_detail_id')->get()->toArray();
 			array_push($addon, $tempAddon);
 			
 		}
@@ -116,6 +222,8 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	}
 
 	public function update($paramObj,$input,$refund){
+		$table_available_status        = StatusConstance::TABLE_AVAILABLE_STATUS;
+		$room_available_status         = StatusConstance::ROOM_AVAILABLE_STATUS;
 		$returnedObj = array();
 		$returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
@@ -127,21 +235,21 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 			$table_id = Utility::getTableId($order_id);
 			if (count($table_id) > 0) {
 				foreach($table_id as $table) {
-					$id = $table->table_id;
+					$id  				= $table->table_id;
+					$tempObj 			= Table::find($id);
+					$tempObj->status 	= $table_available_status;
+					$tempObj->save();
 				};
-				$tempObj = Table::find($id);
-				$tempObj->status = 0;
-				$tempObj->save();
 			}
 
 			$room_id = Utility::getRoomId($order_id);
 			if (count($room_id) > 0) {
 				foreach($room_id as $room) {
 					$id = $room->room_id;
+					$tempObj = Room::find($id);
+					$tempObj->status = $room_available_status;
+					$tempObj->save();
 				};
-				$tempObj = Room::find($id);
-				$tempObj->status = 0;
-				$tempObj->save();
 			}
 			
 			$paidAmount 	= $input['amount'];
@@ -194,6 +302,8 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	}
 
 	public function updateOrder($paramObj){
+		$table_available_status        = StatusConstance::TABLE_AVAILABLE_STATUS;
+		$room_available_status         = StatusConstance::ROOM_AVAILABLE_STATUS;
 		$returnedObj = array();
 		$returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
@@ -208,7 +318,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 					$id = $table->table_id;
 				};
 				$tempObj = Table::find($id);
-				$tempObj->status = 0;
+				$tempObj->status = $table_available_status;
 				$tempObj->save();
 			}
 
@@ -218,7 +328,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 					$id = $room->room_id;
 				};
 				$tempObj = Room::find($id);
-				$tempObj->status = 0;
+				$tempObj->status = $room_available_status;
 				$tempObj->save();
 			}
 			
@@ -231,5 +341,10 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 			$returnedObj['aceplusStatusMessage'] = $e->getMessage();
 			return $returnedObj;
 		}
+	}
+	
+	public function getContinent() {
+		$continent  = Continent::select('id','name')->get();
+		return $continent;
 	}
 }

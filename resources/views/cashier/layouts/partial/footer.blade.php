@@ -2,6 +2,7 @@
 <div id="footer">
     <p class="footer-status">&copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/">
             AcePlus Solutions.,Co Ltd</a></p>
+    <p class="text-danger text-right">Git Version {!! gitVersion() !!}</p>
 </div>
 <!-- End Footer -->
 {{--<script src="/assets/js/bootstrap.min.js"></script>
@@ -38,9 +39,9 @@
     };
     $(document).ready(function(){
         var t = $('#example1').DataTable( {
-            "ordering":false,
+            "ordering":true,
             "columnDefs": [ {
-                "searchable": false,
+                "searchable": true,
                 "orderable": false,
                 "targets": 0
             } ],
@@ -52,15 +53,10 @@
                 cell.innerHTML = i+1;
             } );
         } ).draw();
-
-        $('#invoice').DataTable( {
-            "ordering":false,
-            "columnDefs": [ {
-                "searchable": false,
-                "orderable": false,
-                "targets": 0
-            } ],
-            "order": [[ 1, 'asc' ]]
+        // $('#example1').DataTable();
+        $('#invoice').DataTable({
+            "paging":   false,
+            "ordering": false
         } );
 
 

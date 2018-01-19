@@ -1,0 +1,10 @@
+TRUNCATE TABLE `order`;
+TRUNCATE TABLE `order_details`;
+TRUNCATE TABLE `order_extra`;
+TRUNCATE TABLE `order_room`;
+TRUNCATE TABLE `order_setmenu_detail`;
+TRUNCATE TABLE `order_tables`;
+TRUNCATE TABLE `payment`;
+TRUNCATE TABLE `tablet_activation`;
+UPDATE tables SET status = 0, active = 1;
+UPDATE rooms SET status = 0, active = 1;

@@ -13,20 +13,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\User;
 use App\RMS\Role\Role;
+use App\Status\StatusConstance;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\RMS\ReturnMessage;
 use App\RMS\Utility;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function store($name,$staffId,$password,$roleId,$kitchenId,$id)
+    public function store($paramObj)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
-            DB::table('users')->insert(['user_name'=>$name,'staff_id'=>$staffId,'password'=>$password,'role_id'=>$roleId,
-                'kitchen_id'=>$kitchenId,'created_by'=>$id]);
+            $tempObj        = Utility::addCreatedBy($paramObj);
+            $tempObj->save();
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -132,5 +133,19 @@ class UserRepository implements UserRepositoryInterface
     {
         $kitchens=Kitchen::get();
         return $kitchens;
+    }
+
+    public function active($id) {
+        $status     = StatusConstance::USER_AVAILABLE_STATUS;
+        $tempObj    = User::find($id);
+        $tempObj->status = $status;
+        $tempObj->save();
+    }
+
+    public function inactive($id) {
+        $status     = StatusConstance::USER_UNAVAILABLE_STATUS;
+        $tempObj    = User::find($id);
+        $tempObj->status = $status;
+        $tempObj->save();
     }
 }

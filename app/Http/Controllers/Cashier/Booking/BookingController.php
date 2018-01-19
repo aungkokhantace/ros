@@ -14,6 +14,7 @@ use App\RMS\Booking\Booking;
 use App\RMS\BookingTable\BookingTable;
 use App\RMS\BookingRoom\BookingRoom;
 use App\RMS\CheckingBooking;
+use App\Status\StatusConstance;
 use Carbon\Carbon;
 use App\RMS\Booking\BookingRepositoryInterface;
 use App\RMS\Room\Room;
@@ -112,7 +113,8 @@ class BookingController extends Controller
         $to_time        = gmdate('H:i:s',$total_seconds);
         $quantity       = Input::get('quantity');
         $check          = Input::get('check');
-
+        $table_status   = StatusConstance::TABLE_ACTIVE_STATUS;
+        $room_status    = StatusConstance::ROOM_ACTIVE_STATUS;
         if($check == null){
             $bookinglist = Booking::where('booking_date',$date)->where('from_time','<=',$from_time)->where('to_time','>=',$from_time)->get();
             if(isset($bookinglist) && count($bookinglist) >0){
@@ -126,10 +128,10 @@ class BookingController extends Controller
                 foreach($bookingTables as $table){
                     array_push($tableIdArr,$table->table_id);
                 }
-                $tables = Table::whereNotIn('id',$tableIdArr)->get();
+                $tables = Table::where('active','=',$table_status)->whereNotIn('id',$tableIdArr)->get();
                 return view('cashier.booking.booking',compact('tables','date','from','quantity'));
             }else{
-                $tables = Table::all();
+                $tables = Table::where('active','=',$table_status)->get();
                 return view('cashier.booking.booking',compact('tables','date','from','quantity'));
             }
         }else{
@@ -144,10 +146,10 @@ class BookingController extends Controller
                 foreach($bookingRooms as $room){
                     array_push($roomIdArr,$room->room_id);
                 }
-                $rooms = Room::whereNotIn('id',$roomIdArr)->get();
+                $rooms = Room::where('active','=',$room_status)->whereNotIn('id',$roomIdArr)->get();
                 return view('cashier.booking.booking',compact('rooms','date','from','quantity'));
             }else{
-                $rooms = Room::all();
+                $rooms = Room::where('active','=',$room_status)->get();
                 return view('cashier.booking.booking',compact('rooms','date','from','quantity'));
             }
         }
@@ -511,7 +513,6 @@ class BookingController extends Controller
         $cur_seconds        = strtotime($cur_time)-strtotime('Today');
 
         $today_bookings     = $this->bookingRepository->getTodayBooking($cur_date);
-
         $warning            = [];
         $waiting            = [];
 
@@ -644,6 +645,10 @@ class BookingController extends Controller
             }
         }
         return view('cashier.booking.rooms',compact('rooms','warning','waiting'))->render();
+    }
+
+    public function socketRequest() {
+        return view('cashier.booking.socket');
     }
 
     public function getTables($date,$time){

@@ -22,28 +22,32 @@
                 <p class="text-danger">{{$errors->first('name')}}</p>
             </div>
         </div>
-
+        
         <div class="form-group">
             <label for="product" class="col-sm-3 form-label left-align label-font">Parent Category</label>
             <div class="col-sm-7">
-                <select name="parent_category" id="" class="form-control">
-                    @if(isset($editcategory))
-                       <option value="0">None</option>
-                        {!! generateCategoryListsForEdit($categories,$editcategory->id,$selected,$subtree, $parentId=0, $indent=0) !!}
-                    @else
-                        <option value="0">None</option>
-                        {!! generateCategoryLists($categories, $parentId=0, $indent=0) !!}
-                    @endif
-                </select>
-                <p class="text-danger">{{$errors->first('parent_category')}}</p>
+            @if(isset($editcategory))
+                <input type="text" class="form-control" id="category-name" value="{{ $editcategory->name }}" readonly />
+            @else
+            <select name="parent_category" id="parent_category" class="form-control" onchange="getCatID()" {{isset($editcategory)? "disabled":""}}>
+                <option value="0">None</option>
+                {!! generateCategoryLists($categories, $parentId=0, $indent=0) !!}
+            </select>
+            @endif
+            <p class="text-danger">{{$errors->first('parent_category')}}</p>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="product" class="col-sm-3 form-label left-align label-font">Kitchen<span class="require">*</span></label>
-            <div class="col-sm-7">
-                <select name="kitchen" id="kitchen" class="form-control">
-                    @if(isset($editcategory))
+        @if(isset($editcategory))
+        <input type="hidden" value="{{ $editcategory->id }}" name="parent_category" />
+        @endif
+        
+        @if(isset($editcategory))
+            @if ($subtree->parent_id <= 0)
+            <div class="form-group" id="kitchen">
+                <label for="product" class="col-sm-3 form-label left-align label-font">Kitchen<span class="require">*</span></label>
+                <div class="col-sm-7">
+                    <select name="kitchen" id="kitchen" class="form-control">
                         @foreach($kitchen as $k)
                             @if($k->id == $editcategory->kitchen_id)
                                 <option value="{{$k->id}}" selected>{{$k->name}}</option>
@@ -51,16 +55,27 @@
                                 <option value="{{$k->id}}">{{$k->name}}</option>
                             @endif
                         @endforeach
-                    @else
-                        <option selected disabled>Select Kitchen</option>
-                        @foreach($kitchen as $k)
-                            <option value="{{$k->id}}">{{$k->name}}</option>
-                        @endforeach
-                    @endif
+                    </select>
+                    <p class="text-danger">{{$errors->first('parent_category')}}</p>
+                </div>
+            </div>
+            @else
+                <input type="hidden" value="{{$editcategory->kitchen_id}}" name = "kitchen" />
+            @endif
+        @else
+        <div class="form-group" id="kitchen">
+            <label for="product" class="col-sm-3 form-label left-align label-font">Kitchen<span class="require">*</span></label>
+            <div class="col-sm-7">
+                <select name="kitchen" id="kitchen" class="form-control">
+                    <option selected disabled>Select Kitchen</option>
+                    @foreach($kitchen as $k)
+                        <option value="{{$k->id}}">{{$k->name}}</option>
+                    @endforeach
                 </select>
                 <p class="text-danger">{{$errors->first('parent_category')}}</p>
             </div>
         </div>
+        @endif
 
         <div class="form-group">
             <label for="category-image"  class="col-sm-3 form-label left-align label-font">Category Image<span class="require">*</span></label>
@@ -113,4 +128,17 @@
         </div>
         {!! Form::close() !!}
     </div>
+
+    <script>
+        function getCatID() {
+            var category    = document.getElementById("parent_category").value;
+            $(document).ready(function(){
+                if (category == 0) {
+                    $('#kitchen').show();
+                } else {
+                    $('#kitchen').hide();  
+                }
+            });
+        }
+    </script>
 @endsection

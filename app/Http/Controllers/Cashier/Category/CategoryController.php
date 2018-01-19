@@ -27,7 +27,7 @@ class CategoryController extends Controller
     public function index(){
         $title        = 'Category List';
         $categorylist = $this->CategoryRepository->getAllCategory();
-
+    
         return view('cashier.category.category_listing')->with('categorylist',$categorylist)->with('title',$title);
     }
 
@@ -41,23 +41,40 @@ class CategoryController extends Controller
      public function store(CreateCategoryRequest $request){
         $name                   = $request->get('name');
         $category               = $request->get('parent_category');
-        $kitchen                = $request->get('kitchen');
+        //if Parent Category
+        if ($category == 0) {
+            $kitchen            = $request->get('kitchen');
+            $level              = 1;
+        } else {
+            $kitchen_attr       = $this->CategoryRepository->getKitchenByCat($category);
+            $kitchen            = $kitchen_attr->kitchen_id;
+            $parent_level       = $this->CategoryRepository->getLevelByParentCat($category);
+            $level              = $parent_level + 1;
+        }
         $file                   = $request->file('fileupload');
         $imagedata              = file_get_contents($file);
         $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
         $file->move('uploads', $photo);
          // resizing image
          $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
-
+        if ($category == 0) {
+            $group_id           = uniqid();
+        } else {
+            $parent_category    = Category::find($category);
+            $group_id           = $parent_category->group_id;
+        }
+        
         $status                 = Input::get('status');
         $description            = Input::get('description');
         $paramObj               = new Category();
         $paramObj->name         = $name;
         $paramObj->parent_id    = $category;
         $paramObj->kitchen_id   = $kitchen;
+        $paramObj->group_id     = $group_id;
         $paramObj->image        = $photo;
         $paramObj->mobile_image = base64_encode($image->encoded);
         $paramObj->status       = $status;
+        $paramObj->level        = $level;
         $paramObj->description  = $description;
         $result = $this->CategoryRepository->store($paramObj);
 
@@ -105,11 +122,10 @@ class CategoryController extends Controller
         $editcategory        = $this->CategoryRepository->find($id);
         $title               = 'Edit Category';
         //start generating subtree of current category
-        $result              =  $this->CategoryRepository->find($id);
-        $result->subcategory = $this->disabledcategoriesTree($result);
+        $result              = $this->CategoryRepository->find($id);
+        // $result->subcategory = $this->disabledcategoriesTree($result);
         $selected            = $editcategory->parent_id;
         $kitchen=$this->CategoryRepository->getKitchen();
-
         return view('cashier.category.category', ['categories' => $cats])->with('editcategory',$editcategory)
             ->with('selected',$selected)->with('title',$title)->with('subtree',$result)->with('kitchen',$kitchen);
     }
@@ -123,6 +139,8 @@ class CategoryController extends Controller
         $description        = Input::get('description');
         $category           = Input::get('parent_category');
         $kitchen            = $request->get('kitchen');
+        $parent_category    = Category::find($id);
+        $group_id           = $parent_category->group_id;
         $oldname            = $this->CategoryRepository->find(Input::get('id'));
         $lower_old_name     = strtolower($oldname->name); //to change old name from database to lower
         $all_category_name  = $this->CategoryRepository->getAllCategoryName();
@@ -146,12 +164,14 @@ class CategoryController extends Controller
             //user disabled a category and all children subcategories and items must be disabled
             if($status == 0){
                 $result=$this->CategoryRepository->find($id);
-                $result->subCategories=$this->disabledcategoriesTree($result);
+                // $result->subCategories=$this->disabledcategoriesTree($result);
+                $result->subCategories = $this->statusDisableSubCat($result);
             }
             //user enabled a category and all children subcategories and items must be enabled
             elseif($status == 1){
                 $result=$this->CategoryRepository->find($id);
-                $result->subCategories=$this->enabledcategoriesTree($result);
+                // $result->subCategories=$this->enabledcategoriesTree($result);
+                $result->subCategories = $this->statusEnableSubCat($result);
             }
 
             $file = $request->file('fileupload');
@@ -164,8 +184,8 @@ class CategoryController extends Controller
 
                 $paramObj               = Category::find($id);
                 $paramObj->name         = $name;
-                $paramObj->parent_id    = $category;
                 $paramObj->kitchen_id   = $kitchen;
+                $paramObj->group_id     = $group_id;
                 $paramObj->image        = $photo;
                 $paramObj->mobile_image = base64_encode($image->encoded);
                 $paramObj->status       = $status;
@@ -185,8 +205,8 @@ class CategoryController extends Controller
             else{
                 $paramObj               = Category::find($id);
                 $paramObj->name         = $name;
-                $paramObj->parent_id    = $category;
                 $paramObj->kitchen_id   = $kitchen;
+                $paramObj->group_id     = $group_id;
                 $paramObj->status       = $status;
                 $paramObj->description  = $description;
                 $result = $this->CategoryRepository->updateCategory($paramObj);
@@ -208,6 +228,90 @@ class CategoryController extends Controller
         }
     }
 
+    //Disable Lower Level Sub Category
+    function statusDisableSubCat($result) {
+        $cat_id         = $result->id;
+        $level          = $result->level;
+        $group_id       = $result->group_id;
+        $max_level      = $this->getMaxLevelByGroupID($group_id);
+        
+        //Loop Count For Child Sub Category
+        $loop_count     = $max_level - $level;
+        $cat_arr        = array();
+        for ($i = 1; $i <= $loop_count; $i++)
+        {
+            //First Time
+            if ($i == 1) {
+                $child_cat    = Category::select('id')->where('parent_id','=',$cat_id)->get();
+                foreach($child_cat as $child) 
+                {
+                    $cat_arr[]  = $child->id;
+                }
+            } else {
+                $round_cat  = Category::select('id')->whereIn('parent_id',$cat_arr)->get();
+                foreach($round_cat as $round) {
+                    $round      = $round->id;
+                    if (!in_array($round,$cat_arr)) {
+                        array_push($cat_arr,$round);
+                    }
+                }
+            }
+        }
+        $disableStatus  = DB::table('category')
+                            ->where('group_id', $group_id)
+                            ->whereIn('id',$cat_arr)
+                            ->update(['status' => 0]);
+        return $disableStatus;
+    }
+
+     //Disable Lower Level Sub Category
+    function statusEnableSubCat($result) {
+        $cat_id         = $result->id;
+        $level          = $result->level;
+        $group_id       = $result->group_id;
+        $max_level      = $this->getMaxLevelByGroupID($group_id);
+        
+        //Loop Count For Child Sub Category
+        $loop_count     = $max_level - $level;
+        $cat_arr        = array();
+        for ($i = 1; $i <= $loop_count; $i++)
+        {
+            //First Time
+            if ($i == 1) {
+                $child_cat    = Category::select('id')->where('parent_id','=',$cat_id)->get();
+                foreach($child_cat as $child) 
+                {
+                    $cat_arr[]  = $child->id;
+                }
+            } else {
+                $round_cat  = Category::select('id')->whereIn('parent_id',$cat_arr)->get();
+                foreach($round_cat as $round) {
+                    $round      = $round->id;
+                    if (!in_array($round,$cat_arr)) {
+                        array_push($cat_arr,$round);
+                    }
+                }
+            }
+        }
+
+        $enableStatus  = DB::table('category')
+                            ->where('group_id', $group_id)
+                            ->whereIn('id',$cat_arr)
+                            ->update(['status' => 1]);
+        return $enableStatus;
+    }
+    
+
+    function getMaxLevelByGroupID($group_id)
+    {
+        // $max_level_attr = Category::select('level')
+        //                 ->whereRaw('level = (select max(`level`) from category)')
+        //                 ->where('group_id','=',$group_id)
+        //                 ->first();
+        $max_level    = Category::where('group_id','=',$group_id)->max('level');
+           
+        return $max_level;
+    }
     //To generate category tree for disabling all children
     function disabledcategoriesTree($result){
         $id      = $result->id;
@@ -259,4 +363,5 @@ class CategoryController extends Controller
 
         return redirect()->action('Cashier\Category\CategoryController@index');
     }
+
 }

@@ -21,7 +21,7 @@
             </div>
             <br/>
             <div class="row" id="autoDiv">
-                <div class="col-md-11 ">
+                <div class="col-md-12 ">
                     <table class="table table-bordered">
                         <thead class="thead_report">
                         <tr class="report-th">
@@ -29,12 +29,26 @@
                             <th>Date</th>
                             <th>Staff</th>
                             <th>Quantity</th>
-                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Tax</th>
+                            <th>Service</th>
+                            <th>Foc</th>
+                            <th>Room Charge</th>
+                            <th>Extra</th>
+                            <th>Total Amount</th>  
                         </tr>
                         </thead>
                         <?php
-                              $amount = 0;
-                             $total = 0;
+                            $amount = 0;
+                            $total = 0;
+                            $total_payment = 0;
+                            $total_extra = 0;
+                            $total_refund = 0;
+                            $total_service = 0;
+                            $total_tax = 0;
+                            $total_room = 0;
+                            $total_foc = 0;
+                            $total_discount = 0;
                         ?>
                         @foreach($orders as $order)
                         <tr class="tr-row">
@@ -42,13 +56,35 @@
                             <td>{{ $order->Date }}</td>
                             <td>{{ $order->Staff }}</td>
                             <td>{{ $order->Quantity}}</td>
-                            <td class="money-align">{{ number_format($order->Amount)}}</td>
+                            <td class="money-align">{{ number_format($order->DiscountAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->TaxAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->ServiceAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->FocAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->RoomCharge)}}</td>
+                            <td class="money-align">{{ number_format($order->Extra)}}</td>
+                            <td class="money-align">{{ number_format($order->Amount)}}</td>    
                         </tr>
-                        <?php $total +=  $order->Amount; ?>
+                        <?php 
+                        $total +=  $order->Amount; 
+                        $total_payment  += $order->PayAmount;
+                        $total_refund   += $order->RefundAmount;
+                        $total_extra    += $order->Extra;
+                        $total_service  += $order->ServiceAmount;
+                        $total_tax      += $order->TaxAmount;
+                        $total_room     += $order->RoomCharge;
+                        $total_foc      += $order->FocAmount;
+                        $total_discount += $order->DiscountAmount;
+                        ?>
                         @endforeach
                         <tr>
                             <td colspan="3"></td>
                             <td class="money-align">Total Price</td>
+                            <td class="money-align">{{number_format($total_discount)}}</td>
+                            <td class="money-align">{{number_format($total_tax)}}</td>
+                            <td class="money-align">{{number_format($total_service)}}</td>
+                            <td class="money-align">{{number_format($total_foc)}}</td>
+                            <td class="money-align">{{number_format($total_room)}}</td>
+                            <td class="money-align">{{number_format($total_extra)}}</td>
                             <td class="money-align">{{number_format($total)}}</td>
                         </tr>
                     </table>

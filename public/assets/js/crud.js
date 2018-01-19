@@ -219,6 +219,70 @@ function table_edit() {
         window.location = "/Cashier/Table/edit/" + data;
 }
 
+function table_active() {
+    var data = [];
+    $("input[name='table_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one item to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one item to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Table/active/" + data;
+}
+
+function user_active() {
+    var data = [];
+    $("input[name='usercheck']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one User to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one User to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Staff/active/" + data;
+}
+
+function table_disable() {
+    var data = [];
+    $("input[name='table_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one item to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one item to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Table/inactive/" + data;
+}
+
+function user_disable() {
+    var data = [];
+    $("input[name='usercheck']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one user to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one user to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Staff/inactive/" + data;
+}
+
 function item_edit() {
 
     var data = [];
@@ -257,7 +321,37 @@ function room_edit() {
         window.location = "/Cashier/Room/edit/" + data;
 }
 
+function room_enable() {
+    var data = [];
+    $("input[name='room_check']:checked").each(function () {
+        data.push($(this).val());
+    });
 
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one item to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one item to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Room/active/" + data;
+}
+
+function room_disable() {
+    var data = [];
+    $("input[name='room_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one item to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one item to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Room/inactive/" + data;
+}
 
 function sub_menus_edit() {
 
@@ -1028,24 +1122,6 @@ function permission_cancel(){
 function Promotion_Cancel_Form(){
     window.location.href = '/Cashier/Promotion/index';
 }
-
-
-//Sweet Alert By theodore
-$('#btn-payment').on('click',function(e){
-    e.preventDefault();
-    var form = $(this).parents('form');
-    swal({
-        title: "Are you sure?",
-        text: "You will not be able to recover this payment!",
-        type: "success",
-        showCancelButton: true,
-        confirmButtonColor: "#86CCEB",
-        confirmButtonText: "Confirm",
-        closeOnConfirm: false
-    }, function(isConfirm){
-        if (isConfirm) form.submit();
-    });
-});
 
 // function confirmCancle() {
 //     var id  = $(this).attr('id');

@@ -49,7 +49,7 @@ class ReportController extends Controller
         $start  = $this->reportRepository->getStartDate();
         $end    = $this->reportRepository->getEndDate();
         $orders = $this->reportRepository->getExcel($start, $end);
-
+        
         Excel::create('BestSellingItemReport', function($excel)use($orders) {
             $excel->sheet('ItemReport', function($sheet)use($orders) {
                 $sheet->fromArray($orders);

@@ -6,7 +6,7 @@
             <th><label>Date</label></th>
             <th><label>View Detail</label></th>
             <th><label>Status</label></th>
-            <th><label>Cancel</label></th>
+            <th><label>Action</label></th>
         </tr>
     </thead>
     <tbody>
@@ -26,9 +26,9 @@
                     </td>
                     <td>
                     @if($order->status == 2)
-                        
+                        <button type="button" class="btn btn-warning btn-print" id = '{{$order->id}}' data-toggle="modal" data-target="#printModal" data-id="{{$order->id}}" onclick="printInvoice('{{$order->id}}')">Print</button> 
                     @else
-                        <button type="submit" class="btn btn-danger order-cancel" onclick="confirmCancle()" id = '{{$order->id}}' data-toggle="modal" data-target="#myModal" data-id="{{$order->id}}">Cancel</button>
+                        <button type="submit" class="btn btn-danger order-cancel" id = '{{$order->id}}' data-toggle="modal" data-target="#myModal" data-id="{{$order->id}}">Cancel</button>
                     @endif
                     </td>
                 </tr>
@@ -36,4 +36,5 @@
 
     </tbody>
 </table>
+<div class="pagination-div">{{ $orderRepo->links() }}</div>
 

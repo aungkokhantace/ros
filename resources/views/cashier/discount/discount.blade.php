@@ -57,9 +57,26 @@
                     <?php if(isset($resource)) : ?>
                     <option  value="<?php echo $item->id; ?>" <?php echo $item->id == $resource->item_id ? 'selected' : '' ?>>
                         <?php echo $item->name; ?>
+                        <?php 
+                        if ($item->has_continent == 1) {
+                            foreach($continent as $con) {
+                                if ($con->id == $item->continent_id) {
+                                    echo $con->name;
+                                }
+                            }
+                        }
+                        ?>
                     </option>
                     <?php else : ?>
-                    <option  value="<?php echo $item->id; ?>">   <?php echo $item->name; ?> </option>
+                    <option  value="{{ $item->id }}">   {{ $item->name }} 
+                        @if($item->has_continent == 1)
+                            @foreach($continent as $con)
+                                @if ($con->id == $item->continent_id)
+                                    ({{ $con->name }})
+                                @endif
+                            @endforeach
+                        @endif
+                    </option>
                     <?php endif; ?>
                     <?php endforeach; ?>
                 </select>

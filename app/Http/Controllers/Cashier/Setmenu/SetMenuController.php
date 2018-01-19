@@ -37,10 +37,11 @@ class SetMenuController extends Controller
     }
 
     public function create(){
-        $category = $this->setMenuRepository->getCategories();
-        $items    = $this->setMenuRepository->getItems();
-        $kitchens  = $this->setMenuRepository->getKitchen();
-        return view('cashier.set.set_menus', compact('category', 'items','kitchens'));
+        $category   = $this->setMenuRepository->getCategories();
+        $items      = $this->setMenuRepository->getItems();
+        $kitchens   = $this->setMenuRepository->getKitchen();
+        $continents = $this->setMenuRepository->getContinent();
+        return view('cashier.set.set_menus', compact('category', 'items','kitchens','continents'));
     }
 
     public function store(SetMenuInsertRequest $request)
@@ -93,12 +94,14 @@ class SetMenuController extends Controller
         $Item        = $this->setMenuRepository->getAllItem();
         $category    = $this->setMenuRepository->getCategories();
         $items       = $this->setMenuRepository->getItems();
+        $continents = $this->setMenuRepository->getContinent();
         return view('cashier.set.set_menus')->with('member_type', $member_type)
                                             ->with('category', $category)
                                             ->with('items', $items)
                                             ->with('Item', $Item)
                                             ->with('resource', $resource)
-                                            ->with('set_item',$set_item);
+                                            ->with('set_item',$set_item)
+                                            ->with('continents',$continents);
     }
 
     public function update(SetMenuEditRequest $request){

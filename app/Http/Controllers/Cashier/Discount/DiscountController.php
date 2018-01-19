@@ -41,7 +41,10 @@ class DiscountController extends Controller
     public function create()
     {
        $items = DB::table('items')->get();
-        return view('cashier.discount.discount')->with('items', $items);
+       $continent = $this->DiscountRepository->getContinent();
+        return view('cashier.discount.discount')
+        ->with('continent',$continent)
+        ->with('items', $items);
     }
 
     public function store(InsertDiscountRequest $request)
@@ -77,7 +80,8 @@ class DiscountController extends Controller
         $resource       = DiscountModel::find($id);
         $discount_edit  = $this->DiscountRepository->discount_edit($id);
         $items          = DB::table('items')->get();
-        return view('cashier.discount.discount', compact('resource', 'discount_edit', 'items'));
+        $continent = $this->DiscountRepository->getContinent();
+        return view('cashier.discount.discount', compact('resource', 'discount_edit', 'items','continent'));
     }
 
     public function delete($id)
@@ -117,5 +121,4 @@ class DiscountController extends Controller
         }
 
     }
-
 }

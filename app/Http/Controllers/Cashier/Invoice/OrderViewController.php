@@ -12,6 +12,7 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Status\StatusConstance;
 
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -31,7 +32,12 @@ class OrderViewController extends Controller
     public function index(){
         $orders = $this->OrderRepository->getVoucher();
         $tables = $this->OrderRepository->orderTable();
-        $rooms  = $this->OrderRepository->orderRoom();    
+        $rooms  = $this->OrderRepository->orderRoom(); 
+        //Order Detail Status
+        $order_detail_cooking_status       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+        $order_detail_cooked_status        = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        $order_detail_cooking_done_status  = StatusConstance::ORDER_DETAIL_COOKING_DONE_STATUS;
+        // dd($orders);   
         $groupedOrders = Collection::make($orders)->groupBy("order_id","order_status")->filter(function($orderDetails)
         {
             foreach($orderDetails as $detail)
@@ -52,6 +58,7 @@ class OrderViewController extends Controller
         foreach($groupedOrders as $groupKey=>$groupValue){
 
             foreach($groupValue as $value){
+                $setmenu_id         = $value->setmenu_id;
                 if($value->order_id == $groupKey && $value->order_status == 1){
                     $count_start += 1;
                 }
@@ -131,6 +138,7 @@ class OrderViewController extends Controller
             $orderValue['count_cooking']    = $count_cooking;
             $orderValue['count_cooked']     = $count_cooked;
             $orderValue['count_taken']      = $count_taken;
+            $orderValue['status']           = $value->status;
 
             $order_arr[$groupKey]   = $orderValue;
             $count_start            = 0;
@@ -138,8 +146,7 @@ class OrderViewController extends Controller
             $count_cooked           = 0;
             $count_taken            = 0;
         }
-        return view('cashier/foodorderlist/order')->with('orders',$orders)->with('groupedOrders',$order_arr)
-           ->with('tables',$tables)->with('rooms',$rooms)->render();
+        return view('cashier.foodorderlist.real_time_kitchen_view')->with('groupedOrders',$order_arr)->with('tables',$tables)->with('rooms',$rooms);
     }
 
     public function detail($order_id,$order_status){

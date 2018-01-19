@@ -16,6 +16,7 @@ Route::group(['middleware' => 'web'], function () {
     });
     Route::get('login', 'Cashier\Auth\AuthController@getLoginForm');
     Route::post('login', 'Cashier\Auth\AuthController@postDataForCashierLogin');
+    Route::get('socketRequest','Cashier\Booking\BookingController@socketRequest');
 
     Route::group(['prefix' => 'Cashier'], function(){
         Route::get('logout', 'Cashier\Auth\AuthController@logout');
@@ -36,6 +37,8 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Staff/edit/{id}', 'Cashier\Staff\UserController@edit');
                 Route::post('Staff/update', 'Cashier\Staff\UserController@update');
                 Route::get('Staff/delete/{id}', 'Cashier\Staff\UserController@delete');
+                Route::get('Staff/active/{id}', 'Cashier\Staff\UserController@active');
+                Route::get('Staff/inactive/{id}', 'Cashier\Staff\UserController@inactive');
                 Route::get('Password/{id}','Cashier\Staff\UserController@profile');
                 Route::post('Password/Change','Cashier\Staff\UserController@updateProfile');
 
@@ -156,7 +159,9 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Room/edit/{id}', 'Cashier\Room\RoomController@edit');
                 Route::post('Room/update', 'Cashier\Room\RoomController@update');
                 Route::get('Room/delete/{ids}', 'Cashier\Room\RoomController@delete');
-
+                Route::get('Room/room_enabled/{id}', 'Cashier\Room\RoomController@roomenabled');
+                Route::get('Room/active/{id}', 'Cashier\Room\RoomController@active');
+                Route::get('Room/inactive/{id}', 'Cashier\Room\RoomController@inactive');
             });
             //End Room
 
@@ -177,6 +182,9 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Table/edit/{id}', 'Cashier\Table\TableController@edit');
                 Route::post('Table/update', 'Cashier\Table\TableController@update');
                 Route::get('Table/delete/{id}', 'Cashier\Table\TableController@delete');
+                Route::get('Table/table_enabled/{id}', 'Cashier\Table\TableController@table_enabled');
+                Route::get('Table/active/{id}', 'Cashier\Table\TableController@active');
+                Route::get('Table/inactive/{id}', 'Cashier\Table\TableController@inactive');
 
             });
             //End table
@@ -224,7 +232,6 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Profile/company_profile','Cashier\Config\ProfileController@profile');
                 Route::post('Profile/update','Cashier\Config\ProfileController@update');
                 Route::post('Profile/store','Cashier\Config\ProfileController@store');
-                Route::get('Pricehistory/{type?}/{id?}','Cashier\Log\PricelogController@search');
             });
             //End config
 
@@ -232,13 +239,27 @@ Route::group(['middleware' => 'web'], function () {
             Route::group(['middleware'=>'report:Cashier'],function(){
 
                 Route::get('invoice','Cashier\Invoice\InvoiceController@invoiceList');
+                Route::get('ajaxRequest','Cashier\Invoice\InvoiceController@ajaxRequest');
                 Route::get('invoice/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxInvoiceRequest');
                 Route::get('invoice/detail/{id}','Cashier\Invoice\InvoiceController@invoicedetail');
                 Route::get('invoice/detail/print/{id}','Cashier\Invoice\InvoiceController@invoicePrint');
                 Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');
+                Route::get('invoice/paid/ajaxPaymentRequest/{id}','Cashier\Invoice\InvoiceController@ajaxPaymentRequest');
                 Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
                 Route::get('invoice/cancel','Cashier\Invoice\InvoiceController@invoiceCancel');
                 Route::get('invoice/cancel/{id}','Cashier\Invoice\InvoiceController@orderCancel');
+                Route::get('invoice/sort/time/increase','Cashier\Invoice\InvoiceController@invoiceTimeIncrease');
+                Route::get('invoice/sort/time/decrease','Cashier\Invoice\InvoiceController@invoiceTimeDecrease');
+                Route::get('invoice/sort/price/increase','Cashier\Invoice\InvoiceController@invoicePriceIncrease');
+                Route::get('invoice/sort/price/decrease','Cashier\Invoice\InvoiceController@invoicePriceDecrease');
+                Route::get('invoice/sort/order/increase','Cashier\Invoice\InvoiceController@invoiceOrderIncrease');
+                Route::get('invoice/sort/order/decrease','Cashier\Invoice\InvoiceController@invoiceOrderDecrease');
+                Route::get('ajaxInvoiceTimeIncrease','Cashier\Invoice\InvoiceController@ajaxInvoiceTimeIncrease');
+                Route::get('ajaxInvoiceTimeDecrease','Cashier\Invoice\InvoiceController@ajaxInvoiceTimeDecrease');
+                Route::get('ajaxInvoicePriceIncrease','Cashier\Invoice\InvoiceController@ajaxInvoicePriceIncrease');
+                Route::get('ajaxInvoicePriceDecrease','Cashier\Invoice\InvoiceController@ajaxInvoicePriceDecrease');
+                Route::get('ajaxInvoiceOrderIncrease','Cashier\Invoice\InvoiceController@ajaxInvoiceOrderIncrease');
+                Route::get('ajaxInvoiceOrderDecrease','Cashier\Invoice\InvoiceController@ajaxInvoiceOrderDecrease');
                 Route::get('invoice/manager/confirm/{username}/{password}','Cashier\Invoice\InvoiceController@checkManager');
 
                 //Sale Summary Report & Excel Download
@@ -259,6 +280,7 @@ Route::group(['middleware' => 'web'], function () {
 
                 Route::get('yearlySaleSummaryExport','Cashier\Report\SaleSummaryReportController@yearlySaleSummaryExport');    
                 Route::post('searchYearlySummary','Cashier\Report\SaleSummaryReportController@searchYearlySummary');
+                Route::get('searchYearlySummaryExport/{from_year}','Cashier\Report\SaleSummaryReportController@searchYearSummaryExport');
                 Route::get('yearlySale/{year}','Cashier\Report\SaleSummaryReportController@yearlySale');
                 Route::get('yearlySaleExport/{year}','Cashier\Report\SaleSummaryReportController@yearlySaleExport');
 
@@ -354,6 +376,16 @@ Route::group(['middleware' => 'web'], function () {
 
 
             });
+
+             //Start Log Middleware
+            Route::group(['middleware'=>'log:Cashier'],function(){
+                Route::get('Pricehistory/{type?}/{id?}','Cashier\Log\PricelogController@search');
+                Route::get('Confighistory','Cashier\Log\ConfiglogController@index');
+                Route::get('Discounthistory','Cashier\Log\DiscountlogController@index');
+                Route::get('SyncApi','Cashier\Log\ApilistController@sync');
+                Route::get('MakeApi','Cashier\Log\ApilistController@make');
+                Route::get('DownloadApi','Cashier\Log\ApilistController@down');
+            });
             //End Kitchen Setup
             Route::get('Unauthorized','Cashier\DashboardController@authorized');
        });
@@ -362,6 +394,8 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('logout', 'Cashier\Auth\AuthController@logout');
         Route::group(['middleware' => 'custom:Cashier'], function () {
             Route::get('kitchen', 'Kitchen\OrderViewController@tableView');
+            Route::get('kitchen/design', 'Kitchen\OrderViewController@tableViewDesign');
+            Route::get('kitchen/ajaxOrderRequest', 'Kitchen\OrderViewController@ajaxOrderRequest');
             Route::get('kitchen/ajaxRequest','Kitchen\OrderViewController@ajaxRequest');
             Route::get('getCompleteID','Kitchen\OrderViewController@tableView');
             Route::get('getStartID','Kitchen\OrderViewController@tableView');
@@ -369,6 +403,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('kitchen/ajaxRequestProduct','Kitchen\OrderViewController@ajaxRequestProduct');
             Route::get('getCompleteID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@update');
             Route::get('getStartID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@start');
+            Route::get('getStart/ajaxRequest/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@itemStart');
 
             Route::get('productView/CookedItem/{item_id}', 'Kitchen\OrderViewController@CookedItemFromProductView');
             Route::get('productView/CookingItem/{item_id}', 'Kitchen\OrderViewController@CookingItemFromProductView');
@@ -393,7 +428,7 @@ Route::get('api/v1/kitchen_cancel','makeAPIController@kitchen_cancel');
 Route::get('api/v1/order_status','makeAPIController@order_status');
 Route::get('api/v1/setmenu_order_status','makeAPIController@setmenu_order_status');
 //syncControll
-Route::post('api/v1/user', 'syncAPIController@user');
+Route::post('api/v1/user', 'syncAPIController@user');//fns
 Route::post('api/v1/category','syncAPIController@category');
 Route::post('api/v1/addon','syncAPIController@addon');
 Route::post('api/v1/item', 'syncAPIController@item');
@@ -413,6 +448,8 @@ Route::post('api/v1/syncs', 'syncAPIController@sync_table');
 
 //API Post Method
 Route::post('api/v1/login', 'makeAPIController@login');
+//First Time Login
+Route::post('api/v1/first_time_login', 'makeAPIController@first_time_login');
 
 Route::post('api/v1/create_voucher','makeAPIController@create_voucher');
 Route::post('api/v1/add_new_to_voucher','makeAPIController@add_new_to_voucher');
