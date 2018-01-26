@@ -60,7 +60,7 @@
                                 </td>
                                 <td></td>
                                 <td><a href="/Cashier/Item/edit/{{$item->id}}">{{ $item->name}}</a></td>
-                                <td>{{ $item->Category->name}}</td>
+                                <td>{{ $item->category->name}}</td>
                                 <td>{{ $item->image}}</td>
                                 <td>{{ $item->description}}</td>
                                 <td>{{ $item->price}}</td>

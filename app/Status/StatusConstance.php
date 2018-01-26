@@ -63,4 +63,8 @@ class StatusConstance
     //User Status
     const USER_AVAILABLE_STATUS                 = 1; //USER AVAILABLE STATUS
     const USER_UNAVAILABLE_STATUS               = 0; //USER UNAVAIABLE STATUS
+
+    //Tender Status
+    const TRANCTION_PAID_STATUS                 = 1;
+    const TRANCTION_VOID_STATUS                 = 0;
 }

@@ -553,59 +553,96 @@ class syncAPIController extends ApiGuardController
                 if ($sync->table_name == "category") {
                     if ($syncs[$key]->version > $temp['category']) {
                         $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image,image FROM category WHERE status='1' AND deleted_at IS NULL");
-
-                        $returnArr['category'] = $category;
+                        $category_count     = count($category);
+                        if ($category_count > 0) {
+                             $returnArr['category'] = $category;
+                        } else {
+                            $returnArr['category'] = Null;
+                        }
                     }
                 }
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
                         $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' AND deleted_at IS NULL");
-                        $returnArr['items'] = $item;
+                        $item_count     = count($item);
+                        if ($item_count > 0) {
+                             $returnArr['items'] = $item;
+                        } else {
+                            $returnArr['items'] = Null;
+                        }
                     }
                 }
 
                 if ($sync->table_name == "add_on") {
                     if ($sync->version > $temp['add_on']) {
                         $addon = DB::select("SELECT id,food_name,category_id,price,status,mobile_image,image FROM add_on WHERE status='1' AND deleted_at IS NULL");
-                        
-                        $returnArr['addon'] = $addon;
+                        $addon_count     = count($addon);
+                        if ($addon_count > 0) {
+                             $returnArr['addon'] = $addon;
+                        } else {
+                            $returnArr['addon'] = Null;
+                        }
                     }
                 }
 
                 if ($sync->table_name == "members") {
                     if ($sync->version > $temp['members']) {
                         $member              = DB::select("SELECT members.id,members.member_card_no,member_type.discount_amount FROM members LEFT JOIN member_type ON members.member_type_id = member_type.id");
-
-                        $returnArr['member'] = $member;
+                        $member_count     = count($member);
+                        if ($member_count > 0) {
+                             $returnArr['member'] = $member;
+                        } else {
+                            $returnArr['member'] = Null;
+                        }
                     }
                 }
            
                     if ($sync->table_name == "set_menu") {
                     if ($sync->version > $temp['set_menu']) {
                         $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image,image FROM set_menu  WHERE status='1' AND deleted_at IS NULL");
-                        $returnArr['set_menu'] = $set_menu;
+                        $set_menu_count     = count($set_menu);
+                        if ($set_menu_count > 0) {
+                             $returnArr['set_menu'] = $set_menu;
+                        } else {
+                            $returnArr['set_menu'] = Null;
+                        }
                     }
                 }
 
                 if($sync->table_name == "set_item"){
                     if($sync->version > $temp['set_item']){
                         $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
-                        $returnArr['set_item'] = $set_item;
+                        $set_item_count     = count($set_item);
+                        if ($set_item_count > 0) {
+                             $returnArr['set_item'] = $set_item;
+                        } else {
+                            $returnArr['set_item'] = Null;
+                        }
                     }
                 }
 
                 if ($sync->table_name == "rooms") {
                     if ($sync->version > $temp['rooms']) {
                         $room = DB::select("SELECT id,room_name,status FROM rooms WHERE deleted_at IS NULL");
-                        $returnArr['room'] = $room;
+                        $room_count     = count($room);
+                        if ($room_count > 0) {
+                             $returnArr['room'] = $room;
+                        } else {
+                            $returnArr['room'] = Null;
+                        }
                     }
                 }
 
                 if ($sync->table_name == "tables") {
                     if ($sync->version > $temp['tables']) {
                         $table = DB::select("SELECT id,table_no,status FROM tables WHERE deleted_at IS NULL");
-                        $returnArr['table'] = $table;
+                        $table_count     = count($table);
+                        if ($table_count > 0) {
+                             $returnArr['table'] = $table;
+                        } else {
+                            $returnArr['table'] = Null;
+                        }
                     }
                 }
 
@@ -683,20 +720,31 @@ class syncAPIController extends ApiGuardController
                 if ($sync->table_name == "discount") {
                     if ($syncs[$key]->version > $temp['discount']) {
                         $discount = DB::select("SELECT id,name,amount,type,start_date,end_date,item_id FROM discount WHERE DATE_FORMAT(start_date, '%Y-%m-%d') <= '$cur_date' AND DATE_FORMAT(end_date, '%Y-%m-%d') >= '$cur_date'");
-                        $returnArr['discount'] = $discount;
+                        $discount_count     = count($discount);
+                        if ($discount_count > 0) {
+                             $returnArr['discount'] = $discount;
+                        } else {
+                            $returnArr['discount'] = Null;
+                        }
                     }
                 }
 
                 if ($sync->table_name == "continent") {
                     if ($syncs[$key]->version > $temp['continent']) {
                         $continent = DB::select("SELECT id,name,description FROM continent WHERE deleted_at IS NULL");
+                        $continent_count     = count($continent);
+                        if ($continent_count > 0) {
+                             $returnArr['continent'] = $continent;
+                        } else {
+                            $returnArr['continent'] = Null;
+                        }
                         $returnArr['continent'] = $continent;
                     }
                 }
             }
             
             if (!array_key_exists('category', $returnArr)) {
-            $returnArr['category'] = array();
+                $returnArr['category'] = array();
             }
             if (!array_key_exists('items', $returnArr)) {
                 $returnArr['items'] = array();

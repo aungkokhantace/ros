@@ -345,6 +345,13 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('downloadFavourite/{typeId}', 'Cashier\Report\FavouriteFoodReportController@downloadExcelWithID');
                 Route::get('downloadFavourite/{typeId}', 'Cashier\Report\FavouriteFoodReportController@downloadExcelWithID');
                 //End Favourite Food Report
+
+                // Start Tender Transaction
+                Route::post('transaction_tenders/storeCash','Cashier\TransactionTenders\TransactionTendersController@storeCash');
+                Route::post('transaction_tenders/storeCard','Cashier\TransactionTenders\TransactionTendersController@storeCard');
+                Route::post('transaction_tenders/delete','Cashier\TransactionTenders\TransactionTendersController@delete');
+                Route::post('transaction_tenders/updateFoc','Cashier\TransactionTenders\TransactionTendersController@updateFoc');
+                //End Tender Transaction
             });
 
             //Promotions

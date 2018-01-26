@@ -783,9 +783,10 @@ class InvoiceController extends Controller
         $cashier        = $this->InvoiceRepository->cashier($id);
         $cards          = $this->InvoiceRepository->getCard();
         $payments        = $this->InvoiceRepository->getPayment($id);
+        $tenders        = $this->InvoiceRepository->getTenders($id);
         $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->first();
     
-        return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent'));
+        return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
     }
 
     public function ajaxPaymentRequest($id) {

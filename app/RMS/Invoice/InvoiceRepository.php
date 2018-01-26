@@ -6,6 +6,8 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\Table\Table;
 use App\RMS\Room\Room;
+use App\RMS\Transactiontender\Postender;
+use App\RMS\Transactiontender\Transactiontender;
 use App\RMS\Utility;
 use App\Status\StatusConstance;
 use Illuminate\Support\Facades\DB;
@@ -130,19 +132,30 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	}
 
 	public function getPayment($id) {
-		$payment 	= Payment::join('card','payment.payment_type','=','card.id')
-					  ->select('payment.paid_amount as paid_amount','payment.payment_type as payment_type',
-					    'payment.payment_card_id as payment_card_id','payment.uuid as uuid','card.name as name')
-					  ->where('payment.order_id','=',$id)
-					  ->whereNull('payment.deleted_at')
-					  ->get()
-					  ->toArray();
+		// $payment 	= Payment::join('card','payment.payment_type','=','card.id')
+		// 			  ->select('payment.paid_amount as paid_amount','payment.payment_type as payment_type',
+		// 			    'payment.payment_card_id as payment_card_id','payment.uuid as uuid','card.name as name')
+		// 			  ->where('payment.order_id','=',$id)
+		// 			  ->whereNull('payment.deleted_at')
+		// 			  ->get()
+		// 			  ->toArray();
+		$status         = StatusConstance::TRANCTION_PAID_STATUS;
+		$payment 		= Transactiontender::leftjoin('pos_tenders','transaction_tenders.tender_id','=','pos_tenders.id')
+						  ->leftjoin('card_tenders','pos_tenders.card_type','=','card_tenders.id')
+						  ->select(DB::raw("SUM(transaction_tenders.paid_amount * transaction_tenders.qty) as paid_amount"),'card_tenders.code as name')
+						  ->groupBy('card_tenders.code')
+						  ->where('transaction_tenders.order_id',$id)
+						  ->where('transaction_tenders.status',$status)
+						  ->whereNull('transaction_tenders.deleted_at')
+						  ->get()
+						  ->toArray();
+		// dd($payment);
 		return $payment;
 	}
 
 	public function getorder($id)
 	{
-		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge')->where('id',$id)->first();
+		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge','status')->where('id',$id)->first();
 		
 		return $orders;
 	}
@@ -213,6 +226,51 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		}
 		
 		return $addon;
+	}
+
+	public function getTenders($id) {
+		$status         = StatusConstance::TRANCTION_PAID_STATUS;
+		$orderRepo 		= $this->getorder($id);
+		$order_foc 		= $orderRepo->foc_amount;
+		$order_payment 	= $orderRepo->all_total_amount - $order_foc;
+		$transactions 	= Transactiontender::leftjoin('pos_tenders','pos_tenders.id','=','transaction_tenders.tender_id')
+							->select('transaction_tenders.id','transaction_tenders.paid_amount','transaction_tenders.changed_amount','transaction_tenders.qty','pos_tenders.description','pos_tenders.card_type')
+							->where('transaction_tenders.status','=',$status)
+							->where('transaction_tenders.order_id','=',$id)
+							->get();
+		$balance 		= DB::table('transaction_tenders')
+						  ->select(DB::raw("SUM(paid_amount * qty) as count"))
+						  ->where('status',$status)
+						  ->where('order_id',$id)
+						  ->whereNull('deleted_at')
+						  ->first();
+		$change 		= Transactiontender::select('changed_amount')
+						  ->where('status',$status)
+						  ->where('order_id',$id)
+						  ->whereNotNull('changed_amount')
+						  ->first();
+		$tenders 		= array();
+		$invoice 		= array();
+		foreach ($transactions as $key => $transaction) {
+			$t['id'] 	= $transaction->id;
+			$t['paid'] 	= $transaction->paid_amount;
+			$t['card'] 	= $transaction->card_type;
+			$t['description'] 	= $transaction->description;
+			$t['qty'] 			= $transaction->qty;
+			$t['total'] 		= $t['paid'] * $t['qty'];
+			array_push($tenders, $t);
+		}
+		$invoice['pay'] 	=  $tenders;
+		$invoice['balance'] =  $order_payment - $balance->count;
+		if ($invoice['balance'] < 0) {
+            $invoice['balance']     = 0;
+        }
+		if (count($change) > 0) {
+			$invoice['change'] 	=  $change->changed_amount;
+		} else {
+			$invoice['change'] 	=  0;
+		}
+		return $invoice;
 	}
 
 	public function addpaid($id) {
