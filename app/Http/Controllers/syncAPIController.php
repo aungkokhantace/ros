@@ -125,7 +125,7 @@ class syncAPIController extends ApiGuardController
            $activate_key = $k->site_activation_key;
         }
         if($key == $activate_key){
-            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' AND deleted_at IS NULL");
+            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
             $output = array("items" => $item);
             return Response::json($output);
         }else{
@@ -564,7 +564,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
-                        $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent FROM items WHERE status = '1' AND deleted_at IS NULL");
+                        $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
                         $item_count     = count($item);
                         if ($item_count > 0) {
                              $returnArr['items'] = $item;
