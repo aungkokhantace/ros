@@ -1,4 +1,5 @@
-<?php namespace App\Status;
+<?php 
+namespace App\Status;
 
 /**
  * Created by PhpStorm.
@@ -60,6 +61,14 @@ class StatusConstance
     const ITEM_AVAILABLE_STATUS                 = 1; //ITEM AVAILABLE STATUS
     const ITEM_UNAVAILABLE_STATUS               = 0; //ITEM UNAVAILABLE STATUS
 
+    //User Roles
+    const SUPER_ADMIN_ROLE                      = 1;
+    const MANAGER_ROLE                          = 2;
+    const SUPERVISOR_ROLE                       = 3;
+    const CASHIER_ROLE                          = 4;
+    const WAITER_ROLE                           = 5;
+    const KITCHEN_ROLE                          = 6;
+
     //User Status
     const USER_AVAILABLE_STATUS                 = 1; //USER AVAILABLE STATUS
     const USER_UNAVAILABLE_STATUS               = 0; //USER UNAVAIABLE STATUS
@@ -67,4 +76,24 @@ class StatusConstance
     //Tender Status
     const TRANCTION_PAID_STATUS                 = 1;
     const TRANCTION_VOID_STATUS                 = 0;
+
+    //Day Start Status
+    const DAY_START_STATUS                      = 1;//Day Start Status
+    const DAY_END_STATUS                        = 0;//Day End Status
+
+    //Shift Status
+    const SHIFT_AVAILABLE_STATUS                = 1;
+    const SHIFT_UNAVAILABLE_STATUS              = 0;
+
+    //Shift Name
+    const DAY_SHIFT_NAME                        = 'DAY SHIFT';//Day Shift Name
+    const NIGHT_SHIFT_NAME                      = 'NIGHT SHIFT';//Night Shift Name
+
+    //Shift Category
+    const SHIFT_CATEGORY_AVAILABLE_STATUS       = 1;//SHIFT CATEGORY AVAILABLE STATUS
+    const SHIFT_CATEGORY_UNAVAILABLE_STATUS     = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
+
+    //Shift User
+    const SHIFT_USER_AVAILABLE_STATUS           = 1;//SHIFT USER AVAILABLE STATUS
+    const SHIFT_USER_UNAVAILABLE_STATUS         = 0;//SHIFT USER UNAVAILABLE STATUS
 }

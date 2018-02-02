@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
           $this->call(ApiKeyTableSeeder::class);
           $this->call(PosTendersTableSeeder::class);
           $this->call(CardTendersTableSeeder::class);
+          $this->call(ShiftTableSeeder::class);
     }
 }

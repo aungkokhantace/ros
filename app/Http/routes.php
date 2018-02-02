@@ -393,6 +393,17 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('MakeApi','Cashier\Log\ApilistController@make');
                 Route::get('DownloadApi','Cashier\Log\ApilistController@down');
             });
+
+            Route::group(['middleware' => 'shift:Cashier'], function () {
+                Route::get('DayStart/index', 'Cashier\DayStart\DayStartController@index');
+                Route::get('DayStart/create', 'Cashier\DayStart\DayStartController@create');
+                Route::post('DayStart/store', 'Cashier\DayStart\DayStartController@store');
+                Route::get('DayStart/delete/{id}', 'Cashier\DayStart\DayStartController@delete');
+                Route::get('Shift/{shift}', 'Cashier\Shift\ShiftController@Shift');
+                Route::post('Shift/update', 'Cashier\Shift\ShiftController@update');
+            });
+            //end shift
+
             //End Kitchen Setup
             Route::get('Unauthorized','Cashier\DashboardController@authorized');
        });

@@ -78,6 +78,8 @@ class MakeAPIController extends ApiGuardController
 
                         $r = $role->roles->name;
                         if ($r == "Waiter") {
+                            //Check User has Assign for day start
+                            
                             $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r);
                             return Response::json($output);
                         } else {

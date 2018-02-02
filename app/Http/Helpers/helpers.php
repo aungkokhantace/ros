@@ -191,7 +191,7 @@ if (! function_exists('submenusitemsEdit')) {
 
 if (! function_exists('gitVersion')) {
     function gitVersion() {
-        $version        = "2.0.5";
+        $version        = "3.0.1";
         return $version;
     }
 }

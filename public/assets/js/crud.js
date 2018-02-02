@@ -67,7 +67,9 @@ function select_best_selling_item_with_date(value)
     //alert(value);
     window.location.href="/Cashier/select_best_selling_item_with_date/"+value;
 }
-
+function day_create(){
+    window.location = '/Cashier/DayStart/create';
+}
 //For Edit 
 
 /**
@@ -1023,6 +1025,39 @@ function PromotionDelete(){
             });
     }
 }
+
+function day_delete() {
+    var data = [];
+    $("input[name='day_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+    var d = typeof(data);
+    if (data[0] == null) {
+        sweetAlert("Oops...", "Please select at least one to delete !", "error");
+    }
+    else {
+        swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this record!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55 ",
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    window.location = "/Cashier/DayStart/delete/" + data;
+                    //route path to do deletion in controller
+                } else {
+                    window.location = "/Cashier/DayStart/index";
+                    //index page which show list
+                }
+            });
+    }
+}
 //End kitchen delete
 
 
@@ -1044,6 +1079,9 @@ function discount_listing_form_back()
 }
 function booking_listing_form_back(){
     window.location='/Cashier/Booking/index';
+}
+function day_start_back(){
+    window.location.href='/Cashier/DayStart/index';
 }
 function categoryList() {
     window.location = '/Cashier/Category/index';

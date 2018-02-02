@@ -52,6 +52,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind('App\RMS\Booking\BookingRepositoryInterface','App\RMS\Booking\BookingRepository');
         $this->app->bind('App\RMS\Pricehistory\PriceLogRepositoryInterface','App\RMS\Pricehistory\PriceLogRepository');
         $this->app->bind('App\RMS\Transactiontender\TenderRepositoryInterface','App\RMS\Transactiontender\TenderRepository');
+        $this->app->bind('App\RMS\DayStart\DayStartRepositoryInterface','App\RMS\DayStart\DayStartRepository');
+        $this->app->bind('App\RMS\Shift\ShiftRepositoryInterface','App\RMS\Shift\ShiftRepository');
         //End
     }
 }

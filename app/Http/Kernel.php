@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'kitchen'=>\App\Http\Middleware\KitchenMiddleware::class,
         'profile'=>\App\Http\Middleware\ProfileMiddleware::class,
         'log'=>\App\Http\Middleware\LogMiddleware::class,
+        'shift'=>\App\Http\Middleware\ShiftMiddleware::class,
     ];
 }
