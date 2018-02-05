@@ -75,4 +75,52 @@
                 window.location.href = '/Cashier/DayEnd/' + daystart;
             }
         </script>
+
+
+        <div class="modal image-slide-show-modal" tabindex="-1" role="dialog" aria-labelledby="" id="manager-modal">
+            <div class="modal-dialog" role="document" style="width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                <div class="bootstrap-dialog-header">
+                    <div class="bootstrap-dialog-close-button" style="display: block;">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                    </div>
+                    <div class="bootstrap-dialog-title" id="294d853f-691f-4de9-967c-d66fd0adfb69_title">Pay All Invoice Before Day End</div>
+                </div>
+                </div>
+                <div class="modal-body" id="order-id">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>This Invoice are not paid yet.You need to pay this invoice first.</h4>
+                        <table class="table table-striped " id="unpaid-invoice">
+                            <thead>
+                                <tr>
+                                    <th><label>Order No</label></th>
+                                    <th><label>Total Amount</label></th>
+                                    <th><label>Date</label></th>
+                                    <th><label>Status</label></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="ordere-id"> 0-8788788777 </td>
+                                    <td> 70000 </td>
+                                    <td> 87788 </td>
+                                    <td>
+                                    <button type="submit" class="btn btn-danger order-cancel">Cancel</button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <script type="text/javascript">
+            $('#manager-modal').modal('show');
+        </script>
 @endsection

@@ -38,9 +38,8 @@ class InvoiceController extends Controller
         $this->InvoiceRepository = $InvoiceRepository;
     }
     
-    public function invoiceList(Request $request)
+    public function invoiceList()
     {
-        $page       = $request->get('page');
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoice();
@@ -81,12 +80,11 @@ class InvoiceController extends Controller
         }
         $roleArr['role'][]    = $role_id;
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','continent'));
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','continent'));
 
     } 
 
-    public function invoiceTimeIncrease(Request $request) {
-        $page       = $request->get('page');
+    public function invoiceTimeIncrease() {
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeIncrease();
@@ -130,11 +128,10 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "time";
         $amount         = "increase";
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function invoiceTimeDecrease(Request $request) {
-        $page       = $request->get('page');
+    public function invoiceTimeDecrease() {
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeDecrease();
@@ -178,11 +175,10 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "time";
         $amount         = "decrease";
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function invoicePriceIncrease(Request $request) {
-        $page       = $request->get('page');
+    public function invoicePriceIncrease() {
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoicePriceIncrease();
@@ -226,11 +222,10 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "price";
         $amount         = "increase";
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function invoicePriceDecrease(Request $request) {
-        $page       = $request->get('page');
+    public function invoicePriceDecrease() {
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoicePriceDecrease();
@@ -274,11 +269,10 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "price";
         $amount         = "decrease";
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function invoiceOrderIncrease(Request $request) {
-        $page       = $request->get('page');
+    public function invoiceOrderIncrease() {
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderIncrease();
@@ -322,12 +316,11 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "order";
         $amount         = "increase";
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function invoiceOrderDecrease(Request $request) 
+    public function invoiceOrderDecrease() 
     {
-        $page       = $request->get('page');
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderDecrease();
@@ -371,12 +364,11 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "order";
         $amount         = "decrease";
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function ajaxInvoiceTimeIncrease(Request $request)
+    public function ajaxInvoiceTimeIncrease()
     {
-        $page       = $request->get('page');
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeIncrease();
@@ -422,12 +414,11 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "time";
         $amount         = "increase";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));   
     }
 
-    public function ajaxInvoiceTimeDecrease(Request $request)
+    public function ajaxInvoiceTimeDecrease()
     {
-        $page       = $request->get('page');
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeDecrease();
@@ -473,7 +464,7 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "time";
         $amount         = "decrease";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));   
     }
 
     public function ajaxInvoicePriceIncrease(Request $request)
@@ -577,8 +568,7 @@ class InvoiceController extends Controller
         return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
     }
 
-    public function ajaxInvoiceOrderIncrease(Request $request) {
-        $page       = $request->get('page');
+    public function ajaxInvoiceOrderIncrease() {
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderIncrease();
@@ -624,11 +614,10 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "order";
         $amount         = "increase";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function ajaxInvoiceOrderDecrease(Request $request) {
-        $page       = $request->get('page');
+    public function ajaxInvoiceOrderDecrease() {
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderDecrease();
@@ -674,12 +663,11 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "order";
         $amount         = "decrease";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function ajaxRequest(Request $request)
+    public function ajaxRequest()
     {
-        $page       = $request->get('page');
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoice();
@@ -721,7 +709,7 @@ class InvoiceController extends Controller
         }
         $roleArr['role'][]    = $role_id;
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page'));
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo'));
 
     }
 
@@ -864,16 +852,14 @@ class InvoiceController extends Controller
         }
     }
 
-    public function invoiceCancel(Request $request) {
-        $page           = $request->get('page');
+    public function invoiceCancel() {
         $today          = Carbon::now();
     	$cur_date       = Carbon::parse($today)->format('Y-m-d');
         $ordersCancel 	= $this->InvoiceRepository->getinvoiceCancel();
-        $ordersCancel  = $ordersCancel->setPath('cancel');
         //Flag for Invoice Type
         $sortBy         = "cancel";
         $amount         = "";
-        return view('cashier.invoice.index',compact('ordersCancel','sortBy','amount','page'));
+        return view('cashier.invoice.index',compact('ordersCancel','sortBy','amount'));
     }
     public function orderCancel($id) {
         $order_cancel_status        = StatusConstance::ORDER_CANCEL_STATUS;

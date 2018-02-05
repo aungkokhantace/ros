@@ -55,8 +55,24 @@
         } ).draw();
         // $('#example1').DataTable();
         $('#invoice').DataTable({
-            "paging":   false,
-            "ordering": false
+            "ordering":false,
+            "columnDefs": [ {
+                "searchable": true,
+                "orderable": false,
+                "targets": 0
+            } ],
+        } );
+
+        $('#unpaid-invoice').DataTable({
+            "bFilter": false,
+            "bInfo": false,
+            "lengthChange": false,
+            "ordering":false,
+            "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            } ],
         } );
 
 

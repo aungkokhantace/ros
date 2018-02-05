@@ -30,8 +30,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		// from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `order_time` desc");
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -41,8 +42,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('created_at', 'desc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -52,8 +54,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('created_at', 'asc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -63,8 +66,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('all_total_amount', 'desc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -74,8 +78,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('all_total_amount', 'asc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -86,7 +91,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -96,8 +101,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'asc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -109,8 +115,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `$sortBy` $sortTo");
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy($sortBy,$sortTo)
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -120,8 +127,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		// from `order` where `deleted_at` is null AND status = $order_cancel_status order by `order_time` desc");
 		$orders 	= Order::where('status',$order_cancel_status)
 					->orderBy('id', 'desc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 

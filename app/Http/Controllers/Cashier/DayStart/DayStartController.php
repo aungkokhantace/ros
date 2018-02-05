@@ -70,6 +70,7 @@ class DayStartController extends Controller
 
     public function dayend($id) {
         $status             = StatusConstance::DAY_END_STATUS;
+        
         $paramObj           = DayStart::find($id);
         $paramObj->status   = $status;
         $result             = $this->dayStartRepository->update($paramObj);

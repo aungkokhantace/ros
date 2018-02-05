@@ -20,4 +20,3 @@
 
     </tbody>
 </table>
-<div class="pagination-div">{{ $ordersCancel->links() }}</div>
