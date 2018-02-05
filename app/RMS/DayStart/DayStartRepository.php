@@ -9,13 +9,16 @@
 namespace App\RMS\DayStart;
 use Illuminate\Support\Facades\DB;
 use App\RMS\DayStart\DayStart;
+use App\Status\StatusConstance;
 use App\RMS\Utility;
 use App\RMS\ReturnMessage;
 class DayStartRepository implements DayStartRepositoryInterface
 {
     public function getDayStart()
     {
+        $status             = StatusConstance::DAY_START_STATUS;
         $get_daystart       = DayStart::select('id','day_code','start_date','status')
+                              ->where('status',$status)
                               ->whereNull('deleted_at')
                               ->get();
         return $get_daystart;
@@ -39,6 +42,25 @@ class DayStartRepository implements DayStartRepositoryInterface
         }
     }
 
+    public function update($paramObj)
+    {
+        $returnedObj = array();
+        $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
+
+        try {
+            $tempObj        = Utility::addUpdatedBy($paramObj);
+            $tempObj->save();
+
+            $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+            return $returnedObj;
+        }
+        catch(Exception $e){
+
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
+
+    }
 
     public function delete($id){
         $tempObj = DayStart::find($id);

@@ -68,6 +68,21 @@ class DayStartController extends Controller
 
     }
 
+    public function dayend($id) {
+        $status             = StatusConstance::DAY_END_STATUS;
+        $paramObj           = DayStart::find($id);
+        $paramObj->status   = $status;
+        $result             = $this->dayStartRepository->update($paramObj);
+        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+            return redirect()->action('Cashier\DayStart\DayStartController@index')
+                ->withMessage(FormatGenerator::message('Success', 'Day End created ...'));
+        }
+        else{
+            return redirect()->action('Cashier\DayStart\DayStartController@index')
+                ->withMessage(FormatGenerator::message('Fail', 'Day End did not create ...'));
+        }
+    }
+
     public function delete($id)
     {
         $new_string = explode(',', $id);

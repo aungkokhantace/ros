@@ -34,6 +34,9 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\BookingTable\BookingTable;
 use App\RMS\BookingRoom\BookingRoom;
+use App\RMS\DayStart\DayStart;
+use App\RMS\Shift\ShiftCategory;
+use App\RMS\Shift\ShiftUser;
 use App\Status\StatusConstance;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
@@ -79,9 +82,17 @@ class MakeAPIController extends ApiGuardController
                         $r = $role->roles->name;
                         if ($r == "Waiter") {
                             //Check User has Assign for day start
-                            
-                            $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r);
-                            return Response::json($output);
+                            $today          = date("Y-m-d");
+                            $daystartCount  = DayStart::where('start_date',$today)->get()->count();
+                            if ($daystartCount > 0) {
+                                $usere_status        = StatusConstance::SHIFT_USER_AVAILABLE_STATUS;
+                                $userPermission         = DB::select("SELECT shift_id,user_id FROM shift_user WHERE user_id = $id AND status = $usere_status");
+                                $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"shift"=>$userPermission);
+                                return Response::json($output);
+                            } else {
+                                $output = array("message" => "Day does not start");
+                                return Response::json($output);
+                            }
                         } else {
                             $output = array("message" => "Fail");
                             return Response::json($output);

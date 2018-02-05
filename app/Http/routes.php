@@ -399,6 +399,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('DayStart/create', 'Cashier\DayStart\DayStartController@create');
                 Route::post('DayStart/store', 'Cashier\DayStart\DayStartController@store');
                 Route::get('DayStart/delete/{id}', 'Cashier\DayStart\DayStartController@delete');
+                Route::get('DayEnd/{id}', 'Cashier\DayStart\DayStartController@dayend');
                 Route::get('Shift/{shift}', 'Cashier\Shift\ShiftController@Shift');
                 Route::post('Shift/update', 'Cashier\Shift\ShiftController@update');
             });

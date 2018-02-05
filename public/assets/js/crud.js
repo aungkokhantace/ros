@@ -1160,7 +1160,6 @@ function permission_cancel(){
 function Promotion_Cancel_Form(){
     window.location.href = '/Cashier/Promotion/index';
 }
-
 // function confirmCancle() {
 //     var id  = $(this).attr('id');
 //     alert(id);

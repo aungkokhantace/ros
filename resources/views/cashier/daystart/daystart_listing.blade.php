@@ -60,7 +60,7 @@
                                     @endif 
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-success">Day End</button>
+                                    <button type="button" class="btn btn-success" onclick="dayStart({{ $daystart->id }})">Day End</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -69,4 +69,10 @@
                 </div>
             </div>
         </div>
+
+        <script type="text/javascript">
+            function dayStart(daystart) {
+                window.location.href = '/Cashier/DayEnd/' + daystart;
+            }
+        </script>
 @endsection
