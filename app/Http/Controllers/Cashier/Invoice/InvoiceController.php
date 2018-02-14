@@ -372,7 +372,6 @@ class InvoiceController extends Controller
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeIncrease();
-        $orderRepo  = $orderRepo->setPath('increase');
         $continent  = $this->InvoiceRepository->getContinent();
         //Get Order with table and room
         $orders     = array();
@@ -422,7 +421,6 @@ class InvoiceController extends Controller
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceTimeDecrease();
-        $orderRepo  = $orderRepo->setPath('decrease');
         $continent  = $this->InvoiceRepository->getContinent();
         //Get Order with table and room
         $orders     = array();
@@ -473,7 +471,6 @@ class InvoiceController extends Controller
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoicePriceIncrease();
-        $orderRepo  = $orderRepo->setPath('increase');
         $continent  = $this->InvoiceRepository->getContinent();
         //Get Order with table and room
         $orders     = array();
@@ -518,12 +515,10 @@ class InvoiceController extends Controller
         return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
     }
 
-    public function ajaxInvoicePriceDecrease(Request $request) {
-        $page       = $request->get('page');
+    public function ajaxInvoicePriceDecrease() {
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoicePriceDecrease();
-        $orderRepo  = $orderRepo->setPath('decrease');
         $continent  = $this->InvoiceRepository->getContinent();
         //Get Order with table and room
         $orders     = array();
@@ -565,14 +560,13 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "price";
         $amount         = "decrease";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));   
     }
 
     public function ajaxInvoiceOrderIncrease() {
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderIncrease();
-        $orderRepo  = $orderRepo->setPath('increase');
         $continent  = $this->InvoiceRepository->getContinent();
         //Get Order with table and room
         $orders     = array();
@@ -621,7 +615,6 @@ class InvoiceController extends Controller
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoiceOrderDecrease();
-        $orderRepo  = $orderRepo->setPath('increase');
         $continent  = $this->InvoiceRepository->getContinent();
         //Get Order with table and room
         $orders     = array();
@@ -671,7 +664,6 @@ class InvoiceController extends Controller
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoice();
-        $orderRepo  = $orderRepo->setPath('invoice');
         //Get Order with table and room
         $orders     = array();
         foreach($orderRepo as $key => $order) {

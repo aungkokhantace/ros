@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cashier\DayStart;
 // use App\RMS\Infrastructure\Forms\SetMenuEditRequest;
 use App\RMS\Infrastructure\Forms\DayStartInsertRequest;
 use App\RMS\DayStart\DayStart;
+use App\RMS\Order\Order;
 use App\Status\StatusConstance;
 use App\RMS\DayStart\DayStartRepositoryInterface;
 use Carbon\Carbon;
@@ -70,17 +71,29 @@ class DayStartController extends Controller
 
     public function dayend($id) {
         $status             = StatusConstance::DAY_END_STATUS;
-        
+        //Check All payment have done
+
         $paramObj           = DayStart::find($id);
-        $paramObj->status   = $status;
-        $result             = $this->dayStartRepository->update($paramObj);
-        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-            return redirect()->action('Cashier\DayStart\DayStartController@index')
-                ->withMessage(FormatGenerator::message('Success', 'Day End created ...'));
-        }
-        else{
-            return redirect()->action('Cashier\DayStart\DayStartController@index')
-                ->withMessage(FormatGenerator::message('Fail', 'Day End did not create ...'));
+        $day_code           = $paramObj->day_code;
+        $order_status       = StatusConstance::ORDER_CREATE_STATUS;
+        $orders             = Order::select('id','all_total_amount','order_time','status')
+                              ->where('status','=',$order_status)
+                              ->where('day_code','=',$day_code)
+                              ->get();
+        if (count($orders) > 0) {
+            $error_code         = 5;
+            return redirect()->back()->with('error_code',$error_code)->with('orders',$orders);
+        } else {
+            $paramObj->status   = $status;
+            $result             = $this->dayStartRepository->update($paramObj);
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                return redirect()->action('Cashier\DayStart\DayStartController@index')
+                    ->withMessage(FormatGenerator::message('Success', 'Day End created ...'));
+            }
+            else{
+                return redirect()->action('Cashier\DayStart\DayStartController@index')
+                    ->withMessage(FormatGenerator::message('Fail', 'Day End did not create ...'));
+            }
         }
     }
 

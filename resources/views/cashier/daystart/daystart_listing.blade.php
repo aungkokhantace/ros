@@ -76,7 +76,7 @@
             }
         </script>
 
-
+        @if(!empty(Session::get('error_code')) && Session::get('error_code') == 5)
         <div class="modal image-slide-show-modal" tabindex="-1" role="dialog" aria-labelledby="" id="manager-modal">
             <div class="modal-dialog" role="document" style="width: 800px;">
             <div class="modal-content">
@@ -98,19 +98,24 @@
                                     <th><label>Order No</label></th>
                                     <th><label>Total Amount</label></th>
                                     <th><label>Date</label></th>
-                                    <th><label>Status</label></th>
+                                    <th><label>Pay</label></th>
+                                    <th><label>Void</label></th>
                                 </tr>
                             </thead>
                             <tbody>
+                            @foreach(Session::get('orders') as $order)
                                 <tr>
-                                    <td id="ordere-id"> 0-8788788777 </td>
-                                    <td> 70000 </td>
-                                    <td> 87788 </td>
+                                    <td id="ordere-id">{{ $order->id }}</td>
+                                    <td>{{ $order->all_total_amount }}</td>
+                                    <td>{{ $order->order_time }}</td>
                                     <td>
-                                    <button type="submit" class="btn btn-danger order-cancel">Cancel</button>
+                                        <a href="/Cashier/invoice/paid/{{ $order->id }}" class="btn btn-success">Pay</a>
+                                    </td>
+                                    <td>
+                                        <a href="/Cashier/invoice" class="btn btn-danger">Cancel</a>
                                     </td>
                                 </tr>
-
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -123,4 +128,5 @@
         <script type="text/javascript">
             $('#manager-modal').modal('show');
         </script>
+        @endif
 @endsection

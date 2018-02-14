@@ -125,7 +125,7 @@ class syncAPIController extends ApiGuardController
            $activate_key = $k->site_activation_key;
         }
         if($key == $activate_key){
-            $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
+            $item = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
             $output = array("items" => $item);
             return Response::json($output);
         }else{
@@ -515,7 +515,7 @@ class syncAPIController extends ApiGuardController
             $syncs = SyncsTable::select('id', 'table_name', 'version')->get();
             $returnObj = array();
             foreach($syncs as $sync){
-                if($sync->table_name == "category" || $sync->table_name == "items" || $sync->table_name == "set_menu" || $sync->table_name == "set_item" || $sync->table_name =="discount" || $sync->table_name == "members" || $sync->table_name == "add_on" || $sync->table_name == "rooms" || $sync->table_name == "tables" || $sync->table_name == "booking" || $sync->table_nam == "config" || $sync->table_name == "promotions" || $sync->table_name == "promotion_items" || $sync->table_name == "config" || $sync->table_name == "continent"){
+                if($sync->table_name == "category" || $sync->table_name == "items" || $sync->table_name == "set_menu" || $sync->table_name == "set_item" || $sync->table_name =="discount" || $sync->table_name == "members" || $sync->table_name == "add_on" || $sync->table_name == "rooms" || $sync->table_name == "tables" || $sync->table_name == "booking" || $sync->table_nam == "config" || $sync->table_name == "promotions" || $sync->table_name == "promotion_items" || $sync->table_name == "config" || $sync->table_name == "continent" || $sync->table_name == "shift_category" || $sync->table_name == "shift_setmenu"){
 
                     $returnObj[] = $sync;
                 }
@@ -552,7 +552,7 @@ class syncAPIController extends ApiGuardController
             {
                 if ($sync->table_name == "category") {
                     if ($syncs[$key]->version > $temp['category']) {
-                        $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,mobile_image,image FROM category WHERE status='1' AND deleted_at IS NULL");
+                        $category = DB::select(" SELECT id,name,status,parent_id,kitchen_id,image FROM category WHERE status='1' AND deleted_at IS NULL");
                         $category_count     = count($category);
                         if ($category_count > 0) {
                              $returnArr['category'] = $category;
@@ -564,7 +564,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
-                        $item = DB::select("SELECT id,name,image,price,status,category_id,mobile_image,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
+                        $item = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
                         $item_count     = count($item);
                         if ($item_count > 0) {
                              $returnArr['items'] = $item;
@@ -576,7 +576,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "add_on") {
                     if ($sync->version > $temp['add_on']) {
-                        $addon = DB::select("SELECT id,food_name,category_id,price,status,mobile_image,image FROM add_on WHERE status='1' AND deleted_at IS NULL");
+                        $addon = DB::select("SELECT id,food_name,category_id,price,status,image FROM add_on WHERE status='1' AND deleted_at IS NULL");
                         $addon_count     = count($addon);
                         if ($addon_count > 0) {
                              $returnArr['addon'] = $addon;
@@ -600,7 +600,7 @@ class syncAPIController extends ApiGuardController
            
                     if ($sync->table_name == "set_menu") {
                     if ($sync->version > $temp['set_menu']) {
-                        $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,mobile_image,image FROM set_menu  WHERE status='1' AND deleted_at IS NULL");
+                        $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,image FROM set_menu  WHERE status='1' AND deleted_at IS NULL");
                         $set_menu_count     = count($set_menu);
                         if ($set_menu_count > 0) {
                              $returnArr['set_menu'] = $set_menu;
@@ -741,6 +741,33 @@ class syncAPIController extends ApiGuardController
                         $returnArr['continent'] = $continent;
                     }
                 }
+
+                if ($sync->table_name == "shift_category") {
+                    if ($sync->version > $temp['shift_category']) {
+                        $shift_category = DB::select("SELECT id,shift_id,category_id FROM shift_category WHERE status = 1 AND deleted_at IS NULL");
+                        $shift_cat_count    = count($shift_category);
+                        if ($shift_cat_count > 0) {
+                            $returnArr['shift_category'] = $shift_category;
+                        } else {
+                            $returnArr['shift_category'] = Null;
+                        }
+                    } else {
+                        $returnArr['shift_category']     = array();
+                    }
+                }
+
+                if ($sync->table_name == "shift_setmenu") {
+                    if ($sync->version > $temp['shift_setmenu']) {
+                        $shift_setmenu = DB::select("SELECT id,shift_id,setmenu_id FROM shift_setmenu WHERE status = 1 AND deleted_at IS NULL");
+                        if (count($shift_setmenu) > 0) {
+                            $returnArr['shift_setmenu'] = $shift_setmenu;
+                        } else {
+                            $returnArr['shift_setmenu'] = Null;
+                        }
+                    } else {
+                        $returnArr['shift_setmenu']     = array();
+                    }
+                }
             }
             
             if (!array_key_exists('category', $returnArr)) {
@@ -787,6 +814,12 @@ class syncAPIController extends ApiGuardController
             }
             if (!array_key_exists('continent', $returnArr)) {
                 $returnArr['continent'] = array();
+            }
+            if (!array_key_exists('shift_category', $returnArr)) {
+                $returnArr['shift_category'] = array();
+            }
+            if (!array_key_exists('shift_setmenu', $returnArr)) {
+                $returnArr['shift_setmenu'] = array();
             }
              return Response::json($returnArr);
         }else{

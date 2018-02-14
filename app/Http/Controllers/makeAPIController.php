@@ -37,6 +37,8 @@ use App\RMS\BookingRoom\BookingRoom;
 use App\RMS\DayStart\DayStart;
 use App\RMS\Shift\ShiftCategory;
 use App\RMS\Shift\ShiftUser;
+use Storage;
+use App\Log\LogCustom;
 use App\Status\StatusConstance;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
@@ -83,11 +85,16 @@ class MakeAPIController extends ApiGuardController
                         if ($r == "Waiter") {
                             //Check User has Assign for day start
                             $today          = date("Y-m-d");
-                            $daystartCount  = DayStart::where('start_date',$today)->get()->count();
-                            if ($daystartCount > 0) {
+                            $daystartCount  = DayStart::where('start_date',$today)->first();
+                            if (count($daystartCount) > 0) {
+                                $daystart       = $daystartCount->day_code;
                                 $usere_status        = StatusConstance::SHIFT_USER_AVAILABLE_STATUS;
-                                $userPermission         = DB::select("SELECT shift_id,user_id FROM shift_user WHERE user_id = $id AND status = $usere_status");
-                                $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"shift"=>$userPermission);
+                                $tempObj             = ShiftUser::select('shift_id')
+                                                      ->where('user_id','=',$id)
+                                                      ->where('status','=',$usere_status)
+                                                      ->whereNull('deleted_at')->first();
+                                $userPermission      = $tempObj->shift_id;
+                                $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"daycode"=>$daystart,"shift_id"=>$userPermission);
                                 return Response::json($output);
                             } else {
                                 $output = array("message" => "Day does not start");
@@ -184,6 +191,7 @@ class MakeAPIController extends ApiGuardController
             $order_rooms            = $order->order_room;
             $order_details          = $order->order_detail;
             $order_status           = $order->order_status;
+            $day_code               = $order->daycode;
             $tablet_id              = $order->tablet_id;
         }
         $order                          = new Order();
@@ -199,6 +207,7 @@ class MakeAPIController extends ApiGuardController
         $order->tax_amount              = $tax_amount;
         $order->all_total_amount        = $all_total_amount;
         $order->tablet_id               = $tablet_id;
+        $order->day_code                = $day_code;
         $order->status                  = $order_status;
         
         $order->save();
@@ -283,6 +292,15 @@ class MakeAPIController extends ApiGuardController
 
         }
 
+        $output = array("message" => "Success");
+        return Response::json($output);
+    }
+
+    public function frontend_log() {
+        $temp           = Input::all();
+        $tabletID       = $temp['tabletId'];
+        $logMessage     = $temp['logMessage'];
+        $writeLog       = LogCustom::create($tabletID, $logMessage);
         $output = array("message" => "Success");
         return Response::json($output);
     }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\RMS\Permission\Permission;
 use App\RMS\Permission\PermissionRepository;
+use App\Log\LogCustom;
 use App\Http\Controllers\Controller;
 use App\Status\StatusConstance;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -65,6 +66,7 @@ class AuthController extends Controller
                 $module     = $permission['module_id'];
                 $request->session()->push('module',$module);
             }
+            LogCustom::deleteLogFileAutomatically();
             return redirect('Cashier/userAuth');
         }
     }

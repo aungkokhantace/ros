@@ -29,6 +29,10 @@ class StatusConstance
     const ORDER_SETMENU_COOKING_DONE_STATUS     = 3; //Order Set Menu Cooking Done Status
     const ORDER_SETMENU_KITCHEN_CANCEL_STATUS   = 6; //Order Set Menu Cancel Status
 
+    //SET MENU STATUS
+    const SETMENU_AVAILABLE_STATUS              = 1;
+    const SETMENU_UNAVAILABLE_STATUS            = 0;
+
     //Table Status
     const TABLE_AVAILABLE_STATUS                = 0; //TABLE AVAILABLE STATUS
     const TABLE_UNAVAILABLE_STATUS              = 1; //TABLE UNAVAILABLE STATUS
@@ -92,6 +96,10 @@ class StatusConstance
     //Shift Category
     const SHIFT_CATEGORY_AVAILABLE_STATUS       = 1;//SHIFT CATEGORY AVAILABLE STATUS
     const SHIFT_CATEGORY_UNAVAILABLE_STATUS     = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
+
+    //Shift Setmenu
+    const SHIFT_SETMENU_AVAILABLE_STATUS        = 1;//SHIFT CATEGORY AVAILABLE STATUS
+    const SHIFT_SETMENU_UNAVAILABLE_STATUS      = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
 
     //Shift User
     const SHIFT_USER_AVAILABLE_STATUS           = 1;//SHIFT USER AVAILABLE STATUS

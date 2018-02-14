@@ -483,6 +483,7 @@ Route::post('api/v1/invoice/member','makeAPIController@member_update');
 Route::post('api/v1/customer_cancel','makeAPIController@customer_cancel');
 Route::post('api/v1/post_kitchen_cancel','makeAPIController@post_kitchen_cancel');
 Route::post('api/v1/order_status','makeAPIController@order_status');
+Route::post('api/v1/frontend_log','makeAPIController@frontend_log');
 
 Route::post('api/v1/download_voucher','downloadApiController@download_voucher');
 Route::post('api/v1/download_voucher_detail','downloadApiController@download_voucher_detail');

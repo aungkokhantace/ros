@@ -12,6 +12,7 @@ interface ShiftRepositoryInterface
 {
 	public function getDayShiftID($shift_name);
 	public function getShiftCategoryID($id);
+	public function getShiftSetMenuID($id);
 	public function getShiftUserID($id);
     public function store($paramObj);
    

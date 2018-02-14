@@ -68,6 +68,7 @@
             "bInfo": false,
             "lengthChange": false,
             "ordering":false,
+            "paging": false,
             "columnDefs": [ {
                 "searchable": false,
                 "orderable": false,

@@ -13,6 +13,7 @@ use App\RMS\ReturnMessage;
 use App\RMS\Shift\Shift;
 use App\RMS\Shift\ShiftCategory;
 use App\RMS\Shift\ShiftUser;
+use App\RMS\Shift\ShiftSetMenu;
 use App\Status\StatusConstance;
 class ShiftRepository implements ShiftRepositoryInterface
 {
@@ -35,6 +36,16 @@ class ShiftRepository implements ShiftRepositoryInterface
             $categoryArr[$key]      = $category->category_id;
         }
         return $categoryArr;
+    }
+
+    public function getShiftSetMenuID($id) {
+        $status         = StatusConstance::SETMENU_AVAILABLE_STATUS;
+        $setmenuID      = ShiftSetMenu::select('setmenu_id')->where('shift_id',$id)->where('status',$status)->whereNull('deleted_at')->get();
+        $setMenuArr        = array();
+        foreach ($setmenuID as $key => $setMenu) {
+            $setMenuArr[$key]      = $setMenu->setmenu_id;
+        }
+        return $setMenuArr;
     }
 
     public function getShiftUserID($id) {
