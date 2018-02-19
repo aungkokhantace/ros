@@ -84,17 +84,19 @@ class MakeAPIController extends ApiGuardController
                         $r = $role->roles->name;
                         if ($r == "Waiter") {
                             //Check User has Assign for day start
-                            $today          = date("Y-m-d");
-                            $daystartCount  = DayStart::where('start_date',$today)->first();
-                            if (count($daystartCount) > 0) {
-                                $daystart       = $daystartCount->day_code;
-                                $usere_status        = StatusConstance::SHIFT_USER_AVAILABLE_STATUS;
-                                $tempObj             = ShiftUser::select('shift_id')
-                                                      ->where('user_id','=',$id)
-                                                      ->where('status','=',$usere_status)
-                                                      ->whereNull('deleted_at')->first();
-                                $userPermission      = $tempObj->shift_id;
-                                $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"daycode"=>$daystart,"shift_id"=>$userPermission);
+                            $day_status     = StatusConstance::DAY_START_STATUS;
+                            $shift_status   = StatusConstance::ORDER_SHIFT_START_STATUS;
+                            $user_status    = StatusConstance::SHIFT_USER_AVAILABLE_STATUS;
+                            $dayStart = DayStart::leftjoin('order_shift','order_day.day_code','=','order_shift.day_code')
+                                        ->leftjoin('shift_user','shift_user.shift_id','=','order_shift.shift_id')
+                                        ->select('order_day.day_code','order_shift.shift_id')
+                                        ->where('order_day.status','=',$day_status)
+                                        ->where('order_shift.status','=',$shift_status)
+                                        ->where('shift_user.user_id','=',$id)
+                                        ->where('shift_user.status','=',$user_status)
+                                        ->first();
+                            if (count($dayStart) > 0) {
+                                $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"daycode"=>$dayStart->day_code,"shift_id"=>$dayStart->shift_id);
                                 return Response::json($output);
                             } else {
                                 $output = array("message" => "Day does not start");

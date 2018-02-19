@@ -17,6 +17,12 @@ use App\RMS\Shift\ShiftSetMenu;
 use App\Status\StatusConstance;
 class ShiftRepository implements ShiftRepositoryInterface
 {
+    public function allShift() {
+        $status         = StatusConstance::SHIFT_AVAILABLE_STATUS;
+        $get_shift      = Shift::where('status',$status)->whereNull('deleted_at')->get();
+        return $get_shift;
+    }
+    
     public function getDayShiftID($shift_name) {
         $status         = StatusConstance::SHIFT_AVAILABLE_STATUS;
         $shiftObj       = Shift::select('id')
@@ -74,6 +80,33 @@ class ShiftRepository implements ShiftRepositoryInterface
             $returnedObj['aceplusStatusMessage'] = $e->getMessage();
             return $returnedObj;
         }
+    }
+
+    public function update($paramObj){
+
+        $returnedObj = array();
+        $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
+
+        try {
+            $tempObj                = Utility::addUpdatedBy($paramObj);
+            $tempObj->save();
+            $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+            return $returnedObj;
+        }
+        catch(Exception $e){
+
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
+
+
+    }
+    
+    public function delete($id){
+        $tempObj = Shift::find($id);
+        $tempObj = Utility::addDeletedBy($tempObj);
+        $tempObj->deleted_at = date('Y-m-d H:m:i');
+        $tempObj->save();
     }
 
 }

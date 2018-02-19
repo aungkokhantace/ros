@@ -561,6 +561,22 @@ $(document).ready(function() {
             form.submit();
         }
     });
+
+    //For Shift Form
+    $('#shift-validate').validate({
+        rules: {
+            name        : "required",
+            description : "required"
+        },
+        messages: {
+            name        : "Shift Name is required.",
+            description : "Description is required.",
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+    });
 });
 
 

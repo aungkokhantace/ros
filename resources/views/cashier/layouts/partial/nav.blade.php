@@ -151,8 +151,7 @@
                        aria-expanded="false">Session<span class="caret"></span></a>
                        <ul class="dropdown-menu">
                             <li><a href="/Cashier/DayStart/index">Day Start</a></li>
-                            <li><a href="/Cashier/Shift/day_shift">Day Shift</a></li>
-                            <li><a href="/Cashier/Shift/night_shift">Night Shift</a></li>
+                            <li><a href="/Cashier/Shift/index">Shift</a></li>
                        </ul>
                 </li>
             </ul>

@@ -1,12 +1,19 @@
 @extends('cashier/layouts.master')
-@section('title',($shift_name == 'DAY SHIFT') ?  'Edit Day Shift' : 'Edit Night Shift')
+@section('title',(isset($shift)) ?  'Edit Day Shift' : 'Edit Night Shift')
 @section('content')
-
     <div class="col-md-8 user-border-left">
-        <h3 class="h3-font"><b>{{($shift_name == 'DAY SHIFT') ?  'Edit Day Shift' : 'Edit Night Shift' }}</b></h3>
+        <h3 class="h3-font"><b>Shift Permission</b></h3>
         {{--check new or edit--}}
-        {!! Form::open(array('url' => 'Cashier/Shift/update', 'class'=> 'form-horizontal user-form-border', 'id'=>'staffTypeEntry')) !!}
-        <input type="hidden" name="shift" value="{{ $shift_name }}"/>
+        {!! Form::open(array('url' => 'Cashier/Shift/Permission/update', 'class'=> 'form-horizontal user-form-border', 'id'=>'staffTypeEntry')) !!}
+        <input type="hidden" name="id" value="{{ $shift->id }}"/>
+
+        <div class="form-group">
+            <label for="shift-name" class="col-sm-3 control-label">Shift Name<span class="require">*</span></label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="shift-name" name="name"
+                       value="{{isset($shift)? $shift->name:Input::old('name')}}" disabled />
+            </div>
+        </div>
 
         <div class="form-group">
             <label for="discount" class="col-sm-3 control-label left-align label-font permission">Category<span class="require">*</span></label>
@@ -45,7 +52,7 @@
          <div class="form-group">
             <div class="col-sm-8 col-sm-offset-3">
                 <input type="submit" name="submit" value="Update" class="user-button-ok">
-                <input type="button" value="CANCEL" class="user-button-cancel" onclick="shift_cancel()">
+                <input type="button" value="CANCEL" class="user-button-cancel" onclick="show_shift_list()">
             </div>
         </div>
         {!! Form::close() !!}

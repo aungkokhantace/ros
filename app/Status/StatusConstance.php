@@ -89,6 +89,10 @@ class StatusConstance
     const SHIFT_AVAILABLE_STATUS                = 1;
     const SHIFT_UNAVAILABLE_STATUS              = 0;
 
+    //Shift User Status
+    const SHIFT_USER_AVAILABLE_STATUS           = 1;
+    const SHIFT_USER_UNAVAILABLE_STATUS         = 0;
+
     //Shift Name
     const DAY_SHIFT_NAME                        = 'DAY SHIFT';//Day Shift Name
     const NIGHT_SHIFT_NAME                      = 'NIGHT SHIFT';//Night Shift Name
@@ -97,11 +101,17 @@ class StatusConstance
     const SHIFT_CATEGORY_AVAILABLE_STATUS       = 1;//SHIFT CATEGORY AVAILABLE STATUS
     const SHIFT_CATEGORY_UNAVAILABLE_STATUS     = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
 
+    //Category Status
+    const CATEGORY_AVAILABLE_STATUS             = 1;
+    const CATEGORY_UNAVAILABLE_STATUS           = 0;
+
     //Shift Setmenu
     const SHIFT_SETMENU_AVAILABLE_STATUS        = 1;//SHIFT CATEGORY AVAILABLE STATUS
     const SHIFT_SETMENU_UNAVAILABLE_STATUS      = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
 
-    //Shift User
-    const SHIFT_USER_AVAILABLE_STATUS           = 1;//SHIFT USER AVAILABLE STATUS
-    const SHIFT_USER_UNAVAILABLE_STATUS         = 0;//SHIFT USER UNAVAILABLE STATUS
+    //Order Shift
+    const ORDER_SHIFT_UNAVAILABLE_STATUS        = 0;
+    const ORDER_SHIFT_START_STATUS              = 1;
+    const ORDER_SHIFT_END_STATUS                = 2;
+    const ORDER_SHIFT_DONE_STATUS               = 3;
 }

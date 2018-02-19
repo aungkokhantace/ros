@@ -20,7 +20,7 @@ class DayStartRepository implements DayStartRepositoryInterface
         $get_daystart       = DayStart::select('id','day_code','start_date','status')
                               ->where('status',$status)
                               ->whereNull('deleted_at')
-                              ->get();
+                              ->first();
         return $get_daystart;
     }
 

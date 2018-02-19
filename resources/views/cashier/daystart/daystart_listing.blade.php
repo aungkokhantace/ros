@@ -44,7 +44,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($daystarts as $daystart)
+                        @if (count($daystart) > 0)
                              <tr class="active">
                                 <td>
                                     <input type="checkbox" class="source" name="day_check" value="{{ $daystart->id }}">
@@ -60,10 +60,20 @@
                                     @endif 
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-success" onclick="dayStart({{ $daystart->id }})">Day End</button>
+                                @if ($session_status == 1)
+                                    <button type="button" class="btn btn-success" onclick="dayStart(daycode = '{{ $daystart->day_code }}',shiftID = {{ $shiftObj->id }},status = {{ $shiftObj->next_status }})">{{ $shiftObj->name }} 
+                                    @if($shiftObj->current_status == 0)
+                                        {{ ' Start'}}
+                                    @else
+                                        {{ ' End'}}
+                                    @endif
+                                    </button>
+                                @else 
+                                    <button type="button" class="btn btn-success" onclick="dayEnd({{ $daystart->id }})">Day End</button>
+                                @endif
                                 </td>
                             </tr>
-                        @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -71,8 +81,12 @@
         </div>
 
         <script type="text/javascript">
-            function dayStart(daystart) {
-                window.location.href = '/Cashier/DayEnd/' + daystart;
+            function dayStart(daycode,shift,status) {
+                window.location.href = '/Cashier/DayStart/Shift/' + daycode + '/' + shiftID + '/' + status;
+            }
+
+            function dayEnd(id) {
+                window.location.href = '/Cashier/DayStart/end/' + id;
             }
         </script>
 

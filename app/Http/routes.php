@@ -399,9 +399,17 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('DayStart/create', 'Cashier\DayStart\DayStartController@create');
                 Route::post('DayStart/store', 'Cashier\DayStart\DayStartController@store');
                 Route::get('DayStart/delete/{id}', 'Cashier\DayStart\DayStartController@delete');
-                Route::get('DayEnd/{id}', 'Cashier\DayStart\DayStartController@dayend');
-                Route::get('Shift/{shift}', 'Cashier\Shift\ShiftController@Shift');
-                Route::post('Shift/update', 'Cashier\Shift\ShiftController@update');
+                Route::get('DayStart/end/{id}', 'Cashier\DayStart\DayStartController@dayend');
+                Route::get('DayStart/Shift/{daycode}/{id}/{status}', 'Cashier\DayStart\DayStartController@orderShift');
+                Route::get('Shift/index', 'Cashier\Shift\ShiftController@index');
+                Route::get('Shift/create', 'Cashier\Shift\ShiftController@create');
+                Route::post('Shift/store', 'Cashier\Shift\ShiftController@store');
+                Route::get('Shift/delete/{id}', 'Cashier\Shift\ShiftController@delete');
+                Route::get('Shift/last_update/{id}', 'Cashier\Shift\ShiftController@last_update');
+                Route::get('Shift/Permission/{id}', 'Cashier\Shift\ShiftController@permission');
+                Route::post('Shift/Permission/update', 'Cashier\Shift\ShiftController@shift_update');
+                // Route::get('Shift/{shift}', 'Cashier\Shift\ShiftController@Shift');
+                // Route::post('Shift/update', 'Cashier\Shift\ShiftController@update');
             });
             //end shift
 

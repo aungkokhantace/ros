@@ -23,7 +23,7 @@ class DayStartInsertRequest extends Request
     public function rules()
     {
         return [
-            'start_date'    => 'required|unique:day_start,start_date,NULL,id,deleted_at,NULL'
+            'start_date'    => 'required|unique:order_day,start_date,NULL,id,deleted_at,NULL'
             ];
     }
 

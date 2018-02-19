@@ -70,6 +70,15 @@ function select_best_selling_item_with_date(value)
 function day_create(){
     window.location = '/Cashier/DayStart/create';
 }
+function shift_create(){
+    window.location ='/Cashier/Shift/create';
+}
+function shift_last_create(id){
+    window.location ='/Cashier/Shift/last_update/' + id;
+}
+function shift_permission_create(id){
+    window.location ='/Cashier/Shift/Permission/' + id;
+}
 //For Edit 
 
 /**
@@ -477,6 +486,23 @@ function permission_edit(){
     else {
         window.location = "/Cashier/Permission/edit/" + data;
     }
+}
+
+function shift_edit() {
+
+    var data = [];
+    $("input[name='shift-check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You must select at least one shift to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select only one stem to edit in one time!", "error");
+    }
+    else
+        window.location = "/Cashier/Shift/edit/" + data;
 }
 //End Permission
 
@@ -1058,6 +1084,42 @@ function day_delete() {
             });
     }
 }
+
+function shift_delete(){
+
+    var data = [];
+    $("input[name='shift-check']:checked").each(function() {
+        data.push($(this).val());
+    });
+    var d= typeof(data);
+
+    if(data[0] == null){
+        sweetAlert("Oops...", "Please select at least one shift to delete !", "error");
+    }
+    else{
+        swal({   title: "Are you sure?",
+                text: "You will not be able to recover this record!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55 ",
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function(isConfirm){
+                if (isConfirm) {
+
+                    window.location ="/Cashier/Shift/delete/"+data;
+
+                } else {
+
+                    window.location ="/Cashier/Shift/index/";
+                }
+            });
+
+    }
+}
 //End kitchen delete
 
 
@@ -1089,6 +1151,10 @@ function categoryList() {
 
 function show_item_list() {
     window.location = '/Cashier/Item/index';
+}
+
+function show_shift_list() {
+    window.location = '/Cashier/Shift/index';
 }
 
 function Member_Cancel_Form(){
@@ -1159,6 +1225,9 @@ function permission_cancel(){
 
 function Promotion_Cancel_Form(){
     window.location.href = '/Cashier/Promotion/index';
+}
+function show_shift_list() {
+    window.location = '/Cashier/Shift/index';
 }
 // function confirmCancle() {
 //     var id  = $(this).attr('id');
