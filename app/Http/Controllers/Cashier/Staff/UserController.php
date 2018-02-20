@@ -209,7 +209,11 @@ class UserController extends Controller
             $r = $role->roles->name;
             if($r == "Kitchen"){
                 return redirect('Kitchen/kitchen');
-            }else{
+            }
+            if ($r == "Super Admin" || $r == 'Manager' || $r == 'Supervisor') {
+                return redirect('Backend/Dashboard');
+            }
+            else{
                 return redirect('Cashier/Dashboard');
             }
         }

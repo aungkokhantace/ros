@@ -16,7 +16,6 @@ Route::group(['middleware' => 'web'], function () {
     });
     Route::get('login', 'Cashier\Auth\AuthController@getLoginForm');
     Route::post('login', 'Cashier\Auth\AuthController@postDataForCashierLogin');
-    Route::get('socketRequest','Cashier\Booking\BookingController@socketRequest');
 
     Route::group(['prefix' => 'Cashier'], function(){
         Route::get('logout', 'Cashier\Auth\AuthController@logout');

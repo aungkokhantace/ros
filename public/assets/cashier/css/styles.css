@@ -1,0 +1,936 @@
+@charset "UTF-8";
+* {
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+	outline: none;
+}
+@font-face {
+    font-family: 'Montserrat';
+    src: url('monsterrat_font/Montserrat-Regular.woff') format('woff');
+    font-weight: normal;
+    font-size: normal;
+}
+body {
+	background: #fff;
+	height: 100vh;
+	color: #000;
+	font-size: 14px;
+	line-height: 150%;
+	font-family: 'Montserrat', sans-serif;
+}
+a ,
+a:hover {
+	color: #fff;
+	text-decoration: none;
+}
+img {
+	max-width: 100%;
+}
+.pull-right {
+	float: right;
+}
+/*-----------------------------header-sec-----------------------------*/
+.header-sec {
+	background: #717171;
+	margin-bottom: 60px;
+	padding: 20px 0;
+	color: #fff;
+}
+.header-sec .ros-logo {
+	width: 250px;
+	margin: 0 auto;
+	display: block;
+}
+.header-sec .head-lbox ,
+.header-sec .head-rbox {
+	display: table;
+}
+.head-lbox>div ,
+.head-rbox>div {
+	display: table-cell;
+	vertical-align: bottom;
+}
+.head-rbox {
+	text-align: right;
+}
+.head-rbox .dropdown-menu.show {
+	right: -70px;
+	left: auto!important;
+}
+.staff-name {
+    display: inline-block;
+    font-size: 13px;
+    padding-top: 26px;
+}
+.user-btn {
+    margin-left: 20px;
+    box-shadow: 2px 2px 0 #5F5F5E;
+    outline: none;
+}
+.user-btn img {
+	width: 30px;
+}
+.dash-btn {
+	width: 150px;
+    background: #F37022;
+    padding: 6px 0;
+    color: #fff;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 0 #5F5F5E;
+    font-size: 14px;
+}
+.dash-btn:hover {
+	background: #f50;
+}
+.staff {
+	text-align: right;
+}
+.item-btn {
+	display: table;
+	margin: 1px 0 25px;
+}
+.item-btn a {
+	background: #5F93CF;
+	padding: 20px 12px;
+	text-align: center;
+	border-radius: 5px;	
+	box-shadow: 1px 1px 3px #5F5F5E;
+	transition: all 0.3s ease-in-out;
+	display: table-cell;
+	vertical-align: middle;
+}
+.item-btn a:hover {
+	background: #0062cc;
+	color: #EF6E25;
+}
+.item-btn a:hover .label-type {
+	border-top-color: #fff;
+}
+.item-btn img {
+	padding-bottom: 12px;
+}
+.label-type {
+	display: block;
+	padding-top: 10px;
+	text-transform: uppercase;
+	border-top: 2px solid #4876AE;
+}
+.item-calendar {
+	height: 164px;
+}
+.calendar-box {
+	margin-bottom: 18px;
+	border: 1px solid #cfdeeb;
+	border-radius: 5px;
+}
+.item-month {
+	display: block;
+	background: #4990e2;
+	padding: 10px 0;
+	color: #fff;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+.item-date {
+	display: block;
+    padding: 29px 0;
+    color: #F36F21;
+    font-size: 45px;
+}
+.day-st-btn {
+	width: 100%;
+	background: #4990e2;
+	text-transform: uppercase;
+}
+.swiper-container {
+	width: 100%;
+  	height: 100%;
+  	background: #fff;
+
+}
+.swiper-slide {
+	overflow: hidden;
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.cmn-ttl {
+	margin-bottom: 20px;
+	border-bottom: 1px solid #b3d0f2;
+}
+.cmn-ttl-log {
+	margin-bottom: 80px;
+ 	border-bottom: 1px solid #5488C4;
+}
+
+.cmn-ttl h3 {
+	width: 150px;
+    background: #77ACE9;
+    padding: 6px 0;
+    margin-bottom: 0;
+    font-size: 14px;
+    box-shadow: 0 -2px 1px #59595C;
+    text-align: center;
+    color: #fff;
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    text-transform: uppercase;
+}
+.cmn-ttl-log h3 {
+ 	background: #5287c4;
+}
+.cmn-ttl1 h3 {
+	width: 165px;
+}
+.sub-page {
+	padding-bottom: 140px;
+}
+/*--------------------------------------------
+ Permission
+ -------------------------------------------*/
+.table td, .table th {
+    padding: 4px .75rem;
+    font-size: 12px;
+}
+.per-table th ,
+.invoice-table th {
+	border-top: 0;
+	font-size: 14px;/*
+	vertical-align: bottom;*/
+}
+.per-table th:first-child ,
+.per-table td:first-child {
+	padding-left: 9%;
+}
+.per-table th:nth-child(1) {
+	width: 25%;
+}
+.per-table th:nth-child(2) {
+	width: 10%;
+}
+.per-table th:nth-child(3) {
+	width: 30%;
+}
+
+.per-table th:nth-child(3) p ,
+.per-table th:nth-child(3) .edit-btn-gp {
+	width: 40%;
+    display: inline-block;
+}
+.per-table th:nth-child(3) p  {
+    text-align: left;
+    margin: 0;
+}
+.per-table th:nth-child(3) .edit-btn-gp {
+    text-align: right;
+}
+.per-table label {
+	margin-bottom: 0!important;
+}
+.edit-btn-gp button {
+	width: 40px;
+    background: #77ACE9;
+    border-radius: 5px;
+    padding: 4px 0;
+    border: 1px solid #ddd;
+    color: #fff;
+    cursor: pointer;
+}
+.pagination {
+	width: 220px;
+	margin: 10px auto 0;
+}
+
+.pagination li {
+	margin-right: 25px;
+	color: #000;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+.pagination li:first-child ,
+.pagination li:last-child {
+	font-weight: bold;
+}
+.pagination li.current a {
+	color: #F37022;
+	font-weight: bold;
+	font-size: 16px;
+}
+.pagination li a {
+	color: #000;
+}
+/*checkbox icon*/
+.checkbox {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+}
+.checkbox input {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+.check-icn {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background: #fff;
+  border: 1px solid #c6c6c6;
+    border-radius: 3px;
+    box-shadow: 3px 2px 3px #ddd;
+}
+.checkbox input:checked ~ .check-icn ,
+.checkbox input:checked:focus ~ .check-icn {
+  background: #77ACE9;
+}
+.check-icn:after {
+  content: '';
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 2px;
+  width: 3px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.checkbox input:checked ~ .check-icn:after {
+  display: block;
+}
+
+/*--------------------------------------------
+food order list 
+-------------------------------------------*/
+.food-status {
+	margin-bottom: 30px;
+}
+.fd-status {
+	width: 16px;
+	height: 16px;
+	background: #00A402;
+	display: inline-block;
+	border-radius: 3px;
+	border: 1px solid #000;
+	margin-right: 10px;
+}
+.fd-taken {
+	background: #00A402;	
+}
+.fd-cooked {
+	background: #4890E0;
+}
+.fd-cooking {
+	background: #F3A625;
+}
+.fd-notyet {
+	background: #FC0000;
+}
+.fd-taken:hover {
+	background: #1e7e34;	
+}
+.fd-cooked:hover {
+	background: #0062cc;
+}
+.fd-cooking:hover {
+	background: #f50;
+}
+.fd-notyet:hover {
+	background: #D40004;
+}
+.order-status {
+	background: #E8E8E8;	
+	border: 1px solid #ddd;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+.order-num {
+    background: #DBDBDB;
+    padding: 15px 30px 10px;
+    font-size: 16px;
+    line-height: 1.4;
+}
+.ordernum-list {
+	padding: 0 10%;
+}
+.ordernum-list .btn {
+    width: 40%;
+    padding: 3px 0;
+    margin: 0px 18% 30px 0;
+    text-align: center;
+    color: #fff;
+    font-size: 40px;
+    border: 1px solid #000;
+}
+.ordernum-list .btn:nth-child(2n+2) {
+	margin-right: 0;
+}
+.table-num {
+	font-size: 16px;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+}
+/*--------------------------------------
+invoice-list
+---------------------------------------*/
+.invoice-table td {
+	padding: 3px .75rem;	
+	vertical-align: middle;
+    font-size: 12px;
+}
+.invoice-table th:first-child,
+.invoice-table td:first-child {
+	padding-left: 5%;
+}
+.invoice-time span {
+	display: block;
+	line-height: 1.4;
+}
+.invoice-table .btn {
+	font-size: 10px;
+}
+.detail-btn ,
+.status-btn ,
+.print-btn {
+	width: 85px;
+	padding: 3px 0;
+	text-align: center;
+}
+.print-btn {
+	width: 50px;
+	color: #000;
+	background: #d0d0d0;
+}
+.detail-btn {
+	background: #F07022;
+	color: #fff;
+}
+.detail-btn:hover {
+	background: #f50;
+}
+/*--------------------------------------------
+new staff 
+-------------------------------------------*/
+.new-staff-form label {
+	font-weight: bold;
+	font-size: 12px;
+}
+.new-staff-form input,
+.new-staff-form select {
+	width: 70%;
+	font-size: 12px;
+}
+.new-staff-form .form-group {
+	margin-bottom: 20px;
+}
+.btn-gp .btn {	
+    width: 115px;
+    text-align: center;
+    padding: 5px 0;
+    margin-right: 10px;
+}
+.cancel-btn {
+	background: #F37022;
+	color: #fff;
+}
+.cancel-btn:hover {
+	background: #f50;
+}
+/*--------------------------------------------
+ login
+ -------------------------------------------*/
+ #login {
+ 	background: #747474;
+ }
+ #login .ros-logo {
+    max-width: 60%;
+    height: 200px;
+ 	display: block;
+ 	margin: 25px auto 60px;
+ }
+ .login-header-sec {
+ 	margin-bottom: 30px;
+ }
+.login-btn {
+	width: 150px;
+	border-radius: 0;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	font-size: 20px;
+    box-shadow: 0 -2px 1px #59595C;
+}
+.login-form .form-group {
+	margin-bottom: 43px;
+    font-size: 18px;
+}
+.login-form label {
+	color: #fff;
+    line-height: 2.5;
+    font-size: 12px;	
+}
+.login-form input {
+	background: #6F6F6F;
+    padding: 18px 10px;
+	border: 1px solid #C2C2C2;
+	color: #fff;
+	font-size: 12px;
+}
+.login-form input:focus {
+	background: #6F6F6F;
+	color: #fff;
+}
+
+.count-btn {
+	text-align: right;
+}
+.count-btn .btn {
+	width: 20%;
+    margin: 0 5% 20px 0;
+    font-size: 26px;
+    padding: 0;
+    text-align: center;
+    color: #fff;
+    box-shadow: -1px -1px 4px #ddd, 1px 1px 4px #ddd;
+}
+.count-btn .btn:hover {
+	color: #ddd;
+}
+.count-btn .btn:nth-child(4n+4) {
+	margin-right: 0;
+}
+.clear-btn ,
+.enter-btn {
+	font-size: 18px!important;
+    padding: 6px 0!important;
+}
+.clear-btn {
+	background: #F36F21;
+}
+.clear-btn:hover {
+	background: #f50;
+}
+.enter-btn {
+	background: #00B000;
+}
+.enter-btn:hover {
+	background: #1e7e34;
+}
+
+
+/*--------------------------------------------
+ recipt
+ -------------------------------------------*/
+ .receipt .cmn-ttl2 {
+ 	padding-top: 40px;
+ 	margin-bottom: 30px;
+ }
+ .receipt .cmn-ttl2 h3 {
+ 	width: auto;
+    padding: 11px 0;
+ 	font-size: 12px;
+ }
+.receipt-btn {
+	text-align: right;
+}
+.receipt-btn .btn {
+	width: 65px;
+	background: #4D8DE4;
+    padding: 3px 0;
+    text-align: center;
+}
+.receipt-btn .btn:hover {
+	background: #0069d9;
+}
+.receipt-table {
+	margin-bottom: 25px;
+	border: 1px solid #dee2e6;
+}
+.receipt-table td {
+	padding: 5px 0.75rem;
+
+}
+.receipt-table td:first-child {
+	text-transform: uppercase;
+}
+.receipt-table td:last-child {
+	text-align: right;
+}
+.bg-gray {
+	background: #D0D0D0;
+	text-align: left!important;
+	font-weight: bold;
+}
+.receipt-ttl {
+	width: 215px;
+	background: #DCDCDC;
+	margin-bottom: 2px;
+	padding: 5px 5px;
+	font-size: 20px;
+	font-weight: bold;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	box-shadow: 0px -2px 1px #59595C;
+}
+.receipt-td-height {
+	height: 100px;
+}
+.receipt-btn02 .btn {
+	width: 120px;
+	padding: 5px 0;
+	text-align: center;
+	font-size: 12px;
+}
+.receipt-btn02>div:nth-child(2) {
+	text-align: right;
+}
+.list-group {
+    padding-left: 15px;
+	display: block;
+}
+.tab-content {
+	margin: 20px 0;
+    border-top: 1px solid #A4C7F0;
+    border-bottom: 1px solid #A4C7F0;
+    padding: 15px 0 40px;
+}
+.tab-content>.tab-pane {
+	width: 100%;
+}
+.list-group-item {
+	border-radius: 5px;
+}
+.list-group-item-action {   
+    width: 18%;
+    background: #E2E2E2;
+    float: left;
+    padding: 0;
+    margin-right: 2%;
+    font-size: 12px;
+    text-align: center;
+    text-transform: uppercase;
+ }
+.list-group-item-action:nth-child(5n+5) {   
+	width: 20%;
+	margin-right: 0;
+}
+.receipt-txt {
+	display: block;
+}
+ .receipt-type {
+ 	height: 45px;
+ 	background: url(../../assets/images/payment/card.png) no-repeat center;
+    display: block;
+ }
+ .cash-img {
+ 	background: url(../../assets/images/payment/cash.png) no-repeat center;
+ }
+ .card-img {
+ 	background: url(../../assets/images/payment/card.png) no-repeat center;
+ }
+ .voucher-img {
+ 	background: url(../../assets/images/payment/voucher.png) no-repeat center;
+ }
+ .collection-img {
+ 	background: url(../../assets/images/payment/collection.png) no-repeat center;
+ }
+ .loyality-img {
+ 	background: url(../../assets/images/payment/loyality.png) no-repeat center;
+ }
+ .list-group-item-action.active .cash-img {
+ 	background: url(../../assets/images/payment/cash_active.png) no-repeat center;
+ }
+ .list-group-item-action.active .card-img {
+ 	background: url(../../assets/images/payment/card_active.png) no-repeat center;
+ }
+ .list-group-item-action.active .voucher-img {
+ 	background: url(../../assets/images/payment/voucher_active.png) no-repeat center;
+ }
+ .list-group-item-action.active .collection-img {
+ 	background: url(../../assets/images/payment/collection_active.png) no-repeat center;
+ }
+ .list-group-item-action.active .loyality-img {
+ 	background: url(../../assets/images/payment/loyality_active.png) no-repeat center;
+ }
+ .tab-pane button {
+ 	width: 18%;
+ 	background: #F4F4F4;
+ 	margin: 0 2% 2% 0;
+ 	padding: 0;
+ 	float: left;
+ 	display: block;
+ 	color: #000;
+ 	border: 1px solid #E7E7E7;
+ 	border-radius: 5px;
+ 	text-align: center;
+ 	text-transform: uppercase;
+ }
+
+ .tab-pane button:nth-child(5n+5) {
+ 	width: 20%;
+ 	margin-right: 0;
+ }
+ .tab-pane button span {
+ 	display: block;
+ 	font-size: 10px;
+ }
+ .tab-pane .money {
+ 	font-size: 20px;
+}
+.extra-cash {
+ 	height: 45px;
+ 	background: url(../../assets/images/payment/extra_cash.png) no-repeat center;
+    display: block;	
+}
+.payment-cal {
+}
+.payment-show p {
+    padding: 5px 0;
+	font-size: 20px;
+    border: 1px solid #ABCCF1;
+    border-radius: 5px;
+    text-align: center;
+}
+.receipt-btn3 .btn {
+	width: 18%;
+    background: none;
+    margin: 0 1.9% 2% 0;
+    font-size: 35px;
+    border: 1px solid #eee;
+}
+.receipt-btn3 .btn:nth-child(5n+5) {
+	margin-right: 0;
+}
+.receipt-btn3 .btn:hover {
+	background: #f8f9fa;
+	}
+.receipt-btn4 .btn {
+    width: 31.5%;
+    margin-right: 2%;
+    padding: 15px 0;
+    font-size: 18px;
+    color: #fff;
+}
+.void-btn i {
+	margin-left: 10px;
+}
+.receipt-btn4 .btn:nth-child(3n+3) {
+	margin-right: 0;
+}
+.clear-input-btn {
+	background: #f36f21;
+}
+.clear-input-btn:hover {
+	background: #ff5500;
+}
+
+
+/*footer */
+.footer {
+	margin: 30px 0 10px;
+}
+.footer img {
+	width: 150px;
+}
+@media (max-width: 992px) {
+
+	.swiper-button-prev,
+	.swiper-container-rtl .swiper-button-next {
+		left: 0;
+	}
+
+	.swiper-button-next,
+	.swiper-container-rtl .swiper-button-prev {
+		right: 0
+	}
+	.sub-page {
+		padding-bottom: 0;
+	}
+
+	.new-staff-form input,
+	.new-staff-form select {
+		width: 100%;
+	}
+	.table td {
+		font-size: 10px;
+	}
+	/*--------------------------------------------
+	payment 
+	-------------------------------------------*/
+	.receipt .cmn-ttl2 h3 {
+	    padding: 7px 0;
+	    font-size: 9px;
+	}
+	.receipt-btn .btn {
+		width: 40px;
+	    font-size: 14px;
+	}
+	.receipt-table {
+	    margin-bottom: 20px;
+	}
+	.receipt-ttl {
+		width: auto;
+		font-size: 13px;
+	}
+	.receipt-btn02 .btn {
+	    width: 100%;
+	    padding: 5px 0;
+	    font-size: 10px;
+	}
+	.receipt-table {
+	    margin-bottom: 20px;
+	}	
+	.tab-content {
+	    margin: 10px 0;
+	    padding: 10px 15px 10px;
+	}
+	.receipt-txt {
+		font-size: 8px;
+	}
+	.tab-pane .money {
+	    font-size: 16px;
+	}
+	.tab-pane button span {
+	    font-size: 9px;
+	}
+	.receipt-btn3 .btn {
+	    width: 17.7%;
+	    margin: 0 1.9% 2% 0;
+	    font-size: 32px;
+	}
+	.receipt-btn4 .btn {
+	    width: 31.2%;
+	    margin-right: 2%;
+	    padding: 15px 0;
+	    font-size: 12px;
+	    color: #fff;
+	}
+
+
+
+	/*--------------------------------------------
+	food order list 
+	-------------------------------------------*/
+	.food-status {
+		margin-bottom: 15px;
+	}
+	.order-num {
+	    padding: 7px 10px;
+	    font-size: 12px;
+	    line-height: 1.4;
+	}	
+	.ordernum-list .btn {
+		width: 42%;
+	    font-size: 20px;
+	}
+	.table-num {
+		font-size: 14px;
+	}
+}
+
+
+@media (max-width: 768px) {
+
+	.item-calendar {
+		margin-bottom: 25px;
+	}
+	/*--------------------------------------------
+	payment 
+	-------------------------------------------*/
+	.receipt-table td {
+	    padding: 3px 5px;
+    	font-size: 9px;
+	}
+	.bg-gray {
+		font-size: 8px;
+	}
+	.bg-gray {
+		font-size: 8px!important;
+	}
+	.receipt-ttl {
+	    font-size: 10px;
+	    padding: 2px 5px;
+    	border-top-left-radius: 2px;
+    	border-top-right-radius: 2px;
+	}
+	.receipt-btn02 .btn {
+	    font-size: 8px;
+	}
+	.receipt-btn3 .btn {
+	    width: 17.4%;
+	}
+	.receipt-btn4 .btn {
+	    padding: 7px 0;
+	}
+}
+@media (max-width: 576px) {
+	/*--------------------------------------------
+	payment 
+	-------------------------------------------*/
+	.receipt-table {
+	    margin-bottom: 70px;
+	}
+	.receipt-table td {
+	    padding: 9px 5px;
+	    font-size: 12px;
+	}
+	.receipt-ttl {
+	    font-size: 14px;
+	    padding: 7px 5px;
+	}
+	.bg-gray {
+	    font-size: 12px!important;
+	}
+	.receipt-type {
+	    height: 35px;
+	}
+	.list-group-item-action ,
+	.list-group-item-action:nth-child(5n+5) {
+	    width: 47%;
+	    margin: 0 3% 10px 0;
+	    font-size: 12px;
+	}
+	.list-group-item-action:nth-child(2n+2) {
+		margin-right: 0;
+	}
+	.tab-pane button ,
+	.tab-pane button:nth-child(5n+5) {
+	    width: 30%;
+	    margin: 0 3% 2% 0;
+	}
+	.tab-pane button:nth-child(3n+3) {
+		margin-right: 0;
+	}
+	.receipt-btn3 .btn ,
+	.receipt-btn3 .btn:nth-child(5n+5) {
+	    width: 30%;
+	    margin-right: 1.9%;
+	}
+	.receipt-btn4 .btn {
+	    width: 100%;
+	    margin-bottom: 10px;
+	}
+	.receipt-btn3 .btn {
+	    font-size: 25px;
+	}
+}

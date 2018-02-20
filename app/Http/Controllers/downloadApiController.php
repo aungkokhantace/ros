@@ -60,7 +60,7 @@ class downloadAPIController extends ApiGuardController
         $result = array();
 
         if($key == $activate_key){
-        	$voucher = DB::select('SELECT id,take_id,order_time,total_extra_price,total_discount_amount,total_price ,all_total_amount,status FROM `order` WHERE status = 1');
+        	$voucher = DB::select('SELECT id,user_id,take_id,order_time,total_extra_price,total_discount_amount,total_price ,all_total_amount,status FROM `order` WHERE status = 1');
         	$result   = $voucher;
         
         	$tables = DB::select('SELECT order_id,table_id FROM order_tables');
