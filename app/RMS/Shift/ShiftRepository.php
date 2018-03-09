@@ -64,6 +64,13 @@ class ShiftRepository implements ShiftRepositoryInterface
         return $userArr;
     }
 
+    public function Shift_edit($id){
+        $shifts =DB::table('shift')->find($id);
+
+        return $shifts;
+    }
+
+
     public function store($paramObj)
     {
         $returnedObj = array();

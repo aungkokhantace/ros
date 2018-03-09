@@ -34,7 +34,7 @@ class DashboardController extends Controller
         ->whereMonth('order_time','=',date('m'))->whereYear('order_time','=',date('Y'))
         ->where('status',$order_paid_status)->limit(7)->orderBy('date','desc')->get();    
         
-        return view('cashier.dashboard.dashboard')->with('member',$member)
+        return view('Backend.dashboard.dashboard')->with('member',$member)
             ->with('set',$set)->with('item',$item)->with('category',$category)->with('orders',$orders)
             ->with('daily_order',$daily_order);
     }

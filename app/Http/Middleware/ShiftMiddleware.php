@@ -16,6 +16,7 @@ class ShiftMiddleware
 
         $role_id = Auth::guard($guard)->user()->role_id;
         $role    = Permission::select('module_id')->where('role_id','=',$role_id)->get();
+        
         foreach($role as $r){
             $array[] = $r->module_id;
         }
@@ -23,7 +24,7 @@ class ShiftMiddleware
            return $next( $request );
         }else{
             //return response('Unauthorized',401);
-            return redirect('Cashier/Unauthorized');
+            return redirect('Backend/Unauthorized');
         }
     }
 }

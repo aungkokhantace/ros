@@ -1,8 +1,11 @@
-@extends('cashier.layouts.kitchen.master')
+@extends('Backend.layouts.kitchen.master')
 @section('title','Order View')
 @section('content')
     {{--title--}}
-   <div class="container">
+   <div class="content-wrapper">
+   
+       <div class="box-header">
+    <div class="row">
       {{--Order Listing Table--}}
         <div class="container" id="divAuto" style="cursor: pointer;">
             <div class="row">
@@ -10,7 +13,7 @@
                     <div class="row" id="autoDiv2">
                     @foreach($orders as $orderKey=>$orderValue)
                         @if(isset($orderValue->items) && count($orderValue->items) > 0)
-                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mgr-b20">
+                        <div class="col-lg-5 col-md-6 col-sm-6 col-xs-12 mgr-b20">
                             <h3 class="pricing-title @if (count($orderValue->items) > 1) {{ 'down-arrow' }} @endif ">Order No. <span>{{ $orderValue->id }}</span></h3>
                             <div class="table-wrapper order-tb">
                                 <div class="table-box table-responsive">
@@ -158,13 +161,15 @@
                                             </td>
                                         </tr>
                                         <tr>
+
                                             <td>&nbsp;</td>
                                         </tr>
                                         <tr>
                                             <td>&nbsp;</td>
                                         </tr>
                                         <tr>
-                                            <td></td>
+                                            <td> <hr></td>
+                                            <td><hr></td>
                                         </tr>
 
                                     @endforeach

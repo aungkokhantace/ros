@@ -38,7 +38,7 @@ class UserController extends Controller
         $roles      = $this->userRepository->getRoles();
         $kitchens   = $this->userRepository->getKitchens();
         $cur_time   = Carbon::now();
-        return view('cashier.user.UserList')->with('users', $users)
+        return view('Backend.user.UserList')->with('users', $users)
             ->with('roles', $roles)->with('cur_time', $cur_time)
             ->with('kitchens',$kitchens);
     }

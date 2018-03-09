@@ -1,0 +1,55 @@
+
+
+
+.data_table{
+	width:100px;
+}
+.data_table_name{
+	width:150px;
+}
+.list_edit{
+	padding-top:23px;
+}
+.h3-font{
+	margin-left:15px;
+}
+.description_staff{
+	margin-top:15px!important;
+}
+.logo.ace{
+	padding-top:8px;
+}
+.print-invoice tr td{
+   
+   padding: 10px 10px;
+} 
+.print-invoice thead tr td {
+	background: #f4f9f9;
+	padding:4px ;
+}
+.thumbnail{
+    box-shadow: 7px 7px 4px #a8b1b5;
+}
+.logo-image{
+	margin-left: 0;
+}
+.ros-logo-backend{
+	width:121px;
+	height:51px;
+	margin-top:7px;
+}
+.btn-logout{
+	margin-button:20px !important;
+}
+form{
+   margin-top:30px !important;
+}
+#form{
+	margin-left:20px;
+}
+
+
+.dashboard_shadow{
+
+	 box-shadow: 5px 10px 18px #888888;
+}

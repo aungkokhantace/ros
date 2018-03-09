@@ -15,8 +15,9 @@
     <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/bootstrap-timepicker/css/bootstrap-timepicker.css">
     <link media="all" type="text/css" rel="stylesheet" href="/assets/css/fullcalendar.css">
 
-   
-    <link href="/assets/mystyle/style.css" rel="stylesheet">
+   <link href="/assets/mystyle/style.css" rel="stylesheet">
+    <link href="/assets/css/AdminLTE.css" rel="stylesheet">
+     <link href="/assets/mystyle/style.css" rel="stylesheet">
     <link href="/assets/css/AdminLTE.css" rel="stylesheet">
     <link href="/assets/css/sweetalert.css" rel="stylesheet">
     <link href="/assets/css/multiple-select.css" rel="stylesheet">

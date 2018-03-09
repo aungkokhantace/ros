@@ -23,7 +23,7 @@ class LogMiddleware
            return $next( $request );
         }else{
             //return response('Unauthorized',401);
-            return redirect('Cashier/Unauthorized');
+            return redirect('Backend/Unauthorized');
         }
     }
 }
