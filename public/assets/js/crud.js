@@ -600,7 +600,7 @@ function Booking_Delete() {
         else{
             swal({   title: "Are you sure?",
                     text: "You will not be able to recover this record!",
-                    type: "warning",
+                    type: "info",
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55 ",
                     confirmButtonText: "Confirm",

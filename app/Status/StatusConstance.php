@@ -83,6 +83,7 @@ class StatusConstance
 
     //Day Start Status
     const DAY_START_STATUS                      = 1;//Day Start Status
+    const DAY_STARTING_STATUS                   = 2;//Day Starting Status
     const DAY_END_STATUS                        = 0;//Day End Status
 
     //Shift Status

@@ -92,36 +92,41 @@ class DayStartController extends Controller
         return view('cashier.daystart.daystart',compact('today','cur_date'));
     }
 
-    public function store(DayStartInsertRequest $request)
+    public function store(Request $request)
     {
-        $start_date                 = Input::get('start_date');
-        $date                       = Carbon::parse($start_date)->format('Y-m-d');
-        $year                       = Carbon::parse($start_date)->format('Y');
-        $month                      = Carbon::parse($start_date)->format('m');
-        $day                        = Carbon::parse($start_date)->format('d');
-        $status                     = StatusConstance::DAY_START_STATUS;
-        $day_code                   = "DC_" . $year . $month . $day;
+        try {
+            $start_date                 = Input::get('start_date');
+            $status                     = Input::get('status');
+            $date                       = Carbon::parse($start_date)->format('Y-m-d');
+            $year                       = Carbon::parse($start_date)->format('Y');
+            $month                      = Carbon::parse($start_date)->format('m');
+            $day                        = Carbon::parse($start_date)->format('d');
+            $day_code                   = "DC_" . $year . $month . $day;
 
-        $paramObj                   = new DayStart();
-        $paramObj->day_code         = $day_code;
-        $paramObj->start_date       = $date;
-        $paramObj->status           = $status;
-        $result                     = $this->dayStartRepository->store($paramObj);
+            $paramObj                   = new DayStart();
+            $paramObj->day_code         = $day_code;
+            $paramObj->start_date       = $date;
+            $paramObj->status           = $status;
+            $result                     = $this->dayStartRepository->store($paramObj);
 
-        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-            return redirect()->action('Cashier\DayStart\DayStartController@index')
-                ->withMessage(FormatGenerator::message('Success', 'Day Start created ...'));
-        }
-        else{
-            return redirect()->action('Cashier\DayStart\DayStartController@index')
-                ->withMessage(FormatGenerator::message('Fail', 'Day Start did not create ...'));
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                $data       = array('success'=>'1','error'=>'0');
+                return \Response::json($data);
+            }
+            else{
+                $data       = array('success'=>'0','error'=>'1');
+                return \Response::json($data);
+            }
+        } catch (\Exception $e){
+            $data       = array('error_msg'=>$e->getMessage());
+            return \Response::json($data);
         }
 
     }
 
-    public function orderShift($daycode,$id,$status) {
+    public function orderShift($day_id,$id,$status) {
         $flag               = 0;
-        $order_shift        = OrderShift::where('day_code','=',$daycode)
+        $order_shift        = OrderShift::where('day_id','=',$day_id)
                             ->where('shift_id','=',$id)
                             ->whereNull('deleted_at')
                             ->first();
@@ -134,7 +139,7 @@ class DayStartController extends Controller
                 $order_status       = StatusConstance::ORDER_CREATE_STATUS;
                 $orders             = Order::select('id','all_total_amount','order_time','status')
                                       ->where('status','=',$order_status)
-                                      ->where('day_code','=',$daycode)
+                                      ->where('day_id','=',$day_id)
                                       ->get();
                 if (count($orders) > 0) {
                     $error_code         = 5;
@@ -143,39 +148,34 @@ class DayStartController extends Controller
                     $order_shift->status        = $status;
                     $result                 = $this->dayStartRepository->update($order_shift);
                     if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                        return redirect()->action('Cashier\DayStart\DayStartController@index')
-                            ->withMessage(FormatGenerator::message('Success', 'Day Start created ...'));
+                        return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Shift updated ...'));
                     }
                     else{
-                        return redirect()->action('Cashier\DayStart\DayStartController@index')
-                            ->withMessage(FormatGenerator::message('Fail', 'Day Start did not create ...'));
+                        return redirect()->back()->withMessage(FormatGenerator::message('Fail', 'Shift did not updated ...'));
                     } 
                 }
             } else {
                 $order_shift->status        = $status;
                 $result                 = $this->dayStartRepository->update($order_shift);
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                    return redirect()->action('Cashier\DayStart\DayStartController@index')
-                        ->withMessage(FormatGenerator::message('Success', 'Day Start created ...'));
+                    return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Shift created ...'));
                 }
                 else{
-                    return redirect()->action('Cashier\DayStart\DayStartController@index')
-                        ->withMessage(FormatGenerator::message('Fail', 'Day Start did not create ...'));
+                    return redirect()->back()->withMessage(FormatGenerator::message('Fail', 'Shift did not created ...'));
                 }
             }
         } else {
             $paramObj               = new OrderShift();
-            $paramObj->day_code     = $daycode;
+            $paramObj->day_id       = $day_id;
             $paramObj->shift_id     = $id;
             $paramObj->status       = $status;
             $result                 = $this->dayStartRepository->store($paramObj);
             if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                return redirect()->action('Cashier\DayStart\DayStartController@index')
-                    ->withMessage(FormatGenerator::message('Success', 'Day Start created ...'));
+                return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Shift created ...'));
             }
             else{
-                return redirect()->action('Cashier\DayStart\DayStartController@index')
-                    ->withMessage(FormatGenerator::message('Fail', 'Day Start did not create ...'));
+                $error_code         = 5;
+                return redirect()->back()->with('error_code',$error_code)->with('orders',$orders);
             }
         }
     }
@@ -183,40 +183,20 @@ class DayStartController extends Controller
     public function dayend($id) {
         $status             = StatusConstance::DAY_END_STATUS;
         //Check All payment have done
+        $shift_status       = StatusConstance::SHIFT_AVAILABLE_STATUS;
+        $shift_ordering     = Shift::where('status',$shift_status)->whereNull('deleted_at')->get()->count();
+        $order_shift        = OrderShift::where('day_id','=',$id)->where('status',2)->whereNull('deleted_at')->get()->count();
 
-        $paramObj           = DayStart::find($id);
-        $day_code           = $paramObj->day_code;
-        $order_status       = StatusConstance::ORDER_CREATE_STATUS;
-        $orders             = Order::select('id','all_total_amount','order_time','status')
-                              ->where('status','=',$order_status)
-                              ->where('day_code','=',$day_code)
-                              ->get();
-        if (count($orders) > 0) {
-            $error_code         = 5;
-            return redirect()->back()->with('error_code',$error_code)->with('orders',$orders);
-        } else {
+        if ($shift_ordering == $order_shift) {
+            $paramObj           = DayStart::find($id);
             $paramObj->status   = $status;
             $result             = $this->dayStartRepository->update($paramObj);
             if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                return redirect()->action('Cashier\DayStart\DayStartController@index')
-                    ->withMessage(FormatGenerator::message('Success', 'Day End created ...'));
+                return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Day End ...'));
             }
-            else{
-                return redirect()->action('Cashier\DayStart\DayStartController@index')
-                    ->withMessage(FormatGenerator::message('Fail', 'Day End did not create ...'));
-            }
-        }
-    }
-
-    public function delete($id)
-    {
-        $new_string = explode(',', $id);
-        
-        foreach($new_string as $id){
-            $this->dayStartRepository->delete($id);
-        }
-
-        return redirect()->action('Cashier\DayStart\DayStartController@index')
-                ->withMessage(FormatGenerator::message('Success', 'Day Start deleted ...'));
+        } else {
+            alert()->warning('You need to end all shift!')->persistent('Close');
+            return redirect()->back();
+        }   
     }
 }

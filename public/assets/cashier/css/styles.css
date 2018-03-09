@@ -138,6 +138,14 @@ img {
     color: #F36F21;
     font-size: 45px;
 }
+.shift-name {
+	display: block;
+    /*padding: 20px 0;*/
+    min-height: 81px;
+    line-height: 90px;
+    color: #F36F21;
+    font-size: 25px;
+}
 .day-st-btn {
 	width: 100%;
 	background: #4990e2;
@@ -416,11 +424,22 @@ invoice-list
 	width: 85px;
 	padding: 3px 0;
 	text-align: center;
+	font-size:12px !important;
 }
 .print-btn {
-	width: 50px;
+	width: 55px;
+	height: 24px;
 	color: #000;
-	background: #d0d0d0;
+	background-color: : #D0D0D0;
+	background-image: url("../images/dashboard/print.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.pagination-container {
+	margin: 0 auto;
+}
+.pageNumbers {
+	display: none !important;
 }
 .detail-btn {
 	background: #F07022;
@@ -639,38 +658,38 @@ new staff
 }
  .receipt-type {
  	height: 45px;
- 	background: url(../../assets/images/payment/card.png) no-repeat center;
+ 	background: url(../images/payment/card.png) no-repeat center;
     display: block;
  }
  .cash-img {
- 	background: url(../../assets/images/payment/cash.png) no-repeat center;
+ 	background: url(../images/payment/cash.png) no-repeat center;
  }
  .card-img {
- 	background: url(../../assets/images/payment/card.png) no-repeat center;
+ 	background: url(../images/payment/card.png) no-repeat center;
  }
  .voucher-img {
- 	background: url(../../assets/images/payment/voucher.png) no-repeat center;
+ 	background: url(../images/payment/voucher.png) no-repeat center;
  }
  .collection-img {
- 	background: url(../../assets/images/payment/collection.png) no-repeat center;
+ 	background: url(../images/payment/collection.png) no-repeat center;
  }
  .loyality-img {
- 	background: url(../../assets/images/payment/loyality.png) no-repeat center;
+ 	background: url(../images/payment/loyality.png) no-repeat center;
  }
  .list-group-item-action.active .cash-img {
- 	background: url(../../assets/images/payment/cash_active.png) no-repeat center;
+ 	background: url(../images/payment/cash_active.png) no-repeat center;
  }
  .list-group-item-action.active .card-img {
- 	background: url(../../assets/images/payment/card_active.png) no-repeat center;
+ 	background: url(../images/payment/card_active.png) no-repeat center;
  }
  .list-group-item-action.active .voucher-img {
- 	background: url(../../assets/images/payment/voucher_active.png) no-repeat center;
+ 	background: url(../images/payment/voucher_active.png) no-repeat center;
  }
  .list-group-item-action.active .collection-img {
- 	background: url(../../assets/images/payment/collection_active.png) no-repeat center;
+ 	background: url(../images/payment/collection_active.png) no-repeat center;
  }
  .list-group-item-action.active .loyality-img {
- 	background: url(../../assets/images/payment/loyality_active.png) no-repeat center;
+ 	background: url(../images/payment/loyality_active.png) no-repeat center;
  }
  .tab-pane button {
  	width: 18%;
@@ -699,7 +718,7 @@ new staff
 }
 .extra-cash {
  	height: 45px;
- 	background: url(../../assets/images/payment/extra_cash.png) no-repeat center;
+ 	background: url(../images/payment/extra_cash.png) no-repeat center;
     display: block;	
 }
 .payment-cal {
@@ -752,6 +771,105 @@ new staff
 .footer img {
 	width: 150px;
 }
+
+/* modal */
+
+.modal {
+    background: rgba(0,0,0,0.3);
+}
+.modal-content {
+    border-radius: 0;
+    -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.125);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.125);
+    border: 0;
+}
+.modal-header, .modal-info {
+    background-color: #77ACE9 !important;
+}
+.modal-header .close {
+    margin-top: -2px !important;
+}
+button.close {
+    padding: 0 !important;
+    cursor: pointer !important;
+    background: 0 0 !important;
+    border: 0 !important;
+}
+.close {
+    float: right !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    color: #000 !important;
+    text-shadow: 0 1px 0 #fff !important;
+    filter: alpha(opacity=20) !important;
+    opacity: .2 !important;
+}
+.modal-title {
+    margin: 0;
+    line-height: 1.42857143;
+    font-size: 18px;
+    color: #fff;
+}
+.modal-body {
+    background-color: #F4F4F4 !important;
+}
+.print-invoice {
+	width: 100%;
+	background-color: #F8F9FA;
+}
+.modal-footer {
+	background-color: #77ACE9;
+}
+.btn-outline {
+    border: 1px solid #fff;
+    background: transparent;
+    color: #fff;
+}
+#adm-user, #adm-pass {
+	font-size: 12px;
+}
+.confirm {
+	color: #ffffff;
+}
+.invoice-wrapper {
+    width: 400px;
+    margin: 0 auto;
+}
+.invoice-title {
+    background: #77ACE9;
+    height: 50px;
+    color: #ffffff;
+    line-height: 50px;
+}
+.invoice-title {
+    margin-top: 0;
+}
+.mg-20 {
+	margin-bottom: 20px;
+}
+/*
+.invoice-table-wrapper {
+    border: 1px solid #E8E8E8;
+    border-top: 0px;
+    padding: 0px 10px;
+}
+.print-invoice {
+    border-collapse: collapse;
+    margin: 0 auto;
+    background:none;
+}
+.print-invoice {
+    width: 100% !important;
+    font-size: 12px;
+    line-height: 30px !important;
+}
+.td-config {
+    text-align: center;
+    font-size: 13px;
+    line-height: 25px;
+}*/
+/* modal end */
 @media (max-width: 992px) {
 
 	.swiper-button-prev,

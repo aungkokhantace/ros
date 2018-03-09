@@ -18,6 +18,7 @@ use App\RMS\Category\Category;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\Payment\Payment;
 use App\RMS\Item\Continent;
+use App\RMS\DayStart\DayStart;
 use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
@@ -26,11 +27,20 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	{
 		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$session_status       = StatusConstance::DAY_STARTING_STATUS;
+        $daystart             = DayStart::select('id')
+                              ->where('status',$session_status)
+                              ->whereNull('deleted_at')
+                              ->first();
+        $day_id 			  = '';
+        if (count($daystart) > 0) {
+        	$day_id 			  = $daystart->id;
+        }
 		// $orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `refund`,`created_at`,`total_discount_amount`,`payment_amount`,`status`,`room_charge`
 		// from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `order_time` desc");
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
-					->whereDate('created_at','=',date('Y-m-d'))
+					->where('day_id','=',$day_id)
 					->whereNull('deleted_at')
 					->get();
 		return $orders;

@@ -84,19 +84,19 @@ class MakeAPIController extends ApiGuardController
                         $r = $role->roles->name;
                         if ($r == "Waiter") {
                             //Check User has Assign for day start
-                            $day_status     = StatusConstance::DAY_START_STATUS;
+                            $day_status     = StatusConstance::DAY_STARTING_STATUS;
                             $shift_status   = StatusConstance::ORDER_SHIFT_START_STATUS;
                             $user_status    = StatusConstance::SHIFT_USER_AVAILABLE_STATUS;
-                            $dayStart = DayStart::leftjoin('order_shift','order_day.day_code','=','order_shift.day_code')
+                            $dayStart = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
                                         ->leftjoin('shift_user','shift_user.shift_id','=','order_shift.shift_id')
-                                        ->select('order_day.day_code','order_shift.shift_id')
+                                        ->select('order_day.id as day_id','order_shift.shift_id')
                                         ->where('order_day.status','=',$day_status)
                                         ->where('order_shift.status','=',$shift_status)
                                         ->where('shift_user.user_id','=',$id)
                                         ->where('shift_user.status','=',$user_status)
                                         ->first();
                             if (count($dayStart) > 0) {
-                                $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"daycode"=>$dayStart->day_code,"shift_id"=>$dayStart->shift_id);
+                                $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"day_id"=>$dayStart->day_id,"shift_id"=>$dayStart->shift_id);
                                 return Response::json($output);
                             } else {
                                 $output = array("message" => "Day does not start");
@@ -193,7 +193,8 @@ class MakeAPIController extends ApiGuardController
             $order_rooms            = $order->order_room;
             $order_details          = $order->order_detail;
             $order_status           = $order->order_status;
-            $day_code               = $order->daycode;
+            $day_id                 = $order->day_id;
+            $shift_id               = $order->shift_id;
             $tablet_id              = $order->tablet_id;
         }
         $order                          = new Order();
@@ -209,7 +210,8 @@ class MakeAPIController extends ApiGuardController
         $order->tax_amount              = $tax_amount;
         $order->all_total_amount        = $all_total_amount;
         $order->tablet_id               = $tablet_id;
-        $order->day_code                = $day_code;
+        $order->day_id                  = $day_id;
+        $order->shift_id                = $shift_id;
         $order->status                  = $order_status;
         
         $order->save();

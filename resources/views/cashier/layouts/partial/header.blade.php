@@ -8,90 +8,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>RMS - @yield('title')</title>{{--// yield(title) is for only title--}}
-    <link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon">
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/bootstrap-datepicker/css/datepicker3.css">
-    <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/bootstrap-timepicker/css/bootstrap-timepicker.css">
-    <link media="all" type="text/css" rel="stylesheet" href="/assets/css/fullcalendar.css">
 
-   
-    <link href="/assets/mystyle/style.css" rel="stylesheet">
-    <link href="/assets/css/AdminLTE.css" rel="stylesheet">
+    <title>RMS - @yield('title')</title>
+    <link rel="stylesheet" type="text/css" href="/assets/cashier/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/cashier/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/cashier/css/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/cashier/bootstrap/font-awesome/css/font-awesome.css" />
     <link href="/assets/css/sweetalert.css" rel="stylesheet">
-    <link href="/assets/css/multiple-select.css" rel="stylesheet">
-    <link href="/assets/css/jktCuteDropdown.css" refl="stylesheet">
-    
-    <link href="/assets/js/datatables/dataTables.bootstrap.css" rel="stylesheet">
-
-    <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css">
-    <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/font-awesome/css/font-awesome.min.css">
-    <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/ionicons/css/ionicons.min.css">
     <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/gritter/css/jquery.gritter.css">
-
-    <script src="/assets/js/jquery.js"></script>
-    <script src="/assets/js/jquery-2.1.4.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js"></script>
-    <script src="/assets/plugins/jquery/jquery-migrate-1.1.0.min.js"></script>
-    <script src="/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js"></script>
-    <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/assets/plugins/jquery-cookie/jquery.cookie.js"></script>
-    <!-- <script src="/assets/js/table-manage-tabletools.demo.min.js"></script> -->
+    <link href="/assets/js/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <script src="/assets/cashier/bootstrap/js/jquery-2.2.4.min.js"></script>
+    <script src="/assets/cashier/bootstrap/js/popper.min.js"></script>
+    <script src="/assets/cashier/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/cashier/bootstrap/js/heightLine.js"></script>
+    <script src="/assets/cashier/js/swiper.min.js"></script>
+    <script src="/assets/js/sweetalert-dev.js"></script>
     <script src="/assets/plugins/gritter/js/jquery.gritter.js"></script>
-    <script src="/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-    <script src="/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
-    <script src="/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-    <script src="/assets/js/czMore/js/jquery.czMore-1.5.3.2.js"></script>
+    <script src="/assets/js/datatables/jquery.dataTables.min.js"></script>
+    <script src="/assets/js/datatables/dataTables.bootstrap.js"></script>
+    <script type="text/javascript" src="/assets/cashier/js/paginathing.js"></script>
+    <script type="text/javascript" src="/assets/js/crud.js"></script>
     <script>
+        var swiper = new Swiper('.swiper-container', {
+          spaceBetween: 30,
+          centeredSlides: true,
+          /*autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+          },*/
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+    </script>
+
+    <script>
+        function addNotification(title, text){
+            $.gritter.add({
+                title: title,
+                text: text,
+                time: 3000
+            });
+            return false;
+        };
+
         $(document).ready(function() {
             //check for notification
             //TableManageTableTools.init();
             @if(Session::has('message'))
-                    var message_title = "{{Session::get('message')['title']}}";
-            var message_body = "{{Session::get('message')['body']}}";
-            setTimeout(addNotification(message_title, message_body), 5000);
+                var message_title = "{{Session::get('message')['title']}}";
+                var message_body = "{{Session::get('message')['body']}}";
+                setTimeout(addNotification(message_title, message_body), 5000);
             @endif
 
             //set time out for the flash message..
             setTimeout(function(){
                 $('#flash-message').hide("slow");
             }, 2000);
+
+            //For Pagination Table
+            $('#table-pagination tbody').paginathing({
+              perPage: 10,
+              insertAfter: '.table',
+              pageNumbers: true
+            });
         });
     </script>
-    <!-- {!! Html::script('node_modules/socket.io/node_modules/socket.io-client/socket.io.js') !!} -->
     {!! Html::script('node_modules/socket.io-client/dist/socket.io.js') !!}
     {!! Html::script('/assets/js/socket-io/socket_functions.js') !!}
+
 </head>
-
 <body>
-<div class="row header">
-    <div class="container">
-        <div class="row head_row">
-            <div class="col-md-2 logo_container">
-                {{--@if($headerData->logo != "")--}}
-                @if($headerData != "")
-                    @if($headerData->logo != "")
-                        <img id="filename" class="bottom image header_logo" src="/uploads/{{$headerData->logo}}">
-                    @else
-                        <img id="filename" class="bottom image header_logo" src="assets/images/acepluslogo.png" style="height: 60px; margin-top:30px;">
-                    @endif
-                @else
-                    <img id="filename" class="bottom image header_logo" src="assets/images/acepluslogo.png" style="height: 60px; margin-top:30px;">
-                @endif
+    <div class="wrapper">   
+        @if(count(Session::get('message')) != 0)
+            <div ></div>
+        @endif
+        <div class="header-sec">   
+            <div class="container">   
+                <div class="row"> 
+                    <div class="col-md-4 col-4 heightLine_01 head-lbox">
+                        <div>  
+                            <a class="btn btn-large dash-btn" href="/Cashier/Dashboard">Dashboard</a>
+                        </div>
+                    </div>  
+                    <div class="col-md-4 col-4 heightLine_01">
+                        <img src="/assets/cashier/images/ros_logo.png" alt="ROS logo" class="ros-logo">
+                    </div>  
+                    <div class="col-md-4 col-4 heightLine_01 head-rbox">
+                        <div>   
+                            <span class="staff-name">
+                                @if (Auth::guard('Cashier')->user())
+                                    {{Auth::guard('Cashier')->user()->user_name }}
+                                @endif
+                            </span>
+                            <div class="dropdown show pull-right">
+                              <button role="button" id="dropdownMenuLink" class="btn btn-primary user-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="/assets/cashier/images/login_img.png" alt="login image">
+                              </button>
+                              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="/Cashier/logout">Logout</a>
+                              </div>
+                            </div> 
+                        </div>
+                    </div>  
+                </div>
             </div>
-            <div class="col-md-6">
-                <h1 class="header-title"><b>Restaurant</b> Ordering System</h1>
-            </div>
-            <div class="col-md-4 logout">
-                @if (Auth::guard('Cashier')->user())
-                    {{Auth::guard('Cashier')->user()->user_name . " (" . Auth::guard('Cashier')->user()->roles->name . ")" }}
-                @endif
-                <a href="/Cashier/updateDataBeforeLogout" class="logout-font">
-                    <span class="glyphicon glyphicon-user"></span> <span class="logout">Logout</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+        </div><!-- header-sec -->
 
+        

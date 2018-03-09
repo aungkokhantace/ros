@@ -3,16 +3,11 @@
     <div class="modal-dialog" role="document" style="width:330px;">
     <div class="modal-content">
         <div class="modal-header">
-        <div class="bootstrap-dialog-header">
-            <div class="bootstrap-dialog-close-button" style="display: block;">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
-            </div>
-            <div class="bootstrap-dialog-title" id="294d853f-691f-4de9-967c-d66fd0adfb69_title">Items</div>
-        </div>
+            <h4 class="modal-title">Items</h4>
         </div>
         <div class="modal-body" id="order-id">
             <div id="{{$order->order_id}}-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
-                <table class="print-invoice" style="border-collapse: collapse;width:75mm;margin:0 auto;">
+                <table class="print-invoice" style="border-collapse: collapse;margin:0 auto;">
                     <thead>
 
                         <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
@@ -100,11 +95,10 @@
                     </tbody>
                 </table>
             </div>
+        </div>
 
-            <div class="spacer-10px"></div>
-            <div align="center">
-	            <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-lg">Close</button>
-	        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
         </div>
     </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
