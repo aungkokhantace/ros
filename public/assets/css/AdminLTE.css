@@ -4936,7 +4936,7 @@ ul {
 }
 
 a {
-	color: #e95846;
+	color: #3c8dbc;
 	text-decoration: none;
 }
 
@@ -4985,13 +4985,14 @@ a {
 .pricing-title {
 	color: #FFF;
   /*background: #e95846;*/
-	background: #F57020;
+	background: #469e6b;
 	/*padding: 10px 0;*/
   padding: 10px 0 10px 25px;
 	font-size: 20px;
 	text-transform: uppercase;
 	text-shadow: 0 1px 1px rgba(0,0,0,0.4);
   margin: 0;
+  box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19) !important;
 }
 .pricing-title span {
   font-weight: bold;
@@ -5034,6 +5035,8 @@ a {
   height:300px !important;
   overflow-y:auto !important;
   overflow-x: hidden;
+  border: 3px solid #00a76e;
+  box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19) !important;
 }
 .table-buy {
 	padding: 15px;

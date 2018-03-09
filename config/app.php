@@ -165,6 +165,7 @@ return [
         Chrisbjr\ApiGuard\Providers\ApiGuardServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
+        
     ],
 
     /*

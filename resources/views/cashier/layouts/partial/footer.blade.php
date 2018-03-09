@@ -2,7 +2,6 @@
 <div id="footer">
     <p class="footer-status">&copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/">
             AcePlus Solutions.,Co Ltd</a></p>
-    <p class="text-danger text-right">Git Version {!! gitVersion() !!}</p>
 </div>
 <!-- End Footer -->
 {{--<script src="/assets/js/bootstrap.min.js"></script>
@@ -39,11 +38,11 @@
     };
     $(document).ready(function(){
         var t = $('#example1').DataTable( {
-            "ordering":true,
+            "ordering":false,
             "columnDefs": [ {
-                "searchable": true,
-                "orderable": false,
-                "targets": 0
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
             } ],
             "order": [[ 1, 'asc' ]]
         } );
@@ -52,28 +51,16 @@
             t.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
                 cell.innerHTML = i+1;
             } );
-        } ).draw();
-        // $('#example1').DataTable();
-        $('#invoice').DataTable({
-            "ordering":false,
-            "columnDefs": [ {
-                "searchable": true,
-                "orderable": false,
-                "targets": 0
-            } ],
-        } );
+        } ).draw(); 
 
-        $('#unpaid-invoice').DataTable({
-            "bFilter": false,
-            "bInfo": false,
-            "lengthChange": false,
+        $('#invoice').DataTable( {
             "ordering":false,
-            "paging": false,
             "columnDefs": [ {
                 "searchable": false,
                 "orderable": false,
                 "targets": 0
             } ],
+            "order": [[ 1, 'asc' ]]
         } );
 
 
@@ -138,6 +125,5 @@
     });
     });
 </script>
-<script src="/assets/js/multi-row.js"></script>
 
 </body>

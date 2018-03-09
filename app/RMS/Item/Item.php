@@ -24,6 +24,11 @@ class Item extends Model
         return $this->hasMany('App\RMS\Discount\DiscountModel');
     }
 
+    public  function discountLog()
+    {
+        return $this->hasMany('App\RMS\Discount\DiscountLog');
+    }
+
     public function favourite()
     {
         return $this->hasMany('App\RMS\Favourite\Favourite');

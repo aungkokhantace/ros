@@ -80,9 +80,10 @@ function discount_check(value)
             $('.place_for_text').html('Loading please wait ...');
 
             // Set request
-            var request = $.get('/Cashier/prices/'+$id);
+            var request = $.get('/Backend/prices/'+$id);
 
             // When it's done
+            console.log(request);
             request.done(function(response) {
                 $('.place_for_text').html('The old amount for this item is ...'+response);
                 $data=response;

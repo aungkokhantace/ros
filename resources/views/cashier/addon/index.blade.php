@@ -1,8 +1,10 @@
-@extends('cashier/layouts.master')
+@extends('Backend.layouts.master')
 @section('title','Add-on Listing')
 @section('content')
 
-    <div class="container">
+    <div class="content-wrapper">
+      <div class="box">
+       <div class="box-header">
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-3">
@@ -11,6 +13,8 @@
                         <div ></div>
                     @endif
                 </div>
+              </div>
+            </div>
                 <div class="col-md-9">
                     <div class="buttons">
                         <button name="create category" type="button" class="btn btn-default btn-md first_btn" onclick="extra_create();">

@@ -11,7 +11,7 @@ function enable(){
             sweetAlert("Oops...", "Please select at least one item to enable!", "error");
         }
         else{
-            window.location = "/Cashier/Item/item_enabled/" + data;
+            window.location = "/Backend/Item/item_enabled/" + data;
     }
 }
 
@@ -28,7 +28,7 @@ function disable(){
             sweetAlert("Oops...", "Please select at least one item to disable!", "error");
         }
         else{
-            window.location = "/Cashier/Item/item_disabled/" + data;
+            window.location = "/Backend/Item/item_disabled/" + data;
     }
 }
 

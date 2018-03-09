@@ -31,7 +31,7 @@ class RoleController extends Controller
         $roles          = $this->roleRepository->getRoles();
         $permissions     = $this->roleRepository->getPermissionWithModules();
 
-        return view('cashier.user.Staff_Type_List')->with('roles', $roles)->with('permissions',$permissions);
+        return view('Backend.user.Staff_Type_List')->with('roles', $roles)->with('permissions',$permissions);
     }
 
     public function create(){
