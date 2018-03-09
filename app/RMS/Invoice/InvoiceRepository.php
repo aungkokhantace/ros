@@ -40,11 +40,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		// from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `order_time` desc");
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
-<<<<<<< HEAD
-					// ->whereDate('created_at','=',date('Y-m-d'))
-=======
 					->where('day_id','=',$day_id)
->>>>>>> theodore
 					->whereNull('deleted_at')
 					->get();
 		return $orders;
