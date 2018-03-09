@@ -140,7 +140,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->take($number)
                 ->get();
         }
-
+        
         return $orders;
     }
     //END

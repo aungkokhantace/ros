@@ -269,12 +269,46 @@ class TransactionTendersController extends Controller
         $flag                   = $this->tender_repository->getOrderStatus($order_id);
         if ($flag == StatusConstance::ORDER_CREATE_STATUS) {
             $paramObj               = Order::find($order_id);
-            $paramObj->foc_amount   = $amount;
+            //Old amount to update new
+            $old_foc                = $paramObj->foc_amount;
+            $foc_amount             = $old_foc + $amount;
+            $paramObj->foc_amount   = $foc_amount;
             $result                 = $this->tender_repository->update($paramObj);
             if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                 $order_foc              = $paramObj->foc_amount;
                 $order_total            = $paramObj->all_total_amount;
                 $order_payment          = $order_total - $order_foc;
+                $invoice            = $this->tender_repository->getTenderByOrder($order_id,$order_payment);
+                $invoice            = json_encode($invoice);
+                $response               = array(
+                                            'message'=>'success',
+                                            'invoice'=>$invoice,
+                                            'foc'=>$order_foc
+                                            );
+                return \Response::json(($response));
+            }
+            else{
+                $response               = array('message'=>'fail');
+                return \Response::json(($response));
+            } 
+        } else {
+            $response               = array('message'=>'paid');
+            return \Response::json(($response));
+        }
+
+    }
+
+    public function deleteFoc(Request $request) {
+        $order_id               = Input::get('order_id');
+        $flag                   = $this->tender_repository->getOrderStatus($order_id);
+        if ($flag == StatusConstance::ORDER_CREATE_STATUS) {
+            $paramObj               = Order::find($order_id);
+            //Old amount to update new
+            $paramObj->foc_amount   = null;
+            $result                 = $this->tender_repository->update($paramObj);
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                $order_foc              = $paramObj->foc_amount;
+                $order_payment          = $paramObj->all_total_amount;
                 $invoice            = $this->tender_repository->getTenderByOrder($order_id,$order_payment);
                 $invoice            = json_encode($invoice);
                 $response               = array(
