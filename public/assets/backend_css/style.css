@@ -610,7 +610,7 @@ ul[role='tree'] {
 }
 
 .list-heading-align{
-    margin-left:-13px;
+    margin-left:-1px;
     margin-top:4px;
 }
 /*report*/
@@ -1122,7 +1122,8 @@ order page
 
 }
 .btn-print{
-    padding-right:20px;
+    padding-right:18px;
+    padding-left:17px;
 }
 .tr_right{
     border-right: 1px solid #b1c2cc!important;
