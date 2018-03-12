@@ -213,7 +213,8 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Staff/edit/{id}', 'Backend\Staff\UserController@edit');
             Route::post('Staff/update', 'Backend\Staff\UserController@update');
             Route::get('Staff/delete/{id}', 'Backend\Staff\UserController@delete');
-            
+            Route::get('Staff/active/{id}', 'Backend\Staff\UserController@active');
+            Route::get('Staff/inactive/{id}', 'Backend\Staff\UserController@inactive');
             Route::get('Password/{id}','Backend\Staff\UserController@profile');
             Route::post('Password/Change','Backend\Staff\UserController@updateProfile');
 
