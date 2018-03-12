@@ -6,7 +6,7 @@
        <div class="box-header">
         <div class="row">
             {{--heading title--}}
-           <h3 class="h3-font"><b> {{isset($roles) ?  'Edit Staff Type' : 'Create New StaffType' }}</b></h3>
+           <h3 class="h3-font list-heading-align"><b> {{isset($roles) ?  'Edit Staff Type' : 'Create New StaffType' }}</b></h3>
         {{--check new or edit--}}
         @if(isset($roles))
             {!! Form::open(array('url' => 'Backend/StaffType/update', 'class'=> 'form-horizontal user-form-border', 'id'=>'staffTypeEntry')) !!}

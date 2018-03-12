@@ -6,7 +6,7 @@
        <div class="box-header">
         <div class="row">
          
-        <h3 class="h3-font"><b>{{isset($user) ?  'Edit Staff' : 'Create New Staff' }}</b></h3>
+        <h3 class="h3-font User_list"><b>{{isset($user) ?  'Edit Staff' : 'Create New Staff' }}</b></h3>
 
 
     </div>

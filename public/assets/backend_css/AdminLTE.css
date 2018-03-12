@@ -4976,3 +4976,7 @@ table.text-center th {
     white-space: normal !important;
   }
 }
+
+.User_list{
+  margin-left:23px;
+}
