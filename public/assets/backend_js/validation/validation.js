@@ -1,5 +1,7 @@
 $(document).ready(function() {
-  
+    $.validator.addMethod("needsSelection", function(value, element) {
+        return $(element).multipleSelect("getChecked").length > 0;
+    });
     //For Staff Entry Form
     $('#staffEntryForm').validate({
         rules: {
@@ -270,6 +272,8 @@ $(document).ready(function() {
 
     $('#Category').change(function() {
         console.log($(this).val());
+    }).multipleSelect({
+        width: '100%'
     }).on('change',function(){
         $('#setForm').valid();
     });
@@ -407,6 +411,8 @@ $(document).ready(function() {
     });
     $('#sell_item').change(function() {
         var dd = $('#sell_item').val();
+    }).multipleSelect({
+        width: '100%'
     }).on('change',function(){
         $('#promotion').valid();
     });
@@ -460,12 +466,16 @@ $(document).ready(function() {
 
     $('#booking_table').change(function(){
         //console.log($(this).val());
+    }).multipleSelect({
+        width: '100%'
     }).on('change',function(){
         $('#bookingForm').valid();
     });
 
     $('#booking_room').change(function(){
         //console.log($(this).val());
+    }).multipleSelect({
+        width: '100%'
     }).on('change',function(){
         $('#bookingForm').valid();
     })    

@@ -52,24 +52,36 @@
                                     <td>{{ $discount->type }}</td>
                                     <td>{{ $discount->start_date }}</td>
                                     <td>{{ $discount->end_date }}</td>
-                                    <td>{{ $discount->item->name }}</td>
+                                    <td>{{ $discount->item_name }}</td>
                                     <td>
                                     @if ($discount->created_by > 0)
-                                        {{ $discount->created_user->user_name }}
+                                        @foreach($users as $user)
+                                            @if($discount->created_by == $user->id)
+                                                {{ $user->user_name }}
+                                            @endif
+                                        @endforeach
                                     @else
                                     -
                                     @endif
                                     </td>
                                     <td>
                                     @if ($discount->updated_by > 0)
-                                        {{ $discount->updated_user->user_name }}
+                                        @foreach($users as $user)
+                                            @if($discount->updated_user == $user->id)
+                                                {{ $user->user_name }}
+                                            @endif
+                                        @endforeach
                                     @else
                                     -
                                     @endif
                                     </td>
                                     <td>
                                     @if ($discount->deleted_by > 0)
-                                        {{ $discount->deleted_user->user_name }}
+                                        @foreach($users as $user)
+                                            @if($discount->deleted_by == $user->id)
+                                                {{ $user->user_name }}
+                                            @endif
+                                        @endforeach
                                     @else
                                     -
                                     @endif

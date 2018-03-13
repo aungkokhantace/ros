@@ -185,5 +185,14 @@ class syncsTableSeeder extends Seeder
             'updated_by' => '1',
             'deleted_by' => ''
         ]);
+
+        DB::table('syncs_tables')->insert([
+            'table_name' => 'continent',
+            'version'    => '1',
+            'active'     => '1',
+            'created_by' => '1',
+            'updated_by' => '1',
+            'deleted_by' => ''
+        ]);
     }
 }
