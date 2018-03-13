@@ -103,7 +103,8 @@
 
             //Clear Button
             $('.clear-btn').click(function(){
-                $('input').val('');
+                $('#inputUsername').val('');
+                $('#inputPassword').val('');
             });
 
             //Enter Button

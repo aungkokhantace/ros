@@ -7,6 +7,8 @@ class syncsTableSeeder extends Seeder
 
     public function run()
     {
+        DB::table('syncs_tables')->delete();
+        
         DB::table('syncs_tables')->insert([
             'table_name' => 'category',
             'version'  => '1',

@@ -11,6 +11,7 @@ class CardTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('card')->delete();
         DB::table('card')->insert([
             'id'   => 1,
             'name' =>'MPU'

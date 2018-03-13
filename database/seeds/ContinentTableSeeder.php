@@ -7,6 +7,8 @@ class ContinentTableSeeder extends Seeder
 
     public function run()
     {
+        DB::table('continent')->delete();
+        
         DB::table('continent')->insert([
             'name'          => 'Pork',
             'description'   => 'Pork Curry'

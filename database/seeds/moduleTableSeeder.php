@@ -7,6 +7,8 @@ class moduleTableSeeder extends Seeder
 
     public function run()
     {
+        DB::table('modules')->delete();
+        
         DB::table('modules')->insert([
             'id' =>'1',
             'module' => 'Dashboard',

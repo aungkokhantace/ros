@@ -11,6 +11,8 @@ class CardTendersTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('card_tenders')->delete();
+        
         DB::table('card_tenders')->insert([
             'id' =>'1',
             'code' => 'CASH',

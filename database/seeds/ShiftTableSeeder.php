@@ -11,6 +11,8 @@ class ShiftTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('shift')->delete();
+        
         DB::table('shift')->insert([
             'id'    		=>'1',
             'status' 		=>'1',
@@ -23,7 +25,8 @@ class ShiftTableSeeder extends Seeder
             'id'    		=>'2',
             'status' 		=>'1',
             'name' 			=>'NIGHT SHIFT',
-            'description' 	=>'This is night shift',
+            'description'   =>'This is night shift',
+            'is_last_shift' =>'1',
             'created_by' 	=>'1',
         ]);
     }
