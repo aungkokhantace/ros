@@ -36,11 +36,11 @@ class ApiKeyTableSeeder extends Seeder
             }
 
             if(count($newPermissions)>0){
-                DB::table('core_permissions')->insert($newPermissions);
+                DB::table('api_keys')->insert($newPermissions);
             }
         }
         else{
-            DB::table('core_permissions')->insert($permissions);
+            DB::table('api_keys')->insert($permissions);
         }
 
         echo "\n";
