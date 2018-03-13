@@ -11,6 +11,8 @@ class PosTendersTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('pos_tenders')->delete();
+        
         DB::table('pos_tenders')->insert([
             'id' =>'1',
             'code' => 'CASH',

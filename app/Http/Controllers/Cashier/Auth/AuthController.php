@@ -50,7 +50,12 @@ class AuthController extends Controller
         $user_role      = User::select('role_id')
                         ->where('user_name','=',$request->user_name)
                         ->first();
-        $check_role     = $user_role->role_id;
+        //Flag For $check_role
+        $check_role     = 0;
+        if (count($user_role) > 0) {
+            $check_role     = $user_role->role_id; 
+        }
+        
         if ($check_role == 5) {
             return redirect()->back()->withErrors($this->getFailedWaiterLogin());
         } else {
