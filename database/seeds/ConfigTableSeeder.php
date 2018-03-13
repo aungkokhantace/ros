@@ -7,6 +7,8 @@ class ConfigTableSeeder extends Seeder
    
     public function run()
     {
+        DB::table('config')->delete();
+        
         DB::table('config')->insert([
             'id' => '1',
             'site_activation_key' => 'ap1',

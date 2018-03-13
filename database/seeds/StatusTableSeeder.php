@@ -11,6 +11,8 @@ class StatusTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('status')->delete();
+        
         DB::table('status')->insert([
             'id'    =>'1',
             'stname' =>'Order',
