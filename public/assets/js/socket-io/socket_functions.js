@@ -1,5 +1,5 @@
 function getSocketPort() {
-    var port    = "3333";
+    var port    = "3334";
     return port;
 }
 function socketConnect() {

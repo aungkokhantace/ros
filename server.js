@@ -3,7 +3,7 @@ var express = require('./public/node_modules/express');
 var app     = express();
 var server  = require('http').createServer(app);
 var io      = socket.listen( server );
-var port    = process.env.PORT || 3333;
+var port    = process.env.PORT || 3334;
 
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
