@@ -1,6 +1,11 @@
 @extends('Backend.layouts.master')
 @section('title','User Listing')
 @section('content')
+<style>
+tfoot {
+     display: table-header-group;
+}
+</style>
     <div class="content-wrapper">
       <div class="box">
        <div class="box-header">
@@ -38,7 +43,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 tbl-container">
-                    <table id="example1" class="table table-striped list-table">
+                    <table id="user_list" class="table table-striped list-table">
 
                         <thead>
                             <tr class="active">
@@ -52,7 +57,18 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-
+                        <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th class="search-col" con-id="staff_name">StaffName</th>
+                                    <th class="search-col" con-id="staff_id">Staff ID</th>
+                                    <th></th>
+                                    <th class="search-col" con-id="staff_type">Staff Type</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                       </tfoot>
                         <tbody>
                         @foreach($users as $user)
                             <tr class="active">
@@ -91,6 +107,56 @@
         </div>
     </div>
  </div>
+<script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function() {
 
+            $('#user_list tfoot th.search-col').each( function () {
+                var title = $('#user_list thead th').eq( $(this).index() ).text();
+                $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+            } );
+            
+            var table = $('#user_list').DataTable({
+                aLengthMenu: [
+                    [5,25, 50, 100, 200, -1],
+                    [5,25, 50, 100, 200, "All"]
+                ],
+                iDisplayLength: 10,
+                "ordering":false,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bInfo": false,
+                "bAutoWidth": false,
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                } ],
+                "order": [[ 2, "desc" ]],
+                stateSave: false,
+                "dom": '<"pull-right m-t-20"i>rt<"bottom"lp><"clear">',
+
+            });
+
+            table.on( 'order.dt search.dt', function () {
+            table.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                cell.innerHTML = i+1;
+            } );
+        } ).draw(); 
+//            new $.fn.dataTable.FixedHeader( table, {
+//            });
+
+
+            // Apply the search
+            table.columns().eq( 0 ).each( function ( colIdx ) {
+                $( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
+                    table
+                            .column( colIdx )
+                            .search( this.value )
+                            .draw();
+                } );
+
+            });
+        });
+    </script>
 
 @endsection
