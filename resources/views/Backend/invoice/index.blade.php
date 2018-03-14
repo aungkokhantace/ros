@@ -229,28 +229,28 @@
         });
         var sortID  = $('.sorting').attr('id');
         if (sortID == 'no-sroting') {
-            var url     = "/Cashier/ajaxRequest";//Json Callback Url
+            var url     = "/Backend/ajaxRequest?page=" + "<?php echo $page; ?>";//Json Callback Url
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
             socketOnTable(invoice_update,url,div);
         } 
         if(sortID == 'time/increase/') {
-            var url     = "/Cashier/ajaxInvoiceTimeIncrease";//Json Callback Url
+            var url     = "/Backend/ajaxInvoiceTimeIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
             socketOnTable(invoice_update,url,div);
         } 
         if (sortID == 'time/decrease/') {
-            var url     = "/Cashier/ajaxInvoiceTimeDecrease";//Json Callback Url
+            var url     = "/Backend/ajaxInvoiceTimeDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
             socketOnTable(invoice_update,url,div);
         }
         if (sortID == 'price/increase/') {
-            var url     = "/Cashier/ajaxInvoicePriceIncrease";//Json Callback Url
+            var url     = "/Backend/ajaxInvoicePriceIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
@@ -258,7 +258,7 @@
         }
 
         if (sortID == 'price/decrease/') {
-            var url     = "/Cashier/ajaxInvoicePriceDecrease";//Json Callback Url
+            var url     = "/Backend/ajaxInvoicePriceDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
@@ -266,7 +266,7 @@
         }
 
         if (sortID == 'order/increase/') {
-            var url     = "/Cashier/ajaxInvoiceOrderIncrease";//Json Callback Url
+            var url     = "/Backend/ajaxInvoiceOrderIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
@@ -274,7 +274,7 @@
         }
 
         if (sortID == 'order/decrease/') {
-            var url     = "/Cashier/ajaxInvoiceOrderDecrease";//Json Callback Url
+            var url     = "/Backend/ajaxInvoiceOrderDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
             var div     = "invoice-wrapper";//Put div id inside html response
             //Invoice Cancel
             var invoice_update      = "invoice_update";
