@@ -2,10 +2,10 @@
 @section('title','Order View')
 @section('content')
     {{--title--}}
-    <div class="content-wrapper">
+
    
-       <div class="box-header">
-        <div class="row">
+      
+       
             <div id="body">
                 <div class="container">
                     <div class="row" id="autoDiv">

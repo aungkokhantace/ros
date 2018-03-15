@@ -27,7 +27,7 @@
      
     
            
-             <div class="col-md-6 col-md-offset-2">
+             <div class="col-md-7 col-md-offset-2">
                <div class="thumbnail" style="padding:30px 20px">
                 <div class="invoice-title"><strong><h4 class="text-center">Invoice Detail</h4></strong></div>
                     

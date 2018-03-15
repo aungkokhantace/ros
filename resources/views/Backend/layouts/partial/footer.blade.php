@@ -9,7 +9,7 @@
 <div class="pull-right hidden-xs">
   <b>Version</b> 2.4.0
 </div>
-<div class="col-md-6">
+<div class="col-md-5">
 <strong> <p class="footer-status ">&copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/">AcePlus Solutions.,Co Ltd</a></p></strong>
 </div>
 </footer>
