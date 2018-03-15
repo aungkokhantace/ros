@@ -26,6 +26,7 @@ nav.nav-color .container{
 }
 .container{
     width:100% !important;
+    margin-top:20px !important;
 }
 /*Start Menu Nav bar css*/
 
@@ -654,7 +655,7 @@ thead label{color: #FFFFFF;}
  }
 .footer-status{
     text-align: center;
-    color: #fff;
+    color: #4c9f6b;
     padding-top: 15px;
 }
 #body{
@@ -1151,4 +1152,7 @@ order page
 
 #item_list{
  width:500px;
+}
+.navbar-nav>li>a:hover{
+    text-decoration: none !important;
 }

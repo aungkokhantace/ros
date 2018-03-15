@@ -75,7 +75,6 @@
   <script src="/assets/backend_js/sweetalert-dev.js"></script>
   <script src="/assets/backend_js/fileupload.js"></script>
   <script src="/assets/backend_js/multi-row.js"></script>
-  <script src="/assets/backend_js/validation/validation.js"></script>
   <script src="/assets/js/datatables/jquery.dataTables.min.js"></script>
   <script src="/assets/js/datatables/dataTables.bootstrap.js"></script>
  <script src="/assets/js/checkall.js"></script>
@@ -139,22 +138,49 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
-  <header class="main-header">
+  <header class="main-header kitchen_header">
     <!-- Logo -->
     <a href="index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>A</b>LT</span>
+      <span ><b>Kitchen</b>LTE</span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg"><b>Admin</b>LTE</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
-    <nav class="navbar navbar-static-top">
+    <nav class="navbar navbar-fixed-top">
       <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
+      <div class="navbar-custom-menu " style="float:left">
+        
+        <ul class="nav navbar-nav">
+
+        <li  @if(Request::path() == 'Kitchen/kitchen')class="active" @endif>
+          
+          <a href="/Kitchen/kitchen">
+            <i class="fa fa-sliders"></i> <span>Table View</span>
+            <span class="pull-right-container">
+              
+            </span>
+          </a>
+          
+        </li>
+        <li  @if(Request::path() == 'Kitchen/productView') class="active" @endif>
+          
+          <a href="/Kitchen/productView">
+           <i class="fa fa-suitcase"></i> <span>Product View</span>
+            <span class="pull-right-container">
+              
+            </span>
+          </a>
+          
+        </li>
+       </ul>
+
+      </div>
 
       <div class="navbar-custom-menu">
+ 
+       
+       
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
           <li class="dropdown messages-menu">
@@ -342,6 +368,16 @@
           <li>
             <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
           </li>
+          <li>
+          
+          <a href="/Backend/updateDataBeforeLogout">
+           <i class="fa fa-circle-o text-danger"></i> <span>Logout</span>
+            <span class="pull-right-container">
+              
+            </span>
+          </a>
+          
+        </li>
         </ul>
       </div>
     </nav>
