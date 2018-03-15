@@ -1,7 +1,16 @@
 @extends('Backend/layouts.master')
 @section('title','Add-on Listing')
 @section('content')
-
+<style>
+ .add_on_scroll{
+    overflow: auto;
+    white-space: nowrap;
+    
+ }
+tfoot {
+     display: table-header-group;
+}
+</style>
       <div class="content-wrapper">
       <div class="box">
        <div class="box-header">
@@ -38,9 +47,9 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-12 tbl-container">
+            <div class="col-md-12 add_on_scroll">
                 <div class="col-md-12"></div>
-                <table class="table table-striped list-table" id="example1">
+                <table class="table table-striped list-table" id="add_on_list" cellspacing="0">
                     <thead>
                         <tr class="active">
                             <th><input type='checkbox' name='check_all' id='check_all'  onclick="check(value);" />  </th>
@@ -53,6 +62,18 @@
                             <th>Status</th>
                         </tr>
                     </thead>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th class="search-col" con-id="module_name">Module Name</th>
+                            <th class="search-col" con-id="add-on_name">Add On Name</th>
+                            <th class="search-col" con-id="category">Category</th>
+                            <th></th>
+                            <th class="search-col" con-id="price">Price</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
                     <tbody>
 
                         @foreach($ex as $extras)
@@ -94,4 +115,58 @@
 </div>
 </div>
 </div>
+
+
+<script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function() {
+
+            $('#add_on_list tfoot th.search-col').each( function () {
+                var title = $('#add_on_list thead th').eq( $(this).index() ).text();
+                $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+            } );
+            
+            var table = $('#add_on_list').DataTable({
+                aLengthMenu: [
+                    [5,25, 50, 100, 200, -1],
+                    [5,25, 50, 100, 200, "All"]
+                ],
+                iDisplayLength: 10,
+                "ordering":false,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bInfo": false,
+                "bAutoWidth": false,
+                
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                } ],
+                "order": [[ 2, "desc" ]],
+                stateSave: false,
+                "dom": '<"pull-right m-t-20"i>rt<"bottom"lp><"clear">',
+
+            });
+
+            table.on( 'order.dt search.dt', function () {
+            table.column(1,).nodes().each( function (cell, i) {
+                cell.innerHTML = i+1;
+            } );
+        } ).draw(); 
+//            new $.fn.dataTable.FixedHeader( table, {
+//            });
+
+
+            // Apply the search
+            table.columns().eq( 0 ).each( function ( colIdx ) {
+                $( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
+                    table
+                            .column( colIdx )
+                            .search( this.value )
+                            .draw();
+                } );
+
+            });
+        });
+    </script>
 @endsection

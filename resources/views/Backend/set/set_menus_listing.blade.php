@@ -1,6 +1,11 @@
 @extends('Backend.layouts.master')
 @section('title','Set menu Listing')
 @section('content')
+<style>
+tfoot {
+     display: table-header-group;
+}
+</style>
     <div class="content-wrapper">
       <div class="box">
        <div class="box-header">
@@ -38,7 +43,7 @@
             <div class="row">
                 <div class="col-md-12 tbl-container">
                     <div class="col-md-12"></div>
-                    <table id="example1" class="table table-striped list-table">
+                    <table id="sub_menu_list" class="table table-striped list-table">
 
                         <thead>
                         <tr class="active">
@@ -51,6 +56,17 @@
                             <th>Status</th>
                         </tr>
                         </thead>
+                        <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th class="search-col" con-id="set_menu_name">Set Menu Name</th>
+                            <th class="search-col" con-id="item">Items</th>
+                            <th class="search-col" con-id="price">Price</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
                         <tbody>
 
                         @foreach($set_menu as $set)
@@ -87,4 +103,57 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function() {
+
+            $('#sub_menu_list tfoot th.search-col').each( function () {
+                var title = $('#sub_menu_list thead th').eq( $(this).index() ).text();
+                $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+            } );
+            
+            var table = $('#sub_menu_list').DataTable({
+                aLengthMenu: [
+                    [5,25, 50, 100, 200, -1],
+                    [5,25, 50, 100, 200, "All"]
+                ],
+                iDisplayLength: 10,
+                "ordering":false,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bInfo": false,
+                "bAutoWidth": false,
+                
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                } ],
+                "order": [[ 2, "desc" ]],
+                stateSave: false,
+                "dom": '<"pull-right m-t-20"i>rt<"bottom"lp><"clear">',
+
+            });
+
+            table.on( 'order.dt search.dt', function () {
+            table.column(1,).nodes().each( function (cell, i) {
+                cell.innerHTML = i+1;
+            } );
+        } ).draw(); 
+//            new $.fn.dataTable.FixedHeader( table, {
+//            });
+
+
+            // Apply the search
+            table.columns().eq( 0 ).each( function ( colIdx ) {
+                $( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
+                    table
+                            .column( colIdx )
+                            .search( this.value )
+                            .draw();
+                } );
+
+            });
+        });
+    </script>
 @endsection

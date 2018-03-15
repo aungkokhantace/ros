@@ -1,4 +1,4 @@
-<table class="table table-striped bookingListing thead_report" id="example1">
+<table class="table table-striped bookingListing thead_report " id="booking_list">
     <thead>
         <tr>
             <th><input type='checkbox' name='booking-check' id='check_all'/></th>
@@ -13,6 +13,19 @@
             
         </tr>
     </thead>
+    <tfoot>
+        <tr>
+           <th></th>
+           <th></th>
+           <th class="search-col" con-id="name">Name</th> 
+           <th class="search-col" con-id="Date">Date</th>
+           <th class="search-col" con-id="From_time">From Time</th>
+           <th class="search-col" con-id="to_time">To Time </th>
+           <th class="search-col" con-id="Table_room">Table/Room</th>
+           <th class="search-col" con-id="capacity">Capacity</th>
+           <th class="search-col" con-id="phone">Capacity</th>                 
+        </tr>
+    </tfoot>
     <tbody>
        @if(isset($bookings))
         @foreach($bookings as $booking)

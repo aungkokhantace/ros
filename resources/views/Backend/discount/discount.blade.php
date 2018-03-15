@@ -45,7 +45,7 @@
             <label for="discount" class="col-sm-3 control-label left-align label-font">End Date<span class="require">*</span></label>
             <div class="col-sm-7">
                 <div class="input-group date " >
-                    <input  type="text" class="form-control" id="to_date" name="to_date" placeholder="Choose Start Date" value= "{{isset($resource)? \Carbon\Carbon::parse($resource->end_date)->format('d-m-Y'):Input::old('to_date')}}">
+                    <input  type="text" class="form-control" id="to_date" name="to_date" placeholder="Choose End Date" value= "{{isset($resource)? \Carbon\Carbon::parse($resource->end_date)->format('d-m-Y'):Input::old('to_date')}}">
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </div>
