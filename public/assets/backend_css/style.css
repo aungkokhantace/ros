@@ -149,6 +149,8 @@ nav.nav-color .container{
 table tr td {
     font-family: zawgyi-one !important;
     color:#222d32;
+    border-left:1px solid #d6d4d4;
+    border-top:1px solid #ffffff !important;
 }
 #datepicker{
     /*width:180px;*/
@@ -1147,3 +1149,6 @@ order page
     background-color:#064173;
 }
 
+#item_list{
+ width:500px;
+}

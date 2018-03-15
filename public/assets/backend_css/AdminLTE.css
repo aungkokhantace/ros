@@ -2651,6 +2651,7 @@ a:focus {
 }
 .table > thead > tr > th {
   border-bottom: 2px solid #f4f4f4;
+  border-right:1px solid #ffffff !important;
 }
 .table tr td .progress {
   margin-top: 5px;

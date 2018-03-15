@@ -17,8 +17,8 @@
   <link rel="stylesheet" href="/assets/backend_plugins/bootstrap-datepicker/css/datepicker3.css">
 
   <link rel="stylesheet" href="/assets/backend_css/_all-skins.min.css">
-  <link rel="stylesheet" href="/assets/js/datatables/dataTables.bootstrap.css">
   <link rel="stylesheet" href="/assets/js/datatables/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="/assets/js/datatables/dataTables.bootstrap.css">
   <link rel="stylesheet" href="/assets/backend_css/style.css">
   <link rel="stylesheet" href="/assets/backend_css/import.css">
   <link rel="stylesheet" href="/assets/backend_css/font-awesome.min.css">
@@ -32,17 +32,14 @@
 
   <script src="/assets/backend_js/jquery.min.js"></script>
   <script src="/assets/js/jquery-2.1.4.js"></script>
-<script src="/assets/backend_js/jquery-ui/jquery-ui.min.js"></script>
+  <script src="/assets/backend_js/jquery-ui/jquery-ui.min.js"></script>
   <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-
-  
- 
   <script src="/assets/plugins/jquery/jquery-migrate-1.1.0.min.js"></script> 
   <script src="/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js"></script>
   <script src="/assets/backend_plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
   <script src="/assets/backend_js/booking_validation.js"></script>
   <script src="/assets/js/multiple-select.js"></script>
- <script src="/assets/backend_js/moment.min.js"></script>
+  <script src="/assets/backend_js/moment.min.js"></script>
 
   
   

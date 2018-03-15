@@ -1,6 +1,17 @@
 @extends('Backend.layouts.master')
 @section('title','Booking Listing')
 @section('content')
+<style>
+tfoot {
+     display: table-header-group;
+     background: #ecf0f5;    
+      }
+.add_on_scroll{
+    overflow: auto;
+    white-space: nowrap;
+    
+               }
+</style>
 <div class="content-wrapper">
       <div class="box">
        <div class="box-header">
@@ -49,7 +60,7 @@
     {{--tables--}}
     <div class="container">
         <div class="row">
-            <div class="col-md-12 tbl-container" id="booking-frame">
+            <div class="col-md-12 tbl-container add_on_scroll" id="booking-frame">
                 @include('Backend.booking.bookingListing')
             </div>
         </div>
@@ -86,6 +97,58 @@
         function Booking_Form(){
             window.location='/Backend/Booking/create';
         }
+
+        $(document).ready(function() {
+
+            $('#booking_list tfoot th.search-col').each( function () {
+                var title = $('#booking_list thead th').eq( $(this).index() ).text();
+                $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+            } );
+            
+            var table = $('#booking_list').DataTable({
+                aLengthMenu: [
+                    [5,25, 50, 100, 200, -1],
+                    [5,25, 50, 100, 200, "All"]
+                ],
+                iDisplayLength: 10,
+                "ordering":false,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bInfo": false,
+                "bAutoWidth": false,
+                
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                } ],
+                "order": [[ 2, "desc" ]],
+                stateSave: false,
+                "dom": '<"pull-right m-t-20"i>rt<"bottom"lp><"clear">',
+
+            });
+
+            table.on( 'order.dt search.dt', function () {
+            table.column(1,).nodes().each( function (cell, i) {
+                cell.innerHTML = i+1;
+            } );
+        } ).draw(); 
+//            new $.fn.dataTable.FixedHeader( table, {
+//            });
+
+
+            // Apply the search
+            table.columns().eq( 0 ).each( function ( colIdx ) {
+                $( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
+                    table
+                            .column( colIdx )
+                            .search( this.value )
+                            .draw();
+                } );
+
+            });
+        });
     </script>
 </div>
+
 @endsection
