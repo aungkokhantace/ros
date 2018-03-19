@@ -1,5 +1,5 @@
 @extends('Backend.layouts.master')
-@section('title','User Listing')
+@section('title','Staff Listing')
 @section('content')
 <style>
 tfoot {

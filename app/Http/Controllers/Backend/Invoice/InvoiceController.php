@@ -899,6 +899,280 @@ class InvoiceController extends Controller
                 ->withMessage(FormatGenerator::message('Fail', 'Table did not update ...'));
     }
 
+    public function SearchRequest(Request $request) {
+        $status             = StatusConstance::ORDER_CANCEL_STATUS;
+        $totalData          = Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)->count();
+        $totalFiltered      = $totalData;
+        $dir                = $request->input('order.0.dir');
+        $limit              = (int)($request->input('length'));
+        $start              = (int)($request->input('start'));
+        $order_search       = $request->input('columns.0.search.value');
+        $amount_search      = $request->input('columns.1.search.value');
+        $date_search        = $request->input('columns.2.search.value');
+
+        if(empty($order_search) || empty($amount_search) || empty($date_search)) {           
+            $posts          = Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->orderBy('id', 'desc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+        } 
+        //Search From Order ID Field
+        if (!empty($request->input('columns.0.search.value'))) {
+            $search         = $request->input('columns.0.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->where('id','LIKE',"%{$search}%")
+                            ->orderBy('id', 'desc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::where('id','LIKE',"%{$search}%")
+                             ->count();
+        }
+        //Search From Amount Field
+        if (!empty($request->input('columns.1.search.value'))) {
+            $search         = $request->input('columns.1.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->where('all_total_amount', 'LIKE',"%{$search}%")
+                            ->orderBy('id', 'desc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::Where('all_total_amount', 'LIKE',"%{$search}%")
+                             ->count();
+        }
+        //Search From Date Field
+        if (!empty($request->input('columns.2.search.value'))) {
+            $search         = $request->input('columns.2.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->Where('created_at', 'LIKE',"%{$search}%")
+                            ->orderBy('id', 'desc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::Where('created_at', 'LIKE',"%{$search}%")
+                             ->count();
+        }
+
+
+        $data = array();
+        if(!empty($posts))
+        {
+            foreach ($posts as $post)
+            {
+
+                $nestedData[0] = $post->id;
+                $nestedData[1] = $post->all_total_amount;
+                $nestedData[2] = date('j M Y h:i a',strtotime($post->created_at));
+                $post_view     = '/Backend/invoice/detail/' . $post->id;
+                $nestedData[3] = "<a href='" . $post_view . "'>View Detail </a>";
+                $status        = $post->status;
+                if ($status == StatusConstance::ORDER_CREATE_STATUS) {
+                    $nestedData[4] = "<lable class='text-warning'>Unpaid</lable>";
+                } elseif($status == StatusConstance::ORDER_PAID_STATUS) {
+                    $nestedData[4] = "<lable class='text-success'>paid</lable>";
+                }
+                $data[] = $nestedData;
+
+            }
+        }
+
+        $array      = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data 
+                        );
+        return \Response::json($array);
+
+    }
+
+    public function TimeIncreaseRequest(Request $request) {
+        $status             = StatusConstance::ORDER_CANCEL_STATUS;
+        $totalData          = Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)->count();
+        $totalFiltered      = $totalData;
+        $dir                = $request->input('order.0.dir');
+        $limit              = (int)($request->input('length'));
+        $start              = (int)($request->input('start'));
+        $order_search       = $request->input('columns.0.search.value');
+        $amount_search      = $request->input('columns.1.search.value');
+        $date_search        = $request->input('columns.2.search.value');
+
+        if(empty($order_search) || empty($amount_search) || empty($date_search)) {           
+            $posts          = Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->orderBy('created_at', 'desc')
+                            ->offset($start)
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+        } 
+        //Search From Order ID Field
+        if (!empty($request->input('columns.0.search.value'))) {
+            $search         = $request->input('columns.0.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->where('id','LIKE',"%{$search}%")
+                            ->orderBy('created_at', 'desc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::where('id','LIKE',"%{$search}%")
+                             ->count();
+        }
+        //Search From Amount Field
+        if (!empty($request->input('columns.1.search.value'))) {
+            $search         = $request->input('columns.1.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->where('all_total_amount', 'LIKE',"%{$search}%")
+                            ->orderBy('created_at', 'desc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::Where('all_total_amount', 'LIKE',"%{$search}%")
+                             ->count();
+        }
+        //Search From Date Field
+        if (!empty($request->input('columns.2.search.value'))) {
+            $search         = $request->input('columns.2.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->Where('created_at', 'LIKE',"%{$search}%")
+                            ->orderBy('created_at', 'desc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::Where('created_at', 'LIKE',"%{$search}%")
+                             ->count();
+        }
+
+
+        $data = array();
+        if(!empty($posts))
+        {
+            foreach ($posts as $post)
+            {
+
+                $nestedData[0] = $post->id;
+                $nestedData[1] = $post->all_total_amount;
+                $nestedData[2] = date('j M Y h:i a',strtotime($post->created_at));
+                $post_view     = '/Backend/invoice/detail/' . $post->id;
+                $nestedData[3] = "<a href='" . $post_view . "'>View Detail </a>";
+                $status        = $post->status;
+                if ($status == StatusConstance::ORDER_CREATE_STATUS) {
+                    $nestedData[4] = "<lable class='text-warning'>Unpaid</lable>";
+                } elseif($status == StatusConstance::ORDER_PAID_STATUS) {
+                    $nestedData[4] = "<lable class='text-success'>paid</lable>";
+                }
+                $data[] = $nestedData;
+
+            }
+        }
+
+        $array      = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data 
+                        );
+        return \Response::json($array);
+
+    }
+
+    public function TimeDecreaseRequest(Request $request) {
+        $status             = StatusConstance::ORDER_CANCEL_STATUS;
+        $totalData          = Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)->count();
+        $totalFiltered      = $totalData;
+        $dir                = $request->input('order.0.dir');
+        $limit              = (int)($request->input('length'));
+        $start              = (int)($request->input('start'));
+        $order_search       = $request->input('columns.0.search.value');
+        $amount_search      = $request->input('columns.1.search.value');
+        $date_search        = $request->input('columns.2.search.value');
+
+        if(empty($order_search) || empty($amount_search) || empty($date_search)) {           
+            $posts          = Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->orderBy('created_at', 'asc')
+                            ->offset($start)
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+        } 
+        //Search From Order ID Field
+        if (!empty($request->input('columns.0.search.value'))) {
+            $search         = $request->input('columns.0.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->where('id','LIKE',"%{$search}%")
+                            ->orderBy('created_at', 'asc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::where('id','LIKE',"%{$search}%")
+                             ->count();
+        }
+        //Search From Amount Field
+        if (!empty($request->input('columns.1.search.value'))) {
+            $search         = $request->input('columns.1.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->where('all_total_amount', 'LIKE',"%{$search}%")
+                            ->orderBy('created_at', 'asc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::Where('all_total_amount', 'LIKE',"%{$search}%")
+                             ->count();
+        }
+        //Search From Date Field
+        if (!empty($request->input('columns.2.search.value'))) {
+            $search         = $request->input('columns.2.search.value');
+            $posts          =  Order::where('status','!=',StatusConstance::ORDER_CANCEL_STATUS)
+                            ->Where('created_at', 'LIKE',"%{$search}%")
+                            ->orderBy('created_at', 'asc')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->get();
+
+            $totalFiltered = Order::Where('created_at', 'LIKE',"%{$search}%")
+                             ->count();
+        }
+
+
+        $data = array();
+        if(!empty($posts))
+        {
+            foreach ($posts as $post)
+            {
+
+                $nestedData[0] = $post->id;
+                $nestedData[1] = $post->all_total_amount;
+                $nestedData[2] = date('j M Y h:i a',strtotime($post->created_at));
+                $post_view     = '/Backend/invoice/detail/' . $post->id;
+                $nestedData[3] = "<a href='" . $post_view . "'>View Detail </a>";
+                $status        = $post->status;
+                if ($status == StatusConstance::ORDER_CREATE_STATUS) {
+                    $nestedData[4] = "<lable class='text-warning'>Unpaid</lable>";
+                } elseif($status == StatusConstance::ORDER_PAID_STATUS) {
+                    $nestedData[4] = "<lable class='text-success'>paid</lable>";
+                }
+                $data[] = $nestedData;
+
+            }
+        }
+
+        $array      = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data 
+                        );
+        return \Response::json($array);
+
+    }
     public function checkManager($managerLogin,$managerPass) {
         // $manager_raw    = DB::select("SELECT password FROM `users` WHERE user_name = '$managerLogin' AND deleted_at IS NULL");
         $manager_user      = User::select('password')

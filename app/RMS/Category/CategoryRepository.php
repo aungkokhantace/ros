@@ -183,7 +183,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     }
 
     public function getAllCategoryName(){
-        $allname = DB::table('category')->get();
+        $allname = DB::table('category')->whereNull('deleted_at')->get();
         return $allname;
     }
 

@@ -398,6 +398,9 @@ Route::group(['middleware' => 'web'], function () {
         Route::group(['middleware'=>'report:Cashier'],function(){
 
             Route::get('invoice','Backend\Invoice\InvoiceController@invoiceList');
+            Route::get('ajaxSearchRequest','Backend\Invoice\InvoiceController@SearchRequest');
+            Route::get('ajaxSearchTimeIncreaseRequest','Backend\Invoice\InvoiceController@TimeIncreaseRequest');
+            Route::get('ajaxSearchTimeDecreaseRequest','Backend\Invoice\InvoiceController@TimeDecreaseRequest');
             Route::get('ajaxRequest','Backend\Invoice\InvoiceController@ajaxRequest');
             Route::get('invoice/ajaxInvoiceRequest','Backend\Invoice\InvoiceController@ajaxInvoiceRequest');
             Route::get('invoice/detail/{id}','Backend\Invoice\InvoiceController@invoicedetail');

@@ -2,7 +2,7 @@
 
 
 @extends('Backend/layouts.master')
-@section('title','Permission Listing')
+@section('title','Staff Type Listing')
 @section('content')
 
 <style>
@@ -22,19 +22,6 @@ tfoot {
                         <div ></div>
                     @endif
                 </div>
-                <!-- <div class="col-md-9 list_edit">
-                    <div class=" buttons pull-right">
-                        <button type="button"  onclick='role_create();' class="btn btn-success btn-md first_btn">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        </button>
-                        <button type="button" onclick='role_edit();' class="btn btn-default btn-md second_btn">
-                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                        </button>
-                        <button type="button" onclick="role_delete();" class="btn btn-danger btn-md third_btn">
-                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                </div> -->
             </div>
 
         </div>
@@ -70,11 +57,18 @@ tfoot {
                                 <td>{{ $role->name }}</td>
                                 <td>{{ $role->description }}</td>
                                 <td>
+                                <?php
+                                $permission_module  = '';
+                                ?>
                                     @foreach( $permissions as $permission )
                                         @if($permission->role_id == $role->id)
-                                            {{$permission->module}},
+                                            <?php
+                                                $permission_module  .= $permission->module . ",";
+                                            ?>
                                         @endif
                                     @endforeach
+                                    
+                                    {{ substr($permission_module,0, -1) }}
                                 </td>
                             </tr>
                         @endforeach
