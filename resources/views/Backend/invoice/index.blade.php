@@ -1,6 +1,11 @@
 @extends('Backend.layouts.master')
 @section('title','Invoice Listing')
 @section('content')
+<style type="text/css">
+    tfoot {
+        display: table-header-group;
+    }
+</style>
  <div class="content-wrapper">
       <div class="box">
        <div class="box-header">
@@ -166,14 +171,6 @@
 
     });
 
-    // $('.btn-print').on('click',function(e){
-    //     // alert('hihi');
-    //     e.preventDefault();
-    //     var id      = this.id;
-    //     var modal   = id + '-print';
-    //     $('#' + modal).modal('show');
-    // });
-
     function printInvoice(invoice) {
         var id      = invoice;
         var modal   = id + '-print';
@@ -229,25 +226,16 @@
         });
         var sortID  = $('.sorting').attr('id');
         if (sortID == 'no-sroting') {
-            var url     = "/Backend/ajaxRequest?page=" + "<?php echo $page; ?>";//Json Callback Url
-            var div     = "invoice-wrapper";//Put div id inside html response
-            //Invoice Cancel
-            var invoice_update      = "invoice_update";
-            socketOnTable(invoice_update,url,div);
+            var url     = "/Backend/ajaxSearchRequest";
+            DataTableSearch(url);
         } 
         if(sortID == 'time/increase/') {
-            var url     = "/Backend/ajaxInvoiceTimeIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
-            var div     = "invoice-wrapper";//Put div id inside html response
-            //Invoice Cancel
-            var invoice_update      = "invoice_update";
-            socketOnTable(invoice_update,url,div);
+            var url     = "/Backend/ajaxSearchTimeIncreaseRequest";
+            DataTableSearch(url);
         } 
         if (sortID == 'time/decrease/') {
-            var url     = "/Backend/ajaxInvoiceTimeDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
-            var div     = "invoice-wrapper";//Put div id inside html response
-            //Invoice Cancel
-            var invoice_update      = "invoice_update";
-            socketOnTable(invoice_update,url,div);
+            var url     = "/Backend/ajaxSearchTimeDecreaseRequest";
+            DataTableSearch(url);
         }
         if (sortID == 'price/increase/') {
             var url     = "/Backend/ajaxInvoicePriceIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
@@ -287,5 +275,50 @@
         var selectedOpt      = document.getElementById('invoice-form').value;
         window.location.href = "/Backend/invoice" + selectedOpt;
     }
+</script>
+
+<script>
+function DataTableSearch(url) {
+    $('#example2 tfoot th.search-col').each( function () {
+        var title = $('#example2 thead th').eq( $(this).index() ).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );
+    var table = $('#example2').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": "{{ url('/Backend/ajaxSearchRequest') }}",
+        iDisplayLength: 10,
+        "ordering":false,
+        "bLengthChange": false,
+        "bFilter": true,
+        "bInfo": false,
+        "bAutoWidth": false,
+        "columnDefs": [ {
+        "searchable": false,
+        "orderable": false,
+        "targets": 0
+        } ],
+        "order": [[ 1, "desc" ]],
+        stateSave: false,
+        "dom": '<"pull-right m-t-20"i>rt<"bottom"lp><"clear">',
+
+    });
+
+    table.on( 'order.dt search.dt', function () {
+        table.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw(); 
+    // Apply the search
+    table.columns().eq( 0 ).each( function ( colIdx ) {
+        $( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
+            table
+                    .column( colIdx )
+                    .search( this.value )
+                    .draw();
+        } );
+
+    });
+}
 </script>
 @endsection
