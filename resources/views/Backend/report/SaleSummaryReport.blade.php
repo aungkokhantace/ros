@@ -43,7 +43,7 @@
                                 {{--</div>--}}
                             {{--</div>--}}
                         <div class="input-group">
-                            <input  type="text" class="form-control" id="from" name="from_date" placeholder="Choose Start Date" value= "{{isset($from_date)? date("d-m-Y",strtotime($from_date)):""}}">
+                            <input  type="text" class="form-control" id="from" name="from_date" placeholder="Choose Start Date" value= "{{isset($from_date)? date("d-m-Y",strtotime($from_date)):""}}" readonly="readonly">
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
@@ -59,7 +59,7 @@
                                 {{--</div>--}}
                             {{--</div>--}}
                             <div class="input-group">
-                                <input  type="text" class="form-control" id="to" name="to_date" placeholder="Choose End Date" value= "{{isset($to_date)? date("d-m-Y",strtotime($to_date)):""}}">
+                                <input  type="text" class="form-control" id="to" name="to_date" placeholder="Choose End Date" value= "{{isset($to_date)? date("d-m-Y",strtotime($to_date)):""}}" readonly="readonly">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>

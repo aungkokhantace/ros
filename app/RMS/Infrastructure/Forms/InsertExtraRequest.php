@@ -20,7 +20,7 @@ class InsertExtraRequest extends Request
             'food_name' => 'required',
             'category_id' => 'required',
             'description' => 'required',
-            'fileupload' => 'required',
+            'fileupload' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
     public function messages()

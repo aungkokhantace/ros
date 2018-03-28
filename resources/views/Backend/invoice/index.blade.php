@@ -41,25 +41,21 @@
                     <div class="col-md-12" style="padding:0;float:right;">
                         <div class="input-group" style="float:left;">
                             <select id="invoice-form" style="width:400px" class="form-control" onchange="sortingOrder()">
-                            @if (isset($sortBy))
-                                <option value="">Invoice List</option>
-                                <option value="/cancel" @if ($sortBy == 'cancel' AND $amount == '') {{'selected'}} @endif >Cancel Invoice List</option>
-                                <option value="/sort/time/increase" @if ($sortBy == 'time' AND $amount == 'increase') {{'selected'}} @endif >Sort By Lastest Order Time</option>
-                                <option value="/sort/time/decrease" @if ($sortBy == 'time' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Early Order Time</option>
-                                <option value="/sort/price/increase" @if ($sortBy == 'price' AND $amount == 'increase') {{'selected'}} @endif>Sort By Maximum Order Price</option>
-                                <option value="/sort/price/decrease" @if ($sortBy == 'price' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Minimum Order Price</option>
-                                <option value="/sort/order/increase" @if ($sortBy == 'order' AND $amount == 'increase') {{'selected'}} @endif>Sort By Lastest Order Number</option>
-                                <option value="/sort/order/decrease" @if ($sortBy == 'order' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Early Order Number</option>
-                            @else
-                                <option value="">Invoice List</option>
-                                <option value="/cancel">Cancel Invoice List</option>
-                                <option value="/sort/time/increase">Sort By Lastest Order Time</option>
-                                <option value="/sort/time/decrease">Sort By Early Order Time</option>
-                                <option value="/sort/price/increase">Sort By Maximum Order Price</option>
-                                <option value="/sort/price/decrease">Sort By Minimum Order Price</option>
-                                <option value="/sort/order/increase">Sort By Lastest Order Number</option>
-                                <option value="/sort/order/decrease">Sort By Early Order Number</option>
-                            @endif
+                                @if (isset($sortBy))
+                                    <option value="">Invoice List</option>
+                                    <option value="/cancel" @if ($sortBy == 'cancel' AND $amount == '') {{'selected'}} @endif >Cancel Invoice List</option>
+                                    <option value="/sort/time/increase" @if ($sortBy == 'time' AND $amount == 'increase') {{'selected'}} @endif >Sort By Lastest Order Time</option>
+                                    <option value="/sort/time/decrease" @if ($sortBy == 'time' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Early Order Time</option>
+                                    <option value="/sort/price/increase" @if ($sortBy == 'price' AND $amount == 'increase') {{'selected'}} @endif>Sort By Maximum Order Price</option>
+                                    <option value="/sort/price/decrease" @if ($sortBy == 'price' AND $amount == 'decrease') {{'selected'}} @endif>Sort By Minimum Order Price</option>
+                                @else
+                                    <option value="">Invoice List</option>
+                                    <option value="/cancel">Cancel Invoice List</option>
+                                    <option value="/sort/time/increase">Sort By Lastest Order Time</option>
+                                    <option value="/sort/time/decrease">Sort By Early Order Time</option>
+                                    <option value="/sort/price/increase">Sort By Maximum Order Price</option>
+                                    <option value="/sort/price/decrease">Sort By Minimum Order Price</option>
+                                @endif
                             </select>
                         </div>
                     </div>
@@ -228,7 +224,7 @@
         if (sortID == 'no-sroting') {
             var url     = "/Backend/ajaxSearchRequest";
             DataTableSearch(url);
-        } 
+        }
         if(sortID == 'time/increase/') {
             var url     = "/Backend/ajaxSearchTimeIncreaseRequest";
             DataTableSearch(url);
@@ -238,35 +234,17 @@
             DataTableSearch(url);
         }
         if (sortID == 'price/increase/') {
-            var url     = "/Backend/ajaxInvoicePriceIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
-            var div     = "invoice-wrapper";//Put div id inside html response
-            //Invoice Cancel
-            var invoice_update      = "invoice_update";
-            socketOnTable(invoice_update,url,div);
+            var url     = "/Backend/ajaxSearchPriceIncreaseRequest";//Json Callback Url
+            DataTableSearch(url);
         }
 
         if (sortID == 'price/decrease/') {
-            var url     = "/Backend/ajaxInvoicePriceDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
-            var div     = "invoice-wrapper";//Put div id inside html response
-            //Invoice Cancel
-            var invoice_update      = "invoice_update";
-            socketOnTable(invoice_update,url,div);
+            var url     = "/Backend/ajaxSearchPriceDecreaseRequest";//Json Callback Url
+            DataTableSearch(url);
         }
-
-        if (sortID == 'order/increase/') {
-            var url     = "/Backend/ajaxInvoiceOrderIncrease?page=" + "<?php echo $page; ?>";//Json Callback Url
-            var div     = "invoice-wrapper";//Put div id inside html response
-            //Invoice Cancel
-            var invoice_update      = "invoice_update";
-            socketOnTable(invoice_update,url,div);
-        }
-
-        if (sortID == 'order/decrease/') {
-            var url     = "/Backend/ajaxInvoiceOrderDecrease?page=" + "<?php echo $page; ?>";//Json Callback Url
-            var div     = "invoice-wrapper";//Put div id inside html response
-            //Invoice Cancel
-            var invoice_update      = "invoice_update";
-            socketOnTable(invoice_update,url,div);
+        if (sortID == 'cancel//') {
+            var url     = "/Backend/ajaxSearchCancelRequest";
+            DataTableSearch(url);
         }
 
     });
@@ -286,7 +264,7 @@ function DataTableSearch(url) {
     var table = $('#example2').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "{{ url('/Backend/ajaxSearchRequest') }}",
+        "ajax": url,
         iDisplayLength: 10,
         "ordering":false,
         "bLengthChange": false,

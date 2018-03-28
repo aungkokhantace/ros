@@ -18,7 +18,8 @@ class EditExtraRequest extends Request
             'price' => 'required|numeric',
             'food_name' => 'required',
             'category_id' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'fileupload' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
     public function messages()

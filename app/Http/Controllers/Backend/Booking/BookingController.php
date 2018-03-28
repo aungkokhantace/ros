@@ -129,6 +129,11 @@ class BookingController extends Controller
                     array_push($tableIdArr,$table->table_id);
                 }
                 $tables = Table::where('active','=',$table_status)->whereNotIn('id',$tableIdArr)->get();
+                //If there is no table left
+                if(count($tables) <= 0) {
+                    alert()->warning('There is no tables left.')->persistent('Close');
+                    return redirect()->back()->withInput();
+                }
                 return view('Backend.booking.booking',compact('tables','date','from','quantity'));
             }else{
                 $tables = Table::where('active','=',$table_status)->get();
@@ -143,10 +148,16 @@ class BookingController extends Controller
                     array_push($bookingIdArr,$booking->id);
                 }
                 $bookingRooms   = BookingRoom::select('room_id')->whereIn('booking_id',$bookingIdArr)->groupBy('room_id')->get();
+                
                 foreach($bookingRooms as $room){
                     array_push($roomIdArr,$room->room_id);
                 }
                 $rooms = Room::where('active','=',$room_status)->whereNotIn('id',$roomIdArr)->get();
+                //If there is no room left
+                if(count($rooms) <= 0) {
+                    alert()->warning('There is no room left.')->persistent('Close');
+                    return redirect()->back()->withInput();
+                }
                 return view('Backend.booking.booking',compact('rooms','date','from','quantity'));
             }else{
                 $rooms = Room::where('active','=',$room_status)->get();
@@ -156,7 +167,6 @@ class BookingController extends Controller
     }
 
     public function store(){
-       
         $table_id       = Input::get('table_check');
         $room_id        = Input::get('room_check');
 
@@ -502,77 +512,81 @@ class BookingController extends Controller
     }
 
     public function table_list_view(){
-        $tables             = Table::get();
-        $before_time        = Config::select('booking_warning_time','booking_waiting_time')->first();
-        //quick way of time to seconds
-        $config_time        = strtotime($before_time->booking_warning_time)-strtotime('Today');
-        $waiting_seconds    = strtotime($before_time->booking_waiting_time)-strtotime('Today');
-        $today              = Carbon::now();
-        $cur_date           = Carbon::parse($today)->format('Y-m-d');
-        $cur_time           = Carbon::parse($today)->format('H:i:s');
-        $cur_seconds        = strtotime($cur_time)-strtotime('Today');
+        $status             = StatusConstance::TABLE_ACTIVE_STATUS;
+        $tables             = Table::where('active',$status)->whereNull('deleted_at')->get();
+        // $before_time        = Config::select('booking_warning_time','booking_waiting_time')->first();
+        // //quick way of time to seconds
+        // $config_time        = strtotime($before_time->booking_warning_time)-strtotime('Today');
+        // $waiting_seconds    = strtotime($before_time->booking_waiting_time)-strtotime('Today');
+        // $today              = Carbon::now();
+        // $cur_date           = Carbon::parse($today)->format('Y-m-d');
+        // $cur_time           = Carbon::parse($today)->format('H:i:s');
+        // $cur_seconds        = strtotime($cur_time)-strtotime('Today');
 
-        $today_bookings     = $this->bookingRepository->getTodayBooking($cur_date);
-        $warning            = [];
-        $waiting            = [];
+        // $today_bookings     = $this->bookingRepository->getTodayBooking($cur_date);
+        // $warning            = [];
+        // $waiting            = [];
 
-        $waiting_time       = Config::select('booking_waiting_time')->first();
-        $waiting_seconds    = strtotime($waiting_time->booking_waiting_time)-strtotime('Today');
-        foreach($today_bookings as $today_booking){
-            $today_from_time = strtotime($today_booking->from_time)-strtotime('Today');
+        // $waiting_time       = Config::select('booking_waiting_time')->first();
+        // $waiting_seconds    = strtotime($waiting_time->booking_waiting_time)-strtotime('Today');
+        // foreach($today_bookings as $today_booking){
+        //     $today_from_time = strtotime($today_booking->from_time)-strtotime('Today');
             
-            if( $cur_seconds < ($today_from_time+$waiting_seconds)){
-                $waiting[] = $today_booking->table_id;
-            }else{
-                $waiting[] = null;
-            }
-        }
+        //     if( $cur_seconds < ($today_from_time+$waiting_seconds)){
+        //         $waiting[] = $today_booking->table_id;
+        //     }else{
+        //         $waiting[] = null;
+        //     }
+        // }
 
        
-        foreach($today_bookings as $today_booking){
-            $today_from_time = strtotime($today_booking->from_time)-strtotime('Today');
-            $diff               = $today_from_time - $config_time;
+        // foreach($today_bookings as $today_booking){
+        //     $today_from_time = strtotime($today_booking->from_time)-strtotime('Today');
+        //     $diff               = $today_from_time - $config_time;
 
-            if($cur_seconds >= $diff && $cur_seconds <= $today_from_time){
-                $warning[] = $today_booking->table_id;
+        //     if($cur_seconds >= $diff && $cur_seconds <= $today_from_time){
+        //         $warning[] = $today_booking->table_id;
                
-            }
-        }
-        return view('Backend.booking.table_list_view',compact('tables','warning','waiting'));
+        //     }
+        // }
+        // return view('Backend.booking.table_list_view',compact('tables','warning','waiting'));
+        return view('Backend.booking.table_list_view',compact('tables'));
     }
     public function room_list_view(){
-        $rooms              = Room::get();
-        $before_time        = Config::select('booking_warning_time','booking_waiting_time')->first();
-        //quick way of time to seconds
-        $config_time        = strtotime($before_time->booking_warning_time)-strtotime('Today');
-        $waiting_seconds    = strtotime($before_time->booking_waiting_time)-strtotime('Today');
-        $today              = Carbon::now();
-        $cur_date           = Carbon::parse($today)->format('Y-m-d');
-        $cur_time           = Carbon::parse($today)->format('H:i:s');
-        $cur_seconds        = strtotime($cur_time)-strtotime('Today');
-        $today_bookings     = $this->bookingRepository->getTodayBooking($cur_date);
-        $warning            = [];
-        $waiting            = [];
+        $status             = StatusConstance::ROOM_ACTIVE_STATUS;
+        $rooms              = Room::where('active',$status)->whereNull('deleted_at')->get();
+        // $before_time        = Config::select('booking_warning_time','booking_waiting_time')->first();
+        // //quick way of time to seconds
+        // $config_time        = strtotime($before_time->booking_warning_time)-strtotime('Today');
+        // $waiting_seconds    = strtotime($before_time->booking_waiting_time)-strtotime('Today');
+        // $today              = Carbon::now();
+        // $cur_date           = Carbon::parse($today)->format('Y-m-d');
+        // $cur_time           = Carbon::parse($today)->format('H:i:s');
+        // $cur_seconds        = strtotime($cur_time)-strtotime('Today');
+        // $today_bookings     = $this->bookingRepository->getTodayBooking($cur_date);
+        // $warning            = [];
+        // $waiting            = [];
 
-        $waiting_time       = Config::select('booking_waiting_time')->first();
-        $waiting_seconds    = strtotime($waiting_time->booking_waiting_time)-strtotime('Today');
-        foreach($today_bookings as $today_booking){
-            $today_from_time = strtotime($today_booking->from_time)-strtotime('Today');
-            if( $cur_seconds < ($today_from_time+$waiting_seconds)){
-                $waiting[] = $today_booking->room_id;
-            }else{
-                $waiting[] = null;
-            }
-        }
+        // $waiting_time       = Config::select('booking_waiting_time')->first();
+        // $waiting_seconds    = strtotime($waiting_time->booking_waiting_time)-strtotime('Today');
+        // foreach($today_bookings as $today_booking){
+        //     $today_from_time = strtotime($today_booking->from_time)-strtotime('Today');
+        //     if( $cur_seconds < ($today_from_time+$waiting_seconds)){
+        //         $waiting[] = $today_booking->room_id;
+        //     }else{
+        //         $waiting[] = null;
+        //     }
+        // }
 
-        foreach($today_bookings as $today_booking){
-            $today_from_time = strtotime($today_booking->from_time)-strtotime('Today');
-            $diff               = $today_from_time - $config_time;
-            if($cur_seconds >= $diff && $cur_seconds <= $today_from_time){
-                $warning[] = $today_booking->room_id;
-            }
-        }
-        return view('Backend.booking.room_list_view',compact('rooms','warning','waiting'));
+        // foreach($today_bookings as $today_booking){
+        //     $today_from_time = strtotime($today_booking->from_time)-strtotime('Today');
+        //     $diff               = $today_from_time - $config_time;
+        //     if($cur_seconds >= $diff && $cur_seconds <= $today_from_time){
+        //         $warning[] = $today_booking->room_id;
+        //     }
+        // }
+        // return view('Backend.booking.room_list_view',compact('rooms','warning','waiting'));
+        return view('Backend.booking.room_list_view',compact('rooms'));
     }
 
     public function tableRequest()

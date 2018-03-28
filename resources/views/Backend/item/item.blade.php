@@ -48,9 +48,8 @@
             <div class="col-sm-7">
                 <select name="parent_category" id="" class="form-control ">
                     @if(isset($record))
-                        <option value="{{$record->category_id}}" selected>{{$r_cat}}</option>
 
-                        {!! generateItemCategoryList($categories, $parentId=0, $indent=0,$parent_id_arr) !!}
+                        {!! generateItemCategoryListEdit($categories, $parentId=0, $indent=0,$parent_id_arr,$record->category_id) !!}
 
                     @else
                         <option value="0" selected disabled>Select Item Category</option>

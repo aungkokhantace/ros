@@ -401,6 +401,9 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('ajaxSearchRequest','Backend\Invoice\InvoiceController@SearchRequest');
             Route::get('ajaxSearchTimeIncreaseRequest','Backend\Invoice\InvoiceController@TimeIncreaseRequest');
             Route::get('ajaxSearchTimeDecreaseRequest','Backend\Invoice\InvoiceController@TimeDecreaseRequest');
+            Route::get('ajaxSearchPriceIncreaseRequest','Backend\Invoice\InvoiceController@PriceIncreaseRequest');
+            Route::get('ajaxSearchPriceDecreaseRequest','Backend\Invoice\InvoiceController@PriceDecreaseRequest');
+            Route::get('ajaxSearchCancelRequest','Backend\Invoice\InvoiceController@CancelRequest');
             Route::get('ajaxRequest','Backend\Invoice\InvoiceController@ajaxRequest');
             Route::get('invoice/ajaxInvoiceRequest','Backend\Invoice\InvoiceController@ajaxInvoiceRequest');
             Route::get('invoice/detail/{id}','Backend\Invoice\InvoiceController@invoicedetail');
@@ -485,10 +488,12 @@ Route::group(['middleware' => 'web'], function () {
 
       //Sale Report & Excel Download
             Route::get('saleReport', 'Backend\Report\SaleReportController@saleReport');
-            Route::get('SaleExport', 'Cashier\Report\SaleReportController@saleExport');
+            Route::get('saleAjaxRequest', 'Backend\Report\SaleReportController@ajaxRequest');
+            Route::get('SaleExport', 'Backend\Report\SaleReportController@saleExport');
       
        // Search Report for Sale & Excel Download
             Route::post('search_report', 'Backend\Report\SaleReportController@search_detail');
+            Route::get('searchAjaxRequest', 'Backend\Report\SaleReportController@searchAjaxRequest');
             Route::get('SaleExportDetail/{from}/{to}', 'Backend\Report\SaleReportController@SaleExportDetail');
              //Item Report & Excel Download
             Route::get('itemReport', 'Backend\Report\ReportController@itemReport');
@@ -600,6 +605,8 @@ Route::post('api/v1/room','syncAPIController@room');
 Route::post('api/v1/member','syncAPIController@member');
 Route::post('api/v1/discount','syncAPIController@discount');
 Route::post('api/v1/booking','syncAPIController@booking');
+Route::post('api/v1/booking_table','syncAPIController@booking_table');
+Route::post('api/v1/booking_room','syncAPIController@booking_room');
 Route::post('api/v1/promotion','syncAPIController@promotion');
 Route::post('api/v1/promotion_item','syncAPIController@promotionItem');
 Route::post('api/v1/syncs_table','syncAPIController@getSyncsTable');

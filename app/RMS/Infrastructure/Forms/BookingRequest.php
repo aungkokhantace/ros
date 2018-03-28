@@ -18,7 +18,7 @@ class BookingRequest extends Request
         return [
             'date'              => 'required',
             'from_time'         => 'required',
-            'quantity'          => 'required|numeric|max:12'
+            'quantity'          => 'required|numeric'
         ];
     }
     public function messages()
@@ -26,8 +26,7 @@ class BookingRequest extends Request
         return [
             'date'          => 'Date is required',
             'from_time'     => 'From_time is required',
-            'quantity'      => 'Number of people is required',
-            'quantity.max'  => 'People are not greater than 12 people'
+            'quantity'      => 'Number of people is required'
         ];
     }
 }

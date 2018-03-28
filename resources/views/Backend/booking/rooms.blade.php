@@ -5,14 +5,6 @@
                 <span class="info-box-icon bg-lred">
                     <i class="fa fa-cutlery"></i>
                 </span>
-            @elseif(in_array($room->id,$warning))
-                <span class="info-box-icon bg-yellow">
-                     <i class="fa fa-cutlery"></i>
-                </span>
-            @elseif(in_array($room->id,$waiting))
-                <span class="info-box-icon bg-pink">
-                    <i class="fa fa-cutlery"></i>
-                </span>
             @else
                 <span class="info-box-icon bg-lgreen">
                     <i class="fa fa-cutlery"></i>

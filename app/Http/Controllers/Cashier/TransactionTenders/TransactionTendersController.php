@@ -83,20 +83,20 @@ class TransactionTendersController extends Controller
                     if (count($table_id) > 0) {
                         foreach($table_id as $table) {
                             $id = $table->table_id;
+                            $tempObj = Table::find($id);
+                            $tempObj->status = StatusConstance::TABLE_AVAILABLE_STATUS;
+                            $tempObj->save();
                         };
-                        $tempObj = Table::find($id);
-                        $tempObj->status = StatusConstance::TABLE_AVAILABLE_STATUS;
-                        $tempObj->save();
                     }
                     //Update Room
                     $room_id = Utility::getRoomId($order_id);
                     if (count($room_id) > 0) {
                         foreach($room_id as $room) {
                             $id = $room->room_id;
+                            $tempObj = Room::find($id);
+                            $tempObj->status = StatusConstance::ROOM_AVAILABLE_STATUS;
+                            $tempObj->save();
                         };
-                        $tempObj = Room::find($id);
-                        $tempObj->status = StatusConstance::ROOM_AVAILABLE_STATUS;
-                        $tempObj->save();
                     }
                 }
                 DB::commit();
@@ -178,20 +178,20 @@ class TransactionTendersController extends Controller
                     if (count($table_id) > 0) {
                         foreach($table_id as $table) {
                             $id = $table->table_id;
+                            $tempObj = Table::find($id);
+                            $tempObj->status = StatusConstance::TABLE_AVAILABLE_STATUS;
+                            $tempObj->save();
                         };
-                        $tempObj = Table::find($id);
-                        $tempObj->status = StatusConstance::TABLE_AVAILABLE_STATUS;
-                        $tempObj->save();
                     }
                     //Update Room
                     $room_id = Utility::getRoomId($order_id);
                     if (count($room_id) > 0) {
                         foreach($room_id as $room) {
                             $id = $room->room_id;
+                            $tempObj = Room::find($id);
+                            $tempObj->status = StatusConstance::ROOM_AVAILABLE_STATUS;
+                            $tempObj->save();
                         };
-                        $tempObj = Room::find($id);
-                        $tempObj->status = StatusConstance::ROOM_AVAILABLE_STATUS;
-                        $tempObj->save();
                     }
                 }
                 DB::commit();

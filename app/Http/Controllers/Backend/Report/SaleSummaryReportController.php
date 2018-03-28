@@ -42,11 +42,22 @@ class SaleSummaryReportController extends Controller
     {
         ob_end_clean();
         ob_start();
-        $orders = $this->reportRepository->saleSummary();
-    
-        Excel::create('SaleReport', function($excel)use($orders) {
-            $excel->sheet('Sale Report', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        // $orders = $this->reportRepository->saleSummary();
+        $orders = $this->reportRepository->DaySaleSummaryExport();
+        foreach ($orders as $key => $order) {
+            $items[$key]['Day']                     = $order->Day;
+            $items[$key]['Total Discount Amount']   = $order->DiscountAmount;
+            $items[$key]['Total Tax Amount']        = $order->TaxAmount;
+            $items[$key]['Total Service Amount']    = $order->ServiceAmount;
+            $items[$key]['Total FOC Amount']        = $order->FocAmount;
+            $items[$key]['Total Room Charge']       = $order->RoomAmount;
+            $items[$key]['Total Extra Price']       = $order->ExtraAmount;
+            $items[$key]['Total Price']             = $order->PriceAmount;
+            $items[$key]['Total All Amount']        = $order->TotalAmount;
+        }
+        Excel::create('SaleReport', function($excel)use($orders,$items) {
+            $excel->sheet('Sale Report', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
                 $sum_amount=0;
                 $sum_extra=0;
                 $sum_price=0;
@@ -64,10 +75,9 @@ class SaleSummaryReportController extends Controller
                     $sum_room       += $order->RoomAmount;
                     $sum_extra      += $order->ExtraAmount;
                     $sum_price      += $order->PriceAmount;
-                    $sum_amount     += $order->Amount;
+                    $sum_amount     += $order->TotalAmount;
                 }
                 $sheet->appendRow(array(
-                        '',
                         'Total',
                         $sum_discount,
                         $sum_tax,
@@ -121,10 +131,22 @@ class SaleSummaryReportController extends Controller
     {
         ob_end_clean();
         ob_start();
-        $orders = $this->reportRepository->MonthlySaleSummary();
-        Excel::create('SaleReport', function($excel)use($orders) {
-            $excel->sheet('Sale Report', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        $orders = $this->reportRepository->MonthlySaleSummaryExport();
+        foreach ($orders as $key => $order) {
+            $items[$key]['Year']                     = $order->Year;
+            $items[$key]['Month']                    = date("F", mktime(0, 0, 0, $order->Month, 1));
+            $items[$key]['Total Discount Amount']    = $order->DiscountAmount;
+            $items[$key]['Total Tax Amount']         = $order->TaxAmount;
+            $items[$key]['Total Service Amount']     = $order->ServiceAmount;
+            $items[$key]['Total FOC Amount']         = $order->FocAmount;
+            $items[$key]['Total Room Charge']        = $order->RoomAmount;
+            $items[$key]['Total Extra Price']        = $order->ExtraAmount;
+            $items[$key]['Total Price']              = $order->PriceAmount;
+            $items[$key]['Total All Amount']         = $order->TotalAmount;
+        }
+        Excel::create('SaleReport', function($excel)use($orders,$items) {
+            $excel->sheet('Sale Report', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
                 $sum_amount=0;
                 $sum_extra=0;
                 $sum_price=0;
@@ -135,7 +157,7 @@ class SaleSummaryReportController extends Controller
                 $sum_discount=0;
                 $sum_foc=0;
                 foreach($orders as $order){
-                    $sum_amount     += $order->Amount;
+                    $sum_amount     += $order->TotalAmount;
                     $sum_extra      += $order->ExtraAmount;
                     $sum_price      += $order->PriceAmount;
                     $sum_room       += $order->RoomAmount;
@@ -289,14 +311,13 @@ class SaleSummaryReportController extends Controller
         $to_date    = Input::get('to_date');
         $from_date  = Input::get('from_date');
         
-        $from_date  = date("Y-m-d",strtotime($from_date));
-
-        $to_date    = date("Y-m-d",strtotime($to_date));
-        
-        if($to_date == null ){
-            alert()->warning('Please Choose Year You Want to Search!')->persistent('Close');
+        if($to_date == null || $from_date == null){
+            alert()->warning('Please Choose Date You Want to Search!')->persistent('Close');
             return back();
         }else{
+            $from_date  = date("Y-m-d",strtotime($from_date));
+
+            $to_date    = date("Y-m-d",strtotime($to_date));
             $orders = $this->reportRepository->searchDailySummary($from_date, $to_date);
             return view('Backend.report.SaleSummaryReport')->with('orders',$orders)->with('to_date',$to_date)->with('from_date',$from_date);
         }
@@ -306,11 +327,22 @@ class SaleSummaryReportController extends Controller
         ob_end_clean();
         ob_start();
        
-        $orders = $this->reportRepository->searchDailySummary($start_date,$end_date);
-        
-        Excel::create('SaleReport', function($excel)use($orders) {
-            $excel->sheet('Sale Report', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        // $orders = $this->reportRepository->searchDailySummary($start_date,$end_date);
+        $orders = $this->reportRepository->DaySearchDailySummaryExport($start_date,$end_date);
+        foreach ($orders as $key => $order) {
+            $items[$key]['Day']                     = $order->Day;
+            $items[$key]['Total Discount Amount']   = $order->DiscountAmount;
+            $items[$key]['Total Tax Amount']        = $order->TaxAmount;
+            $items[$key]['Total Service Amount']    = $order->ServiceAmount;
+            $items[$key]['Total FOC Amount']        = $order->FocAmount;
+            $items[$key]['Total Room Charge']       = $order->RoomAmount;
+            $items[$key]['Total Extra Price']       = $order->ExtraAmount;
+            $items[$key]['Total Price']             = $order->PriceAmount;
+            $items[$key]['Total All Amount']        = $order->Amount;
+        }
+        Excel::create('SaleReport', function($excel)use($orders,$items) {
+            $excel->sheet('Sale Report', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
                 $sum_amount=0;
                 $sum_extra=0;
                 $sum_price=0;
@@ -331,7 +363,6 @@ class SaleSummaryReportController extends Controller
                     $sum_amount     += $order->Amount;   
                 }
                 $sheet->appendRow(array(
-                        '',
                         'Total',
                         $sum_discount,
                         $sum_tax,
@@ -361,8 +392,8 @@ class SaleSummaryReportController extends Controller
         $from_date  = date("Y-m-d",strtotime($from));
         $to_date    = date("Y-m-d",strtotime($to));
         if($to_month == null ){
-            alert()->warning('Please Choose Year You Want to Search!')->persistent('Close');
-            return back();
+            alert()->warning('Please Choose Month You Want to Search!')->persistent('Close');
+            return redirect()->back()->withInput();
         }else{
             $orders = $this->reportRepository->searchMonthlySummary($from_date,$to_date);
 
@@ -379,11 +410,23 @@ class SaleSummaryReportController extends Controller
         $to         = "31-" . $to_month;
         $from_date  = date("Y-m-d",strtotime($from));
         $to_date    = date("Y-m-d",strtotime($to));
-        $orders = $this->reportRepository->searchMonthlySummary($from_date,$to_date);
-
-        Excel::create('MonthlySummaryReport', function($excel)use($orders) {
-            $excel->sheet('MonthlySummaryReport', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        // $orders = $this->reportRepository->searchMonthlySummary($from_date,$to_date);
+        $orders = $this->reportRepository->searchMonthlySummaryExport($from_date,$to_date);
+        foreach ($orders as $key => $order) {
+            $items[$key]['Year']                     = $order->Year;
+            $items[$key]['Month']                    = date("F", mktime(0, 0, 0, $order->Month, 1));
+            $items[$key]['Total Discount Amount']    = $order->DiscountAmount;
+            $items[$key]['Total Tax Amount']         = $order->TaxAmount;
+            $items[$key]['Total Service Amount']     = $order->ServiceAmount;
+            $items[$key]['Total FOC Amount']         = $order->FocAmount;
+            $items[$key]['Total Room Charge']        = $order->RoomAmount;
+            $items[$key]['Total Extra Price']        = $order->ExtraAmount;
+            $items[$key]['Total Price']              = $order->PriceAmount;
+            $items[$key]['Total All Amount']         = $order->Amount;
+        }
+        Excel::create('MonthlySummaryReport', function($excel)use($orders,$items) {
+            $excel->sheet('MonthlySummaryReport', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
                 $sum_amount=0;
                 $sum_extra=0;
                 $sum_price=0;
@@ -407,15 +450,14 @@ class SaleSummaryReportController extends Controller
                 $sheet->appendRow(array(
                     '',
                     'Total',
-                    $sum_extra,
                     $sum_discount,
-                    $sum_price,
-                    $sum_room,
-                    $sum_service,
                     $sum_tax,
+                    $sum_service,
                     $sum_foc,
-                    $sum_amount,
-                    $sum_payment
+                    $sum_room,
+                    $sum_extra,
+                    $sum_price,
+                    $sum_amount
                     ));
 
                 $sheet->row(1,function($row){
@@ -431,10 +473,22 @@ class SaleSummaryReportController extends Controller
     public function yearlySaleSummaryExport(){
         ob_end_clean();
         ob_start();
-        $orders = $this->reportRepository->YearlySaleSummary();
-        Excel::create('YearlySaleReport', function($excel)use($orders) {
-            $excel->sheet('YearlySale Report', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        // $orders = $this->reportRepository->YearlySaleSummary();
+        $orders = $this->reportRepository->YearlySaleSummaryExport();
+        foreach ($orders as $key => $order) {
+            $items[$key]['Year']                     = $order->Year;
+            $items[$key]['Total Discount Amount']    = $order->DiscountAmount;
+            $items[$key]['Total Tax Amount']         = $order->TaxAmount;
+            $items[$key]['Total Service Amount']     = $order->ServiceAmount;
+            $items[$key]['Total FOC Amount']         = $order->FocAmount;
+            $items[$key]['Total Room Charge']        = $order->RoomAmount;
+            $items[$key]['Total Extra Price']        = $order->ExtraAmount;
+            $items[$key]['Total Price']              = $order->PriceAmount;
+            $items[$key]['Total All Amount']         = $order->Amount;
+        }
+        Excel::create('YearlySaleReport', function($excel)use($orders,$items) {
+            $excel->sheet('YearlySale Report', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
                 $sum_amount=0;
                 $sum_extra=0;
                 $sum_price=0;
@@ -457,15 +511,14 @@ class SaleSummaryReportController extends Controller
                 }
                 $sheet->appendRow(array(
                     'Total',
-                    $sum_extra,
                     $sum_discount,
-                    $sum_price,
-                    $sum_room,
-                    $sum_service,
                     $sum_tax,
+                    $sum_service,
                     $sum_foc,
-                    $sum_amount,
-                    $sum_payment
+                    $sum_room,
+                    $sum_extra,
+                    $sum_price,
+                    $sum_amount
                     ));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
@@ -524,10 +577,20 @@ class SaleSummaryReportController extends Controller
                     ->whereYear('order.order_time','=',$from_year)
                     ->where('order.status','=',$order_paid_status)
                     ->get(); 
-        
-        Excel::create('YearlySummaryReport', function($excel)use($orders) {
-            $excel->sheet('YearlySummarySale Report', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        foreach ($orders as $key => $order) {
+            $items[$key]['Year']                     = $order->Year;
+            $items[$key]['Total Discount Amount']    = $order->DiscountAmount;
+            $items[$key]['Total Tax Amount']         = $order->TaxAmount;
+            $items[$key]['Total Service Amount']     = $order->ServiceAmount;
+            $items[$key]['Total FOC Amount']         = $order->FocAmount;
+            $items[$key]['Total Room Charge']        = $order->RoomAmount;
+            $items[$key]['Total Extra Price']        = $order->ExtraAmount;
+            $items[$key]['Total Price']              = $order->PriceAmount;
+            $items[$key]['Total All Amount']         = $order->Amount;
+        }
+        Excel::create('YearlySummaryReport', function($excel)use($orders,$items) {
+            $excel->sheet('YearlySummarySale Report', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
                 $sum_amount=0;
                 $sum_extra=0;
                 $sum_price=0;

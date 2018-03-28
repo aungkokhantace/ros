@@ -20,6 +20,7 @@ class SetMenuInsertRequest extends Request
             'set_menus_price'   => 'required|numeric',
             'fileupload'        => 'required|max:10240',
             'status'            => 'required',
+            'fileupload'        => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 

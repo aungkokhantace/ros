@@ -129,7 +129,7 @@ class ItemController extends Controller
             $groupID            = $record->group_id;
             $continent_items    = $this->ItemRepository->getContinentByGroupID($groupID);
         }
-
+        
          return view('Backend.item.item', ['categories' => $result])->with('record', $record)
                 ->with('r_cat', $r_cat)
                 ->with('parent_id_arr',$parent_id_arr)

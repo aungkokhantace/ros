@@ -66,9 +66,10 @@ $(document).ready(function(){
           
       }).on('changeDate', function (selected) {
           var endDate = new Date(selected.date.valueOf());
-          $('#to_month').datepicker('setEndDate', endDate);
+          endDate.setDate(endDate.getDate() + 1);
+          $('#monthpicker2').datepicker('setStartDate', endDate);
       }).on('clearDate', function (selected) {
-          $('#to_month').datepicker('setEndDate',null);
+          $('#monthpicker2').datepicker('setStartDate',null);
   });
 
   $("#monthpicker2").datepicker({
@@ -80,9 +81,9 @@ $(document).ready(function(){
         
         }).on('changeDate', function (selected) {
           var endDate = new Date(selected.date.valueOf());
-          $('#from_month').datepicker('setEndDate', endDate);
+          $('#monthpicker1').datepicker('setEndDate', endDate);
       }).on('clearDate', function (selected) {
-          $('#from_month').datepicker('setEndDate',null);
+          $('#monthpicker1').datepicker('setEndDate',null);
   })
 
   $("#summary_year").datepicker({

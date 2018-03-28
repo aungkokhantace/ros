@@ -33,6 +33,30 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         
         return $orders;
     }
+
+    public function DaySaleSummaryExport()
+    {
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $orders = Order::select(DB::raw('DATE(order.order_time)as Day'),
+        DB::raw(
+        '
+        SUM(order.total_discount_amount) as DiscountAmount,
+        SUM(order.tax_amount) as TaxAmount,
+        SUM(order.service_amount) as ServiceAmount,
+        SUM(order.foc_amount) as FocAmount,
+        SUM(order.room_charge) as RoomAmount,
+        SUM(order.total_extra_price) as ExtraAmount,
+        SUM(order.total_price) as PriceAmount,
+        SUM(order.all_total_amount) as TotalAmount
+        '))
+        ->groupBy(DB::raw('DAY(order.order_time)'))
+        ->whereYear('order.order_time','=',date('Y'))
+        ->where('order.status','=',$order_paid_status)
+        ->get();
+        
+        return $orders;
+    }
+
     public function MonthlySaleSummary(){
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(DB::raw('MONTH(order.order_time)as Month'),
@@ -54,6 +78,29 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
 
         return $orders;
     }
+
+    public function MonthlySaleSummaryExport(){
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $orders = Order::select(DB::raw('YEAR(order.order_time)as Year'),
+        DB::raw('MONTH(order.order_time)as Month'),
+        DB::raw('
+        SUM(order.total_discount_amount) as DiscountAmount,
+        SUM(order.tax_amount) as TaxAmount,
+        SUM(order.service_amount) as ServiceAmount,
+        SUM(order.foc_amount) as FocAmount,
+        SUM(order.room_charge) as RoomAmount,
+        SUM(order.total_extra_price) as ExtraAmount,
+        SUM(order.total_price) as PriceAmount,
+        SUM(order.all_total_amount) as TotalAmount
+        '))
+        ->groupBy(DB::raw('MONTH(order.order_time)'))
+        ->whereYear('order.order_time','=',date('Y'))
+        ->where('order.status','=',$order_paid_status)
+        ->get();
+
+        return $orders;
+    }
+
     public function YearlySaleSummary(){
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(
@@ -68,6 +115,28 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         SUM(order.foc_amount) as FocAmount,
         SUM(order.all_total_amount) as Amount,
         SUM(order.payment_amount) as PayAmount
+        '))
+        ->groupBy(DB::raw('YEAR(order.order_time)'))
+        ->whereYear('order.order_time','=',date('Y'))
+        ->where('order.status','=',$order_paid_status)
+        ->get();
+
+        return $orders;
+    }
+
+    public function YearlySaleSummaryExport(){
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $orders = Order::select(
+        DB::raw('YEAR(order.order_time)as Year'),
+        DB::raw('
+        SUM(order.total_discount_amount) as DiscountAmount,
+        SUM(order.tax_amount) as TaxAmount,
+        SUM(order.service_amount) as ServiceAmount,
+        SUM(order.foc_amount) as FocAmount,
+        SUM(order.room_charge) as RoomAmount,
+        SUM(order.total_extra_price) as ExtraAmount,
+        SUM(order.total_price) as PriceAmount,
+        SUM(order.all_total_amount) as Amount
         '))
         ->groupBy(DB::raw('YEAR(order.order_time)'))
         ->whereYear('order.order_time','=',date('Y'))
@@ -125,6 +194,27 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         return $orders;
     }
 
+    public function DaySearchDailySummaryExport($from_date,$to_date){
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $orders = Order::select(DB::raw('DATE(order.order_time)as Day'),
+            DB::raw('
+            SUM(order.total_discount_amount) as DiscountAmount,
+            SUM(order.tax_amount) as TaxAmount,
+            SUM(order.service_amount) as ServiceAmount,
+            SUM(order.foc_amount) as FocAmount,
+            SUM(order.room_charge) as RoomAmount,
+            SUM(order.total_extra_price) as ExtraAmount,
+            SUM(order.total_price) as PriceAmount,
+            SUM(order.all_total_amount) as Amount
+        '))
+            ->groupBy(DB::raw('DAY(order.order_time)'))
+            ->whereDate('order.order_time','>=',$from_date)
+            ->whereDate('order.order_time','<=',$to_date)
+            ->where('order.status','=',$order_paid_status)
+            ->get();
+        return $orders;
+    }
+
     public function searchMonthlySummary($from_date,$to_date){
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
         $orders = Order::select(DB::raw('MONTH(order.order_time)as Month'),
@@ -144,7 +234,28 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         ->whereBetween('order.order_time', [$from_date,$to_date])
         ->where('order.status','=',$order_paid_status)->get();
         return $orders;
-    }    
+    }  
+
+    public function searchMonthlySummaryExport($from_date,$to_date){
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $orders = Order::select(DB::raw('YEAR(order.order_time)as Year'),
+        DB::raw('MONTH(order.order_time)as Month'),
+        DB::raw("
+        SUM(order.total_discount_amount) as DiscountAmount,
+        SUM(order.tax_amount) as TaxAmount,
+        SUM(order.service_amount) as ServiceAmount,
+        SUM(order.foc_amount) as FocAmount,
+        SUM(order.room_charge) as RoomAmount,
+        SUM(order.total_extra_price) as ExtraAmount,
+        SUM(order.total_price) as PriceAmount,
+        SUM(order.all_total_amount) as Amount
+        "))
+        ->groupBy(DB::raw('MONTH(order.order_time)'))
+        ->whereBetween('order.order_time', [$from_date,$to_date])
+        ->where('order.status','=',$order_paid_status)->get();
+        return $orders;
+    }
+
     public function sale($year,$month) //checked
     {
         $orders = Orderdetail::

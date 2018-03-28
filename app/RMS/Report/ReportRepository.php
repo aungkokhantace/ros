@@ -81,6 +81,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->orderBy('total','desc')
+                ->orderBy('name','desc')
                 ->get();
         }
         elseif($number == "" && $from_amount != "" && $to_amount != ""){
@@ -100,6 +101,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->having('total_amt','>=',$from_amount)
                 ->having('total_amt','<=',$to_amount)
                 ->orderBy('total','desc')
+                ->orderBy('name','desc')
                 ->get();
         }
         elseif($number != "" && $from_amount == "" && $to_amount == ""){
@@ -117,6 +119,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->orderBy('total','desc')
+                ->orderBy('name','desc')
                 ->take($number)
                 ->get();
         }
@@ -137,6 +140,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->having('total_amt','>=',$from_amount)
                 ->having('total_amt','<=',$to_amount)
                 ->orderBy('total','desc')
+                ->orderBy('name','desc')
                 ->take($number)
                 ->get();
         }
@@ -151,9 +155,9 @@ class ReportRepository implements ReportRepositoryInterface
         leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
             ->leftjoin('status','status.id','=','order_details.status_id')
-            ->leftjoin('users','users.id','=','order.user_id')
-            ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
-            ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
+            // ->leftjoin('users','users.id','=','order.user_id')
+            // ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
+            // ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
             ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
                 'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
             ->whereBetween('order.order_time', [$start_date, $end_date])
@@ -163,6 +167,8 @@ class ReportRepository implements ReportRepositoryInterface
             ->whereNotNull('order_details.item_id')
             ->groupBy('order_details.item_id')
             ->orderBy('Quantity','desc')
+            ->orderBy('name','desc')
+            ->orderBy('Item_Name','desc')
             ->take($number)
             ->get();
         return $orders;
@@ -174,9 +180,9 @@ class ReportRepository implements ReportRepositoryInterface
         leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
             ->leftjoin('status','status.id','=','order_details.status_id')
-            ->leftjoin('users','users.id','=','order.user_id')
-            ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
-            ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
+            // ->leftjoin('users','users.id','=','order.user_id')
+            // ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
+            // ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
             ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
                 'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
             ->whereBetween('order.order_time', [$start_date, $end_date])
@@ -188,6 +194,7 @@ class ReportRepository implements ReportRepositoryInterface
             ->having('TotalAmount','>=',$from_amount)
             ->having('TotalAmount','<=',$to_amount)
             ->orderBy('Quantity','desc')
+            ->orderBy('Item_Name','desc')
             ->get();
 
         return $orders;
@@ -199,9 +206,9 @@ class ReportRepository implements ReportRepositoryInterface
             leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
                 ->leftjoin('status','status.id','=','order_details.status_id')
-                ->leftjoin('users','users.id','=','order.user_id')
-                ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
-                ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
+                // ->leftjoin('users','users.id','=','order.user_id')
+                // ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
+                // ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
                 ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
                  'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
@@ -213,6 +220,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->having('TotalAmount','>=',$from_amount)
                 ->having('TotalAmount','<=',$to_amount)
                 ->orderBy('Quantity','desc')
+                ->orderBy('Item_Name','desc')
                 ->take($number)
                 ->get();
 
@@ -225,9 +233,9 @@ class ReportRepository implements ReportRepositoryInterface
             leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
                 ->leftjoin('status','status.id','=','order_details.status_id')
-                ->leftjoin('users','users.id','=','order.user_id')
-                ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
-                ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
+                // ->leftjoin('users','users.id','=','order.user_id')
+                // ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
+                // ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
                 ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
                  'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
@@ -237,6 +245,7 @@ class ReportRepository implements ReportRepositoryInterface
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->orderBy('Quantity','desc')
+                ->orderBy('Item_Name','desc')
 //                ->take($number)
                 ->get();
             return $orders;

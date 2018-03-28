@@ -14,7 +14,7 @@
                         <div class="col-sm-7">
                             
                             <div class="input-group date dateTimePicker" data-provide="datepicker">
-                                <input  type="text" class="form-control datepicker" id="date1" name="date" placeholder="Enter Booking Date" value="{{isset($date)? $date:Request::old('date')}}" >
+                                <input  type="text" class="form-control datepicker" id="date1" name="date" placeholder="Enter Booking Date" value="{{isset($date)? $date:Request::old('date')}}" readonly>
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </div>
@@ -26,7 +26,7 @@
                         <div class="col-sm-7">
                             
                             <div class="input-group bootstrap-timepicker timepicker">
-                                <input id="from_time" name="from_time" type="text" class="form-control input-small" value="{{isset($from)? $from:Request::old('from')}}" >
+                                <input id="from_time" name="from_time" type="text" class="form-control input-small" value="{{isset($from)? $from:Request::old('from')}}" readonly>
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                             </div>
                            
@@ -36,7 +36,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label"><b>Number of People:<span class="require">*</span></b></label>
                         <div class="col-sm-7">
-                            <input type="text" name="quantity" class="form-control" placeholder="Enter Capacity" id="capacity" value="{{isset($quantity)? $quantity:Request::old('quantity')}}">
+                            <input type="text" name="quantity" class="form-control" placeholder="Enter Capacity" id="capacity" value="{{isset($quantity)? $quantity:Request::old('quantity')}}" readonly>
                         </div>
                     </div>
 
@@ -87,7 +87,6 @@
                                             </span>
 
                                             <div class="info-box-content">
-
                                                 <span class="info-box-text"><b>Room Name: </b></span>{{$room->room_name}}
                                                 <span class="info-box-text"><b>Capacity:</b></span>{{$room->capacity}}
                                             </div>

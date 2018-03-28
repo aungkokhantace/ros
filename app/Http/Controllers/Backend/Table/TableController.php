@@ -8,7 +8,9 @@ use App\RMS\Infrastructure\Forms\TableEditRequest;
 use App\RMS\Infrastructure\Forms\TableRequest;
 use App\RMS\Room\Room;
 use App\RMS\Table\Table;
+use App\RMS\BookingTable\BookingTable;
 use App\RMS\Location\Location;
+use App\Status\StatusConstance;
 use App\RMS\Table\TableRepositoryInterface;
 use App\Http\Requests;
 use Auth;
@@ -89,7 +91,41 @@ class TableController extends Controller
     //delete table one row or multiple row
     public function delete($id)
     {
-        $tables     = $this->tableRepository->table_delete($id);
+        $date       = Carbon::today();
+        $today      = $date->toDateString();
+
+        $datetime   = Carbon::now();
+        $timeStr    = $datetime->toTimeString();
+
+        //Check Table Serve in Booking
+        $booking    = BookingTable::leftjoin('booking','booking_table.booking_id','=','booking.id')
+                    ->leftjoin('tables','booking_table.table_id','=','tables.id')
+                    ->select('tables.id')
+                    ->where('booking.booking_date','>=',$today)
+                    ->where('booking.from_time','>',$timeStr)
+                    ->get();
+        $tempArr    = array();
+        foreach($booking as $array) {
+            $tempArr[]      = $array->id;
+        }
+
+        $id_arr     = explode(",", $id);
+        foreach($id_arr as $ids) {
+            $table      = Table::find($ids);
+            $status     = $table->status;
+            //Check if table is serve
+            if ($status == StatusConstance::TABLE_UNAVAILABLE_STATUS) {
+                alert()->warning('This table is already Serve.')->persistent('Close');
+                return redirect()->back();
+            }
+            //Check If table is booking
+            if(in_array($ids, $tempArr)) {
+                alert()->warning('This table is already Booking.')->persistent('Close');
+                return redirect()->back();
+            }
+            $tables     = $this->tableRepository->table_delete($id);
+        }
+        // $table      = Table::find($id);
         return redirect()->action('Backend\Table\TableController@index')->withMessage(FormatGenerator::message('Success', 'Table Deleted...')); //to redirect listing page
     }
 

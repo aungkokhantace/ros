@@ -254,6 +254,8 @@ class syncAPIController extends ApiGuardController
 
                 $table_arr[$key]['id']          = $table->id;
                 $table_arr[$key]['table_no']    = $table->table_no;
+                $table_arr[$key]['status']      = $table->status;
+                /*
                 $booking_table_arr  = array();
                 foreach($booking as $book) {
                     $booking_table_id       = $book->table_id;
@@ -267,6 +269,7 @@ class syncAPIController extends ApiGuardController
                 } else {
                     $table_arr[$key]['status']      = $table->status;
                 }
+                */
             }
             $output = array("table" => $table_arr);
             return Response::json($output);
@@ -309,7 +312,9 @@ class syncAPIController extends ApiGuardController
                 $status         = $room->status;
 
                 $room_arr[$key]['id']          = $room_id;
-                $room_arr[$key]['room_name']    = $room_name;
+                $room_arr[$key]['room_name']   = $room_name;
+                $room_arr[$key]['status']      = $status;
+                /*
                 $booking_room_arr  = array();
                 foreach($booking as $book) {
                     $booking_room_id       = $book->room_id;
@@ -323,6 +328,7 @@ class syncAPIController extends ApiGuardController
                 } else {
                     $room_arr[$key]['status']      = $room->status;
                 }
+                */
             }
 
             $output = array("room" => $room_arr);
@@ -450,7 +456,7 @@ class syncAPIController extends ApiGuardController
                     $booking_id = $obj->id;
 
                     $returnObj[] = $obj;             
-                    foreach($table as $booking_table => $t){                
+                    foreach($table as $booking_table => $t){              
                         if($booking_id == $t->booking_id){
                             //Get Table Capicity
                             $capacityObj  = Table::find($t->table_id);
@@ -492,6 +498,101 @@ class syncAPIController extends ApiGuardController
                 $output = array("booking" => $outputarray);
                 return Response::json($output);
             }
+        } else{
+            $output = array("Message" => "Unauthorized");
+            return Response::json($output); 
+        }
+        
+        
+    }
+
+
+    public function booking_table()
+    {
+        $temp = Input::all();
+        $key  = $temp['site_activation_key'];
+        $site_activation_key = Config::all();
+        $activate_key = 0;
+
+        foreach($site_activation_key as $k){
+           $activate_key = $k->site_activation_key;
+        }
+
+        if($key == $activate_key){
+            $date       = Carbon::today();
+            $today      = $date->toDateString();
+
+            $datetime   = Carbon::now();
+            $timeStr    = $datetime->toTimeString();
+            $booking    = BookingTable::leftjoin('booking','booking_table.booking_id','=','booking.id')
+                        ->leftjoin('tables','booking_table.table_id','=','tables.id')
+                        ->select('tables.table_no','booking.booking_date','booking.customer_name','booking.capacity','booking.from_time')
+                        ->where('booking.booking_date','>=',$today)
+                        ->where('booking.from_time','>',$timeStr)
+                        ->get();
+
+            $returnObj  = array();
+            $tempArr    = array();
+            if(isset($booking)){
+                foreach ($booking as $key => $obj) {
+                    $tempArr['table_no']     = $obj->table_no;
+                    $tempArr['booking_date'] = $obj->booking_date;
+                    $tempArr['booking_time'] = $obj->from_time;
+                    $tempArr['customer_name']= $obj->customer_name;
+                    $tempArr['capacity']     = $obj->capacity;
+                    array_push($returnObj, $tempArr);
+                }  
+            }
+                //dd($returnObj);
+            $output = array("booking" => $returnObj);
+            return Response::json($output);
+        } else{
+            $output = array("Message" => "Unauthorized");
+            return Response::json($output); 
+        }
+        
+        
+    }
+
+    public function booking_room()
+    {
+        $temp = Input::all();
+        $key  = $temp['site_activation_key'];
+        $site_activation_key = Config::all();
+        $activate_key = 0;
+
+        foreach($site_activation_key as $k){
+           $activate_key = $k->site_activation_key;
+        }
+
+        if($key == $activate_key){
+            $date       = Carbon::today();
+            $today      = $date->toDateString();
+
+            $datetime   = Carbon::now();
+            $timeStr    = $datetime->toTimeString();
+            $booking    = BookingRoom::leftjoin('booking','booking_room.booking_id','=','booking.id')
+                        ->leftjoin('rooms','booking_room.room_id','=','rooms.id')
+                        ->select('rooms.room_name','booking.booking_date','booking.customer_name','booking.capacity','booking.from_time')
+                        ->where('booking.booking_date','>=',$today)
+                        ->where('booking.from_time','>',$timeStr)
+                        ->get();
+
+            $returnObj  = array();
+            $tempArr    = array();
+            if(isset($booking)){
+                foreach ($booking as $key => $obj) {
+                    $tempArr['room_name']    = $obj->room_name;
+                    $tempArr['booking_date'] = $obj->booking_date;
+                    $tempArr['booking_time'] = $obj->from_time;
+                    $tempArr['customer_name']= $obj->customer_name;
+                    $tempArr['capacity']     = $obj->capacity;
+                    array_push($returnObj, $tempArr);
+                }  
+            }
+                //dd($returnObj);
+            $output = array("booking" => $returnObj);
+            return Response::json($output);
         } else{
             $output = array("Message" => "Unauthorized");
             return Response::json($output); 

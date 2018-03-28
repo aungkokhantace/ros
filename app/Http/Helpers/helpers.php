@@ -124,6 +124,30 @@ if (! function_exists('generateItemCategoryList')) {
     }
 }
 
+if (! function_exists('generateItemCategoryListEdit')) {
+
+    function generateItemCategoryListEdit(array $elements, $parentId = 0,$indent = 0,$parent_id_arr,$category_id) {
+        foreach ($elements as $key => $element) {
+            if ($element['parent_id'] == $parentId) {
+                if(in_array($element['id'], $parent_id_arr) || $element['status'] == 0) {
+                    echo '<option  value ="' . $element['id'] . '" disabled>';
+                }
+                else{
+                    if ($element['id'] == $category_id) {
+                        echo '<option value ="' . $element['id'] . '" selected>';
+                    } else {
+                        echo '<option value ="' . $element['id'] . '">';
+                    }
+                }
+                    echo ($indent != 0) ? str_repeat("&mdash; ", $indent) : '';
+                    echo $element['name'];
+                    echo '</option>';
+                    $children = generateItemCategoryList($elements, $element['id'], $indent + 1,$parent_id_arr);
+            }
+        }
+    }
+}
+
 
 if (! function_exists('submenusitems')) {
     function submenusitems(array $elements, array $items, $parentId = 0, $indent = 0, array $continents)

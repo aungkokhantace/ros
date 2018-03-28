@@ -5,14 +5,6 @@
                 <span class="info-box-icon bg-lred" data-toggle="modal" data-target="#{{$table->id}}modal">
                     <a href="#"><i class="fa fa-cutlery"></i></a>
                 </span>
-            @elseif(in_array($table->id,$warning))
-                <span class="info-box-icon bg-yellow">
-                    <i class="fa fa-cutlery"></i>
-                </span>
-            @elseif(in_array($table->id,$waiting))
-                <span class="info-box-icon bg-pink">
-                   <i class="fa fa-cutlery"></i>
-                </span>
             @else
                 <span class="info-box-icon bg-lgreen" data-toggle="modal" data-target="#{{$table->id}}modal">
                     <a href="#"><i class="fa fa-cutlery"></i></a>

@@ -19,7 +19,8 @@ class SetMenuEditRequest extends Request
             'set_menus_name'    => 'required',
             'item'              => 'required',
             'set_menus_price'   => 'required|numeric',
-            'status'            => 'required'
+            'status'            => 'required',
+            'fileupload'        => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 

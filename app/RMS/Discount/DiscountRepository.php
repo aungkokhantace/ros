@@ -47,10 +47,12 @@ class DiscountRepository implements DiscountRepositoryInterface
     public function discount_delete($id)
     {
         $tempObj = DiscountModel::find($id);
-        $tempObj = Utility::addDeletedBy($tempObj);
-        $tempObj->deleted_at = date('Y-m-d H:m:i');
-        $tempObj->save();
-        $this->deleteDiscountLog($tempObj);
+        if (count($tempObj) > 0) {
+            $tempObj = Utility::addDeletedBy($tempObj);
+            $tempObj->deleted_at = date('Y-m-d H:m:i');
+            $tempObj->save();
+            $this->deleteDiscountLog($tempObj);
+        }
     }
     public function getItem()
     {

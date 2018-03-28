@@ -101,7 +101,7 @@
                             <td>{{number_format($sub->Price)}}</td>
                             <td class="money-align">{{ number_format($sub->Amount) }}</td>
                             <td class="money-align">{{ number_format($sub->TotalAmount) }}</td>
-                            <?php $sum += $sub->Amount;?>
+                            <?php $sum += $sub->TotalAmount;?>
                         </tr>
                     @endforeach
                     <tr class="active">

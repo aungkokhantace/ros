@@ -29,8 +29,6 @@
         <div class="container">
             <div class="col-md-2 view-label"><span class="label-available"><label>Available</label></span></div>
             <div class="col-md-2 view-label"><span class="label-service"><label>Service</label></span></div>
-            <div class="col-md-2 view-label"><span class="label-warnings"><label>Warning</label></span></div>
-            <div class="col-md-2 view-label"><span class="label-waiting"><label>Waiting</label></span></div>
         </div>
     </div>
     <div class="row">

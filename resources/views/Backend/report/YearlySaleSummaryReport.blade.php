@@ -29,13 +29,13 @@
                         </form>
                     </div>
                     <div class="col-md-12">
-                        {!! Form::open(array('url' => 'Backend/searchYearlySummary', 'class'=> 'form-horizontal user-form-border')) !!}
+                        {!! Form::open(array('url' => 'Backend/searchYearlySummary', 'class'=> 'form-horizontal user-form-border','method'=>'POST')) !!}
                         <div class="col-md-4" >
                             
                             @if(isset($year))
 
                                 <div class="input-group">
-                                    <input  type="text" class="form-control" id="summary_year" name="date" placeholder="Choose Year" value="{{$year}}">
+                                    <input  type="text" class="form-control" id="summary_year" name="date" placeholder="Choose Year" value="{{$year}}" readonly="readonly">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
@@ -43,7 +43,7 @@
                             @else
 
                                 <div class="input-group">
-                                    <input  type="text" class="form-control" id="summary_year" name="date" value= "">
+                                    <input  type="text" class="form-control" id="summary_year" name="date" value= "" placeholder="Choose Year" readonly="readonly">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>

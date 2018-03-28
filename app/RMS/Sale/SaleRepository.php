@@ -13,6 +13,9 @@ class SaleRepository implements SaleRepositoryInterface
 	public function saleReport()
     {
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel         = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel        = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
+        $status_array           = array($kitchen_cancel,$customer_cancel);
         $orders = Order::leftjoin('order_details','order_details.order_id','=','order.id')
         ->leftjoin('users','users.id','=','order.user_id')
         ->select(
@@ -30,6 +33,7 @@ class SaleRepository implements SaleRepositoryInterface
         ,'users.user_name',DB::raw('SUM(order_details.quantity) as Quantity'))
         ->where('order.status','=',$order_paid_status)
         ->where('order_details.deleted_at',NULL)
+        ->whereNotIn('order_details.status_id',$status_array)
         ->groupBy('order.id')
         ->orderBy('order.order_time','desc')
         ->get();    
@@ -38,7 +42,11 @@ class SaleRepository implements SaleRepositoryInterface
     }
 
     public function saleExcelReport(){
-        
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel         = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel        = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
+        $status_array           = array($kitchen_cancel,$customer_cancel);
+
         $orders = Order::leftjoin('order_details','order_details.order_id','=','order.id')
         ->leftjoin('users','users.id','=','order.user_id')
         ->select(
@@ -54,11 +62,12 @@ class SaleRepository implements SaleRepositoryInterface
             'order.total_extra_price as Extra',
             'order.all_total_amount as Amount'
             )
-        ->where('order.status','=','2')
+        ->where('order.status','=',$order_paid_status)
         ->where('order_details.deleted_at',NULL)
+        ->whereNotIn('order_details.status_id',$status_array)
         ->groupBy('order.id')
         ->orderBy('order.order_time','desc')
-        ->get();    
+        ->get();   
 
         return $orders;
     }
@@ -67,6 +76,10 @@ class SaleRepository implements SaleRepositoryInterface
     public function saleExcelDetailReport($from,$to)
     {
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel         = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel        = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
+        $status_array           = array($kitchen_cancel,$customer_cancel);
+        
         $orders = Order::leftjoin('order_details','order_details.order_id','=','order.id')
         ->leftjoin('users','users.id','=','order.user_id')
         ->select('order.id as InvoiceID',
@@ -83,6 +96,7 @@ class SaleRepository implements SaleRepositoryInterface
         )
         ->where('order.status','=',$order_paid_status)
         ->where('order_details.deleted_at',NULL)
+        ->whereNotIn('order_details.status_id',$status_array)
         ->whereBetween('order.order_time',[$from,$to])
         ->groupBy('order.id')
         ->orderBy('order.order_time','desc')

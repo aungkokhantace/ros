@@ -49,10 +49,17 @@ class ReportController extends Controller
         $start  = $this->reportRepository->getStartDate();
         $end    = $this->reportRepository->getEndDate();
         $orders = $this->reportRepository->getExcel($start, $end);
-        
-        Excel::create('BestSellingItemReport', function($excel)use($orders) {
-            $excel->sheet('ItemReport', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        foreach ($orders as $key => $order) {
+            $items[$key]['Item Name']       = $order->Item_Name;
+            $items[$key]['Quantity']        = $order->Quantity;
+            $items[$key]['Price']           = $order->Price;
+            $items[$key]['Discount Price']  = $order->DiscountAmount;
+            $items[$key]['Amount']          = $order->Amount;
+            $items[$key]['Total Amount']    = $order->TotalAmount;
+        }
+        Excel::create('BestSellingItemReport', function($excel)use($orders,$items) {
+            $excel->sheet('ItemReport', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
                 $totalamt=null;
                 foreach($orders as $order){
                     $totalamt+=$order->TotalAmount;
@@ -108,9 +115,17 @@ class ReportController extends Controller
         ob_end_clean();
         ob_start();
         $orders = $this->reportRepository->getExcelWithDateAndNumber($start_date, $end_date,$number);
-        Excel::create('BestSellingItemReport', function($excel)use($orders) {
-            $excel->sheet('ItemReport', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        foreach ($orders as $key => $order) {
+            $items[$key]['Item Name']       = $order->Item_Name;
+            $items[$key]['Quantity']        = $order->Quantity;
+            $items[$key]['Price']           = $order->Price;
+            $items[$key]['Discount Price']  = $order->DiscountAmount;
+            $items[$key]['Amount']          = $order->Amount;
+            $items[$key]['Total Amount']    = $order->TotalAmount;
+        }
+        Excel::create('BestSellingItemReport', function($excel)use($orders,$items) {
+            $excel->sheet('ItemReport', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
 
                 $totalamt=null;
                 foreach($orders as $order){
@@ -138,9 +153,17 @@ class ReportController extends Controller
         ob_end_clean();
         ob_start();
         $orders = $this->reportRepository->getExcelWithDateAndAmount($start_date, $end_date,$from_amount,$to_amount);
-        Excel::create('BestSellingItemReport', function($excel)use($orders) {
-            $excel->sheet('ItemReport', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        foreach ($orders as $key => $order) {
+            $items[$key]['Item Name']       = $order->Item_Name;
+            $items[$key]['Quantity']        = $order->Quantity;
+            $items[$key]['Price']           = $order->Price;
+            $items[$key]['Discount Price']  = $order->DiscountAmount;
+            $items[$key]['Amount']          = $order->Amount;
+            $items[$key]['Total Amount']    = $order->TotalAmount;
+        }
+        Excel::create('BestSellingItemReport', function($excel)use($orders,$items) {
+            $excel->sheet('ItemReport', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
 
                 $totalamt=null;
                 foreach($orders as $order){
@@ -168,9 +191,17 @@ class ReportController extends Controller
         ob_end_clean();
         ob_start();
         $orders = $this->reportRepository->getExcelWithDate($start_date, $end_date,$number,$from_amount,$to_amount);
-        Excel::create('BestSellingItemReport', function($excel)use($orders) {
-            $excel->sheet('ItemReport', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        foreach ($orders as $key => $order) {
+            $items[$key]['Item Name']       = $order->Item_Name;
+            $items[$key]['Quantity']        = $order->Quantity;
+            $items[$key]['Price']           = $order->Price;
+            $items[$key]['Discount Price']  = $order->DiscountAmount;
+            $items[$key]['Amount']          = $order->Amount;
+            $items[$key]['Total Amount']    = $order->TotalAmount;
+        }
+        Excel::create('BestSellingItemReport', function($excel)use($orders,$items) {
+            $excel->sheet('ItemReport', function($sheet)use($orders,$items) {
+                $sheet->fromArray($items);
 
                 $totalamt=null;
                 foreach($orders as $order){
@@ -196,9 +227,17 @@ class ReportController extends Controller
         ob_end_clean();
         ob_start();
         $orders = $this->reportRepository->getExcelWithDateWithNull($start_date, $end_date);
-        Excel::create('BestSellingItemReport', function($excel)use($orders) {
-            $excel->sheet('ItemReport', function($sheet)use($orders) {
-                $sheet->fromArray($orders);
+        foreach ($orders as $key => $order) {
+            $items[$key]['Item Name']       = $order->Item_Name;
+            $items[$key]['Quantity']        = $order->Quantity;
+            $items[$key]['Price']           = $order->Price;
+            $items[$key]['Discount Price']  = $order->DiscountAmount;
+            $items[$key]['Amount']          = $order->Amount;
+            $items[$key]['Total Amount']    = $order->TotalAmount;
+        }
+        Excel::create('BestSellingItemReport', function($excel)use($items,$orders) {
+            $excel->sheet('ItemReport', function($sheet)use($items,$orders) {
+                $sheet->fromArray($items);
 
                 $totalamt=null;
                 foreach($orders as $order){

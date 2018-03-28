@@ -848,6 +848,17 @@ button.close {
 .mg-20 {
 	margin-bottom: 20px;
 }
+.print-invoice {
+	border:1px solid #F4F4F4;
+}
+.print-invoice tr td {
+	font-size:13px;
+	height:25px;
+	padding: 5px 10px;
+}
+.dash-border {
+	border-bottom:1px dashed black;
+}
 /*
 .invoice-table-wrapper {
     border: 1px solid #E8E8E8;

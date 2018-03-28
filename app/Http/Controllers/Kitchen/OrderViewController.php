@@ -679,9 +679,10 @@ class OrderViewController extends Controller
 
             $order                      = Order::where('id','=',$order_id)->first();
             $total                      = (($order->total_price) - ($price));
+            $room_charge                = $order->room_charge;
             $service_amount             = ($total * $service)/(100);
             $tax_amount                 = ($total * $tax)/(100);
-            $all_total_amount           = $total + $service_amount + $tax_amount;
+            $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
             $order->total_price         = $total;
             $order->service_amount      = $service_amount;
             $order->tax_amount          = $tax_amount;
@@ -701,9 +702,10 @@ class OrderViewController extends Controller
 
             $order                      = Order::where('id','=',$order_id)->first();
             $total                      = (($order->total_price) - ($price));
+            $room_charge                = $order->room_charge;
             $service_amount             = ($total * $service)/(100);
             $tax_amount                 = ($total * $tax)/(100);
-            $all_total_amount           = $total + $service_amount + $tax_amount;
+            $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
             $order->total_price         = $total;
             $order->service_amount      = $service_amount;
             $order->tax_amount          = $tax_amount;
@@ -750,9 +752,10 @@ class OrderViewController extends Controller
 
             $order                      = Order::where('id','=',$order_id)->first();
             $total                      = (($order->total_price) - ($price));
+            $room_charge                = $order->room_charge;
             $service_amount             = ($total * $service)/(100);
             $tax_amount                 = ($total * $tax)/(100);
-            $all_total_amount           = $total + $service_amount + $tax_amount;
+            $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
             $order->total_price         = $total;
             $order->service_amount      = $service_amount;
             $order->tax_amount          = $tax_amount;
@@ -771,9 +774,10 @@ class OrderViewController extends Controller
 
             $order                      = Order::where('id','=',$order_id)->first();
             $total                      = (($order->total_price) - ($price));
+            $room_charge                = $order->room_charge;
             $service_amount             = ($total * $service)/(100);
             $tax_amount                 = ($total * $tax)/(100);
-            $all_total_amount           = $total + $service_amount + $tax_amount;
+            $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
             $order->total_price         = $total;
             $order->service_amount      = $service_amount;
             $order->tax_amount          = $tax_amount;

@@ -38,7 +38,7 @@
                     <div class="col-md-3 month_pick">
 
                         <div class="input-group">
-                            <input  type="text" class="form-control" id="monthpicker1" name="from_month" placeholder="Choose Start Month" value= "{{isset($from_month)? $from_month : ""}}">
+                            <input  type="text" class="form-control" id="monthpicker1" name="from_month" placeholder="Choose Start Month" value= "{{isset($from_month)? $from_month:Request::old('from_month')}}" readonly="readonly">
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
@@ -48,7 +48,7 @@
                     <div class="col-md-3 month_pick monthpick2">
 
                         <div class="input-group">
-                            <input  type="text" class="form-control" id="monthpicker2" name="to_month" placeholder="Choose Start Month" value= "{{isset($to_month)? $to_month : ""}}">
+                            <input  type="text" class="form-control" id="monthpicker2" name="to_month" placeholder="Choose Start Month" value= "{{isset($to_month)? $to_month:Request::old('to_month')}}" readonly="readonly">
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>

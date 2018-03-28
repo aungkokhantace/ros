@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Backend\Room;
 use App\RMS\Infrastructure\Forms\RoomEditRequest;
 use App\RMS\Infrastructure\Forms\RoomEntryRequest;
 use App\RMS\Room\Room;
+use App\RMS\BookingRoom\BookingRoom;
+use App\Status\StatusConstance;
 use App\RMS\Room\RoomRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Input;
 
 use App\RMS\FormatGenerator As FormatGenerator;
@@ -99,11 +102,43 @@ class RoomController extends Controller
     }
 
     public function delete($ids){//delete room one row or multiple rows
+        $date       = Carbon::today();
+        $today      = $date->toDateString();
+
+        $datetime   = Carbon::now();
+        $timeStr    = $datetime->toTimeString();
+
+        //Check Table Serve in Booking
+        $booking    = BookingRoom::leftjoin('booking','booking_room.booking_id','=','booking.id')
+                    ->leftjoin('rooms','booking_room.room_id','=','rooms.id')
+                    ->select('rooms.id')
+                    ->where('booking.booking_date','>=',$today)
+                    ->where('booking.from_time','>',$timeStr)
+                    ->get();
+        $tempArr    = array();
+        foreach($booking as $array) {
+            $tempArr[]      = $array->id;
+        }
+
         $id = explode(',', $ids);
         foreach($id as $room_id){
+            $room       = Room::find($room_id);
+            $status     = $room->status;
+            //Check if room is serve
+            if ($status == StatusConstance::ROOM_UNAVAILABLE_STATUS) {
+                alert()->warning('This room is already Serve.')->persistent('Close');
+                return redirect()->back();
+            }
+
+            //Check If Room is booking
+            if(in_array($room_id, $tempArr)) {
+                alert()->warning('This rooms is already Booking.')->persistent('Close');
+                return redirect()->back();
+            }
             $this->roomRepository->deleteRoomData($room_id);
         }
-        return redirect()->action('Backend\Room\RoomController@index');
+        return redirect()->action('Backend\Room\RoomController@index')
+        ->withMessage(FormatGenerator::message('Success', 'Room deleted success ...'));;
     }
 
     public function roomenabled($id){

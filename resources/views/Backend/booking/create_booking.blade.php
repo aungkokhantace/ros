@@ -14,7 +14,7 @@
                         <div class="col-sm-5">
                             
                             <div class="input-group date " >
-                                <input  type="text" class="form-control  booking-create" id="date1" name="date" placeholder="Enter Booking Date" >
+                                <input  type="text" class="form-control  booking-create" id="date1" name="date" placeholder="Enter Booking Date" value="{{isset($date)? $date:Request::old('date')}}">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </div>
@@ -30,7 +30,7 @@
                         <div class="col-sm-5">
                             
                             <div class="input-group bootstrap-timepicker timepicker">
-                                <input id="from_time" name="from_time" type="text" class="form-control input-small" >
+                                <input id="from_time" name="from_time" type="text" class="form-control input-small" value="{{isset($from)? $from:Request::old('from_time')}}" >
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                             </div>
                            
@@ -40,14 +40,15 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label"><b>Number of People:<span class="require">*</span></b></label>
                         <div class="col-sm-5">
-                            <input type="text" name="quantity" class="form-control" placeholder="Enter Capacity" id="capacity" >
+                            <input type="text" name="quantity" class="form-control" placeholder="Enter Capacity" id="capacity" value="{{isset($quantity)? $quantity:Request::old('quantity')}}">
+                            <p class="text-danger">{{$errors->first('quantity')}}</p>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-5">
-                            <input type="checkbox" name="check" value="room">
+                            <input type="checkbox" name="check" value="room" @if(Request::old('check') AND Request::old('check') == 'room') checked @endif>
                             <label class="control-label"><b>Private Room</b></label>
                         </div>
                     </div>

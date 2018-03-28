@@ -25,7 +25,7 @@
                         </h3>
                     </div>
                   <div class="col-lg-8 col-md-7 col-sm-6 col-6 receipt-btn">
-                        <button class="btn print-modal" onclick="printInvoice('{{$order->order_id}}')" data-toggle="modal" data-target="#printModal" data-id="{{$order->order_id}}" id="printInoice" {{ $order->status == 2 ? "" : "style=display:none;" }}>
+                        <button class="btn print-modal" onclick="printInvoice('{{$order->order_id}}')" data-toggle="modal" data-target="#printModal" data-id="{{$order->order_id}}" id="printInvoice" {{ $order->status == 2 ? "" : "style=display:none;" }}>
                             <img src="/assets/cashier/images/payment/print_img.png" alt="Print Image" class="heightLine_06">
                         </button>
 

@@ -42,23 +42,38 @@
                     <td >{{Carbon\Carbon::parse($booking->to_time)->format('h:i A')}}</td>
                     <td >
                     @if(isset($booking->booking_table))
+                        @php
+                            $table_name  = '';
+                        @endphp
+
                        @foreach($booking->booking_table as $t)
                             @foreach($table as $result)
                             
                                 @if($t->table_id == $result->id)
-                                    {{ $result->table_no }},
+                                    @php
+                                        $table_name  .= $result->table_no . ",";
+                                    @endphp
                                 @endif
                             @endforeach
-                        @endforeach  
+                        @endforeach 
+
+                        {{ substr($table_name,0, -1) }} 
                     @endif
                     @if(isset($booking->booking_room))
+                        @php
+                            $room_name  = '';
+                        @endphp
                         @foreach($booking->booking_room as $r)
                             @foreach($room as $result)
                                 @if($r->room_id == $result->id)
-                                    {{ $result->room_name }}
+                                    @php
+                                        $room_name  .= $result->room_name . ",";
+                                    @endphp
                                 @endif
                             @endforeach
                         @endforeach
+
+                        {{ substr($room_name,0, -1) }}
                     @endif    
                     </td>
                     <td class="black-text">{{$booking->capacity}}</td>
