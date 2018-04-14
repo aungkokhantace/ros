@@ -1076,6 +1076,49 @@ body {padding: 0 0 30pt 0;}
 input[readonly]{
   background-color:transparent !important;
 }
+.thumbnail {
+    padding:5px 20px;
+}
+.i-header h4, .i-header label {
+    font-weight: 600;
+}
+.i-header h4 {
+    color:#009062;
+}
+.i-header label {
+    margin:0 !important;
+}
+.i-body table span {
+    padding: 5px;
+}
+.i-body table thead {
+    background:#B8EAE0;
+    height: 35px;
+}
+.i-body table thead tr td {
+    color:#000000;
+    font-size:15px;
+    line-height: 35px;
+}
+.i-body table tbody {
+    background:#008A4E;
+    height: 30px;
+}
+.i-body table tbody tr td {
+    color:#ffffff;
+    font-size:13px;
+    line-height: 25px;
+}
+.i-body table tfoot {
+    height: 30px;
+    border:none;
+}
+.i-body table tfoot tr td {
+    font-size:13px !important;
+    line-height: 25px !important;
+    border:none !important;
+}
+
 /*--================== End Theodore CSS ==================--*/
 
 /*-----------------------------------------------------------------------------------------------------------------

@@ -8,7 +8,10 @@ namespace App\RMS\Orderdetail;
  */
 interface OrderdetailRepositoryInterface
 {
-
+	public function store($paramObj);
+	public function getCategoriesByParent($parent_id);
+	public function getItemsByCategory($categoryID);
+	public function getBackCategoryByID($id);
     public function getCategories();
     public function categoryDetail($id);
     public function getsetmenu();

@@ -1,6 +1,6 @@
 
 @extends('cashier.layouts.master')
-@section('title','Item')
+@section('title','Payment')
 @section('content')
     <div class="wrapper"> 
         <div class="container-fluid receipt">  
@@ -180,9 +180,9 @@
                           <button class="btn quantity" id="0">0</button>
                         </div>
                         <div class="col-md-12 receipt-btn4">                       
-                          <button class="btn btn-primary void-btn" id = 'void-item'>VOID <i class="fa fa-trash-alt"></i></button>
-                          <button class="btn clear-input-btn">CLEAR INPUT</button>
-                          <button class="btn btn-primary foc-btn">FREE CHARGE</button>
+                            <button class="btn btn-primary void-btn" id = 'void-item'>VOID <i class="fa fa-trash-alt"></i></button>
+                            <button class="btn clear-input-btn">CLEAR INPUT</button>
+                            <button class="btn btn-primary foc-btn">FREE CHARGE</button>
                         </div>
                       </div>
 
@@ -201,6 +201,7 @@
         @include('cashier.invoice.items_list')
       <script type="text/javascript">
         $(document).ready(function(){
+            var socket = socketConnect();
             //If Clear button 
             $('.clear-input-btn').click(function(){
                 $('.amount-quantity').text('');
@@ -280,6 +281,9 @@
                                     var paid_amount     = printObj.paid_amount;
                                     $('.net-amount').after('<tr class="tr-bottom-dashed i-title payment-amount"><td colspan="3">Paid ' + card_name + '</td><td class="text-right">' + paid_amount + '</td></tr>');
                                 }
+                                socket.emit('order_payment', { 
+                                    order_payment   : 'order_payment'
+                                });
                                 $('.print-modal').click(); 
                             }
                         }
@@ -350,6 +354,9 @@
                                     var paid_amount     = printObj.paid_amount;
                                     $('.net-amount').after('<tr class="tr-bottom-dashed i-title payment-amount"><td colspan="3">Paid ' + card_name + '</td><td class="text-right">' + paid_amount + '</td></tr>');
                                 }
+                                socket.emit('order_payment', { 
+                                    order_payment   : 'order_payment'
+                                });
                                 $('.print-modal').click();
                             }
                             payment.reverse();

@@ -21,27 +21,37 @@
     </div>
 
     {{--tables--}}
-    <div class="container  ">
-
+    <div class="container">
         <div class="row">
-     
-    
-           
-             <div class="col-md-7 col-md-offset-2">
-               <div class="thumbnail" style="padding:30px 20px">
-                <div class="invoice-title"><strong><h4 class="text-center">Invoice Detail</h4></strong></div>
-                    
-                    <table class="print-invoice table ">
-                        <thead>
+            <div class="col-md-7 col-md-offset-2">
+                <div class="thumbnail">
+                    <div class="row">
+                        <div class="col-md-6 i-header">
+                            <h4>Invoice</h4>
+                            <label>Invoice No: {{ $orders->order_id}}</label>
+                            <label>Invoice Date:{{$orders->order_time}}</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p style="margin-top:10px;"><img src="/uploads/{{ $config->logo }}" /></p>
+                        </div>
+                    </div><br />
+
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2 i-header">
+                            <label>{{ $config->restaurant_name}}</label><br />
+                            <label>Email: {{ $config->email }}</label><br />
+                            <label>Tel: {{ $config->phone}}</label><br />
+                            <label>Addr: {{ $config->address}}</label><br />
+                            <label>Website: {{ $config->website}}</label>
+                        </div>
+                    </div><br />
+
+                    <div class="row i-body">
+                        <table class="table table-bordered">
+                            <thead>
                             <tr>
-                                <td colspan="4" class="td-config">
-                                    {{ $config->restaurant_name}}<br/>
-                                    Website: {{ $config->website}}<br/>
-                                    Email: {{ $config->email }}<br/>
-                                    Tel: {{ $config->phone}}<br/>
-                                    Addr: {{ $config->address}}<br /><br/>
-                                    <span style="float:left">Invoice No: {{ $orders->order_id}}</span><br/>
-                                    <span style="float:left">Invoice Date:{{$orders->order_time}}</span><br/>
+                                    <td colspan="4"><span>
                                     @if(isset($tables))
                                         @foreach($tables as $table)
                                             Table No : {{ $table->table_no }}
@@ -52,118 +62,129 @@
                                             Room No : {{ $room->room_name }}
                                         @endforeach
                                     @endif
-                                </td>
-                            </tr>
+                                    </span></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td width="10%"><span>Qty</span></td>
+                                    <td width="50%"><span>Product</span></td>
+                                    <td width="20%"><span>Price</span></td>
+                                    <td width="20%"><span>Amount</span></td>
+                                </tr>
+                            </tbody>
 
-                            <tr class="tr-bottom-dashed i-title">
-                                <td width="10%">Qty</th>
-                                <td width="50%">Product</th>
-                                <td width="20%" class="text-right">Price</th>
-                                <td width="20%" class="text-right">Amount</th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody class="i-title">
+                            <tfoot>
                             @foreach($order_detail as $detail)
-                            <tr>
-                                <td> {{$detail->quantity }}</td>
-                                <td class="mm-font">
-                                    @if(isset($detail->item_name))
-                                        {{$detail->item_name}}
-                                        @if ($detail->has_continent)
-                                            @foreach($continent as $con)
-                                                @if ($detail->continent_id == $con->id)
-                                                    ({{ $con->name }})
-                                                @endif
-                                            @endforeach
+                                <tr>
+                                    <td style="font-size:13px;line-height: 25px;border:none;" width="10%" class="text-left"><span>{{$detail->quantity }}</span></td>
+                                    <td  width="50%" class="mm-font text-left"><span>
+                                        @if(isset($detail->item_name))
+                                            {{$detail->item_name}}
+                                            @if ($detail->has_continent)
+                                                @foreach($continent as $con)
+                                                    @if ($detail->continent_id == $con->id)
+                                                        ({{ $con->name }})
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        @else
+                                            {{ $detail->set_name }}
                                         @endif
-                                    @else
-                                        {{ $detail->set_name }}
-                                    @endif
-                                </td>
-                                <td class="text-right">{{ number_format($detail->amount)  }}</td>
-                                <td class="text-right">{{number_format($detail->quantity * $detail->amount)}}</td>
-                            </tr>
+                                    </span></td>
+                                    <td  width="20%" class="text-left"><span>{{ number_format($detail->amount)  }}</span></td>
+                                    <td  width="20%" class="text-left"><span>{{number_format($detail->quantity * $detail->amount)}}</span></td>
+                                </tr>
 
                                 @foreach($addon as $add)
                                     @if($detail->order_detail_id == $add['order_detail_id'])
                                         <tr class="i-title">
-                                            <td>{{ $add['quantity']}}</td>
-                                            <td>{{ $add['food_name']}}</td>
-                                            <td class="text-right">{{ $add['amount']}}</td>
-                                            <td class="text-right">{{number_format($add['quantity'] * $add['amount'])}}</td>
+                                            <td  class="text-left"><span>{{ $add['quantity']}}</span></td>
+                                            <td  class="text-left"><span>{{ $add['food_name']}}</span></td>
+                                            <td  class="text-left"><span>{{ $add['amount']}}</span></td>
+                                            <td  class="text-left"><span>{{number_format($add['quantity'] * $add['amount'])}}</span></td>
                                         </tr>
                                     @endif
 
-                                @endforeach  
+                                @endforeach
 
                             @endforeach
 
-                            <tr class="tr-bottom-dashed i-title">
-                                <td colspan="4"></td>
-                            </tr>
-                            
-                            <tr class="i-title">
-                                <td colspan="3">Total: (Exclusive Tax)</td>
-                                <td class="text-right">{{ number_format($orders->total_price) }}</td>
-                            </tr>
-                            @if(isset($rooms))
-                                <tr class="i-title">
-                                    <td colspan="3">Room Charge</td>
-                                    <td class="text-right">{{ $orders->room_charge }}</td>
+                                <tr>
+                                    <td  width="10%" colspan="3"><span>Total: (Exclusive Tax)</span></td>
+                                    <td  width="20%"><span>{{ number_format($orders->total_price) }}</span></td>
+                                </tr> 
+
+                                <tr>
+                                    <td  width="10%" colspan="3"><span>Room Charge</span></td>
+                                    <td  width="20%"><span>{{ $orders->room_charge }}</span></td>
                                 </tr>
-                            @endif
 
-                            <tr class="i-title">
-                                <td colspan="3">Service Tax ({{ $config->service}} %)</td>
-                                <td class="text-right">{{ $orders->service_amount }}</td>
-                            </tr>
+                                <tr>
+                                    <td  width="10%" colspan="3"><span>Service Tax ({{ $config->service}} %)</span></td>
+                                    <td  width="20%"><span>{{ $orders->service_amount }}</span></td>
+                                </tr>
 
-                            <tr class="i-title">
-                                <td colspan="3">GST ({{$config->tax}} %)</td>
-                                <td class="text-right">{{ $orders->tax_amount }}</td>
-                            </tr>
-                            
-                            <tr class="tr-bottom-dashed i-title">
-                                <td colspan="3">Discount</td>
-                                <td class="text-right">{{ $orders->total_discount_amount }}</td>
-                            </tr>
-                            
-                            <tr class="tr-bottom-dashed i-title">
-                                <td colspan="3">FOC</td>
-                                <td class="text-right">{{ $orders->foc_amount }}</td>
-                            </tr>
-                            <tr class="tr-bottom-dashed i-title">
-                                <td colspan="3">Net Amount</td>
-                                <td class="text-right">{{ number_format($orders->all_total_amount) }} </td>
-                            </tr>
+                                <tr>
+                                    <td  width="10%" colspan="3"><span>GST ({{$config->tax}} %)</span></td>
+                                    <td  width="20%"><span>{{ $orders->tax_amount }}</span></td>
+                                </tr>
 
+                                <tr>
+                                    <td  width="10%" colspan="3"><span>Discount</span></td>
+                                    <td  width="20%"><span>{{ $orders->total_discount_amount }}</span></td>
+                                </tr>
 
-                            @foreach($payments as $payment)
-                            <tr class="tr-bottom-dashed i-title">
-                                <td colspan="3">Paid {{ $payment['name'] }}</td>
-                                <td class="text-right">{{ number_format($payment['paid_amount']) }}</td>
-                            </tr>
-                            @endforeach
+                                <tr>
+                                    <td  width="10%" colspan="3"><span>FOC</span></td>
+                                    <td  width="20%"><span>{{ number_format($orders->foc_amount) }}</span></td>
+                                </tr>
 
-                            <tr class="tr-bottom-dashed i-title">
-                                <td colspan="3">Change</td>
-                                <td class="text-right">{{ number_format($orders->refund) }}</td>
-                            </tr>
+                            </tfoot>
+                        </table>
+                    </div><br />
 
-                            <tr style="text-align:center;">
-                                <td colspan="4" >Thank You</td>
-                            </tr>
+                    <div class="row">
+                        <div class="col-md-4 col-md-offset-5">
+                            <p class="text-left" style="font-size: 16px;">Net Amount</p>
+                        </div>
 
-                            <tr style="text-align:center;">
-                                <td colspan="4" ><a href="/Backend/invoice" class="btn btn-success">Go Back</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <div class="col-md-3">
+                            <p class="text-right" style="font-size: 16px;">{{ number_format($orders->all_total_amount) }}</p>
+                        </div>
+                    </div>
+
+                    @foreach($payments as $payment)
+                    <div class="row">
+                        <div class="col-md-4 col-md-offset-5">
+                            <p class="text-left" style="color:#BB0C25;font-size: 16px;">Paid {{ $payment['name'] }}</p>
+                        </div>
+
+                        <div class="col-md-3">
+                            <p class="text-right" style="color:#BB0C25;font-size: 16px;">{{ number_format($payment['paid_amount']) }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+
+                    <div class="row">
+                        <div class="col-md-4 col-md-offset-5">
+                            <p class="text-left" style="color:#009A3D;font-size: 16px;">Change</p>
+                        </div>
+
+                        <div class="col-md-3">
+                            <p class="text-right" style="color:#009A3D;font-size: 16px;">{{ number_format($orders->refund) }}</p>
+                        </div>
+                    </div><br />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-center" style="font-size: 16px;">Thank You</p>
+                            <p class="text-center" style="font-size: 16px;"><a href="/Backend/invoice" class="btn btn-success">Go Back</a></p>
+                        </div>
                     </div>
                 </div>
-           </div>
-        
+            </div>
+        </div>
     </div>
 </div>
 

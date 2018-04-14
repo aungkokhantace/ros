@@ -515,5 +515,34 @@ class PermissionTableSeeder extends Seeder
             'created_by' => '1',
         ]);
         /*End Kitchen */
+
+        /*For Make Order Module */
+        DB::table('permissions')->insert([
+            'id' =>'82',
+            'role_id' => '1',
+            'module_id' => '25',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'83',
+            'role_id' => '2',
+            'module_id' => '25',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'84',
+            'role_id' => '3',
+            'module_id' => '25',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'85',
+            'role_id' => '4',
+            'module_id' => '25',
+            'created_by' => '1',
+        ]);
     }
 }

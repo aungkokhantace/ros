@@ -65,6 +65,10 @@ class StatusConstance
     const ITEM_AVAILABLE_STATUS                 = 1; //ITEM AVAILABLE STATUS
     const ITEM_UNAVAILABLE_STATUS               = 0; //ITEM UNAVAILABLE STATUS
 
+    //Room Status
+    const ADDON_AVAILABLE_STATUS                = 1; //ADD ON AVAILABLE STATUS
+    const ADDON_UNAVAILABLE_STATUS              = 0; //ADD ON UNAVAILABLE STATUS
+
     //User Roles
     const SUPER_ADMIN_ROLE                      = 1;
     const MANAGER_ROLE                          = 2;

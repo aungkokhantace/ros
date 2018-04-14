@@ -7,7 +7,7 @@
 <!-- Start Footer -->
 <footer class="main-footer">
 <div class="pull-right hidden-xs">
-  <b>Version</b> 2.4.0
+  <b>Version</b> {!! gitVersion() !!}
 </div>
 <div class="col-md-5">
 <strong> <p class="footer-status ">&copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/">AcePlus Solutions.,Co Ltd</a></p></strong>
@@ -65,7 +65,7 @@
                 "targets": 0
             } ],
             "order": [[ 1, 'asc' ]]
-        } );
+        });
 
         t.on( 'order.dt search.dt', function () {
             t.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {

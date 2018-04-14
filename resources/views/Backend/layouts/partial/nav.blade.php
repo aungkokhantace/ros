@@ -10,7 +10,6 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
-        @if (in_array('1',session()->get('module')))
         <li>
           
           <a href="/Backend/Dashboard">
@@ -21,8 +20,6 @@
           </a>
           
         </li>
-         @endif
-         @if (in_array('2',session()->get('module')) || in_array('3',session()->get('module')))
         <li class="treeview">
           <a href="#">
             <i class="fa fa-users"></i>
@@ -34,29 +31,16 @@
           <ul class="treeview-menu">
            
             <li><a href="/Backend/Permission/index"><i class="fa fa-circle-o text-aqua"></i>  Permission</a></li>
-            @if (in_array('3',session()->get('module')))
             <li><a href="/Backend/StaffType/index"><i class="fa fa-circle-o text-aqua"></i>  Staff Type</a></li>
-            @endif
-
-            @if (in_array('2',session()->get('module')))
             <li><a href="/Backend/Staff/index"><i class="fa fa-circle-o text-aqua"></i>  Staff</a></li>
-            @endif
-            
           </ul>
         </li>
-        @endif
-       
-         @if (in_array('18',session()->get('module')))
         <li>
         <a href="/Backend/Kitchen/index">
             <i class="fa fa-cutlery"></i>
             <span>Kitchen</span>
-            
           </a>
         </li>
-        @endif
-
-        @if (in_array('4',session()->get('module')) || in_array('5',session()->get('module')) || in_array('6',session()->get('module')) || in_array('8',session()->get('module')))
         <li class="treeview">
           <a href="#">
            <i class="fa fa-plus-square-o"></i><span>Product</span>
@@ -65,23 +49,12 @@
             </span>
           </a>
           <ul class="treeview-menu">
-             @if (in_array('4',session()->get('module')))
             <li><a href="/Backend/Category/index"><i class="fa fa-circle-o text-aqua"></i>  Category </a></li>
-            @endif
-            @if (in_array('5',session()->get('module')))
             <li><a href="/Backend/Item/index"><i class="fa fa-circle-o text-aqua"></i>  Items</a></li>
-            @endif
-            @if (in_array('6',session()->get('module')))
             <li><a href="/Backend/AddOn/index"><i class="fa fa-circle-o text-aqua"></i>  Add On</a></li>
-            @endif
-
-            @if (in_array('8',session()->get('module')))
             <li><a href="/Backend/SetMenu/index"><i class="fa fa-circle-o text-aqua"></i> </i> Set Menu</a></li>
-            @endif
           </ul>
         </li>
-        @endif
-        @if (in_array('11',session()->get('module')) || in_array('12',session()->get('module')))
         <li class="treeview">
           <a href="#">
             <i class="fa fa-shopping-bag"></i> <span>Service</span>
@@ -90,17 +63,11 @@
             </span>
           </a>
           <ul class="treeview-menu">
-             @if (in_array('11',session()->get('module')))
             <li><a href="/Backend/Table/index"><i class="fa fa-circle-o text-aqua"></i>  Table </a></li>
-            @endif
-            @if (in_array('12',session()->get('module')))
             <li><a href="/Backend/Room/index"><i class="fa fa-circle-o text-aqua"></i>  Room</a></li>
-            @endif
             <li><a href="/Backend/Location/index"><i class="fa fa-circle-o text-aqua"></i>  Location</a></li>
           </ul>
         </li>
-        @endif
-     @if (in_array('14',session()->get('module')) || in_array('7',session()->get('module')))
        <li class="treeview">
           <a href="#">
             <i class="fa fa-share-alt-square"></i> <span>General</span>
@@ -109,16 +76,10 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            @if (in_array('14',session()->get('module')))
             <li><a href="/Backend/Config/general_config"><i class="fa fa-circle-o text-aqua"></i>  Configuration </a></li>
-            @endif
-            @if (in_array('7',session()->get('module')))
             <li><a href="/Backend/Discount/index"><i class="fa fa-circle-o text-aqua"></i>  Discount</a></li>
-            @endif
           </ul>
         </li>
-        @endif
-       @if (in_array('17',session()->get('module')) || in_array('15',session()->get('module')) || in_array('13',session()->get('module')))
         <li class="treeview">
           <a href="#">
            <i class="fa fa-file-excel-o"></i> <span>Report</span>
@@ -127,14 +88,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            
-
-            @if (in_array('13',session()->get('module')))
             <li><a href="/Backend/Booking/index"><i class="fa fa-circle-o text-aqua"></i>  Reservation</a></li>
-            @endif
-            @if (in_array('15',session()->get('module')))
             <li><a href="/Backend/invoice"><i class="fa fa-circle-o text-aqua"></i>  Invoice List</a></li>
-            @endif
             <li><a href="/Backend/saleSummaryReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Summary Report</a></li>
             <li><a href="/Backend/saleReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Report</a></li>
             <li><a href="/Backend/itemReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Item report</a></li>
@@ -142,7 +97,6 @@
             
           </ul>
         </li>
-        @endif
 
 
         <li class="treeview">
@@ -158,8 +112,6 @@
           
           </ul>
         </li>
-
-      @if (in_array('23',session()->get('module')))
         <li class="treeview">
           <a href="#">
             <i class="fa fa-table"></i> <span>Log</span>
@@ -176,11 +128,6 @@
           
           </ul>
         </li>
-        @endif
-       
-        
-       
-        <li class="header">LABELS</li>
         <li>
         <a href="/Backend/logout">
             <i class="fa fa-circle-o text-danger"></i>

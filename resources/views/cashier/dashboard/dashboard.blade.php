@@ -81,6 +81,19 @@
                     </div>  
                 </div>
             </div>
+
+            <div class="swiper-slide">
+                <div class="swiper-inr container">  
+                    <div class="row"> 
+                        <div class="col-md-3 heightLine_02 item-btn">                                
+                            <a href="/Cashier/MakeOrder">
+                                <img src="/assets/cashier/images/dashboard/Set.png" alt="service" class="heightLine_03">
+                                <span class="label-type">Make Order</span>
+                            </a>                                 
+                        </div> 
+                    </div>  
+                </div>
+            </div>
         </div>
         <!-- Add Arrows -->
         <div class="swiper-button-next"></div>

@@ -1,7 +1,7 @@
 <!--Start Footer -->
 <footer class="main-footer">
 <div class="pull-right hidden-xs">
-  <b>Version</b> 2.4.0
+  <b>Version</b> {!! gitVersion() !!}
 </div>
 <div class="col-md-7">
 <strong> <p class="footer-status "> &copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/"> &nbsp AcePlus Solutions.,Co Ltd</a></p></strong>

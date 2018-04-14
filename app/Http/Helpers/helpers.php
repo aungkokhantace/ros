@@ -215,8 +215,29 @@ if (! function_exists('submenusitemsEdit')) {
 
 if (! function_exists('gitVersion')) {
     function gitVersion() {
-        $version        = "3.0.1";
+        $version        = "3.0.2";
         return $version;
+    }
+}
+
+if (! function_exists('getChildCategory')) {
+
+    function getChildCategory($categoryID) {
+        $before_paerntID    = 0;
+        $category       = DB::select("SELECT parent_id FROM category WHERE id = '$categoryID'");
+        //Get Parent Category ID
+        foreach ($category as $key => $cat) {
+            $parentID         = $cat->parent_id;
+        }
+
+        // //Get Before Parent Category ID
+        // $before_category = DB::select("SELECT parent_id FROM category WHERE id = '$parentID'");
+        // if (count($before_category) > 0) {
+        //     foreach ($before_category as $key => $before_cat) {
+        //         $before_paerntID         = $before_cat->parent_id;
+        //     }
+        // }
+        return $parentID;
     }
 }
 ?>

@@ -40,21 +40,16 @@
   <script src="/assets/backend_js/booking_validation.js"></script>
   <script src="/assets/js/multiple-select.js"></script>
   <script src="/assets/backend_js/moment.min.js"></script>
-
-  
-  
   <script src="/assets/backend_js/custom-datepicker.js"></script>
   <script src="/assets/backend_js/date.js"></script>
   <script src="/assets/js/czMore/js/jquery.czMore-1.5.3.2.js"></script>
   <script>
     $.widget.bridge('uibutton', $.ui.button);
   </script>
-  <script src="/assets/js/checkall.js"></script>
   <script src="/assets/backend_js/Chart.js"></script>
  
   <script src="/assets/backend_js/validation/jquery.validate.js"></script>
-  
-  
+  <script src="/assets/js/checkall.js"></script>
   <script src="/assets/backend_js/raphael.min.js"></script>
   <script src="/assets/backend_js/morris.min.js"></script>
   <script src="/assets/backend_js/jquery.sparkline.min.js"></script>

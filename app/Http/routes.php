@@ -149,6 +149,26 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('FoodOrderList/Detail/{order_id}/{order_status}','Cashier\Invoice\OrderViewController@detail');
             });
 
+            //Make Order
+            Route::group(['middleware'=>'order:Cashier'],function(){
+
+                Route::get('MakeOrder','Cashier\ListViewController@index');
+                Route::post('MakeOrder/store','Cashier\ListViewController@store');
+                Route::get('MakeOrder/takeAway','Cashier\ListViewController@takeAway');
+                Route::get('MakeOrder/tables','Cashier\ListViewController@tables');
+                Route::get('MakeOrder/getCategories/{parent}','Cashier\ListViewController@getCategories');
+                Route::get('MakeOrder/getSetMenu','Cashier\ListViewController@getSetMenu');
+                Route::get('MakeOrder/backCategory/{id}','Cashier\ListViewController@backCategory');
+                Route::get('MakeOrder/item/{id}','Cashier\ListViewController@item');
+                Route::get('MakeOrder/setMenu/{id}','Cashier\ListViewController@setMenu');
+                Route::get('MakeOrder/continent/{itemID}/{continentID}','Cashier\ListViewController@continent');
+                // Route::get('MakeOrder/category','Cashier\ListViewController@category');
+                // Route::get('MakeOrder/setmenu','Cashier\ListViewController@setmenu');
+                // Route::get('MakeOrder/categorydetail/{id}','Cashier\ListViewController@categoryDetail');
+                // Route::get('MakeOrder/SearchItem/{id}','Cashier\ListViewController@searchItem');
+                // Route::get('MakeOrder/add/{id}/{type}','Cashier\ListViewController@add');
+            });
+
             //Start Kitchen Setup
             Route::group(['middleware'=>'kitchen:Cashier'],function(){
                 Route::get('Kitchen/index','Cashier\Kitchen\KitchenController@index');

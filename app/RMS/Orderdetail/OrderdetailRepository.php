@@ -10,16 +10,68 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\Kitchen\Kitchen;
-use App\RMS\Setmenu\SetMenu;
+use App\RMS\SetMenu\SetMenu;
+use App\Status\StatusConstance;
+use App\RMS\Utility;
+use App\RMS\ReturnMessage;
 class OrderdetailRepository implements OrderdetailRepositoryInterface
 {
+    public function store($paramObj){
+        $returnedObj = array();
+        $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
+
+        try {
+            $tempObj        = Utility::addCreatedBy($paramObj);
+            $tempObj->save();
+            $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+            return $returnedObj;
+        }
+        catch(Exception $e){
+
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
+
+    }
+
+    public function getCategoriesByParent($parent_id) {
+        $status             = StatusConstance::CATEGORY_AVAILABLE_STATUS;
+        $categories         = Category::where('parent_id',$parent_id)
+                              ->where('status',$status)
+                              ->where('deleted_at',NULL)
+                              ->get();
+        return $categories;
+    }
+
+    public function getSetMenu() {
+      $status       = StatusConstance::SETMENU_AVAILABLE_STATUS;
+      $setmenu      = SetMenu::select('id','set_menus_name','image')
+                      ->where('status',$status)
+                      ->whereNull('deleted_at')
+                      ->get();
+      return $setmenu;
+    }
+
+    public function getItemsByCategory($categoryID) {
+        $status             = StatusConstance::ITEM_AVAILABLE_STATUS;
+        $items              = Item::where('category_id',$categoryID)
+                              ->where('status',$status)
+                              ->where('deleted_at',NULL)
+                              ->get();
+        return $items;
+    }
+
+    public function getBackCategoryByID($id) {
+        $status             = StatusConstance::CATEGORY_AVAILABLE_STATUS;
+        $category           = Category::where('parent_id',$id)
+                              ->where('status',$status)
+                              ->where('deleted_at',NULL)
+                              ->get();
+        return $category;
+    }
    public function getCategories(){
     $categories = Category::where('parent_id',0)->where('deleted_at',NULL)->get();
     return $categories;
-   }
-   public function getsetmenu(){
-      $setmenus = SetMenu::where('deleted_at',NULL)->get();
-      return $setmenus;
    }
    public function getitem($id){
       $category    = Item::find($id);

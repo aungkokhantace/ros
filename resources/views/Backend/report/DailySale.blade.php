@@ -31,7 +31,7 @@
                     <table class="table table-bordered">
                         <thead class="thead_report">
                         <tr class="report-th">
-                            <th>Invoice ID</th>
+                            <th width="12%">Invoice ID</th>
                             <th>Date</th>
                             <th>Staff</th>
                             <th>Quantity</th>

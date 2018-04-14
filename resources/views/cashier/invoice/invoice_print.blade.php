@@ -1,4 +1,3 @@
-
 <!-- Modal For Printer -->
 <div class="modal image-slide-show-modal" tabindex="-1" role="dialog" aria-labelledby="" id="{{$order->id}}-print">
     <div class="modal-dialog" role="document" style="width:330px;">
@@ -13,10 +12,10 @@
         </div>
         <div class="modal-body" id="order-id">
             <div id="{{$order->id}}-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
-                <table class="print-invoice" style="border-collapse: collapse;width:75mm;margin:0 auto;">
+                <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;">
                     <thead>
                         <tr>
-                            <td colspan="4" style="text-align:center;font-size:13px;line-height:25px;">
+                            <td colspan="4" style="text-align:center;font-size:13px;line-height:25px;padding:5px 7px;">
                                 {{ $config->restaurant_name}}<br/>
                                 Website: {{ $config->website}}<br/>
                                 Email: {{ $config->email }}<br/>
@@ -35,18 +34,18 @@
                         </tr>
 
                         <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
-                            <td width="10%" style="height:25px;">Qty</th>
-                            <td width="50%" style="height:25px;">Product</th>
-                            <td width="20%" style="text-align:right;height:25px;">Price</th>
-                            <td width="20%" style="text-align:right;height:25px;">Amount</th>
+                            <td width="10%" style="height:25px;padding:5px 7px;">Qty</th>
+                            <td width="50%" style="height:25px;padding:5px 7px;">Product</th>
+                            <td width="20%" style="text-align:right;height:25px;padding:5px 7px;">Price</th>
+                            <td width="20%" style="text-align:right;height:25px;padding:5px 7px;">Amount</th>
                         </tr>
                     </thead>
                     
                     <tbody style="font-size:13px;line-height:25px;">
                         @foreach($order->order_detail as $detail)
                         <tr style="vertical-align: text-top;">
-                            <td style="height:25px;"> {{$detail->quantity }}</td>
-                            <td style="height:25px;font-family:zawgyi-one">
+                            <td style="height:25px;padding:5px 7px;"> {{$detail->quantity }}</td>
+                            <td style="height:25px;font-family:zawgyi-one;padding:5px 7px;">
                                 @if(isset($detail->item_name))
                                     {{$detail->item_name}}
                                     @if ($detail->has_continent)
@@ -60,18 +59,18 @@
                                     {{ $detail->set_name }}
                                 @endif
                             </td>
-                            <td style="text-align:right;height:25px;">{{ number_format($detail->amount)  }}</td>
-                            <td style="text-align:right;height:25px;">{{number_format($detail->quantity * $detail->amount)}}</td>
+                            <td style="text-align:right;height:25px;padding:5px 7px;">{{ number_format($detail->amount)  }}</td>
+                            <td style="height:25px;text-align:right;padding:5px 7px;">{{number_format($detail->quantity * $detail->amount)}}</td>
                         </tr>
                         <!-- Add on -->
                             @foreach($order->addon as $addon)
                                 @foreach($addon as $add)
                                     @if($detail->order_detail_id == $add['order_detail_id'])
                                     <tr style="font-size:13px;line-height:15px;">
-                                        <td style="height:15px;">{{ $add['quantity']}}</td>
-                                        <td style="height:15px;">{{ $add['food_name']}}</td>
-                                        <td style="text-align:right;height:15px;">{{ $add['amount']}}</td>
-                                        <td style="text-align:right;height:15px;">{{number_format($add['quantity'] * $add['amount'])}}</td>
+                                        <td style="height:15px;padding:5px 7px;">{{ $add['quantity']}}</td>
+                                        <td style="padding:5px 7px;">{{ $add['food_name']}}</td>
+                                        <td style="text-align:right;height:15px;padding:5px 7px;">{{ $add['amount']}}</td>
+                                        <td style="text-align:right;height:15px;padding:5px 7px;">{{number_format($add['quantity'] * $add['amount'])}}</td>
                                     </tr>
                                     @endif
                                 @endforeach

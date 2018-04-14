@@ -154,5 +154,11 @@ class moduleTableSeeder extends Seeder
             'created_by'=>'1',
         ]);
 
+        DB::table('modules')->insert([
+            'id'=>'25',
+            'module'=>'Order',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
     }
 }

@@ -28,24 +28,7 @@
     <script src="/assets/js/datatables/dataTables.bootstrap.js"></script>
     <script type="text/javascript" src="/assets/cashier/js/paginathing.js"></script>
     <script type="text/javascript" src="/assets/js/crud.js"></script>
-    <script>
-        var swiper = new Swiper('.swiper-container', {
-          spaceBetween: 30,
-          centeredSlides: true,
-          /*autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
-          },*/
-          pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-          },
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
-        });
-    </script>
+    
 
     <script>
         function addNotification(title, text){
