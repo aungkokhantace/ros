@@ -93,6 +93,11 @@
                     dataType: "json",
                     success: function (Response) {
                         console.log(Response);
+                        message         = Response.message;
+                        success         = Response.success;
+                        if (success == 1) {
+                            location.reload();
+                        }
                         // var returnResp        = Response.message;
                         // var order_id          = Response.order_id;
                         // if (returnResp == 'success') {
