@@ -37,7 +37,7 @@
                         <label>From Table</label>
                         <select style="width: 80%;height: 30px;" name="from">
                             @foreach($transfer_from as $from)
-                                <option value="{{ $from->id }}">{{ $from->table_no }}</option>
+                                <option value="{{ $from->id }}/{{ $from->order_id }}">{{ $from->table_no }}</option>
                             @endforeach
                         </select>
 

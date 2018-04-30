@@ -86,10 +86,6 @@ class ListViewController extends Controller
                               ->where('status',$status)
                               ->whereNull('deleted_at')
                               ->get();
-        // $transfer_from      = Table::select('id','table_no')
-        //                       ->where('status',$unaviable_status)
-        //                       ->whereNull('deleted_at')
-        //                       ->get();
         $transfer_from      = Table::leftjoin('order_tables','tables.id','=','order_tables.table_id')
                               ->leftjoin('order','order_tables.order_id','=','order.id')
                               ->select('tables.id','tables.table_no','order_tables.order_id')
@@ -176,15 +172,42 @@ class ListViewController extends Controller
     }
 
     public function transfer() {
-        $table_from     = Input::get('from');
+        $from           = Input::get('from');
         $table_to       = Input::get('to');
-        if ($table_from == null || $table_to == null) {
+        $aviable_status = StatusConstance::TABLE_AVAILABLE_STATUS;
+        $unaviable_status = StatusConstance::TABLE_UNAVAILABLE_STATUS;
+        if ($from == null || $table_to == null) {
             $return_array       = array("success"=>0,"message"=>"fail");
         } else {
+            $from_explode       = explode("/", $from);
+            $from_table         = $from_explode[0];
+            $from_order         = $from_explode[1];
+            try {
+                DB::beginTransaction();
+                    //Update Order Tables
+                    $update_order_tables    = DB::table('order_tables')
+                                              ->where('order_id', $from_order)
+                                              ->where('table_id', $from_table)
+                                              ->update(['table_id' => $table_to]);
+                    //update aviable status from table
+                    $update_from_tables     = DB::table('tables')
+                                              ->where('id', $from_table)
+                                              ->update(['status' => $aviable_status]);
 
+                    //update unaviable status to table
+                    $update_to_tables       = DB::table('tables')
+                                              ->where('id', $table_to)
+                                              ->update(['status' => $unaviable_status]);
+                    $return_array           = array("success"=>1,"message"=>"Success");
+                DB::commit();
+            } catch (\Exception $e){
+                DB::rollback();
+                $message = $e->getMessage();
+                $return_array       = array("success"=>0,"message"=>$message);
+            }
         }
-        $array      = array("success"=>"success");
-        return \Response::json($array);
+
+        return \Response::json($return_array);
     }
 
     public function getCategories($parent) {
