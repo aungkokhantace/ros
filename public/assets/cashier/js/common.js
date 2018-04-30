@@ -1,3 +1,6 @@
+function tableOrder() {
+    alert('hihi');
+}
 //Default Category 0
 var categoryID    = 0;
 getCategories(categoryID);
@@ -6,7 +9,6 @@ function getCategories(categoryID) {
         type: 'GET',
         url: '/Cashier/MakeOrder/getCategories/' + categoryID,
         success: function (Response) {
-            console.log(Response);
             $('#categoryDiv').html('');
             $('#categoryDiv').append(Response);
             $('.cat-back').val(categoryID);
@@ -19,12 +21,15 @@ function getSetMenu() {
         type: 'GET',
         url: '/Cashier/MakeOrder/getSetMenu',
         success: function (Response) {
-            console.log(Response);
             $('#categoryDiv').html('');
             $('#categoryDiv').append(Response);
             $('.cat-back').val(categoryID);
         }
     });
+}
+
+function returnBack() {
+    window.location     = "/Cashier/MakeOrder";
 }
 
 function backBtn() {
@@ -33,7 +38,6 @@ function backBtn() {
         type: 'GET',
         url: '/Cashier/MakeOrder/backCategory/0',
         success: function (Response) {
-            console.log(Response);
             $('#categoryDiv').html('');
             $('#categoryDiv').append(Response);
         }
@@ -42,9 +46,10 @@ function backBtn() {
 
 //Function For Order Item
 function orderItem(itemID) {
+    var take_id        = $('input#take-id').val();
     $.ajax({
         type: 'GET',
-        url: '/Cashier/MakeOrder/item/' + itemID,
+        url: '/Cashier/MakeOrder/item/' + itemID + '/' + take_id,
         success: function (Response) {
             $('.item-list > tbody:last-child').append(Response);
             calculateTotal();
@@ -54,9 +59,10 @@ function orderItem(itemID) {
 
 //Function For Order SetMenu
 function orderSetMenu(setMenuID) {
+    var take_id        = $('input#take-id').val();
     $.ajax({
         type: 'GET',
-        url: '/Cashier/MakeOrder/setMenu/' + setMenuID,
+        url: '/Cashier/MakeOrder/setMenu/' + setMenuID + '/' + take_id,
         success: function (Response) {
             $('.item-list > tbody:last-child').append(Response);
             calculateTotal();
@@ -68,7 +74,6 @@ function orderSetMenu(setMenuID) {
 function continentOK(itemID,uniqid) {
     continentID     = $('#continent-select-' + uniqid).val();
     //Find Continent Price and discount
-    url         = '/Cashier/MakeOrder/continent/' + itemID + '/' + continentID;
     textID      = "continent-" + uniqid;
     priceID     = "price-" + uniqid;
     discountID  = "discount-" + uniqid;
@@ -79,11 +84,12 @@ function continentOK(itemID,uniqid) {
         success: function (Response) {
             console.log(Response);
             price_with_discount     = parseInt(Response.price_with_discount);
-            if (isNaN(price_with_discount)) {
-                priceval    = parseInt(Response.price);
-            } else {
-                priceval    = price_with_discount;
-            }
+            priceval    = parseInt(Response.price);
+            // if (isNaN(price_with_discount)) {
+            //     priceval    = parseInt(Response.price);
+            // } else {
+            //     priceval    = price_with_discount;
+            // }
             id          = parseInt(Response.id);
             discount    = parseInt(Response.discount_price);
             document.getElementById(textID).textContent = Response.name + " (" + Response.cname + ")";
@@ -107,7 +113,7 @@ function continentOK(itemID,uniqid) {
 }
 
 //Function For Add On Checked
-function addOnOK(addOnID,itemID,uniqid) {
+function addOnOK(itemID,uniqid) {
     addOnID         = '';
     addOnVal        = 0;
     $('#addon-' + itemID + '-' + uniqid + ' input:checkbox').each(function () {
@@ -132,8 +138,24 @@ function addOnOK(addOnID,itemID,uniqid) {
 $(document).ready(function(){
     //If Send Order Button Click
     $('#order-item').click(function(){
-        $("#order-item").attr("disabled", true);
-        $("#order-form").submit();
+        var itemCount   = parseInt($('.item-list tbody tr').length);
+        if (itemCount <= 0) {
+            swal({
+                title: "Order Unable to send!",
+                text: "You have to select at least one item.",
+                type: "info",
+                showCancelButton: false,
+                confirmButtonColor: "#86CCEB",
+                confirmButtonText: "Confirm",
+                closeOnConfirm: false
+            });
+        } else {
+            var socketKey        = "order";
+            var socketValue      = "order";
+            socketEmit(socketKey,socketValue);
+            var invoice_update  = "invoice_update";
+            formSubmit(invoice_update);
+        }
     });
 });
 function quantityPlus(itemID,uniqid) {
@@ -182,10 +204,10 @@ function quantityMinus(itemID,uniqid) {
     qty.trigger('change');
 }
 
-function CancelItem(uniqid) {
-    $('#item-tr-' + uniqid).remove();
-    calculateTotal();
-}
+// function CancelItem(uniqid,detailID) {
+//     $('#item-tr-' + uniqid).remove();
+//     calculateTotal();
+// }
 
 function calculateItemByQty(qty,itemID,uniqid) {
     priceOrigin     = $('#price-' + uniqid).text();
@@ -222,7 +244,7 @@ function calculateTotal() {
     //Calculate Tax
     var tax         = parseInt($('input.tax').val());
     var service     = parseInt($('input.service').val());
-    var room        = parseInt($('input.room').val());
+    var room        = parseInt($('input#room-amount').val());
     if (isNaN(tax)) {
         tax         = 0;
     }
@@ -234,9 +256,10 @@ function calculateTotal() {
     }
     tax_amount       = priceTotal/tax;
     service_amount   = priceTotal/service;
-    net_amount       = priceTotal + tax_amount + service_amount;
+    net_amount       = priceTotal + tax_amount + service_amount + room;
     document.getElementById('sub-gst').textContent          = tax_amount;
     document.getElementById('sub-service').textContent      = service_amount;
+    document.getElementById('sub-room').textContent         = room;
     document.getElementById('price-total').textContent      = net_amount;
     $('input#service-amount').val(service_amount);
     $('input#tax-amount').val(tax_amount);

@@ -154,13 +154,20 @@ Route::group(['middleware' => 'web'], function () {
 
                 Route::get('MakeOrder','Cashier\ListViewController@index');
                 Route::post('MakeOrder/store','Cashier\ListViewController@store');
+                Route::get('MakeOrder/edit/{id}','Cashier\ListViewController@edit');
+                Route::post('MakeOrder/update','Cashier\ListViewController@update');
                 Route::get('MakeOrder/takeAway','Cashier\ListViewController@takeAway');
                 Route::get('MakeOrder/tables','Cashier\ListViewController@tables');
+                Route::get('MakeOrder/table/{id}','Cashier\ListViewController@orderTable');
+                Route::post('MakeOrder/transfer','Cashier\ListViewController@transfer');
+                Route::get('MakeOrder/rooms','Cashier\ListViewController@rooms');
+                Route::get('MakeOrder/room/{id}','Cashier\ListViewController@orderRoom');
                 Route::get('MakeOrder/getCategories/{parent}','Cashier\ListViewController@getCategories');
                 Route::get('MakeOrder/getSetMenu','Cashier\ListViewController@getSetMenu');
                 Route::get('MakeOrder/backCategory/{id}','Cashier\ListViewController@backCategory');
-                Route::get('MakeOrder/item/{id}','Cashier\ListViewController@item');
-                Route::get('MakeOrder/setMenu/{id}','Cashier\ListViewController@setMenu');
+                Route::get('MakeOrder/item/{id}/{take}','Cashier\ListViewController@item');
+                Route::post('MakeOrder/order_detail/delete','Cashier\ListViewController@delete');
+                Route::get('MakeOrder/setMenu/{id}/{take}','Cashier\ListViewController@setMenu');
                 Route::get('MakeOrder/continent/{itemID}/{continentID}','Cashier\ListViewController@continent');
                 // Route::get('MakeOrder/category','Cashier\ListViewController@category');
                 // Route::get('MakeOrder/setmenu','Cashier\ListViewController@setmenu');

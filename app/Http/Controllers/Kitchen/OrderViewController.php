@@ -70,7 +70,6 @@ class OrderViewController extends Controller
         foreach($categoryRaw as $category){
             array_push($categoryIdArr,$category->id);
         }
-
         // looping for orders
         $results        = array();
         $orders         = array();
@@ -373,7 +372,7 @@ class OrderViewController extends Controller
                 $tempItem['item_image']     = $item->image;
                 $tempItem['has_continent']  = $has_continent;
                 // If have Continent
-                if ($has_continent == 1) {
+                if ($has_continent == 1 AND $orderDetails != null) {
                     foreach($orderDetails as $orderDetail) {
                         $continent      = $orderDetail->continent_name;
                     }
@@ -444,7 +443,7 @@ class OrderViewController extends Controller
                 $tempItem['item_image']     = $item->image;
                 $tempItem['has_continent']  = $has_continent;
                 // If have Continent
-                if ($has_continent == 1) {
+                if ($has_continent == 1 AND $orderDetails != null) {
                     foreach($orderDetails as $orderDetail) {
                         $continent      = $orderDetail->continent_name;
                     }

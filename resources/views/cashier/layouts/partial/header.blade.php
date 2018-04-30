@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/cashier/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/assets/cashier/css/styles.css" />
     <link rel="stylesheet" type="text/css" href="/assets/cashier/css/swiper.min.css" />
-    <link rel="stylesheet" type="text/css" href="/assets/cashier/bootstrap/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/backend_fonts/font-awesome/css/font-awesome.css" />
     <link href="/assets/css/sweetalert.css" rel="stylesheet">
     <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/gritter/css/jquery.gritter.css">
     <link href="/assets/js/datatables/dataTables.bootstrap.css" rel="stylesheet">

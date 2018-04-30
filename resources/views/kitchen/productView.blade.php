@@ -299,7 +299,6 @@
             })
             $('#autoDiv').on('click', '.start_duration_item',function(e){
                 var itemID      = $(this).attr('id');
-
                 $(document).ready(function  (){
                     swal({
                         title: "Are you sure?",
@@ -379,8 +378,9 @@
                             success: function (Response) {
                                 var returnResp        = Response.message;
                                 if (returnResp == 'success') {
-                                    var socket      = io.connect( 'http://'+window.location.hostname+':3333' );
-                                    socket.emit('start_cooking', 'start_cooking');
+                                    var socketKey        = "start_cooking";
+                                    var socketValue      = "start_cooking";
+                                    socketEmit(socketKey,socketValue);
                                     swal.close();
                                 }
                             }
@@ -406,8 +406,9 @@
                             success: function (Response) {
                                 var returnResp        = Response.message;
                                 if (returnResp == 'success') {
-                                    var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                                    socket.emit('cooking_complete','cooking_complete');
+                                    var socketKey        = "start_cooking";
+                                    var socketValue      = "start_cooking";
+                                    socketEmit(socketKey,socketValue);
                                     swal.close();
                                 }
                             }

@@ -90,7 +90,7 @@ img {
 	display: table;
 	margin: 1px 0 25px;
 }
-.item-btn a {
+.item-btn button, .item-btn a {
 	background: #5F93CF;
 	padding: 20px 12px;
 	text-align: center;
@@ -99,12 +99,13 @@ img {
 	transition: all 0.3s ease-in-out;
 	display: table-cell;
 	vertical-align: middle;
+	width: 100%;
 }
-.item-btn a:hover {
+.item-btn button:hover,.item-btn a:hover {
 	background: #0062cc;
 	color: #EF6E25;
 }
-.item-btn a:hover .label-type {
+.item-btn button:hover .label-type,.item-btn a:hover .label-type {
 	border-top-color: #fff;
 }
 .item-btn img {
@@ -115,6 +116,11 @@ img {
 	padding-top: 10px;
 	text-transform: uppercase;
 	border-top: 2px solid #4876AE;
+	color:#fff;
+}
+.table-choose {
+	width: 20px;
+	height: 20px;
 }
 .item-calendar {
 	height: 164px;

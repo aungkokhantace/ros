@@ -18,6 +18,7 @@
                         <th>Detail</th>
                         <th>Status</th>
                         <th>Action</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,7 +29,7 @@
                         <td > {{$order->created_at }} </td>
                         <td><a class="btn detail-btn" href="/Cashier/invoice/detail/{{$order->id}}">view detail</a></td>
                         <td><a class="btn {{ $order->status == 2 ? 'btn-success' : 'btn-primary' }} status-btn" href="/Cashier/invoice/paid/{{$order->id}}">{{ $order->status == 2 ? "Paid" : "To Pay" }}</a></td>
-
+                        <td><a class="btn btn-info status-btn" href="/Cashier/MakeOrder/edit/{{$order->id}}">Edit</a></td>
                         <td>
                             @if($order->status == 2)
                             <button class="btn print-btn" id = '{{$order->id}}' data-toggle="modal" data-target="#printModal" data-id="{{$order->id}}" onclick="printInvoice('{{$order->id}}')"></button>

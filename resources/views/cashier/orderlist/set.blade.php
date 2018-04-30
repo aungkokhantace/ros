@@ -24,12 +24,12 @@
     <td>
         <label class="control">
           <input type="hidden" value="0" name="take_{{$setmenuRepo->uniqid}}" />
-          <input type="checkbox" value="1" name="take_{{$setmenuRepo->uniqid}}" checked />
+          <input type="checkbox" value="1" name="take_{{$setmenuRepo->uniqid}}" {{ ($take == 0 ? "" : "checked")}} />
           <div class="check-mark"></div>
         </label>
     </td>
     <td>
-        <button class="cancel-btn" type="button" onclick="CancelItem('{{$setmenuRepo->uniqid}}')">Cancel</button>
+        <button class="cancel-btn" type="button" onclick="cancelBtn(0,'{{$setmenuRepo['uniqid']}}')">Cancel</button>
     </td>
 
     <input type="hidden" name="item[]" value="{{$setmenuRepo->id }}" id="item-{{$setmenuRepo->uniqid }}" />

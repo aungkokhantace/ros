@@ -9,6 +9,29 @@ namespace App\Status;
  */
 class StatusConstance
 {
+    //Addon Status
+    const ADDON_AVAILABLE_STATUS                = 1; //ADD ON AVAILABLE STATUS
+    const ADDON_UNAVAILABLE_STATUS              = 0; //ADD ON UNAVAILABLE STATUS
+
+    //Booking Status
+    const BOOKING_DEFAULT_STATUS                = 0; //BOOKING DEFAULT STATUS
+    const BOOKING_WARNING_STATUS                = 2; //BOOKING WARNING STATUS
+    const BOOKING_WAITING_STATUS                = 3; //BOOKING WAITING STATUS
+    const BOOKING_DONE_STATUS                   = 4; //BOOKING DONE STATUS
+
+    //Category Status
+    const CATEGORY_AVAILABLE_STATUS             = 1;
+    const CATEGORY_UNAVAILABLE_STATUS           = 0;
+
+    //Day Start Status
+    const DAY_START_STATUS                      = 1;//Day Start Status
+    const DAY_STARTING_STATUS                   = 2;//Day Starting Status
+    const DAY_END_STATUS                        = 0;//Day End Status
+
+    //Item Status
+    const ITEM_AVAILABLE_STATUS                 = 1; //ITEM AVAILABLE STATUS
+    const ITEM_UNAVAILABLE_STATUS               = 0; //ITEM UNAVAILABLE STATUS
+
     //Order Status
     const ORDER_CREATE_STATUS                   = 1;//Order create Status
     const ORDER_PAID_STATUS                     = 2; //Order Paid Status
@@ -23,15 +46,49 @@ class StatusConstance
     const ORDER_DETAIL_KITCHEN_CANCEL_STATUS    = 6; //Order Detail CANCEL Status
     const ORDER_DETAIL_CUSTOMER_CANCEL_STATUS   = 7; //Order Detail CANCEL Status
 
+    //Order Extra Status
+    const ORDER_EXTRA_AVAILABLE_STATUS          = 1; //ORDER EXTRA AVAILABLE STATUS
+    const ORDER_EXTRA_UNAVAILABLE_STATUS        = 0; //ORDER EXTRA UNAVAILABLE STATUS
+
     //Order Set Menu Status
     const ORDER_SETMENU_COOKING_STATUS          = 1; //Order Set Menu Cooking Status
     const ORDER_SETMENU_COOKED_STATUS           = 2; //Order Set Menu Cooked Status
     const ORDER_SETMENU_COOKING_DONE_STATUS     = 3; //Order Set Menu Cooking Done Status
     const ORDER_SETMENU_KITCHEN_CANCEL_STATUS   = 6; //Order Set Menu Cancel Status
 
+    //Order Shift
+    const ORDER_SHIFT_UNAVAILABLE_STATUS        = 0;
+    const ORDER_SHIFT_START_STATUS              = 1;
+    const ORDER_SHIFT_END_STATUS                = 2;
+    const ORDER_SHIFT_DONE_STATUS               = 3;
+
+    //Room Active Status
+    const ROOM_ACTIVE_STATUS                    = 1; //TABLE AVAILABLE STATUS
+    const ROOM_INACTIVE_STATUS                  = 0; //TABLE AVAILABLE STATUS
+
+    //Room Status
+    const ROOM_AVAILABLE_STATUS                 = 0; //ROOM AVAILABLE STATUS
+    const ROOM_UNAVAILABLE_STATUS               = 1; //ROOM UNAVAILABLE STATUS
+
     //SET MENU STATUS
     const SETMENU_AVAILABLE_STATUS              = 1;
     const SETMENU_UNAVAILABLE_STATUS            = 0;
+
+    //Shift Status
+    const SHIFT_AVAILABLE_STATUS                = 1;
+    const SHIFT_UNAVAILABLE_STATUS              = 0;
+
+    //Shift Category
+    const SHIFT_CATEGORY_AVAILABLE_STATUS       = 1;//SHIFT CATEGORY AVAILABLE STATUS
+    const SHIFT_CATEGORY_UNAVAILABLE_STATUS     = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
+
+    //Shift Setmenu
+    const SHIFT_SETMENU_AVAILABLE_STATUS        = 1;//SHIFT CATEGORY AVAILABLE STATUS
+    const SHIFT_SETMENU_UNAVAILABLE_STATUS      = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
+
+    //Shift User Status
+    const SHIFT_USER_AVAILABLE_STATUS           = 1;
+    const SHIFT_USER_UNAVAILABLE_STATUS         = 0;
 
     //Table Status
     const TABLE_AVAILABLE_STATUS                = 0; //TABLE AVAILABLE STATUS
@@ -43,31 +100,13 @@ class StatusConstance
     const TABLE_ACTIVE_STATUS                   = 1; //TABLE AVAILABLE STATUS
     const TABLE_INACTIVE_STATUS                 = 0; //TABLE AVAILABLE STATUS
 
-     //Room Active Status
-    const ROOM_ACTIVE_STATUS                    = 1; //TABLE AVAILABLE STATUS
-    const ROOM_INACTIVE_STATUS                  = 0; //TABLE AVAILABLE STATUS
+    //Tender Status
+    const TRANCTION_PAID_STATUS                 = 1;
+    const TRANCTION_VOID_STATUS                 = 0;
 
-    //Booking Status
-    const BOOKING_DEFAULT_STATUS                = 0; //BOOKING DEFAULT STATUS
-    const BOOKING_WARNING_STATUS                = 2; //BOOKING WARNING STATUS
-    const BOOKING_WAITING_STATUS                = 3; //BOOKING WAITING STATUS
-    const BOOKING_DONE_STATUS                   = 4; //BOOKING DONE STATUS
-
-    //Room Status
-    const ROOM_AVAILABLE_STATUS                 = 0; //ROOM AVAILABLE STATUS
-    const ROOM_UNAVAILABLE_STATUS               = 1; //ROOM UNAVAILABLE STATUS
-
-    //Order Extra Status
-    const ORDER_EXTRA_AVAILABLE_STATUS          = 1; //ORDER EXTRA AVAILABLE STATUS
-    const ORDER_EXTRA_UNAVAILABLE_STATUS        = 0; //ORDER EXTRA UNAVAILABLE STATUS
-
-    //Item Status
-    const ITEM_AVAILABLE_STATUS                 = 1; //ITEM AVAILABLE STATUS
-    const ITEM_UNAVAILABLE_STATUS               = 0; //ITEM UNAVAILABLE STATUS
-
-    //Room Status
-    const ADDON_AVAILABLE_STATUS                = 1; //ADD ON AVAILABLE STATUS
-    const ADDON_UNAVAILABLE_STATUS              = 0; //ADD ON UNAVAILABLE STATUS
+    //User Status
+    const USER_AVAILABLE_STATUS                 = 1; //USER AVAILABLE STATUS
+    const USER_UNAVAILABLE_STATUS               = 0; //USER UNAVAIABLE STATUS
 
     //User Roles
     const SUPER_ADMIN_ROLE                      = 1;
@@ -76,47 +115,9 @@ class StatusConstance
     const CASHIER_ROLE                          = 4;
     const WAITER_ROLE                           = 5;
     const KITCHEN_ROLE                          = 6;
-
-    //User Status
-    const USER_AVAILABLE_STATUS                 = 1; //USER AVAILABLE STATUS
-    const USER_UNAVAILABLE_STATUS               = 0; //USER UNAVAIABLE STATUS
-
-    //Tender Status
-    const TRANCTION_PAID_STATUS                 = 1;
-    const TRANCTION_VOID_STATUS                 = 0;
-
-    //Day Start Status
-    const DAY_START_STATUS                      = 1;//Day Start Status
-    const DAY_STARTING_STATUS                   = 2;//Day Starting Status
-    const DAY_END_STATUS                        = 0;//Day End Status
-
-    //Shift Status
-    const SHIFT_AVAILABLE_STATUS                = 1;
-    const SHIFT_UNAVAILABLE_STATUS              = 0;
-
-    //Shift User Status
-    const SHIFT_USER_AVAILABLE_STATUS           = 1;
-    const SHIFT_USER_UNAVAILABLE_STATUS         = 0;
+    
 
     //Shift Name
     const DAY_SHIFT_NAME                        = 'DAY SHIFT';//Day Shift Name
     const NIGHT_SHIFT_NAME                      = 'NIGHT SHIFT';//Night Shift Name
-
-    //Shift Category
-    const SHIFT_CATEGORY_AVAILABLE_STATUS       = 1;//SHIFT CATEGORY AVAILABLE STATUS
-    const SHIFT_CATEGORY_UNAVAILABLE_STATUS     = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
-
-    //Category Status
-    const CATEGORY_AVAILABLE_STATUS             = 1;
-    const CATEGORY_UNAVAILABLE_STATUS           = 0;
-
-    //Shift Setmenu
-    const SHIFT_SETMENU_AVAILABLE_STATUS        = 1;//SHIFT CATEGORY AVAILABLE STATUS
-    const SHIFT_SETMENU_UNAVAILABLE_STATUS      = 0;//SHIFT CATEGORY UNAVAILABLE STATUS
-
-    //Order Shift
-    const ORDER_SHIFT_UNAVAILABLE_STATUS        = 0;
-    const ORDER_SHIFT_START_STATUS              = 1;
-    const ORDER_SHIFT_END_STATUS                = 2;
-    const ORDER_SHIFT_DONE_STATUS               = 3;
 }

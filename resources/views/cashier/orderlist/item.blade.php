@@ -58,7 +58,7 @@
                             </label>
                             @endforeach                         
                             <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="ok-btn" onclick="addOnOK({{$addon['id'] . ',' . $itemRepo->id . ',"' . $itemRepo->uniqid . '"' }})">OK</button>
+                                <button type="button" data-dismiss="modal" class="ok-btn" onclick="addOnOK({{$itemRepo->id . ',"' . $itemRepo->uniqid . '"' }})">OK</button>
                                 <button type="reset" data-dismiss="modal" class="cancel-btn">Cancel</button>
                             </div>
                         </form>
@@ -80,12 +80,12 @@
     <td>
         <label class="control">
           <input type="hidden" value="0" name="take_{{$itemRepo->uniqid}}" />
-          <input type="checkbox" value="1" name="take_{{$itemRepo->uniqid}}" checked />
+          <input type="checkbox" value="1" name="take_{{$itemRepo->uniqid}}" {{ ($take == 0 ? "" : "checked")}} />
           <div class="check-mark"></div>
         </label>
     </td>
     <td>
-        <button class="cancel-btn" type="button" onclick="CancelItem('{{$itemRepo->uniqid}}')">Cancel</button>
+        <button class="cancel-btn" type="button" onclick="cancelBtn(0,'{{$itemRepo['uniqid']}}')">Cancel</button>
     </td>
 
     <input type="hidden" name="item[]" value="{{$itemRepo->id }}" id="item-{{$itemRepo->uniqid }}" />

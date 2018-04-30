@@ -30,6 +30,15 @@ function socketOn(name,url,divID) {
     });
 }
 
+function formSubmit(variable) {
+    var port    = getSocketPort();
+    var socket  = io.connect( 'http://'+window.location.hostname  +':' + port);
+     socket.on( variable, function( data ) {
+        $("#order-item").attr("disabled", true);
+        $("#order-form").submit();
+    });   
+}
+
 function socketOnPayment(name,id) {
     var port    = getSocketPort();
     var socket  = io.connect( 'http://'+window.location.hostname  +':' + port);

@@ -19,7 +19,7 @@
             </div>
 
             <div class="col-md-3">
-                <a href="/Cashier/MakeOrder/category"><img id="img" class="bottom image" src= "../../../assets/images/icon-home-3.png" ></a>
+                <a href="/Cashier/MakeOrder/rooms"><img id="img" class="bottom image" src= "../../../assets/images/icon-home-3.png" ></a>
                 <h3 class="listheader">Room</h3>
             </div>
         </div><!-- End Row -->
