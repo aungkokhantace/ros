@@ -14,7 +14,7 @@
                                 <option value="{{ $continent['cid'] }}">{{ $continent['cname'] }}</option>
                             @endforeach
                         </select>                                     
-                        <div class="modal-footer">
+                        <div class="modal-footer cashier-footer">
                             <button type="button" data-dismiss="modal" class="ok-btn" onclick="continentOK({{$itemRepo->id . ',"' . $itemRepo->uniqid . '"' }})">OK</button>
                             <button type="reset" class="cancel-btn" data-dismiss="modal">Cancel</button>
                         </div>
@@ -57,7 +57,7 @@
                                 <div class="check-mark"></div>
                             </label>
                             @endforeach                         
-                            <div class="modal-footer">
+                            <div class="modal-footer cashier-footer">
                                 <button type="button" data-dismiss="modal" class="ok-btn" onclick="addOnOK({{$itemRepo->id . ',"' . $itemRepo->uniqid . '"' }})">OK</button>
                                 <button type="reset" data-dismiss="modal" class="cancel-btn">Cancel</button>
                             </div>

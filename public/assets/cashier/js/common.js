@@ -1,6 +1,3 @@
-function tableOrder() {
-    alert('hihi');
-}
 //Default Category 0
 var categoryID    = 0;
 getCategories(categoryID);

@@ -48,44 +48,44 @@
 
     <div class="modal image-slide-show-modal" tabindex="-1" role="dialog" aria-labelledby="" id="manager-modal">
         <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="background:none;-webkit-box-shadow:none;">
             <div class="modal-header">
             <div class="bootstrap-dialog-header">
                 <div class="bootstrap-dialog-title" id="294d853f-691f-4de9-967c-d66fd0adfb69_title">Confirm From Manager/Supervisor</div>
             </div>
             </div>
             <div class="modal-body" id="order-id">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group" id="error-blank" style="display:none;">
-                        <div class="alert alert-danger">
-                        <strong>Warning!</strong> Fill Username and Password
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group" id="error-blank" style="display:none;">
+                            <div class="alert alert-danger">
+                            <strong>Warning!</strong> Fill Username and Password
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" id="error-wrong" style="display:none;">
-                        <div class="alert alert-danger">
-                        <strong>Warning!</strong> Wrong Username or Password
+                        <div class="form-group" id="error-wrong" style="display:none;">
+                            <div class="alert alert-danger">
+                            <strong>Warning!</strong> Wrong Username or Password
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="recipient-name" class="control-label">Username:</label>
-                        <input type="text" class="form-control" id="adm-user" placeholder="Manager/Supervisor Username" />
-                    </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">Username:</label>
+                            <input type="text" class="form-control" id="adm-user" placeholder="Manager/Supervisor Username" />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="message-text" class="control-label">Password:</label>
-                        <input type="password" class="form-control" id="adm-pass" placeholder="Manager/Supervisor Password" />
-                    </div>
-                    <input type="hidden" name="orderId" id="orderId" value="" />
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">Password:</label>
+                            <input type="password" class="form-control" id="adm-pass" placeholder="Manager/Supervisor Password" />
+                        </div>
+                        <input type="hidden" name="orderId" id="orderId" value="" />
 
-                    <div class="form-group">
-                        <button class="btn btn-warning confirm" onclick="checkRole()">Confirm</button>
-                        <button type="button" class="btn btn-info" data-dismiss="modal" aria-label="Close" id="close">Close</button>
+                        <div class="form-group">
+                            <button class="btn btn-warning confirm" onclick="checkRole()">Confirm</button>
+                            <button type="button" class="btn btn-info" data-dismiss="modal" aria-label="Close" id="close">Close</button>
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

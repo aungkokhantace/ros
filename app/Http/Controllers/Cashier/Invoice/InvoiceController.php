@@ -876,19 +876,21 @@ class InvoiceController extends Controller
     }
 
     public function checkManager($managerLogin,$managerPass) {
-        // $manager_raw    = DB::select("SELECT password FROM `users` WHERE user_name = '$managerLogin' AND deleted_at IS NULL");
         $manager_user      = User::select('password')
                             ->where('user_name','=',$managerLogin)
-                            ->where('role_id','=','1')
-                            ->orwhere('role_id','=','2')
-                            ->orwhere('role_id','=','3')
+                            ->whereIn('role_id',[1,2,3])
                             ->whereNull('deleted_at')->first();
-        if ($manager_user && Hash::check($managerPass, $manager_user->password)) {
-            $output     = array('message'=>'success');
+        if(count($manager_user) <= 0) {
+            $output     = array('message'=>'unauthorize');
             return \Response::json($output);
         } else {
-            $output     = array('message'=>'fail');
-            return \Response::json($output);    
+            if ($manager_user && Hash::check($managerPass, $manager_user->password)) {
+                $output     = array('message'=>'success');
+                return \Response::json($output);
+            } else {
+                $output     = array('message'=>'fail');
+                return \Response::json($output);    
+            }
         }
         
     }

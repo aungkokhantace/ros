@@ -827,6 +827,9 @@ button.close {
 .modal-footer {
 	background-color: #77ACE9;
 }
+.cashier-footer {
+	background-color: #F7941D !important;
+}
 .btn-outline {
     border: 1px solid #fff;
     background: transparent;
