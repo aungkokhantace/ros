@@ -147,11 +147,7 @@ $(document).ready(function(){
                 closeOnConfirm: false
             });
         } else {
-            var socketKey        = "order";
-            var socketValue      = "order";
-            socketEmit(socketKey,socketValue);
-            var invoice_update  = "invoice_update";
-            formSubmit(invoice_update);
+            $("#order-form").submit();
         }
     });
 });

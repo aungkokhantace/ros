@@ -371,7 +371,7 @@ class ListViewController extends Controller
                 ->with('categories',$categories);        
     }
 
-    public function store(Request $request) {
+    public function store() {
         // dd(Input::all());
 
         //Create Order ID
@@ -552,7 +552,9 @@ class ListViewController extends Controller
                 }
                 DB::commit();
                 
-                return redirect('/Cashier/MakeOrder')->withMessage(FormatGenerator::message('Success', 'Order created ...'));;
+                return redirect('/Cashier/MakeOrder')
+                ->withMessage(FormatGenerator::message('Success', 'Order created ...'))
+                ->with('Sockect','Socket Order Send');
             } catch (\Exception $e){
                 DB::rollback();
                 echo $e->getMessage();
@@ -724,7 +726,7 @@ class ListViewController extends Controller
         }
     }
 
-    public function update(Request $request) {
+    public function update() {
         // dd(Input::all());
         //Create Order ID
         $order_id       = Input::get('order_id');
@@ -913,7 +915,9 @@ class ListViewController extends Controller
             }
             DB::commit();
             
-            return redirect('/Cashier/MakeOrder')->withMessage(FormatGenerator::message('Success', 'Order created ...'));;
+            return redirect('/Cashier/MakeOrder')
+            ->withMessage(FormatGenerator::message('Success', 'Order created ...'))
+            ->with('Sockect','Socket Order Send');
         } catch (\Exception $e){
             DB::rollback();
             echo $e->getMessage();

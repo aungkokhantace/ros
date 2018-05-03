@@ -5,6 +5,7 @@ use App\categoryModel;
 use App\RMS\Category\Category;
 use App\RMS\Addon\Addon;
 use App\RMS\Addon\AddonRepositoryInterface;
+use App\Status\StatusConstance;
 use App\Session;
 use Auth;
 use Illuminate\Http\Request;
@@ -36,7 +37,11 @@ class AddonController extends Controller
     }
     public function create()
     {
-        $category = DB::table('category')->where('parent_id','=',0)->get();
+        $status   = StatusConstance::CATEGORY_AVAILABLE_STATUS;
+        $category = DB::table('category')->where('parent_id','=',0)
+                ->where('status',$status)
+                ->whereNull('deleted_at')
+                ->get();
         return view('Backend.addon.addon')->with ('category',$category);
     }
     public function store(InsertExtraRequest $request)

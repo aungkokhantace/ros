@@ -28,4 +28,12 @@
         $("#body").css('background-color','rgba(255, 255, 255, 0)');
     </script>
 
+    @if(Session::has('Sockect'))
+        <script>
+            var socketKey        = "order";
+            var socketValue      = "order";
+            socketEmit(socketKey,socketValue);
+        </script>
+    @endif
+
 @endsection
