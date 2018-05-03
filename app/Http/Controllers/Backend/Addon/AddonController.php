@@ -91,6 +91,7 @@ class AddonController extends Controller
     {
         $resource   = Addon::find($id);
         $extra_edit = $this->extra_repository->extra_edit($id);
+        $status   = StatusConstance::CATEGORY_AVAILABLE_STATUS;
         $category = DB::table('category')->where('parent_id','=',0)
                 ->where('status',$status)
                 ->whereNull('deleted_at')
