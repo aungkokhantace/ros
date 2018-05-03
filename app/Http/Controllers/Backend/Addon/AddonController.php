@@ -91,7 +91,10 @@ class AddonController extends Controller
     {
         $resource   = Addon::find($id);
         $extra_edit = $this->extra_repository->extra_edit($id);
-        $category   = DB::table('category')->where('parent_id', '=', 0)->get();
+        $category = DB::table('category')->where('parent_id','=',0)
+                ->where('status',$status)
+                ->whereNull('deleted_at')
+                ->get();
         return view('Backend.addon.addon', compact('resource', 'extra_edit', 'category'));
     }
 
