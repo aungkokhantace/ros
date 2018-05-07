@@ -413,9 +413,9 @@ class ListViewController extends Controller
             return redirect()->back();
         } else {
             for($count = 0; $count < $row_count; $count++) {
-                $qty                      = $quantity[$count];
-                $extra                    = $extra_prices[$count];
-                $discount_amount          = $discount[$count];
+                $qty                      = (int)($quantity[$count]);
+                $extra                    = (int)($extra_prices[$count]);
+                $discount_amount          = (int)($discount[$count]);
 
                 $extra_array[$count]      = $qty * $extra;
                 $discount_array[$count]   = $qty * $discount_amount;
