@@ -40,6 +40,7 @@ class ReportController extends Controller
         $start  = $this->reportRepository->getStartDate();
         $end    = $this->reportRepository->getEndDate();
         $orders = $this->reportRepository->getItemReport($start, $end);
+        // dd($orders);
         return view('Backend.report.itemReport', compact('orders', 'start', 'end'));
     }
 

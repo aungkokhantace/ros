@@ -6,11 +6,15 @@ $(document).ready(function() {
     $('#staffEntryForm').validate({
         rules: {
 
-            name                : "required",
+            name        : {
+                required: true,
+                number  : true
+            },
             staff_id            : "required",
             login_password      : {
                 required    : true,
                 minlength   : 8,
+                number      : true
 
             },
 
@@ -22,10 +26,14 @@ $(document).ready(function() {
             userType    : "required"
         },
         messages: {
-            name                : "Staff Name is required.",
+            name        : {
+                required: "Staff Name required.",
+                number  : "Staff Name must be numeric."
+            },
             staff_id            : "Staff ID is required.",
             login_password      : {
                 required    : "Password is required.",
+                number      : "Password must be numeric."
             },
             conpassword         : {
                 required    : "Confirm Password is required.",
@@ -68,12 +76,18 @@ $(document).ready(function() {
     //For Staff Edit Form
     $('#staffEditForm').validate({
         rules: {
-            name        : "required",
+            name        : {
+                required: true,
+                number  : true
+            },
             staff_id    : "required",
             userType    : "required"
         },
         messages: {
-            name        : "Staff Name is required.",
+            name        : {
+                required: "Staff Name required.",
+                number  : "Staff Name must be numeric."
+            },
             staff_id    : "Staff ID is required.",
             userType    : "Staff Type is required."
         },
@@ -85,12 +99,18 @@ $(document).ready(function() {
     //For Staff Type Entry and edit Form
     $('#staffTypeEntry').validate({
         rules: {
-            name        : "required",
+            name        : {
+                required: true,
+                number  : true
+            },
             description : "required",
             "permission[]"  : "required",
         },
         messages: {
-            name        : "Staff Type Name is required.",
+            name        : {
+                required: "Staff Name required.",
+                number  : "Staff Name must be numeric."
+            },
             description : "Staff Type Description is required.",
             "permission[]"    : "Permission is required"
         },

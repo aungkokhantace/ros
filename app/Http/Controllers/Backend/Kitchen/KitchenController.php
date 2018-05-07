@@ -105,7 +105,7 @@ class KitchenController extends Controller
 //        user is not allowed to edit because the edited name already exists in database
         else{
             alert()->error('The kitchen with the same name already exists. ')->persistent('Close');
-            return redirect()->action('Cashier\Kitchen\KitchenController@index');
+            return back();
         }
     }
 

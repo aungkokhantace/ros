@@ -28,20 +28,6 @@
                 <p class="text-danger">{{$errors->first('name')}}</p>
             </div>
         </div>
-        <div class="form-group">
-            <label for="description" class="col-sm-3 control-label left-align label-font">
-                Staff ID
-                <span class="require">*</span>
-            </label>
-            <div class="col-sm-7">
-                <input type="text" class="form-control" id="user-id-no" name="staff_id"
-                       placeholder="Enter Staff ID No" autocomplete="off"
-                       value="{{ isset($user)? $user->staff_id:Request::old('staff_id') }}"/>
-                <input type="text" style="display:none">
-                <input type="password" style="display:none">
-                <p class="text-danger">{{$errors->first('staff_id')}}</p>
-            </div>
-        </div>
         @if(!isset($user))
         <div class="form-group">
             <label for="discount" class="col-sm-3 control-label left-align label-font">Password<span class="require">*</span></label>
@@ -78,7 +64,7 @@
                         <option value="" selected disabled>Select Staff Type</option>
 
                         @foreach($roles as $role)
-                            <option value="{{$role->id}}">{{$role->name}}</option>
+                            <option value="{{$role->id}}" {{ (old('userType') == $role->id) ? "selected": ""}}>{{$role->name}}</option>
                         @endforeach
                     </select>
                 @endif

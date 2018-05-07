@@ -97,7 +97,7 @@
                         <tr class="tr-row active">
                             <td>{{ $sub->Name }}</td>
                             <td>{{ $sub->Quantity }}</td>
-                            <td>{{number_format($sub->DiscountAmount)}}</td>
+                            <td>{{ $sub->DiscountAmount === "" ? "0.0" : $sub->DiscountAmount }}</td>
                             <td>{{number_format($sub->Price)}}</td>
                             <td class="money-align">{{ number_format($sub->Amount) }}</td>
                             <td class="money-align">{{ number_format($sub->TotalAmount) }}</td>

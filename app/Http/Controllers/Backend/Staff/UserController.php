@@ -6,6 +6,7 @@ use App\RMS\Infrastructure\Forms\UserEditFormRequest;
 use App\RMS\Infrastructure\Forms\UserEntryFormRequest;
 use App\RMS\Infrastructure\Forms\ProfileEditRequest;
 use App\RMS\Role\Role;
+use App\Status\StatusConstance;
 use App\RMS\Permission\Permission;
 use App\Session;
 use Illuminate\Http\Request;
@@ -80,14 +81,12 @@ class UserController extends Controller
         $request->validate();
         $id         = Auth::guard('Cashier')->user()->id;
         $name       = trim(Input::get('name'));
-        $staffId    = trim(Input::get('staff_id'));
         $password   = trim(bcrypt(Input::get('login_password')));
         $roleId     = Input::get('userType');
         $kitchenId  = Input::get('kitchen');
 
         $paramObj               = new User();
         $paramObj->user_name    = $name;
-        $paramObj->staff_id     = $staffId;
         $paramObj->password     = $password;
         $paramObj->role_id      = $roleId;
         $paramObj->kitchen_id   = $kitchenId;
@@ -118,9 +117,16 @@ class UserController extends Controller
             alert()->warning('You have no permission in this action!')->persistent('Close');
             return back();
         }
-        $user     = $this->userRepository->active($id);
-        return redirect()->action('Backend\Staff\UserController@index')
-        ->withMessage(FormatGenerator::message('Success', 'User Active ...')); //to redirect listing page
+        $userObj  = User::find($id);
+        $user_status    = $userObj->status;
+        if ($user_status == StatusConstance::USER_AVAILABLE_STATUS) {
+            alert()->warning('This User is already active!')->persistent('Close');
+            return back();
+        } else {
+            $user     = $this->userRepository->active($id);
+            return redirect()->action('Backend\Staff\UserController@index')
+            ->withMessage(FormatGenerator::message('Success', 'User Active ...')); //to redirect listing page
+        }
     }
 
     public function inactive($id) {
@@ -128,9 +134,16 @@ class UserController extends Controller
             alert()->warning('You have no permission in this action!')->persistent('Close');
             return back();
         }
-        $user     = $this->userRepository->inactive($id);
-        return redirect()->action('Backend\Staff\UserController@index')
-        ->withMessage(FormatGenerator::message('Success', 'User Inactive ...')); //to redirect listing page
+        $userObj  = User::find($id);
+        $user_status    = $userObj->status;
+        if ($user_status == StatusConstance::USER_UNAVAILABLE_STATUS) {
+            alert()->warning('This User is already inactive!')->persistent('Close');
+            return back();
+        } else {
+            $user     = $this->userRepository->inactive($id);
+            return redirect()->action('Backend\Staff\UserController@index')
+            ->withMessage(FormatGenerator::message('Success', 'User Inactive ...')); //to redirect listing page
+        }
     }
 
     public function update(UserEditFormRequest $request){
@@ -139,27 +152,18 @@ class UserController extends Controller
     
         $id          = Input::get('id');
         $name        = Input::get('name');
-        $staffId     = Input::get('staff_id');
         $userType    = Input::get('userType');
         $kitchenId   = Input::get('kitchen');
         $updated_by  = Auth::guard('Cashier')->user()->id;
         //check staffid exist or not
         $olduser     = $this->userRepository->getIdForStaffId($id);
-        $all         = $this->userRepository->getUsersForStaffId();
-        $flag        = 0;
-        if($staffId == $olduser->staff_id ){
-            $flag = 0;
-        }
-        else{
-            foreach($all as $user){
-                if($staffId == $user->staff_id){
-                    $flag = 1;
-                }
-            }
-        }
-        if($flag == 0){
+        $all         = $this->userRepository->getUsersForStaffId($id);
+        if(in_array($name, $all)) {
+            alert()->warning('Username already exists.Please Try Again!')->persistent('Close');
+            return back();
+        } else {
             if(empty($userType)){
-                $result = $this->userRepository->update($id,$name,$staffId,$updated_by);
+                $result = $this->userRepository->update($id,$name,$updated_by);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Backend\Staff\UserController@index')
@@ -171,7 +175,7 @@ class UserController extends Controller
                 }
             }
             else{
-                $result = $this->userRepository->updateWithUserType($id,$name,$staffId,$userType,$kitchenId,$updated_by);
+                $result = $this->userRepository->updateWithUserType($id,$name,$userType,$kitchenId,$updated_by);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Backend\Staff\UserController@index')
@@ -182,12 +186,6 @@ class UserController extends Controller
                         ->withMessage(FormatGenerator::message('Fail', 'User did not update ...'));
                 }
             }
-
-        }
-        elseif($flag == 1){
-            //show warning message if staff id is exist
-            alert()->warning('Staff ID already exists.Please Try Again!')->persistent('Close');
-            return back();
         }
     }
 
@@ -198,7 +196,7 @@ class UserController extends Controller
             $this->userRepository->delete_users($id,$deleted_by);
         }
 
-        return redirect()->action('Backend\Staff\UserController@index')->withMessage(FormatGenerator::message('Success', 'You delete this Item ...')); //to redirect listing page
+        return redirect()->action('Backend\Staff\UserController@index')->withMessage(FormatGenerator::message('Success', 'Success delete User ...')); //to redirect listing page
     }
 
 

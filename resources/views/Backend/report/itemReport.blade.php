@@ -122,7 +122,7 @@
                             <td>{{ $order->name }}</td>
                             <td>{{ $order->total }}</td>
                             <td>{{number_format($order->amount)}}</td>
-                            <td>{{number_format($order->discount_amount)}}</td>
+                            <td>{{ $order->discount_amount === "" ? "0.0" : $order->discount_amount }}</td>
                             <td class="money-align">{{ number_format($order->price) }}</td>
                             <td class="money-align">{{ number_format($order->total_amt) }}</td>
                             <?php $sum += $order->total_amt;?>

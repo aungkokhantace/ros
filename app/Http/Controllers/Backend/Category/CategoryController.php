@@ -177,30 +177,57 @@ class CategoryController extends Controller
             $file = $request->file('fileupload');
             //if users don't want to upload new photo,"if" condition will work.and if users want to upload new photo,'else' function will work
             if($file != null){
-                $imagedata              = file_get_contents($file);
-                $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
-                $file->move('uploads', $photo);
-                $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+                $file_flag      = 0;
+                $extension              = $file->getClientOriginalExtension();
+                switch ($extension) {
+                    case 'jpg':
+                        $photo      = uniqid().'.'.$extension;
+                        break;
 
-                $paramObj               = Category::find($id);
-                $paramObj->name         = $name;
-                $paramObj->kitchen_id   = $kitchen;
-                $paramObj->group_id     = $group_id;
-                $paramObj->image        = $photo;
-                $paramObj->mobile_image = base64_encode($image->encoded);
-                $paramObj->status       = $status;
-                $paramObj->description  = $description;
-                $result = $this->CategoryRepository->updateAllCategory($paramObj);
+                    case 'jpeg':
+                        $photo      = uniqid().'.'.$extension;
+                        break;
 
-                if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                    return redirect()->action('Backend\Category\CategoryController@index')
-                        ->withMessage(FormatGenerator::message('Success', 'Category updated ...'));
+                    case 'png':
+                        $photo      = uniqid().'.'.$extension;
+                        break;
+
+                    case 'gif':
+                        $photo      = uniqid().'.'.$extension;
+                        break;
+                    
+                    default:
+                        $file_flag  = 1;
+                        break;
                 }
-                else{
-                    return redirect()->action('Backend\Category\CategoryController@index')
-                        ->withMessage(FormatGenerator::message('Fail', 'Category did not update ...'));
-                }
+                
+                if ($file_flag == 1) {
+                    alert()->error('File Upload must be only image!')->persistent('Close');
+                    return back();
+                } else {
+                    $file->move('uploads', $photo);
+                    $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
 
+                    $paramObj               = Category::find($id);
+                    $paramObj->name         = $name;
+                    $paramObj->kitchen_id   = $kitchen;
+                    $paramObj->group_id     = $group_id;
+                    $paramObj->image        = $photo;
+                    $paramObj->mobile_image = base64_encode($image->encoded);
+                    $paramObj->status       = $status;
+                    $paramObj->description  = $description;
+                    $result = $this->CategoryRepository->updateAllCategory($paramObj);
+
+                    if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                        return redirect()->action('Backend\Category\CategoryController@index')
+                            ->withMessage(FormatGenerator::message('Success', 'Category updated ...'));
+                    }
+                    else{
+                        return redirect()->action('Backend\Category\CategoryController@index')
+                            ->withMessage(FormatGenerator::message('Fail', 'Category did not update ...'));
+                    }
+
+                }
             }
             else{
                 $paramObj               = Category::find($id);

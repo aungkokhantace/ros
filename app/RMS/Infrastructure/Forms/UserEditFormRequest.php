@@ -15,8 +15,7 @@ class UserEditFormRequest extends Request
     public function rules()
     {
         return [
-            "name"      => "required",
-            "staff_id"  => "required|numeric",
+            "name"      => "required|numeric",
         ];
     }
 
@@ -24,8 +23,7 @@ class UserEditFormRequest extends Request
     {
         return [
             "name.required"     => "Name is required",
-            "staff_id.required" => "User ID is required",
-            "staff_id.numeric"  => "User ID must be number"
+            "name.numeric"      => "Username must be numeric",
         ];
     }
 }

@@ -15,9 +15,8 @@ class UserEntryFormRequest extends Request
     public function rules()
     {
         return [
-            'name'                => 'required|string',
-            'staff_id'            => 'required|unique:users,staff_id,NULL,id,deleted_at,NULL',
-            'login_password'      => 'required|min:8',
+            'name'                => 'required|numeric|unique:users,user_name,NULL,id,deleted_at,NULL',
+            'login_password'      => 'required|numeric|min:8',
             'conpassword'         => 'required|same:login_password',
             'userType'            => 'required'
         ];
@@ -27,8 +26,10 @@ class UserEntryFormRequest extends Request
     {
         return [
             'name.required'         => 'User Name is required!',
-            'staffId.required'      => 'Staff ID is required',
-            'login_password.required'     => 'Password is required',
+            'name.unique'           =>'This name is already taken.',
+            'name.numeric'          => 'Username must be numeric',
+            'login_password.required' => 'Password is required',
+            'login_password.numeric' => 'Password must be numeric',
             'conpassword.required'  => 'Confirm Password is required',
             'conpassword.same'      => 'Password and Confirm Password must match',
             'userType.required'     => 'Staff Type is required'
