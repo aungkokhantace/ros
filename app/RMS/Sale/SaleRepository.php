@@ -91,8 +91,7 @@ class SaleRepository implements SaleRepositoryInterface
         'order.service_amount as Service',
         'order.room_charge as RoomCharge',
         'order.foc_amount as Foc',
-        'order.total_extra_price as Extra',
-        'order.all_total_amount as Amount'
+        'order.total_extra_price as Extra'
         )
         ->where('order.status','=',$order_paid_status)
         ->where('order_details.deleted_at',NULL)

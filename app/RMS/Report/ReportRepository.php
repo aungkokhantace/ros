@@ -25,17 +25,20 @@ class ReportRepository implements ReportRepositoryInterface
     public function getItemReport($start_date, $end_date)
     {
         $order_paid_status             = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel              = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel             = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $orders = DB::table('order_details')
             ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
 
-            ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
-                DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'))
+            ->select('items.name as name','order_details.amount',DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('SUM(order_details.quantity) as total'),
+                DB::raw('(SUM(order_details.amount_with_discount)) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'))
             ->whereBetween('order.order_time', [$start_date->min,$end_date->max])
             ->where('order_details.item_id','!=','null')
             ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
             ->whereNotNull('order_details.item_id')
+            ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
             ->groupBy('order_details.item_id')
             ->orderBy('total','desc')
             ->get();
@@ -45,14 +48,17 @@ class ReportRepository implements ReportRepositoryInterface
 
     public function getExcel($start, $end){
         $order_paid_status             = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel              = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel             = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $orders = Orderdetail::
             leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
             ->leftjoin('status','status.id','=','order_details.status_id')
             ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
-                 'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
+                 DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as DiscountAmount'),'order_details.amount as Price',DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
             ->whereBetween('order.order_time', [$start->min, $end->max])
             ->where('order_details.item_id','!=','null')
+            ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
             ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
             ->whereNotNull('order_details.item_id')
@@ -67,17 +73,20 @@ class ReportRepository implements ReportRepositoryInterface
         $start_date     = $start_date.' 00:00:00';
         $end_date       = $end_date.' 23:00:00';
         $order_paid_status           = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel              = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel             = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         if($number == "" && $from_amount == "" && $to_amount == ""){
             $orders = DB::table('order_details')
                 ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
                 ->leftjoin('status','status.id','=','order_details.status_id')
-                ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
-                DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'),DB::raw('SUM(order_details.amount_with_discount) as net_price') )
+                ->select('items.name as name','order_details.amount','order_details.item_id',DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('SUM(order_details.quantity) as total'),
+                DB::raw('(SUM(order_details.amount_with_discount)) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'),DB::raw('SUM(order_details.amount_with_discount) as net_price') )
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->where('order_details.item_id','!=','null')
+                ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->orderBy('total','desc')
@@ -85,17 +94,17 @@ class ReportRepository implements ReportRepositoryInterface
                 ->get();
         }
         elseif($number == "" && $from_amount != "" && $to_amount != ""){
-            $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $orders = DB::table('order_details')
                 ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
                 ->leftjoin('status','status.id','=','order_details.status_id')
-                ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
-                    DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
+                ->select('items.name as name','order_details.amount','order_details.item_id',DB::raw('SUM(order_details.quantity) as total'),
+                    DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('(SUM(order_details.amount_with_discount)) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->where('order_details.item_id','!=','null')
+                ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->having('total_amt','>=',$from_amount)
@@ -105,17 +114,17 @@ class ReportRepository implements ReportRepositoryInterface
                 ->get();
         }
         elseif($number != "" && $from_amount == "" && $to_amount == ""){
-            $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $orders = DB::table('order_details')
                 ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
                 ->leftjoin('status','status.id','=','order_details.status_id')
-                ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
-                    DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
+                ->select('items.name as name','order_details.amount',DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('SUM(order_details.quantity) as total'),
+                    DB::raw('(SUM(order_details.amount_with_discount)) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->where('order_details.item_id','!=','null')
+                ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->orderBy('total','desc')
@@ -124,17 +133,17 @@ class ReportRepository implements ReportRepositoryInterface
                 ->get();
         }
         else{
-            $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $orders = DB::table('order_details')
                 ->leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
                 ->leftjoin('status','status.id','=','order_details.status_id')
-                ->select('items.name as name','order_details.discount_amount','order_details.amount',DB::raw('SUM(order_details.quantity) as total'),
-                DB::raw('(order_details.amount)-(order_details.discount_amount) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
+                ->select('items.name as name','order_details.amount',DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('SUM(order_details.quantity) as total'),
+                DB::raw('(SUM(order_details.amount_with_discount)) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
                 ->where('order_details.item_id','!=','null')
+                ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->having('total_amt','>=',$from_amount)
@@ -144,13 +153,15 @@ class ReportRepository implements ReportRepositoryInterface
                 ->take($number)
                 ->get();
         }
-        
+        // dd($orders);
         return $orders;
     }
     //END
 
     public function getExcelWithDateAndNumber($start_date, $end_date,$number){
-        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
+        $order_paid_status           = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel              = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel             = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $orders = Orderdetail::
         leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -159,11 +170,12 @@ class ReportRepository implements ReportRepositoryInterface
             // ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
             // ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
             ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
-                'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
+                DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as DiscountAmount'),'order_details.amount as Price',DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
             ->whereBetween('order.order_time', [$start_date, $end_date])
             ->where('order_details.item_id','!=','null')
             ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
+            ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
             ->whereNotNull('order_details.item_id')
             ->groupBy('order_details.item_id')
             ->orderBy('Quantity','desc')
@@ -175,7 +187,9 @@ class ReportRepository implements ReportRepositoryInterface
     }
 
     public function getExcelWithDateAndAmount($start_date,$end_date,$from_amount,$to_amount){
-        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
+        $order_paid_status           = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel              = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel             = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $orders = Orderdetail::
         leftjoin('items', 'items.id', '=', 'order_details.item_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -184,11 +198,12 @@ class ReportRepository implements ReportRepositoryInterface
             // ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
             // ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
             ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
-                'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
+                DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as DiscountAmount'),'order_details.amount as Price',DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
             ->whereBetween('order.order_time', [$start_date, $end_date])
             ->where('order_details.item_id','!=','null')
             ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
+            ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
             ->whereNotNull('order_details.item_id')
             ->groupBy('order_details.item_id')
             ->having('TotalAmount','>=',$from_amount)
@@ -201,7 +216,9 @@ class ReportRepository implements ReportRepositoryInterface
     }
 
     public function getExcelWithDate($start_date, $end_date,$number,$from_amount,$to_amount){
-        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
+        $order_paid_status           = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel              = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel             = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
             $orders = Orderdetail::
             leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -210,11 +227,12 @@ class ReportRepository implements ReportRepositoryInterface
                 // ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
                 // ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
                 ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
-                 'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
+                 DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as DiscountAmount'),'order_details.amount as Price',DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.item_id','!=','null')
                 ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
+                ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->having('TotalAmount','>=',$from_amount)
@@ -228,7 +246,9 @@ class ReportRepository implements ReportRepositoryInterface
     }
 
     public function getExcelWithDateWithNull($start_date, $end_date){
-        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
+        $order_paid_status           = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel              = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel             = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $orders = Orderdetail::
             leftjoin('items', 'items.id', '=', 'order_details.item_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
@@ -237,11 +257,12 @@ class ReportRepository implements ReportRepositoryInterface
                 // ->leftjoin('order_extra','order_details.id','=','order_extra.order_detail_id')
                 // ->leftjoin('add_on','add_on.id','=','order_extra.extra_id')
                 ->select('items.name as Item_Name',DB::raw('SUM(order_details.quantity) as Quantity'),
-                 'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) as Amount'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
+                 DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as DiscountAmount'),'order_details.amount as Price',DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.item_id','!=','null')
                 ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
+                ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 ->whereNotNull('order_details.item_id')
                 ->groupBy('order_details.item_id')
                 ->orderBy('Quantity','desc')
@@ -255,14 +276,17 @@ class ReportRepository implements ReportRepositoryInterface
     public function getset($start,$end)
     {
         $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel              = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel             = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $sub_orders = Orderdetail::
             leftjoin('set_menu', 'set_menu.id', '=', 'order_details.setmenu_id')
             ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
-            ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount_with_discount) As Amount'),
-                DB::raw('(SUM(order_details.quantity))*(order_details.amount_with_discount) as TotalAmount'))
+            ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.amount as Price',
+                DB::raw('SUM(order_details.amount_with_discount) as TotalAmount'))
             ->where('order_details.setmenu_id','!=','null')
             ->where('order.status','=',$order_paid_status)
             ->where('order.deleted_at',NULL)
+            ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
             ->whereNotNUll('order_details.setmenu_id')
             ->groupBy('order_details.setmenu_id')
             ->orderBy('Quantity','desc')
@@ -273,7 +297,9 @@ class ReportRepository implements ReportRepositoryInterface
 
     public function fav_set_date_report($start_date,$end_date,$number)
     {
-        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
+        $order_paid_status        = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel           = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel          = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $start_date = $start_date.' 00:00:00';
         $end_date   = $end_date.' 23:00:00';
         if($number == ""){
@@ -281,29 +307,29 @@ class ReportRepository implements ReportRepositoryInterface
                 leftjoin('set_menu', 'set_menu.id', '=', 'order_details.setmenu_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
                 ->leftjoin('status','status.id','=','order_details.status_id')
-                ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) As Amount'),
-                      DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
+                ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.amount as Price',
+                    DB::raw('SUM(order_details.amount_with_discount) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.setmenu_id','!=','null')
                 ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
+                ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 ->whereNotNull('order_details.setmenu_id')
                 ->groupBy('order_details.setmenu_id')
                 ->orderBy('Quantity','desc')
                 ->get();
         }
         else{
-            $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
             $sub_orders = Orderdetail::
                 leftjoin('set_menu', 'set_menu.id', '=', 'order_details.setmenu_id')
                 ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
                 ->leftjoin('status','status.id','=','order_details.status_id')
-               ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) As Amount'),
-                      DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
+               ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.amount as Price',DB::raw('SUM(order_details.amount_with_discount) as TotalAmount'))
                 ->whereBetween('order.order_time', [$start_date, $end_date])
                 ->where('order_details.setmenu_id','!=','null')
                 ->where('order.status','=',$order_paid_status)
                 ->where('order.deleted_at',NULL)
+                ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 ->whereNotNull('order_details.setmenu_id')
                 ->groupBy('order_details.setmenu_id')
                 ->orderBy('Quantity','desc')
@@ -319,22 +345,24 @@ class ReportRepository implements ReportRepositoryInterface
     {
         $start_date = $start_date.' 00:00:00';
         $end_date   = $end_date.' 23:00:00';
-        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
+        $order_paid_status       = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel          = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel         = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
 
-            $sub_orders = Orderdetail::
-            leftjoin('set_menu', 'set_menu.id', '=', 'order_details.setmenu_id')
-                ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
-                ->leftjoin('status','status.id','=','order_details.status_id')
-                 ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.discount_amount as DiscountAmount','order_details.amount as Price',DB::raw('(order_details.amount)-(order_details.discount_amount) As Amount'),
-                      DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as TotalAmount'))
-                ->whereBetween('order.order_time', [$start_date, $end_date])
-                ->where('order_details.item_id','!=','null')
-                ->where('order.status','=',$order_paid_status)
-                ->where('order.deleted_at',NULL)
-                ->whereNotNull('order_details.setmenu_id')
-                ->groupBy('order_details.setmenu_id')
-                ->orderBy('Quantity','desc')
-                ->get();
+        $sub_orders = Orderdetail::
+        leftjoin('set_menu', 'set_menu.id', '=', 'order_details.setmenu_id')
+            ->leftjoin('order', 'order.id', '=', 'order_details.order_id')
+            ->leftjoin('status','status.id','=','order_details.status_id')
+             ->select('set_menu.set_menus_name as Name',DB::raw('SUM(order_details.quantity) as Quantity'),'order_details.amount as Price',DB::raw('SUM(order_details.amount_with_discount) as TotalAmount'))
+            ->whereBetween('order.order_time', [$start_date, $end_date])
+            ->where('order_details.setmenu_id','!=','null')
+            ->where('order.status','=',$order_paid_status)
+            ->where('order.deleted_at',NULL)
+            ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
+            ->whereNotNull('order_details.setmenu_id')
+            ->groupBy('order_details.setmenu_id')
+            ->orderBy('Quantity','desc')
+            ->get();
 
         return $sub_orders;
 

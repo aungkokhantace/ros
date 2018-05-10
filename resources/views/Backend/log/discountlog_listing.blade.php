@@ -67,7 +67,7 @@
                                     <td>
                                     @if ($discount->updated_by > 0)
                                         @foreach($users as $user)
-                                            @if($discount->updated_user == $user->id)
+                                            @if($discount->updated_by == $user->id)
                                                 {{ $user->user_name }}
                                             @endif
                                         @endforeach

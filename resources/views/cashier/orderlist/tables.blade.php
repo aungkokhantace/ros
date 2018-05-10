@@ -98,18 +98,6 @@
                         if (success == 1) {
                             location.reload();
                         }
-                        // var returnResp        = Response.message;
-                        // var order_id          = Response.order_id;
-                        // if (returnResp == 'success') {
-                        //     $("#" + modalID).modal("hide");
-                        //     $('body').removeClass('modal-open');
-                        //     $('.modal-backdrop').remove();
-                        //     var port   = getSocketPort();
-                        //     var socket = io.connect( 'http://'+window.location.hostname+':' + port );
-                        //     socket.emit('order_cancel',{
-                        //         'order_cancel' : order_id
-                        //     });
-                        // }
                     },
                     error: function(Response) {
                         alert('hihi');

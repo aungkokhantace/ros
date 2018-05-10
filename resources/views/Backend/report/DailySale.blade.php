@@ -43,7 +43,6 @@
                             <th>Extra</th>
                             <th>Price</th>
                             <th>View Detail</th>
-                            <th>View Payment</th>
                         </tr>
                         </thead>
                         <?php
@@ -76,7 +75,6 @@
                             
                             
                             <td><a href="/Backend/invoice/detail/{{ $order->Invoice_id }}">View</a></td>
-                            <td><a href="/Backend/invoice/paid/{{ $order->Invoice_id }}">View</a></td>
                         </tr>
                         <?php 
                             $total      += $order->Amount;

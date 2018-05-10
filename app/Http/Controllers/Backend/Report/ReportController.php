@@ -55,7 +55,6 @@ class ReportController extends Controller
             $items[$key]['Quantity']        = $order->Quantity;
             $items[$key]['Price']           = $order->Price;
             $items[$key]['Discount Price']  = $order->DiscountAmount;
-            $items[$key]['Amount']          = $order->Amount;
             $items[$key]['Total Amount']    = $order->TotalAmount;
         }
         Excel::create('BestSellingItemReport', function($excel)use($orders,$items) {
@@ -66,7 +65,7 @@ class ReportController extends Controller
                     $totalamt+=$order->TotalAmount;
                 }
                 $sheet->appendRow(array(
-                    '','','', '','Total Amount',$totalamt
+                    '','','','Total Amount',$totalamt
                 ));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
@@ -233,7 +232,7 @@ class ReportController extends Controller
             $items[$key]['Quantity']        = $order->Quantity;
             $items[$key]['Price']           = $order->Price;
             $items[$key]['Discount Price']  = $order->DiscountAmount;
-            $items[$key]['Amount']          = $order->Amount;
+            // $items[$key]['Amount']          = $order->Amount;
             $items[$key]['Total Amount']    = $order->TotalAmount;
         }
         Excel::create('BestSellingItemReport', function($excel)use($items,$orders) {
@@ -245,7 +244,7 @@ class ReportController extends Controller
                     $totalamt+=$order->TotalAmount;
                 }
                 $sheet->appendRow(array(
-                    '', '','','','Total Amount',$totalamt
+                    '', '','','Total Amount',$totalamt
                 ));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
@@ -280,10 +279,10 @@ class ReportController extends Controller
                 $sheet->fromArray($orders);
                 $total_amt=null;
                 foreach($orders as $order){
-                    $total_amt+=$order->Amount;
+                    $total_amt+=$order->TotalAmount;
                 }
                 $sheet->appendRow(array(
-                    '','','','','Total Amount',$total_amt
+                    '','','Total Amount',$total_amt
                 ));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
@@ -318,10 +317,10 @@ class ReportController extends Controller
                 $sheet->fromArray($orders);
                 $total_amt=null;
                 foreach($orders as $order){
-                    $total_amt+=$order->Amount;
+                    $total_amt+=$order->TotalAmount;
                 }
                 $sheet->appendRow(array(
-                    '','','','','Total Amount',$total_amt
+                    '','','Total Amount',$total_amt
                 ));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
@@ -342,10 +341,10 @@ class ReportController extends Controller
                 $sheet->fromArray($orders);
                 $total_amt=null;
                 foreach($orders as $order){
-                    $total_amt+=$order->Amount;
+                    $total_amt+=$order->TotalAmount;
                 }
                 $sheet->appendRow(array(
-                  '','','','','Total Amount',$total_amt
+                  '','','Total Amount',$total_amt
                 ));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');

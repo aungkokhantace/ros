@@ -386,7 +386,6 @@
                 $('.tender').css('background', 'none');
                 $(this).css('background-color', '#A9B7C4');
                 var elements = document.querySelectorAll('.void-value');
-  
                 if (elements.length) {
                     elements[0].id = 'void-' + transaction_id;
                 }

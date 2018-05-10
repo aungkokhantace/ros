@@ -52,15 +52,16 @@
                             <thead>
                             <tr>
                                     <td colspan="4"><span>
-                                    @if(isset($tables))
+                                    @if($tables->count() > 0)
                                         @foreach($tables as $table)
-                                            Table No : {{ $table->table_no }}
+                                            {{ $table->table_no }}
                                         @endforeach
-                                    @endif
-                                    @if(isset($rooms))
+                                    @elseif($rooms->count() > 0)
                                         @foreach($rooms as $room)
-                                            Room No : {{ $room->room_name }}
+                                            {{ $room->room_name }}
                                         @endforeach
+                                    @else
+                                        {{ "Take Away" }}
                                     @endif
                                     </span></td>
                                 </tr>

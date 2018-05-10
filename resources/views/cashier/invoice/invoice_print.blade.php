@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body" id="order-id" style="width: 340px;">
                 <div id="{{$order->id}}-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
-                    <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;">
+                    <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;background:none;">
                         <thead>
                             <tr>
                                 <td colspan="4" style="text-align:center;font-size:13px;line-height:25px;padding:5px 7px;">
@@ -21,11 +21,17 @@
                                     <span style="float:left">Invoice No: {{ $order->id}}</span><br/>
                                     <span style="float:left">Invoice Date:{{$order->created_at}}</span><br/>
                                     @if(isset($order->table))
-                                        Table No : {{ $order->table }}
-                                    @endif
-
-                                    @if(isset($order->room))
-                                        Room No : {{ $order->room }}
+                                        Table No : 
+                                        @foreach($order->table as $table)
+                                            {{ $table->table_name . ","}}
+                                        @endforeach
+                                    @elseif(isset($order->room))
+                                        Room No : 
+                                        @foreach($order->room as $room)
+                                            {{ $room->room_name . ","}}
+                                        @endforeach
+                                    @else
+                                        {{ "Take Away "}}
                                     @endif
                                 </td>
                             </tr>

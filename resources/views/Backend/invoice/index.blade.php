@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-3">
-                    @if (isset($orders))
+                    @if(isset($orders))
                     <h3 class="h3 list-heading-align"><strong>Invoice Listing</strong></h3>
                     @elseif (isset($ordersCancel))
                     <h3 class="h3 list-heading-align"><strong>Cancel Invoice Listing</strong></h3>
@@ -242,7 +242,7 @@
             var url     = "/Backend/ajaxSearchPriceDecreaseRequest";//Json Callback Url
             DataTableSearch(url);
         }
-        if (sortID == 'cancel//') {
+        if (sortID == 'cancel/') {
             var url     = "/Backend/ajaxSearchCancelRequest";
             DataTableSearch(url);
         }

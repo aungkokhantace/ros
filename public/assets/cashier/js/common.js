@@ -247,8 +247,8 @@ function calculateTotal() {
     if (isNaN(room)) {
         room         = 0;
     }
-    tax_amount       = priceTotal/tax;
-    service_amount   = priceTotal/service;
+    tax_amount       = (priceTotal * tax)/100;
+    service_amount   = (priceTotal * service)/100;
     net_amount       = priceTotal + tax_amount + service_amount + room;
     document.getElementById('sub-gst').textContent          = tax_amount;
     document.getElementById('sub-service').textContent      = service_amount;

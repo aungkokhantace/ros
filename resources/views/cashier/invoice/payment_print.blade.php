@@ -21,14 +21,17 @@
                                     <span style="float:left">Invoice No: {{ $order->order_id}}</span><br/>
                                     <span style="float:left">Invoice Date:{{$order->order_time}}</span><br/>
                                     @if(isset($tables))
+                                        Table No :
                                         @foreach($tables as $table)
-                                            Table No : {{ $table->table_no }}
+                                            {{ $table->table_no . "," }}
                                         @endforeach
-                                    @endif
-                                    @if(isset($rooms))
+                                    @elseif(isset($rooms))
+                                        Room No :
                                         @foreach($rooms as $room)
-                                            Room No : {{ $room->room_name }}
+                                            {{ $room->room_name  }}
                                         @endforeach
+                                    @else
+                                        {{ "Take Away "}}
                                     @endif
                                 </td>
                             </tr>

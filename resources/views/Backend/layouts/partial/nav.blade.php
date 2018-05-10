@@ -92,7 +92,7 @@
             <li><a href="/Backend/invoice"><i class="fa fa-circle-o text-aqua"></i>  Invoice List</a></li>
             <li><a href="/Backend/saleSummaryReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Summary Report</a></li>
             <li><a href="/Backend/saleReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Report</a></li>
-            <li><a href="/Backend/itemReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Item report</a></li>
+            <li><a href="/Backend/itemReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Item Report</a></li>
             <li><a href="/Backend/favourite_set_menus"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Set Report</a></li>
             
           </ul>

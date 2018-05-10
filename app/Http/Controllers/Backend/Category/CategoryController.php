@@ -99,7 +99,7 @@ class CategoryController extends Controller
             //checking sub category of send id exist or not
             if($subcategory){
                 alert()->error('This category is parent category and has subcategories, you must delete the subcategories first!')->persistent('Close');
-                return redirect()->action('Cashier\Category\CategoryController@index');
+                return redirect()->action('Backend\Category\CategoryController@index');
             }
             elseif($item){
                 //there is items record.

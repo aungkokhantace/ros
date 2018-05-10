@@ -110,9 +110,9 @@
                         <th>Item Name</th>
                         <th>Quantity</th>
                         <th>Price </th>
-                        <th>Discount Price</th>
-                        <th>Amount</th>
+                        <th>Total Discount Price</th>
                         <th>Total Amount</th>
+                        <th>View</th>
                     </tr>
                     </thead>
 
@@ -124,12 +124,12 @@
                             <td>{{number_format($order->amount)}}</td>
                             <td>{{ $order->discount_amount === "" ? "0.0" : $order->discount_amount }}</td>
                             <td class="money-align">{{ number_format($order->price) }}</td>
-                            <td class="money-align">{{ number_format($order->total_amt) }}</td>
+                            <td><a href="" class="btn btn-primary">View Detail</a></td>
                             <?php $sum += $order->total_amt;?>
                         </tr>
                     @endforeach
                     <tr class="active">
-                        <td colspan="4"></td>
+                        <td colspan="3"></td>
                         <td class="money-align">Total Amount</td>
                         <td class="money-align">{{number_format($sum)}}</td>
                     </tr>

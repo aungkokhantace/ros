@@ -41,20 +41,32 @@
                             <div class="col-md-1">
                                 <input type="submit" value="Search" class="btn btn-info "/>
                             </div>
+
                             {!! Form::close() !!}
-                            <div class="col-md-1 ">
-                                @if(isset($from))
-                                    <a href="{{'/Backend/SaleExportDetail/' . $from. '/'.$to }} "  >
-                                        <button class="btn btn-primary" >Export</button>
-                                    </a>
+                            <div class="col-md-1">
+                                @if(isset($orders))
+                                    @if(count($orders) > 0)
+                                        @if(isset($from))
+                                            <a href="{{'/Backend/SaleExportDetail/' . $from. '/'.$to }} "  >
+                                                <button class="btn btn-primary" >Export</button>
+                                            </a>
+                                        @else
+                                            <a href="{{ '/Backend/SaleExport/'}}"  >
+                                                <button class="btn btn-primary">Export</button>
+                                            </a>
+                                        @endif
+                                    @endif
                                 @else
-                                    <a href="{{ '/Backend/SaleExport/'}}"  >
-
-                                        <button class="btn btn-primary">Export</button>
-
-                                    </a>
+                                    @if(isset($from))
+                                        <a href="{{'/Backend/SaleExportDetail/' . $from. '/'.$to }} "  >
+                                            <button class="btn btn-primary" >Export</button>
+                                        </a>
+                                    @else
+                                        <a href="{{ '/Backend/SaleExport/'}}"  >
+                                            <button class="btn btn-primary">Export</button>
+                                        </a>
+                                    @endif
                                 @endif
-
                             </div>
                         </div>
                         </div>

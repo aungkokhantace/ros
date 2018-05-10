@@ -34,28 +34,59 @@ $(document).ready(function(){
           $('#from_date').datepicker('setEndDate',null);
   });
 
-  $("#from").datepicker({
-    format: 'dd-mm-yyyy',
-        autoclose: true
-       
-    }).on('changeDate', function (selected) {
-        var startDate = new Date(selected.date.valueOf());
-        startDate.setDate(startDate.getDate() + 1);
-        $('#to').datepicker('setStartDate', startDate);
-    }).on('clearDate', function (selected) {
-        $('#to').datepicker('setStartDate',null);
-  });
-  
-  $("#to").datepicker({
-          format: 'dd-mm-yyyy',
+  var from          = $('#from').val();
+  if (from == '' || typeof(from) == 'undefined') {
+    $("#from").datepicker({
+      format: 'dd-mm-yyyy',
           autoclose: true
          
       }).on('changeDate', function (selected) {
-          var endDate = new Date(selected.date.valueOf());
-          $('#from').datepicker('setEndDate', endDate);
+          var startDate = new Date(selected.date.valueOf());
+          startDate.setDate(startDate.getDate() + 1);
+          $('#to').datepicker('setStartDate', startDate);
       }).on('clearDate', function (selected) {
-          $('#from').datepicker('setEndDate',null);
-  });
+          $('#to').datepicker('setStartDate',null);
+    });
+    
+    $("#to").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+           
+        }).on('changeDate', function (selected) {
+            var endDate = new Date(selected.date.valueOf());
+            $('#from').datepicker('setEndDate', endDate);
+        }).on('clearDate', function (selected) {
+            $('#from').datepicker('setEndDate',null);
+    });
+  } else {
+    var fromtimestamp = toTimeStamp(from);
+    var defaultDate = new Date(fromtimestamp);
+    defaultDate     = defaultDate.setDate(defaultDate.getDate() + 1);
+    toStartDate     = new Date(defaultDate);
+    $("#from").datepicker({
+      format: 'dd-mm-yyyy',
+          autoclose: true
+         
+      }).on('changeDate', function (selected) {
+          var startDate = new Date(selected.date.valueOf());
+          startDate.setDate(startDate.getDate() + 1);
+          $('#to').datepicker('setStartDate', startDate);
+      }).on('clearDate', function (selected) {
+          $('#to').datepicker('setStartDate',null);
+    });
+    
+    $("#to").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true,
+            startDate : toStartDate
+           
+        }).on('changeDate', function (selected) {
+            var endDate = new Date(selected.date.valueOf());
+            $('#from').datepicker('setEndDate', endDate);
+        }).on('clearDate', function (selected) {
+            $('#from').datepicker('setEndDate',null);
+    });
+  }
 
   $("#monthpicker1").datepicker({
           format: 'mm-yyyy',
@@ -95,5 +126,10 @@ $(document).ready(function(){
   })   
 
 });
+
+function toTimeStamp(strDate) {
+  var datum = new Date(strDate.split("-").reverse().join("-")).getTime();;
+  return datum;
+}
 
   

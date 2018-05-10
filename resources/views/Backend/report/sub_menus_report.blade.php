@@ -52,12 +52,12 @@
                         <div class="col-md-1">
                             @if(isset($start_date))
                                 @if($number=="")
-                                    <a href={{'/Backend/downloadsubReportWithDate/'.$start_date.'/'.$end_date}}><button class="btn btn-primary btn_export">Export</button></a>
+                                    <a href={{'/Backend/downloadsubReportWithDate/'.$start_date.'/'.$end_date}}  {{ (count($sub_orders) <= 0)? "style=display:none":""}}><button class="btn btn-primary btn_export">Export</button></a>
                                 @else
-                                    <a href={{'/Backend/downloadsubReportWithDate/'.$start_date.'/'.$end_date.'/'.$number}}><button class="btn btn-primary btn_export">Export</button></a>
+                                    <a href={{'/Backend/downloadsubReportWithDate/'.$start_date.'/'.$end_date.'/'.$number}} {{ (count($sub_orders) <= 0)? "style=display:none":""}}><button class="btn btn-primary btn_export">Export</button></a>
                                 @endif
                             @else
-                                <a href={{'/Backend/downloadsubReport'}}><button class="btn btn-primary btn_export">Export</button></a>
+                                <a href={{'/Backend/downloadsubReport'}} {{ (count($sub_orders) <= 0)? "style=display:none":""}}><button class="btn btn-primary btn_export">Export</button></a>
                             @endif
                         </div>
                     </div>
@@ -85,9 +85,7 @@
                     <tr class="report-th">
                         <th>Set Menu Name</th>
                         <th>Quantity</th>
-                        <th>Discount Amount</th>
                         <th>Price</th>
-                        <th>Amount</th>
                         <th>Total Amount</th>
                     </tr>
                     </thead>
@@ -97,15 +95,13 @@
                         <tr class="tr-row active">
                             <td>{{ $sub->Name }}</td>
                             <td>{{ $sub->Quantity }}</td>
-                            <td>{{ $sub->DiscountAmount === "" ? "0.0" : $sub->DiscountAmount }}</td>
                             <td>{{number_format($sub->Price)}}</td>
-                            <td class="money-align">{{ number_format($sub->Amount) }}</td>
                             <td class="money-align">{{ number_format($sub->TotalAmount) }}</td>
                             <?php $sum += $sub->TotalAmount;?>
                         </tr>
                     @endforeach
                     <tr class="active">
-                        <td colspan="4"></td>
+                        <td colspan="2"></td>
                         <td class="money-align">Total amount</td>
                         <td class="money-align">{{number_format($sum)}}</td>
                     </tr>

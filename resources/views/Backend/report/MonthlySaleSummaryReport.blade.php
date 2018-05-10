@@ -62,14 +62,16 @@
                     
                     {!! Form::close() !!}
                     <div class="col-md-1 ">
-                        @if(isset($from_month))
-                            <a href="{{'/Backend/searchMonthlySummaryExport/' . $from_month. '/'.$to_month }} "  >
-                                <button class="btn btn-success btn_export" >Export</button>
-                            </a>
-                        @else
-                            <a href="{{ '/Backend/monthlySaleSummaryExport'}}"  >
-                                <button class="btn btn-success btn_export">Export</button>
-                            </a>
+                        @if(count($orders))
+                            @if(isset($from_month))
+                                <a href="{{'/Backend/searchMonthlySummaryExport/' . $from_month. '/'.$to_month }} "  >
+                                    <button class="btn btn-success btn_export" >Export</button>
+                                </a>
+                            @else
+                                <a href="{{ '/Backend/monthlySaleSummaryExport'}}"  >
+                                    <button class="btn btn-success btn_export">Export</button>
+                                </a>
+                            @endif
                         @endif
                     </div>
                     </div>

@@ -56,17 +56,17 @@
                         </div>
                         {!! Form::close() !!}
                         <div class="col-md-1 ">
-                            @if(isset($year))
-                                <a href="{{'/Backend/searchYearlySummaryExport/'.$year}}"   >
-                                <button class="btn btn-success btn_export">Export</button>
-                                </a>
-                            @else
-                                <a href='/Backend/yearlySaleSummaryExport'>
-                                <button class="btn btn-success btn_export">Export</button>
-                                </a>
+                            @if(count($orders))
+                                @if(isset($year))
+                                    <a href="{{'/Backend/searchYearlySummaryExport/'.$year}}"   >
+                                    <button class="btn btn-success btn_export">Export</button>
+                                    </a>
+                                @else
+                                    <a href='/Backend/yearlySaleSummaryExport'>
+                                    <button class="btn btn-success btn_export">Export</button>
+                                    </a>
+                                @endif
                             @endif
-                            
-                            
                         </div>
                     </div>
                 </div>

@@ -51,11 +51,11 @@ class InvoiceController extends Controller
             $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
                                 ->select('tables.table_no as table_name')
                                 ->where('order_tables.order_id','=',$orderID)
-                                ->first();
+                                ->get();
             $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
-                                ->first();
+                                ->get();
             //Get Order Detail 
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
@@ -63,11 +63,11 @@ class InvoiceController extends Controller
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
-                $order->table   = $orderTable->table_name;
+                $order->table   = $orderTable;
             }
 
             if (count($orderRoom) > 0) {
-                $order->room    = $orderRoom->room_name;
+                $order->room    = $orderRoom;
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);

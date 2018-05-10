@@ -103,10 +103,19 @@ class SaleReportController extends Controller
            
             $orders = Order::leftjoin('order_details','order_details.order_id','=','order.id')
             ->leftjoin('users','users.id','=','order.user_id')
-            ->select('order.id as invoice_id','order.order_time','users.user_name','order.all_total_amount as Amount',
-                'order.payment_amount as Payment','order.refund as Refund',
-        'order.service_amount as Service','order.tax_amount as Tax','order.room_charge as RoomCharge','order.total_discount_amount as Discount',
-        'order.foc_amount as Foc', 
+            ->select(
+                'order.id as invoice_id',
+                'order.order_time',
+                'users.user_name',
+                'order.all_total_amount as Amount',
+                'order.payment_amount as Payment',
+                'order.refund as Refund',
+                'order.service_amount as Service',
+                'order.tax_amount as Tax',
+                'order.room_charge as RoomCharge',
+                'order.total_extra_price as Extra',
+                'order.total_discount_amount as Discount',
+                'order.foc_amount as Foc', 
             DB::raw('SUM(order_details.quantity) as Quantity'))
             ->whereBetween('order.order_time',[$from_time,$to_time])
             ->where('order.status',$order_paid_status)
@@ -139,35 +148,35 @@ class SaleReportController extends Controller
             $items[$key]['Total Room Charge']        = $order->RoomCharge;
             $items[$key]['Total FOC Amount']         = $order->Foc;
             $items[$key]['Total Extra Price']        = $order->Extra;
-            $items[$key]['Total Amount']             = $order->Amount;
+            // $items[$key]['Total Amount']             = $order->Amount;
         }
         Excel::create('SaleReport', function($excel)use($orders,$items) {
             $excel->sheet('Sale Report', function($sheet)use($orders,$items) {
                 $sheet->fromArray($items);
-                $sum_amount=0;
-                $sum_payment=0;
-                $sum_refund=0;
-                $sum_service=0;
-                $sum_tax=0;
-                $sum_discount=0;
-                $sum_foc=0;
-                $sum_quantity = 0;
-                $sum_room = 0;
-                $sum_extra = 0;
-                foreach($orders as $order){
-                    $sum_amount     += $order->Amount;
-                    $sum_refund     += $order->Refund;
-                    $sum_service    += $order->Service;
-                    $sum_tax        += $order->Tax;
-                    $sum_discount   += $order->Discount;
-                    $sum_foc        += $order->Foc;
-                    $sum_quantity   += $order->Quantity;
-                    $sum_room       += $order->RoomCharge;
-                    $sum_extra      += $order->Extra;
-                }
-                $sheet->appendRow(array(
-                    '', '','Total',$sum_quantity,$sum_discount,$sum_tax,$sum_service,$sum_room,$sum_foc,$sum_extra,$sum_amount
-                ));
+                // $sum_amount=0;
+                // $sum_payment=0;
+                // $sum_refund=0;
+                // $sum_service=0;
+                // $sum_tax=0;
+                // $sum_discount=0;
+                // $sum_foc=0;
+                // $sum_quantity = 0;
+                // $sum_room = 0;
+                // $sum_extra = 0;
+                // foreach($orders as $order){
+                //     $sum_amount     += $order->Amount;
+                //     $sum_refund     += $order->Refund;
+                //     $sum_service    += $order->Service;
+                //     $sum_tax        += $order->Tax;
+                //     $sum_discount   += $order->Discount;
+                //     $sum_foc        += $order->Foc;
+                //     $sum_quantity   += $order->Quantity;
+                //     $sum_room       += $order->RoomCharge;
+                //     $sum_extra      += $order->Extra;
+                // }
+                // $sheet->appendRow(array(
+                //     '', '','Total',$sum_quantity,$sum_discount,$sum_tax,$sum_service,$sum_room,$sum_foc,$sum_extra,$sum_amount
+                // ));
                 $sheet->row(1,function($row){
                     $row->setBackground('#f3a42e');
                 });
@@ -182,10 +191,10 @@ class SaleReportController extends Controller
     public function ajaxRequest(Request $request) {
         $limit              = (int)($request->input('length'));
         $start              = (int)($request->input('start'));
-        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
-        $kitchen_cancel         = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
-        $customer_cancel        = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
-        $status_array           = array($kitchen_cancel,$customer_cancel);
+        $order_paid_status  = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel     = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel    = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
+        $status_array       = array($kitchen_cancel,$customer_cancel);
         $orders = Order::leftjoin('order_details','order_details.order_id','=','order.id')
                 ->leftjoin('users','users.id','=','order.user_id')
                 ->select(

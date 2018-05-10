@@ -408,6 +408,7 @@
             $('.tender').click(function() {
                 $('.amount-quantity').text('');
                 var transaction_id      = $(this).attr("id");
+                alert(transaction_id);
                 $('.tender').css('background', 'none');
                 $('.foc-tr').css('background', 'none');
                 $(this).css('background-color', '#A9B7C4');
@@ -672,10 +673,12 @@
 
         function myFunction(x) {
             $(document).ready(function(){
+                console.log(x);
                 $('.amount-quantity').text('');
                 var transaction_id      = x.id;
                 $('.tender').css('background', 'none');
                 $(x).css('background-color', '#A9B7C4');
+                $('.void-type').attr('id', 'type-1');
                 var elements = document.querySelectorAll('.void-value');
                 if (elements.length) {
                     elements[0].id = 'void-' + transaction_id;

@@ -73,14 +73,16 @@
                     
                     {!! Form::close() !!}
                     <div class="col-md-1 ">
-                        @if(isset($from_date))
-                            <a href="{{'/Backend/searchDailySummaryExport/' . $from_date. '/'.$to_date }} "  >
-                                <button class="btn btn-success btn_export" >Export</button>
-                            </a>
-                        @else
-                            <a href="{{ '/Backend/SaleSummaryExport'}}"  >
-                                <button class="btn btn-success btn_export">Export</button>
-                            </a>
+                        @if (count($orders) > 0)
+                            @if(isset($from_date))
+                                <a href="{{'/Backend/searchDailySummaryExport/' . $from_date. '/'.$to_date }} "  >
+                                    <button class="btn btn-success btn_export" >Export</button>
+                                </a>
+                            @else
+                                <a href="{{ '/Backend/SaleSummaryExport'}}"  >
+                                    <button class="btn btn-success btn_export">Export</button>
+                                </a>
+                            @endif
                         @endif
                     </div>
                     <br/><br/>
