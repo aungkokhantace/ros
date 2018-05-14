@@ -148,7 +148,7 @@ class SaleReportController extends Controller
             $items[$key]['Total Room Charge']        = $order->RoomCharge;
             $items[$key]['Total FOC Amount']         = $order->Foc;
             $items[$key]['Total Extra Price']        = $order->Extra;
-            // $items[$key]['Total Amount']             = $order->Amount;
+            $items[$key]['Total Amount']             = $order->Amount;
         }
         Excel::create('SaleReport', function($excel)use($orders,$items) {
             $excel->sheet('Sale Report', function($sheet)use($orders,$items) {

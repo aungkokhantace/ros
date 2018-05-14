@@ -20,12 +20,12 @@
                                     Addr: {{ $config->address}}<br /><br />
                                     <span style="float:left">Invoice No: {{ $order->order_id}}</span><br/>
                                     <span style="float:left">Invoice Date:{{$order->order_time}}</span><br/>
-                                    @if(isset($tables))
+                                    @if(count($tables)>0)
                                         Table No :
                                         @foreach($tables as $table)
                                             {{ $table->table_no . "," }}
                                         @endforeach
-                                    @elseif(isset($rooms))
+                                    @elseif(count($rooms)>0)
                                         Room No :
                                         @foreach($rooms as $room)
                                             {{ $room->room_name  }}
