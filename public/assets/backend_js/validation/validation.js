@@ -135,7 +135,7 @@ $(document).ready(function() {
         },
         messages: {
             name        : "Category Name is required.",
-            image       : {required: 'Category Image is required!!', extension: 'Only jpeg, png, gif allow!'},
+            image       : {required: 'Category Image is required!!', extension: 'Only jpg/jpeg and png files are allowed'},
             description : "Description is required."
         },
         submitHandler: function(form) {
@@ -168,7 +168,7 @@ $(document).ready(function() {
               required : "Item Price is required.",
               number : "Item Price must be numeric."
             },
-            filename       : {required: 'Item Image is required.', extension: 'Only jpeg, png, gif allow!'},
+            filename       : {required: 'Item Image is required.', extension: 'Only jpg/jpeg and png files are allowed'},
             description    : "Item Description is required."
         },
         submitHandler: function(form) {
@@ -196,7 +196,7 @@ $(document).ready(function() {
             food_name   : "Add-on Name is required.",
             category_id : "Category is required.",
             description : "Description is required.",
-            filename    : {required: 'Item Image is required.', extension: 'Only jpeg, png, gif allow!'},
+            filename    : {required: 'Item Image is required.', extension: 'Only jpg/jpeg and png files are allowed'},
             price       : {
                 required : "Add-on Price is requried.",
                 number : "Add-on Price must be numeric."
@@ -266,7 +266,7 @@ $(document).ready(function() {
                 required : "Set Menu Price is required.",
                 number   : "Set Menu Price must be numeric."
             },
-            image        : {required: 'Item Image is required.', extension: 'Only jpeg, png, gif allow!'},
+            image        : {required: 'Item Image is required.', extension: 'Only jpg/jpeg and png files are allowed'},
         },
         ignore: ':hidden:not("#Category")', // Tells the validator to check the hidden select
         errorPlacement: function (error, element) { //Positioning Jquery Validation Errors after checkbox value
@@ -385,8 +385,8 @@ $(document).ready(function() {
             mobile_image: {extension: "jpg|jpeg|gif|png"},
         },
         messages: {
-            image       : {extension: 'Only jpeg, png, gif allow!'},
-            mobile_image: {extension: 'Only jpeg, png, gif allow!'},
+            image       : {extension: 'Only jpg/jpeg and png files are allowed'},
+            mobile_image: {extension: 'Only jpg/jpeg and png files are allowed'},
         },
         submitHandler: function(form) {
             $('input[type="submit"]').attr('disabled','disabled');
