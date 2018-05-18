@@ -14,7 +14,6 @@ class CreateUsersTable extends Migration
             $table->string('staff_id');
             $table->string('password');
             $table->integer('role_id');
-            $table->integer('kitchen_id')->nullable();
             $table->integer('status');
             $table->dateTime('last_activity');
             $table->rememberToken();

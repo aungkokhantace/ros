@@ -20,7 +20,7 @@ class ShiftMiddleware
         foreach($role as $r){
             $array[] = $r->module_id;
         }
-        if(in_array(24,$array)){
+        if(in_array(20,$array)){
            return $next( $request );
         }else{
             //return response('Unauthorized',401);

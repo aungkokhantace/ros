@@ -11,7 +11,6 @@ namespace App\RMS\Category;
 
 use App\RMS\Item\Item;
 use App\RMS\Category\Category;
-use App\RMS\Kitchen\Kitchen;
 use App\RMS\Utility;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
@@ -105,7 +104,6 @@ class CategoryRepository implements CategoryRepositoryInterface
             foreach($categories as $category) {
                 $cat_id                 = $category->id;
                 $updateCat              = Category::find($cat_id);
-                $updateCat->kitchen_id  = $paramObj->kitchen_id;
                 $updateCatObj           = Utility::addUpdatedBy($updateCat);
                 $updateCatObj->save();
             }
@@ -131,7 +129,6 @@ class CategoryRepository implements CategoryRepositoryInterface
             foreach($categories as $category) {
                 $cat_id                 = $category->id;
                 $updateCat              = Category::find($cat_id);
-                $updateCat->kitchen_id  = $paramObj->kitchen_id;
                 $updateCatObj           = Utility::addUpdatedBy($updateCat);
                 $updateCatObj->save();
             }
@@ -197,16 +194,6 @@ class CategoryRepository implements CategoryRepositoryInterface
         DB::table('category')
             ->where('id',$id)
             ->update(['status'=>0]);
-    }
-
-    public function getKitchen(){
-        $kit = Kitchen::get();
-        return $kit;
-    }
-
-    public function getKitchenByCat($catID) {
-        $kitchen    = Category::select('kitchen_id')->where('id','=',$catID)->first();
-        return $kitchen;   
     }
 
     public function getLevelByParentCat($category) {

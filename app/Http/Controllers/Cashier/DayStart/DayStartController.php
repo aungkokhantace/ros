@@ -94,6 +94,7 @@ class DayStartController extends Controller
 
     public function store(Request $request)
     {
+        
         try {
             $start_date                 = Input::get('start_date');
             $status                     = Input::get('status');

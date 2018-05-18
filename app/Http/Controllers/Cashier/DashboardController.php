@@ -52,7 +52,6 @@ class DashboardController extends Controller
                             $session_status         = StatusConstance::DAY_END_STATUS;
                         } else {
                             if ($status == StatusConstance::ORDER_SHIFT_START_STATUS) {
-                                // dd('hihihehe');
                                 $current_step           = $current_count - 1; //Because shift ordering array key start with 0
                                 $current_status         = $status;
                             } else {

@@ -39,11 +39,5 @@ class RoleTableSeeder extends Seeder
             'description' => 'Waiter',
             'created_by'  => '1'
         ]);
-        DB::table('roles')->insert([
-            'id'          => '6',
-            'name'        => 'Kitchen',
-            'description' => 'Kitchen',
-            'created_by'  => '1'
-        ]);
     }
 }

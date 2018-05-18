@@ -46,41 +46,6 @@
         @if(isset($editcategory))
         <input type="hidden" value="{{ $editcategory->id }}" name="parent_category" />
         @endif
-        
-        @if(isset($editcategory))
-            @if ($subtree->parent_id <= 0)
-            <div class="form-group" id="kitchen">
-                <label for="product" class="col-sm-3 form-label left-align label-font">Kitchen<span class="require">*</span></label>
-                <div class="col-sm-7">
-                    <select name="kitchen" id="kitchen" class="form-control">
-                        @foreach($kitchen as $k)
-                            @if($k->id == $editcategory->kitchen_id)
-                                <option value="{{$k->id}}" selected>{{$k->name}}</option>
-                            @else
-                                <option value="{{$k->id}}">{{$k->name}}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                    <p class="text-danger">{{$errors->first('parent_category')}}</p>
-                </div>
-            </div>
-            @else
-                <input type="hidden" value="{{$editcategory->kitchen_id}}" name = "kitchen" />
-            @endif
-        @else
-        <div class="form-group" id="kitchen">
-            <label for="product" class="col-sm-3 form-label left-align label-font">Kitchen<span class="require">*</span></label>
-            <div class="col-sm-7">
-                <select name="kitchen" id="kitchen" class="form-control">
-                    <option selected disabled>Select Kitchen</option>
-                    @foreach($kitchen as $k)
-                        <option value="{{$k->id}}">{{$k->name}}</option>
-                    @endforeach
-                </select>
-                <p class="text-danger">{{$errors->first('parent_category')}}</p>
-            </div>
-        </div>
-        @endif
 
         <div class="form-group">
             <label for="category-image"  class="col-sm-3 form-label left-align label-font">Category Image<span class="require">*</span></label>
@@ -135,16 +100,4 @@
     </div>
   </div>
 </div>
-    <script>
-        function getCatID() {
-            var category    = document.getElementById("parent_category").value;
-            $(document).ready(function(){
-                if (category == 0) {
-                    $('#kitchen').show();
-                } else {
-                    $('#kitchen').hide();  
-                }
-            });
-        }
-    </script>
 @endsection

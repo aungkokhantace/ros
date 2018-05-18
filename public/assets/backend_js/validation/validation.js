@@ -130,14 +130,12 @@ $(document).ready(function() {
     $('#categoryForm').validate({
         rules: {
             name        : "required",
-            kitchen     : "required",
-            image       : "required",
+            image       : { required: true,extension: "jpg|jpeg|gif|png" },
             description : "required"
         },
         messages: {
             name        : "Category Name is required.",
-            kitchen     : "Kitchen is required.",
-            image       : "Category Image is required.",
+            image       : {required: 'Category Image is required!!', extension: 'Only jpeg, png, gif allow!'},
             description : "Description is required."
         },
         submitHandler: function(form) {
@@ -159,7 +157,7 @@ $(document).ready(function() {
                 required : true,
                 number : true
             },
-            filename    : "required",
+            filename    : { required: true,extension: "jpg|jpeg|gif|png" },
             description : "required"
         },
         messages: {
@@ -170,7 +168,7 @@ $(document).ready(function() {
               required : "Item Price is required.",
               number : "Item Price must be numeric."
             },
-            filename       : "Item Image is required.",
+            filename       : {required: 'Item Image is required.', extension: 'Only jpeg, png, gif allow!'},
             description    : "Item Description is required."
         },
         submitHandler: function(form) {
@@ -188,8 +186,7 @@ $(document).ready(function() {
             food_name   : "required",
             category_id : "required",
             description : "required",
-            filename       : "required",
-            //price       : "required"
+            filename    : { required: true,extension: "jpg|jpeg|gif|png" },
             price       : {
               required : true,
               number : true
@@ -199,8 +196,7 @@ $(document).ready(function() {
             food_name   : "Add-on Name is required.",
             category_id : "Category is required.",
             description : "Description is required.",
-            filename       : "Add-on Image is required.",
-            //price       : "Price is required."
+            filename    : {required: 'Item Image is required.', extension: 'Only jpeg, png, gif allow!'},
             price       : {
                 required : "Add-on Price is requried.",
                 number : "Add-on Price must be numeric."
@@ -261,7 +257,7 @@ $(document).ready(function() {
                 required : true,
                 number   :true
             },
-            image            : "required",
+            image        : { required: true,extension: "jpg|jpeg|gif|png" },
         },
         messages: {
             sub_menus_name  : "Set Menu Name is required.",
@@ -270,7 +266,7 @@ $(document).ready(function() {
                 required : "Set Menu Price is required.",
                 number   : "Set Menu Price must be numeric."
             },
-            image           : "Set Menu Image is required.",
+            image        : {required: 'Item Image is required.', extension: 'Only jpeg, png, gif allow!'},
         },
         ignore: ':hidden:not("#Category")', // Tells the validator to check the hidden select
         errorPlacement: function (error, element) { //Positioning Jquery Validation Errors after checkbox value
@@ -385,10 +381,17 @@ $(document).ready(function() {
     //For Profile
     $('#profile').validate({
         rules: {
-            website     : "url",
-            email       : "email"
+            image       : {extension: "jpg|jpeg|gif|png"},
+            mobile_image: {extension: "jpg|jpeg|gif|png"},
         },
-        //messages: {}
+        messages: {
+            image       : {extension: 'Only jpeg, png, gif allow!'},
+            mobile_image: {extension: 'Only jpeg, png, gif allow!'},
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
     });
     //For Promotion
     $('#promotion').validate({

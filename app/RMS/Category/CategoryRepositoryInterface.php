@@ -29,7 +29,5 @@ interface CategoryRepositoryInterface
     public function item($id);
     public function catenabled($id);
     public function catdisabled($id);
-    public function getKitchen();
-    public function getKitchenByCat($catID);
 
 }

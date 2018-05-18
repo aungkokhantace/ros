@@ -199,8 +199,10 @@
                                     console.log('error');
                                 }
                             },
-                            error: function(data) {
-                                alert('error');   
+                            error: function(xhr, textStatus, error){
+                                console.log(xhr.statusText);
+                                console.log(textStatus);
+                                console.log(error);
                             }
                         });
                     }

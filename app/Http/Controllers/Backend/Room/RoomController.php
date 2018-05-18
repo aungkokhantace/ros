@@ -68,36 +68,15 @@ class RoomController extends Controller
         $paramObj               = Room::find($id);
         $paramObj->room_name    = $name;
         $paramObj->capacity     = $capacity;
-        //check room name already exist in db
-        $rooms       = $this->roomRepository->getRooms();
-        $old_room    = $this->roomRepository->getRoomById($id);
-        $flag        = 0;
-        if($old_room->room_name == $name){
-            $flag = 0;
+        $result = $this->roomRepository->update($paramObj);
+
+        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+            return redirect()->action('Backend\Room\RoomController@index')
+                ->withMessage(FormatGenerator::message('Success', 'Room updated ...'));
         }
         else{
-            foreach($rooms as $room){
-                if($room->room_name == $name){
-                    $flag = 1;
-                }
-            }
-        }
-        if($flag == 0){
-            $result = $this->roomRepository->update($paramObj);
-
-            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                return redirect()->action('Backend\Room\RoomController@index')
-                    ->withMessage(FormatGenerator::message('Success', 'Room updated ...'));
-            }
-            else{
-                return redirect()->action('Backend\Room\RoomController@index')
-                    ->withMessage(FormatGenerator::message('Fail', 'Room did not update ...'));
-            }
-
-        }
-        else{
-            alert()->warning('Room Name already exists.Please Try Again!')->persistent('Close');
-            return back();
+            return redirect()->action('Backend\Room\RoomController@index')
+                ->withMessage(FormatGenerator::message('Fail', 'Room did not update ...'));
         }
     }
 

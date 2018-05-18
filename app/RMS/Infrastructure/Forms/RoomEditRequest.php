@@ -3,7 +3,7 @@
 namespace App\RMS\Infrastructure\Forms;
 
 use App\Http\Requests\Request;
-
+use Illuminate\Support\Facades\Input;
 class RoomEditRequest extends Request
 {
 
@@ -15,8 +15,9 @@ class RoomEditRequest extends Request
     public function rules()
     {
         return [
-            'room_name'  => 'required|string',
-            'capacity'   => 'required|integer',
+            // 'room_name'  => 'required|string',
+            'room_name'     =>'required|unique:rooms,room_name,' . Input::get("id") . ',id,deleted_at,NULL',
+            'capacity'      => 'required|integer',
         ];
     }
 
@@ -24,6 +25,7 @@ class RoomEditRequest extends Request
     {
         return [
             'room_name.required'    => 'Room Name is required!',
+            'room_name.unique'      => 'This name is already taken.',
             'capacity.required'     => 'Capacity is required!',
             'capacity.integer'      => 'Capacity should be number only'
         ];

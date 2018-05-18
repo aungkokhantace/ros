@@ -139,7 +139,7 @@ class ItemRepository implements ItemRepositoryInterface
 
     public function getAllItemName()
     {
-        $data=DB::table('items')->get();
+        $data=DB::table('items')->whereNull('deleted_at')->get();
         return $data;
     }
 

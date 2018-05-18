@@ -74,14 +74,13 @@ class UserRepository implements UserRepositoryInterface
         return $user;
     }
 
-    public function updateWithUserType($id,$name,$userType,$kitchenId,$updated_by)
+    public function updateWithUserType($id,$name,$userType,$updated_by)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
-            DB::table('users')->where('id',$id)->update(['user_name'=>$name,'role_id'=>$userType,
-                'kitchen_id'=>$kitchenId,'updated_by'=>$updated_by]);
+            DB::table('users')->where('id',$id)->update(['user_name'=>$name,'role_id'=>$userType,'updated_by'=>$updated_by]);
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }

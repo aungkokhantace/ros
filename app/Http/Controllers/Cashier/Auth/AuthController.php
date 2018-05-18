@@ -38,10 +38,6 @@ class AuthController extends Controller
         {
             return redirect('Cashier/Dashboard');
         }
-        if(Auth::guard('Kitchen')->check())
-        {
-            return redirect('Kitchen/kitchen');
-        }
         return view('cashier.auth.login');
     }
     public function postDataForCashierLogin(LoginFormRequest $request){
@@ -68,8 +64,6 @@ class AuthController extends Controller
                 return redirect()->back()->withErrors($this->getFailedLoginMessage());
             }
             else{
-                // $array      = array('name' => 'shwekayin');
-                // $request->session()->push('key', $array);
                 $role_id        = Auth::guard('Cashier')->user()->role_id;
                 $permissionMod  = new PermissionRepository();
                 $permissions    = $permissionMod->getModuleArr($role_id);

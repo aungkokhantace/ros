@@ -52,12 +52,6 @@ class AddonController extends Controller
         $category_id            = Input::get('category_id');
         $description            = Input::get('description');
         $price                  = Input::get('price');
-        //Check if Add on is already exit in category and unique
-        $add_on_count            = Addon::where('food_name','=',$food_name)->where('category_id','=',$category_id)->get()->count();
-        if ($add_on_count > 0) {
-            alert()->warning('Item already Exit in Category.')->persistent('Close');
-            return redirect()->back()->withInput();
-        }
         $file                   = $request->file('fileupload');
         $imagedata              = file_get_contents($file);
         $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
@@ -113,70 +107,51 @@ class AddonController extends Controller
         $old_name    = $this->extra_repository->getOldName($id);
         $all_names   = $this->extra_repository->getAllNames();
         $oldprice    = $old_name->price;
-        $flag        = 1;
-        if($food_name == $old_name->food_name ){
-            $flag = 1;
-        }
-        else{
-            //select all data from category table
-            foreach($all_names as $all_name){
-                //edited name is already exist in database
-                if($food_name ==  $all_name->food_name){
-                    $flag = 0;
-                }
-            }
-        }
-        if($flag == 1){
-            if($file != null){
-                $food_name   = Input::get('food_name');
-                $imagedata   = file_get_contents($file);
-                $photo        = uniqid().'.'.$file->getClientOriginalExtension();
-                $file->move('uploads', $photo);
-                // resizing image
-                $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+        if($file != null){
+            $food_name   = Input::get('food_name');
+            $imagedata   = file_get_contents($file);
+            $photo        = uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move('uploads', $photo);
+            // resizing image
+            $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
 
-                $paramObj               = Addon::find($id);
-                $paramObj->food_name    = $food_name;
-                $paramObj->category_id  = $category_id;
-                $paramObj->description  = $description;
-                $paramObj->image        = $photo;
-                $paramObj->mobile_image = base64_encode($image->encoded);
-                $paramObj->price        = $price;
-                $paramObj->status       = $status;
-                $result = $this->extra_repository->updateall($paramObj,$oldprice);
+            $paramObj               = Addon::find($id);
+            $paramObj->food_name    = $food_name;
+            $paramObj->category_id  = $category_id;
+            $paramObj->description  = $description;
+            $paramObj->image        = $photo;
+            $paramObj->mobile_image = base64_encode($image->encoded);
+            $paramObj->price        = $price;
+            $paramObj->status       = $status;
+            $result = $this->extra_repository->updateall($paramObj,$oldprice);
 
-                if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                    return redirect()->action('Backend\Addon\AddonController@index')
-                        ->withMessage(FormatGenerator::message('Success', 'Addon updated ...'));
-                }
-                else{
-                    return redirect()->action('Backend\Addon\AddonController@index')
-                        ->withMessage(FormatGenerator::message('Fail', 'Addon did not update ...'));
-                }
-
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                return redirect()->action('Backend\Addon\AddonController@index')
+                    ->withMessage(FormatGenerator::message('Success', 'Addon updated ...'));
             }
             else{
-                $paramObj               = Addon::find($id);
-                $paramObj->food_name    = $food_name;
-                $paramObj->category_id  = $category_id;
-                $paramObj->description  = $description;
-                $paramObj->price        = $price;
-                $paramObj->status       = $status;
-                $result = $this->extra_repository->update($paramObj,$oldprice);
-
-                if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                    return redirect()->action('Backend\Addon\AddonController@index')
-                        ->withMessage(FormatGenerator::message('Success', 'Addon updated ...'));
-                }
-                else{
-                    return redirect()->action('Backend\Addon\AddonController@index')
-                        ->withMessage(FormatGenerator::message('Fail', 'Addon did not update ...'));
-                }
+                return redirect()->action('Backend\Addon\AddonController@index')
+                    ->withMessage(FormatGenerator::message('Fail', 'Addon did not update ...'));
             }
+
         }
-        elseif($flag == 0){
-            alert()->error('The add on with the same name already exists')->persistent('Close');
-            return back();
+        else{
+            $paramObj               = Addon::find($id);
+            $paramObj->food_name    = $food_name;
+            $paramObj->category_id  = $category_id;
+            $paramObj->description  = $description;
+            $paramObj->price        = $price;
+            $paramObj->status       = $status;
+            $result = $this->extra_repository->update($paramObj,$oldprice);
+
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                return redirect()->action('Backend\Addon\AddonController@index')
+                    ->withMessage(FormatGenerator::message('Success', 'Addon updated ...'));
+            }
+            else{
+                return redirect()->action('Backend\Addon\AddonController@index')
+                    ->withMessage(FormatGenerator::message('Fail', 'Addon did not update ...'));
+            }
         }
 
     }

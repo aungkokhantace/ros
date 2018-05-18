@@ -35,12 +35,6 @@
             <li><a href="/Backend/Staff/index"><i class="fa fa-circle-o text-aqua"></i>  Staff</a></li>
           </ul>
         </li>
-        <li>
-        <a href="/Backend/Kitchen/index">
-            <i class="fa fa-cutlery"></i>
-            <span>Kitchen</span>
-          </a>
-        </li>
         <li class="treeview">
           <a href="#">
            <i class="fa fa-plus-square-o"></i><span>Product</span>

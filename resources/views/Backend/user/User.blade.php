@@ -72,36 +72,6 @@
             </div>
         </div>
 
-        {{--when the form is edit form and the user type is kitchen, the kitchen dropdown will be shown--}}
-        @if((isset($user)) && ($user->roles->name == "Kitchen"))
-            <div class="form-group" id="kitchen" style="display: block;">
-        @else
-            <div class="form-group" id="kitchen" style="display: none;">
-        @endif
-        <label for="kitchen" class="col-sm-3 control-label left-align label-font">Kitchen<span class="require">*</span></label>
-        <div class="col-sm-7">
-                @if(isset($user))
-                    <select class="form-control" name="kitchen">
-                        @foreach($kitchens as $kitchen)
-                            @if($kitchen->id == $user->kitchen_id)
-                                <option value="{{$user->kitchen_id}}" selected>{{$user->kitchen->name}}</option>
-                            @else
-                                <option value="{{$kitchen->id}}">{{$kitchen->name}}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                @else
-                    <select class="form-control" name="kitchen">
-
-                        @foreach($kitchens as $kitchen)
-                            <option value="{{$kitchen->id}}">{{$kitchen->name}}</option>
-                        @endforeach
-                    </select>
-                @endif
-                <p class="text-danger">{{$errors->first('kitchen')}}</p>
-            </div>
-        </div>
-
         <div class="form-group">
             <div class="col-sm-8 col-sm-offset-3">
                 <input type="submit" name="submit" value="{{isset($user)? 'Update' : 'ADD'}}" class="user-button-ok">
@@ -112,17 +82,4 @@
     </div>
 </div>
 </div>
-<script>
-        $("#userType").change(function(){
-//            var tmp=$('#userType').val();
-            var tmp=$(this).find("option:selected").text();
-            console.log(tmp);
-            if(tmp == "Kitchen"){
-                $('#kitchen').show();
-            }
-            else{
-                $('#kitchen').hide();
-            }
-        });
-    </script>
 @endsection

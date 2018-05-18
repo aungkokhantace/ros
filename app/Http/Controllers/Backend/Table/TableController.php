@@ -123,7 +123,7 @@ class TableController extends Controller
                 alert()->warning('This table is already Booking.')->persistent('Close');
                 return redirect()->back();
             }
-            $tables     = $this->tableRepository->table_delete($id);
+            $tables     = $this->tableRepository->table_delete($ids);
         }
         // $table      = Table::find($id);
         return redirect()->action('Backend\Table\TableController@index')->withMessage(FormatGenerator::message('Success', 'Table Deleted...')); //to redirect listing page
@@ -168,39 +168,17 @@ class TableController extends Controller
         $oldtable               = $this->tableRepository->table_edit($id);
         $old                    = strtolower($oldtable->table_no);
         $alltables              = $this->tableRepository->All();
-        $flag                   = 1;
-        if ($lowername == $old) {
-            $flag = 1;
-        }
-        else
-        {
-            foreach ($alltables as $alltable) {
-                $all = strtolower($alltable->table_no);
-                if ($lowername == $all) {
-                    $flag = 0;
-                }
-            }
-        }
         //if true, update table and go to table listing page
-        if ($flag == 1) {
 
-            $result = $this->tableRepository->update($paramObj);
-            
-            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                return redirect()->action('Backend\Table\TableController@index')
-                    ->withMessage(FormatGenerator::message('Success', 'Table updated ...'));
-            }
-            else{
-                return redirect()->action('Backend\Table\TableController@index')
-                    ->withMessage(FormatGenerator::message('Fail', 'Table did not update ...'));
-            }
-
+        $result = $this->tableRepository->update($paramObj);
+        
+        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+            return redirect()->action('Backend\Table\TableController@index')
+                ->withMessage(FormatGenerator::message('Success', 'Table updated ...'));
         }
-        //if table name exist in table db,alert warning message and go back to edit form
-        elseif ($flag == 0)
-        {
-            alert()->warning('Table No. already exists.Please Try Again!')->persistent('Close');
-            return back();
+        else{
+            return redirect()->action('Backend\Table\TableController@index')
+                ->withMessage(FormatGenerator::message('Fail', 'Table did not update ...'));
         }
     }
 

@@ -64,26 +64,18 @@ class LocationController extends Controller
         $request->validate();
         $id             = $request->get('id');
         $name           = $request->get('location_type');
-        
+
         $paramObj 		= Location::find($id);
-        if($name == $paramObj->location_type){
-            
-        	return redirect()->action('Backend\Table\LocationController@index')
-                    ->withMessage(FormatGenerator::message('Fail', 'Location Name is already exist'));
-        }else{
-        	$paramObj->location_type = $name;
-            
-            $result = $this->LocationRepository->update($paramObj);
+        $paramObj->location_type = $name;  
+        $result = $this->LocationRepository->update($paramObj);
 
-            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                return redirect()->action('Backend\Table\LocationController@index')
-                    ->withMessage(FormatGenerator::message('Success', 'Location updated ...'));
-            }
-            else{
-                return redirect()->action('Backend\Table\LocationController@index')
-                    ->withMessage(FormatGenerator::message('Fail', 'Location did not update ...'));
-            }
-
+        if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+            return redirect()->action('Backend\Table\LocationController@index')
+                ->withMessage(FormatGenerator::message('Success', 'Location updated ...'));
+        }
+        else{
+            return redirect()->action('Backend\Table\LocationController@index')
+                ->withMessage(FormatGenerator::message('Fail', 'Location did not update ...'));
         }
         
     }

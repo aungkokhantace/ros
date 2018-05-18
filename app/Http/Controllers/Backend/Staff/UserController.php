@@ -83,13 +83,11 @@ class UserController extends Controller
         $name       = trim(Input::get('name'));
         $password   = trim(bcrypt(Input::get('login_password')));
         $roleId     = Input::get('userType');
-        $kitchenId  = Input::get('kitchen');
 
         $paramObj               = new User();
         $paramObj->user_name    = $name;
         $paramObj->password     = $password;
         $paramObj->role_id      = $roleId;
-        $paramObj->kitchen_id   = $kitchenId;
         $paramObj->status       = 1;
 
         $result = $this->userRepository->store($paramObj);
@@ -153,7 +151,6 @@ class UserController extends Controller
         $id          = Input::get('id');
         $name        = Input::get('name');
         $userType    = Input::get('userType');
-        $kitchenId   = Input::get('kitchen');
         $updated_by  = Auth::guard('Cashier')->user()->id;
         //check staffid exist or not
         $olduser     = $this->userRepository->getIdForStaffId($id);
@@ -175,7 +172,7 @@ class UserController extends Controller
                 }
             }
             else{
-                $result = $this->userRepository->updateWithUserType($id,$name,$userType,$kitchenId,$updated_by);
+                $result = $this->userRepository->updateWithUserType($id,$name,$userType,$updated_by);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Backend\Staff\UserController@index')
@@ -207,10 +204,11 @@ class UserController extends Controller
             $this->userRepository->changeDisableToEnable($id, $cur);
             $role       = User::find($id);
             $r = $role->roles->name;
-            if($r == "Kitchen"){
-                return redirect('Kitchen/kitchen');
-            }else{
+            if ($r == "Super Admin" || $r == 'Manager' || $r == 'Supervisor') {
                 return redirect('Backend/Dashboard');
+            }
+            else{
+                return redirect('Cashier/Dashboard');
             }
         }
     }

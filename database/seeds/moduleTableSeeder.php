@@ -113,50 +113,33 @@ class moduleTableSeeder extends Seeder
         ]);
         DB::table('modules')->insert([
             'id'=>'18',
-            'module' =>'Kitchen',
-            'view' => 'cashier',
-            'created_by' => '1',
-        ]);
-        DB::table('modules')->insert([
-            'id'=>'19',
             'module'=>'Profile',
             'view' => 'cashier',
             'created_by'=>'1',
         ]);
         DB::table('modules')->insert([
-            'id' => '20',
-            'module' =>'Table View',
-            'view' => 'kitchen',
-            'created_by' => '1',
-        ]);
-        DB::table('modules')->insert([
-            'id' =>'21',
-            'module' =>'Product View',
-            'view' => 'kitchen',
-            'created_by' => '1',
-        ]);
-        DB::table('modules')->insert([
-            'id'=>'22',
-            'module'=>'Kitchen Profile',
-            'view'=>'kitchen',
-            'created_by'=>'1',
-        ]);
-        DB::table('modules')->insert([
-            'id'=>'23',
+            'id'=>'19',
             'module'=>'Log',
             'view'=>'cashier',
             'created_by'=>'1',
         ]);
         DB::table('modules')->insert([
-            'id'=>'24',
+            'id'=>'20',
             'module'=>'Shift',
             'view'=>'cashier',
             'created_by'=>'1',
         ]);
 
         DB::table('modules')->insert([
-            'id'=>'25',
+            'id'=>'21',
             'module'=>'Order',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
+
+        DB::table('modules')->insert([
+            'id'=>'22',
+            'module'=>'log',
             'view'=>'cashier',
             'created_by'=>'1',
         ]);

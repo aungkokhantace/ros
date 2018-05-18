@@ -19,7 +19,7 @@ class LogMiddleware
         foreach($role as $r){
             $array[] = $r->module_id;
         }
-        if(in_array(23,$array)){
+        if(in_array(22,$array)){
            return $next( $request );
         }else{
             //return response('Unauthorized',401);

@@ -11,7 +11,6 @@ class CreateCategoryTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->integer('parent_id');
-            $table->integer('kitchen_id');
             $table->string('image');
             $table->text('mobile_image');
             $table->tinyInteger('status');

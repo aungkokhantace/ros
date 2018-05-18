@@ -49,6 +49,7 @@
   <script src="/assets/backend_js/Chart.js"></script>
  
   <script src="/assets/backend_js/validation/jquery.validate.js"></script>
+  <script src="/assets/backend_js/validation/additional-methods.min.js"></script>
   <script src="/assets/js/checkall.js"></script>
   <script src="/assets/backend_js/raphael.min.js"></script>
   <script src="/assets/backend_js/morris.min.js"></script>

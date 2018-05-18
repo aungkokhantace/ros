@@ -1,6 +1,4 @@
 
-
-
 @extends('Backend/layouts.master')
 @section('title','Staff Type Listing')
 @section('content')

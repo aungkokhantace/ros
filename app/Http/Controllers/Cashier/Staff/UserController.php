@@ -207,9 +207,6 @@ class UserController extends Controller
             $this->userRepository->changeDisableToEnable($id, $cur);
             $role       = User::find($id);
             $r = $role->roles->name;
-            if($r == "Kitchen"){
-                return redirect('Kitchen/kitchen');
-            }
             if ($r == "Super Admin" || $r == 'Manager' || $r == 'Supervisor') {
                 return redirect('Backend/Dashboard');
             }
@@ -221,18 +218,12 @@ class UserController extends Controller
     public function updateDataBeforeLogout(Request $request){ //before logout, update status field 1 to 0
         if (Auth::guard('Cashier')->check()){
             $id         = Auth::guard('Cashier')->user()->id;
-            // $this->userRepository->changeEnableToDisable($id);
             $role       = User::find($id);
             $r          = $role->roles->name;
 
             //Remove Module Session  
             $request->session()->forget('module');
-            if($r != "Kitchen"){
-                    return redirect('Cashier/logout');
-                }
-            if($r == "Kitchen"){
-                return redirect('Kitchen/logout');
-             }
+            return redirect('Cashier/logout');
             }
         else{
             echo "fail";

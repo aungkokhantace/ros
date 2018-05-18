@@ -15,7 +15,7 @@ interface UserRepositoryInterface
     public function active($id);
     public function inactive($id);
     public function getID($id);
-    public function updateWithUserType($id,$name,$userType,$kitchenId,$updated_by);
+    public function updateWithUserType($id,$name,$userType,$updated_by);
     public function update($id,$name,$updated_by);
     public function changeDisableToEnable($id,$cur);
     public function changeEnableToDisable($id);

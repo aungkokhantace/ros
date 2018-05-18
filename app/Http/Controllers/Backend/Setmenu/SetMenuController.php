@@ -84,7 +84,7 @@ class SetMenuController extends Controller
             $this->setMenuRepository->delete($id);
         }
 
-        return redirect()->action('Backend\Setmenu\SetMenuController@index')->withMessage(FormatGenerator::message('Success', 'Items deleted ...')); //to redirect listing page
+        return redirect()->action('Backend\Setmenu\SetMenuController@index')->withMessage(FormatGenerator::message('Success', 'SetMenu deleted ...')); //to redirect listing page
     }
 
     public function edit($id){
@@ -115,70 +115,50 @@ class SetMenuController extends Controller
         $old_name                       = $this->setMenuRepository->getOldName($id);
         $all_names                      = $this->setMenuRepository->getAllNames();
         $oldprice                       = $old_name->set_menus_price;
-        $flag                           = 1;
+        if($file != null){
+            $imagedata                  = file_get_contents($file);
+            $photo                      = uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move('uploads', $photo);
+            // resizing image
+            $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
 
-        if($set_menus_name == $old_name->set_menus_name ){
-            $flag = 1;
-        }
-        else{
-            //select all data from category table
-            foreach($all_names as $all_name){
-                //edited name is already exist in database
-                if($set_menus_name ==  $all_name->set_menus_name){
-                    $flag = 0;
-                }
-            }
-        }
-        if($flag == 1){
-            if($file != null){
-                $imagedata                  = file_get_contents($file);
-                $photo                      = uniqid().'.'.$file->getClientOriginalExtension();
-                $file->move('uploads', $photo);
-                // resizing image
-                $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+            $paramObj                   = SetMenu::find($id);
+            $paramObj->set_menus_name   = $set_menus_name;
+            $paramObj->set_menus_price  = $set_menus_price;
+            $paramObj->image            = $photo;
+            $paramObj->mobile_image     = base64_encode($image->encoded);
+            $paramObj->status           = $status;
+            $result = $this->setMenuRepository->setMenuUpdate($paramObj,$item,$oldprice);
 
-                $paramObj                   = SetMenu::find($id);
-                $paramObj->set_menus_name   = $set_menus_name;
-                $paramObj->set_menus_price  = $set_menus_price;
-                $paramObj->image            = $photo;
-                $paramObj->mobile_image     = base64_encode($image->encoded);
-                $paramObj->status           = $status;
-                $result = $this->setMenuRepository->setMenuUpdate($paramObj,$item,$oldprice);
-
-                if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                    return redirect()->action('Backend\Setmenu\SetMenuController@index')
-                        ->withMessage(FormatGenerator::message('Success', 'Set Menu updated ...'));
-                }
-                else{
-                    return redirect()->action('Backend\Setmenu\SetMenuController@index')
-                        ->withMessage(FormatGenerator::message('Fail', 'Set Menu did not update ...'));
-                }
-
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                return redirect()->action('Backend\Setmenu\SetMenuController@index')
+                    ->withMessage(FormatGenerator::message('Success', 'Set Menu updated ...'));
             }
             else{
-                $set_menus_name             = $request->get('set_menus_name');
-                $set_menus_price            = $request->get('set_menus_price');
-                $status                     = $request->get('status');
-                $paramObj                   = SetMenu::find($id);
-                $paramObj->set_menus_name   = $set_menus_name;
-                $paramObj->set_menus_price  = $set_menus_price;
-                $paramObj->status           = $status;
-                $result  = $this->setMenuRepository->itemUpdate($paramObj,$item,$oldprice);
-
-                if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
-                    return redirect()->action('Backend\Setmenu\SetMenuController@index')
-                        ->withMessage(FormatGenerator::message('Success', 'Set Menu updated ...'));
-                }
-                else{
-                    return redirect()->action('Backend\Setmenu\SetMenuController@index')
-                        ->withMessage(FormatGenerator::message('Fail', 'Set Menu did not update ...'));
-                }
-
+                return redirect()->action('Backend\Setmenu\SetMenuController@index')
+                    ->withMessage(FormatGenerator::message('Fail', 'Set Menu did not update ...'));
             }
+
         }
-        elseif($flag == 0){
-            alert()->error('The set menu with the same name already exists')->persistent('Close');
-            return back();
+        else{
+            $set_menus_name             = $request->get('set_menus_name');
+            $set_menus_price            = $request->get('set_menus_price');
+            $status                     = $request->get('status');
+            $paramObj                   = SetMenu::find($id);
+            $paramObj->set_menus_name   = $set_menus_name;
+            $paramObj->set_menus_price  = $set_menus_price;
+            $paramObj->status           = $status;
+            $result  = $this->setMenuRepository->itemUpdate($paramObj,$item,$oldprice);
+
+            if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
+                return redirect()->action('Backend\Setmenu\SetMenuController@index')
+                    ->withMessage(FormatGenerator::message('Success', 'Set Menu updated ...'));
+            }
+            else{
+                return redirect()->action('Backend\Setmenu\SetMenuController@index')
+                    ->withMessage(FormatGenerator::message('Fail', 'Set Menu did not update ...'));
+            }
+
         }
 
     }

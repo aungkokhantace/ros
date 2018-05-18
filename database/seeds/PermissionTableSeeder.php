@@ -136,171 +136,133 @@ class PermissionTableSeeder extends Seeder
             'module_id'=>'21',
             'created_by'=>'1',
         ]);
-        DB::table('permissions')->insert([
-            'id'=>'22',
-            'role_id'=>'1',
-            'module_id'=>'22',
-            'created_by'=>'1',
-        ]);
-        DB::table('permissions')->insert([
-            'id'=>'23',
-            'role_id'=>'1',
-            'module_id'=>'23',
-            'created_by'=>'1',
-        ]);
-
-        DB::table('permissions')->insert([
-            'id'=>'24',
-            'role_id'=>'1',
-            'module_id'=>'24',
-            'created_by'=>'1',
-        ]);
         /*End Super Admin */
 
         //For Manager Permission
         DB::table('permissions')->insert([
-            'id' =>'25',
+            'id' =>'22',
             'role_id' => '2',
             'module_id' => '1',
             'created_by' => '',
         ]);
         DB::table('permissions')->insert([
-            'id'=>'26',
+            'id'=>'23',
             'role_id' => '2',
             'module_id' => '2',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'27',
+            'id' =>'24',
             'role_id' => '2',
             'module_id' => '3',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '28',
+            'id' => '25',
             'role_id' => '2',
             'module_id' => '4',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '29',
+            'id' => '26',
             'role_id' => '2',
             'module_id' => '5',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '30',
+            'id' => '27',
             'role_id' => '2',
             'module_id' => '6',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '31',
+            'id' => '28',
             'role_id' => '2',
             'module_id' => '7',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '32',
+            'id' => '29',
             'role_id' => '2',
             'module_id' => '8',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '33',
+            'id' => '30',
             'role_id' => '2',
             'module_id' => '9',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '34',
+            'id' => '31',
             'role_id' => '2',
             'module_id' => '10',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '35',
+            'id' => '32',
             'role_id' => '2',
             'module_id' => '11',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '36',
+            'id' => '33',
             'role_id' => '2',
             'module_id' => '12',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '37',
+            'id' => '34',
             'role_id' =>'2',
             'module_id' => '13',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '38',
+            'id' => '35',
             'role_id' =>'2',
             'module_id' => '14',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '39',
+            'id' => '36',
             'role_id' =>'2',
             'module_id' => '15',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '40',
+            'id' => '37',
             'role_id' =>'2',
             'module_id' => '16',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '41',
+            'id' => '38',
             'role_id' =>'2',
             'module_id' => '17',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id'=>'42',
+            'id'=>'39',
             'role_id' =>'2',
             'module_id' => '18',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '43',
+            'id' => '40',
             'role_id' =>'2',
             'module_id' => '19',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'44',
+            'id' =>'41',
             'role_id' =>'2',
             'module_id' => '20',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id'=>'45',
+            'id'=>'42',
             'role_id' =>'2',
             'module_id'=>'21',
-            'created_by'=>'1',
-        ]);
-        DB::table('permissions')->insert([
-            'id'=>'46',
-            'role_id'=>'2',
-            'module_id'=>'22',
-            'created_by'=>'1',
-        ]);
-        DB::table('permissions')->insert([
-            'id'=>'47',
-            'role_id'=>'2',
-            'module_id'=>'23',
-            'created_by'=>'1',
-        ]);
-
-        DB::table('permissions')->insert([
-            'id'=>'48',
-            'role_id'=>'2',
-            'module_id'=>'24',
             'created_by'=>'1',
         ]);
         /*End Manager Admin */
@@ -308,148 +270,129 @@ class PermissionTableSeeder extends Seeder
 
         //For Supervisor Permission
         DB::table('permissions')->insert([
-            'id' =>'49',
+            'id' =>'43',
             'role_id' => '3',
             'module_id' => '1',
             'created_by' => '',
         ]);
         DB::table('permissions')->insert([
-            'id'=>'50',
+            'id'=>'44',
             'role_id' => '3',
             'module_id' => '2',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'51',
+            'id' =>'45',
             'role_id' => '2',
             'module_id' => '3',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '52',
+            'id' => '46',
             'role_id' => '2',
             'module_id' => '4',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '53',
+            'id' => '47',
             'role_id' => '2',
             'module_id' => '5',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '54',
+            'id' => '48',
             'role_id' => '2',
             'module_id' => '6',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '55',
+            'id' => '49',
             'role_id' => '2',
             'module_id' => '7',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '56',
+            'id' => '50',
             'role_id' => '2',
             'module_id' => '8',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '57',
+            'id' => '51',
             'role_id' => '2',
             'module_id' => '9',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '58',
+            'id' => '52',
             'role_id' => '2',
             'module_id' => '10',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '59',
+            'id' => '53',
             'role_id' => '2',
             'module_id' => '11',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '60',
+            'id' => '54',
             'role_id' => '2',
             'module_id' => '12',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '61',
+            'id' => '55',
             'role_id' =>'3',
             'module_id' => '13',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '62',
+            'id' => '56',
             'role_id' =>'3',
             'module_id' => '14',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '63',
+            'id' => '57',
             'role_id' =>'3',
             'module_id' => '15',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '64',
+            'id' => '58',
             'role_id' =>'3',
             'module_id' => '16',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '65',
+            'id' => '59',
             'role_id' =>'3',
             'module_id' => '17',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id'=>'66',
+            'id'=>'60',
             'role_id' =>'3',
             'module_id' => '18',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' => '67',
+            'id' => '61',
             'role_id' =>'3',
             'module_id' => '19',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'68',
+            'id' =>'62',
             'role_id' =>'3',
             'module_id' => '20',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id'=>'69',
+            'id'=>'63',
             'role_id' =>'3',
             'module_id'=>'21',
-            'created_by'=>'1',
-        ]);
-        DB::table('permissions')->insert([
-            'id'=>'70',
-            'role_id'=>'2',
-            'module_id'=>'22',
-            'created_by'=>'1',
-        ]);
-        DB::table('permissions')->insert([
-            'id'=>'71',
-            'role_id'=>'2',
-            'module_id'=>'23',
-            'created_by'=>'1',
-        ]);
-
-        DB::table('permissions')->insert([
-            'id'=>'72',
-            'role_id'=>'2',
-            'module_id'=>'24',
             'created_by'=>'1',
         ]);
         /*End Manager Admin */
@@ -458,91 +401,108 @@ class PermissionTableSeeder extends Seeder
         //For Cashier Permission
 
         DB::table('permissions')->insert([
-            'id'=>'73',
+            'id'=>'64',
             'role_id'=>'4',
             'module_id'=>'1',
             'created_by'=>'1',
         ]);
         DB::table('permissions')->insert([
-            'id'=>'74',
+            'id'=>'65',
             'role_id' =>'4',
             'module_id' => '4',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'75',
+            'id' =>'66',
             'role_id' => '4',
             'module_id' => '5',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'76',
+            'id' =>'67',
             'role_id' => '4',
             'module_id' => '8',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'77',
+            'id' =>'68',
             'role_id' => '4',
             'module_id' => '14',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'78',
+            'id' =>'69',
             'role_id' => '4',
             'module_id' => '15',
             'created_by' => '1',
         ]);
         DB::table('permissions')->insert([
-            'id' =>'79',
+            'id' =>'70',
             'role_id' => '4',
             'module_id' => '17',
             'created_by' => '1',
         ]);
+
         DB::table('permissions')->insert([
-            'id' =>'80',
+            'id' =>'71',
             'role_id' => '4',
-            'module_id' => '24',
+            'module_id' => '20',
             'created_by' => '1',
         ]);
         /*End Cashier Admin */
 
-        /*For Kitchen */
-        DB::table('permissions')->insert([
-            'id' =>'81',
-            'role_id' => '6',
-            'module_id' => '18',
-            'created_by' => '1',
-        ]);
-        /*End Kitchen */
-
         /*For Make Order Module */
         DB::table('permissions')->insert([
-            'id' =>'82',
+            'id' =>'72',
             'role_id' => '1',
-            'module_id' => '25',
+            'module_id' => '21',
             'created_by' => '1',
         ]);
 
         DB::table('permissions')->insert([
-            'id' =>'83',
+            'id' =>'73',
             'role_id' => '2',
-            'module_id' => '25',
+            'module_id' => '21',
             'created_by' => '1',
         ]);
 
         DB::table('permissions')->insert([
-            'id' =>'84',
+            'id' =>'74',
             'role_id' => '3',
-            'module_id' => '25',
+            'module_id' => '21',
             'created_by' => '1',
         ]);
 
         DB::table('permissions')->insert([
-            'id' =>'85',
+            'id' =>'75',
             'role_id' => '4',
-            'module_id' => '25',
+            'module_id' => '21',
             'created_by' => '1',
         ]);
+
+        /* End Make Order */
+
+        /* Log Permission */
+        DB::table('permissions')->insert([
+            'id' =>'76',
+            'role_id' => '1',
+            'module_id' => '22',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'77',
+            'role_id' => '2',
+            'module_id' => '22',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'78',
+            'role_id' => '3',
+            'module_id' => '22',
+            'created_by' => '1',
+        ]);
+        /* End Log Permission */
     }
 }

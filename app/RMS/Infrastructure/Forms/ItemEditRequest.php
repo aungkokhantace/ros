@@ -1,7 +1,7 @@
 <?php
 
 namespace App\RMS\Infrastructure\Forms;
-
+use Illuminate\Support\Facades\Input;
 use App\Http\Requests\Request;
 
 class ItemEditRequest extends Request
@@ -14,7 +14,7 @@ class ItemEditRequest extends Request
     public function rules()
     {
         return [
-            'name'=>'required',
+            'name'=>'required|unique:items,name,' . Input::get("id") . ',id,category_id,' . Input::get("parent_category") . ',deleted_at,NULL',
             'parent_category'=>'required',
             'description'=>'required',
             'price'=>'required|numeric',
@@ -26,6 +26,7 @@ class ItemEditRequest extends Request
     {
         return [
             'name.required'=>'Please Enter Item Name.',
+            'name.unique'=>'This name is already taken.',
             'parent_category.required'=>'Please Choose Item Category.',
             'description.required'=>'Please Enter Item Description.',
             'price.required'=>'Please Enter Item Price.',

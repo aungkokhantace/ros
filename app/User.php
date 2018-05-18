@@ -12,7 +12,7 @@ class User extends Authenticatable
     private $id;
     protected $table="users";
     protected $fillable = [
-        'id','user_name','staff_id','password','role_id','kitchen_id','status','created_by','updated_by',
+        'id','user_name','staff_id','password','role_id','status','created_by','updated_by',
     'deleted_by','created_at','updated_at','deleted_at'
     ];
     protected $hidden = [
@@ -30,9 +30,5 @@ class User extends Authenticatable
 
     public function session(){
         return $this->hasMany('App\Session\Session');
-    }
-
-    public function kitchen(){
-        return $this->belongsTo('App\RMS\Kitchen\Kitchen','kitchen_id','id');
     }
 }

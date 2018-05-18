@@ -14,9 +14,11 @@ class RestaurantProfilesRequest extends Request
     public function rules()
     {
         return [
-        'website'                    =>'url',
-        'email'                      =>'email',
-        'phone'                      =>'numeric',
+        'website'           => 'url',
+        'email'             => 'email',
+        'phone'             => 'numeric',
+        'image'             => 'required|max:10240|image|mimes:jpeg,png,jpg',
+        'mobile_image'      => 'required|max:10240|image|mimes:jpeg,png,jpg',
 
      ];
     }
@@ -27,6 +29,8 @@ class RestaurantProfilesRequest extends Request
             'website.url'=>'Please enter a valid URL.',
             'email.email'=>'Please enter a valid email.',
             'phone.numeric'=>'Phone number must be numeric.',
+            'image.required' => 'Please Choose Image. Image file size must not over 10MB',
+            'mobile_image.required' => 'Please Choose Image. Image file size must not over 10MB',
         ];
     }
 }

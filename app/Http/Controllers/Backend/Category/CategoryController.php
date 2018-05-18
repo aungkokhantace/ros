@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Backend\Category;
 use App\RMS\Category\Category;
 use App\RMS\Infrastructure\Forms\CreateCategoryRequest;
 use App\RMS\Infrastructure\Forms\EditCategoryRequest;
-use App\RMS\Kitchen\Kitchen;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -11,6 +10,7 @@ use App\RMS\Category\CategoryRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 use App\RMS\FormatGenerator As FormatGenerator;
@@ -32,10 +32,9 @@ class CategoryController extends Controller
     }
 
     public function create(){
-        $kitchen = $this->CategoryRepository->getKitchen();
         $result  = $this->CategoryRepository->ChooseCat();
 
-        return view('Backend.category.category', ['categories' => $result])->with('kitchen',$kitchen);
+        return view('Backend.category.category', ['categories' => $result]);
     }
 
      public function store(CreateCategoryRequest $request){
@@ -43,11 +42,8 @@ class CategoryController extends Controller
         $category               = $request->get('parent_category');
         //if Parent Category
         if ($category == 0) {
-            $kitchen            = $request->get('kitchen');
             $level              = 1;
         } else {
-            $kitchen_attr       = $this->CategoryRepository->getKitchenByCat($category);
-            $kitchen            = $kitchen_attr->kitchen_id;
             $parent_level       = $this->CategoryRepository->getLevelByParentCat($category);
             $level              = $parent_level + 1;
         }
@@ -63,13 +59,11 @@ class CategoryController extends Controller
             $parent_category    = Category::find($category);
             $group_id           = $parent_category->group_id;
         }
-        
         $status                 = Input::get('status');
         $description            = Input::get('description');
         $paramObj               = new Category();
         $paramObj->name         = $name;
         $paramObj->parent_id    = $category;
-        $paramObj->kitchen_id   = $kitchen;
         $paramObj->group_id     = $group_id;
         $paramObj->image        = $photo;
         $paramObj->mobile_image = base64_encode($image->encoded);
@@ -125,9 +119,8 @@ class CategoryController extends Controller
         $result              = $this->CategoryRepository->find($id);
         // $result->subcategory = $this->disabledcategoriesTree($result);
         $selected            = $editcategory->parent_id;
-        $kitchen=$this->CategoryRepository->getKitchen();
         return view('Backend.category.category', ['categories' => $cats])->with('editcategory',$editcategory)
-            ->with('selected',$selected)->with('title',$title)->with('subtree',$result)->with('kitchen',$kitchen);
+            ->with('selected',$selected)->with('title',$title)->with('subtree',$result);
     }
 
     //to update edited data in database
@@ -138,7 +131,6 @@ class CategoryController extends Controller
         $status             = Input::get('status');
         $description        = Input::get('description');
         $category           = Input::get('parent_category');
-        $kitchen            = $request->get('kitchen');
         $parent_category    = Category::find($id);
         $group_id           = $parent_category->group_id;
         $oldname            = $this->CategoryRepository->find(Input::get('id'));
@@ -210,7 +202,6 @@ class CategoryController extends Controller
 
                     $paramObj               = Category::find($id);
                     $paramObj->name         = $name;
-                    $paramObj->kitchen_id   = $kitchen;
                     $paramObj->group_id     = $group_id;
                     $paramObj->image        = $photo;
                     $paramObj->mobile_image = base64_encode($image->encoded);
@@ -232,7 +223,6 @@ class CategoryController extends Controller
             else{
                 $paramObj               = Category::find($id);
                 $paramObj->name         = $name;
-                $paramObj->kitchen_id   = $kitchen;
                 $paramObj->group_id     = $group_id;
                 $paramObj->status       = $status;
                 $paramObj->description  = $description;
