@@ -18,8 +18,7 @@ class ItemEntryRequest extends Request
         return [
             'name'=>'required|unique:items,name,NULL,id,category_id,' . Input::get("parent_category") . ',deleted_at,NULL',
             'parent_category'=>'required',
-            'description'=>'required',
-            'fileupload'=>'required|max:10240'
+            'description'=>'required'
         ];
     }
 
@@ -29,8 +28,7 @@ class ItemEntryRequest extends Request
             'name.required'=>'Please Enter Item Name.',
             'name.unique'=>'This name is already taken.',
             'parent_category.required'=>'Please Choose Item Category.',
-            'description.required'=>'Please Enter Item Description.',
-            'fileupload.required'=>'Please Choose Image. Image file size must not over 10MB'
+            'description.required'=>'Please Enter Item Description.'
         ];
     }
 }

@@ -52,6 +52,7 @@ $(document).ready(function() {
             login_password      : {
                 required    : true,
                 minlength   : 8,
+                number      : true,
             },
             conpassword         : {
                 required    : true,
@@ -62,6 +63,8 @@ $(document).ready(function() {
         messages: {
             login_password      : {
                 required    : "Password is required.",
+                number      : "Password must be numeric.",
+                minlength   : "Password must be 8 digits",
             },
             conpassword         : {
                 required    : "Confirm Password is required.",
