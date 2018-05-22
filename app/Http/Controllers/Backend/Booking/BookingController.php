@@ -1,4 +1,4 @@
-f<?php
+<?php
 
 namespace App\Http\Controllers\Backend\Booking;
 

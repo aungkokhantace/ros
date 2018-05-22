@@ -67,7 +67,7 @@ class ItemController extends Controller
     public function store(ItemEntryRequest $request)
     {
         $request->validate();
-        $input                  = $request->all();
+         $input                  = $request->all();
         $name                   = $request->get('name');
         $category               = Input::get('parent_category');
         $description            = $request->get('description');
@@ -75,13 +75,15 @@ class ItemController extends Controller
         $price                  = $request->get('price');
         $check                  = $request->get('check');
         $cooking_time           = Input::get('standard_cooking_time');
+        if ($check == 0) {
+            $file                   = $request->file('fileupload');
+            $imagedata              = file_get_contents($file);
+            $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move('uploads', $photo );
+            // resizing image
+            $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
+        }
 
-        $file                   = $request->file('fileupload');
-        $imagedata              = file_get_contents($file);
-        $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
-        $file->move('uploads', $photo );
-        // resizing image
-        $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
         $status                             = Input::get('status');
         $paramObj                           = new Item();
         $paramObj->name                     = $name;
@@ -132,10 +134,10 @@ class ItemController extends Controller
                 ->with('continent_items',$continent_items);
     }
     //ItemEditRequest
-    public function update(ItemEditRequest $request)
+    public function update(Request $request)
     {
         $category_id = "";
-        $request->validate();
+        // $request->validate();
         $id=$request->get('id');
 
         $name           = $request->get('name');
@@ -149,6 +151,26 @@ class ItemController extends Controller
         $oldprice       = $oldname->price;
 
         $lower_old_name = strtolower($oldname->name); //to change old name from database to lower
+        $flag = 1;
+
+        //if users don't want to edit name and want to edit other field
+        if($lower_name == $lower_old_name ){
+            $flag = 1;
+        }
+        else{
+            //select all data from items table
+            $all_item_name = $this->ItemRepository->getAllItemName();
+            foreach($all_item_name as $allname){
+                $lower_all_name = strtolower($allname->name);
+                //edited name already exists in database
+                if($lower_name ==  $lower_all_name){
+                    $flag = 0;
+                }
+            }
+        }
+
+//       user is allowed to edit
+        if($flag == 1){
         $checkConti           = count($request->get('continent-price'));
         if ($checkConti > 0) {
             $group_id_attr    = DB::table('items')->select('group_id')
@@ -294,9 +316,15 @@ class ItemController extends Controller
                     return redirect()->action('Backend\Item\ItemController@index')
                         ->withMessage(FormatGenerator::message('Fail', 'Item did not update ...'));
                 }
-            }
+        }
                 
 
+            }
+        }
+        //user is not allowed to edit because the edited name already exists in database
+        elseif($flag == 0){
+            alert()->error('The item with the same name already exists. ')->persistent('Close');
+            return redirect()->action('Backend\Item\ItemController@index');
         }
     }
 

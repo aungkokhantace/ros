@@ -26,13 +26,7 @@
                                 <img src="/assets/cashier/images/dashboard/Invoice List.png" alt="Member" class="heightLine_03">
                                 <span class="label-type">Invoice List</span>
                             </a> 
-                        </div> 
-                        <div class="col-md-3 heightLine_02 item-btn">                                
-                            <a href="/Cashier/OrderView/index">
-                                <img src="/assets/cashier/images/dashboard/OrderList.png" alt="Order List" class="heightLine_03">
-                                <span class="label-type">Order List</span>
-                            </a>                                 
-                        </div> 
+                        </div>  
 
                         @if ($sessions->daystart->session_status == 2)
                         <div class="col-md-3">
@@ -78,13 +72,7 @@
                                 <span class="label-type">General</span>
                             </a>                                 
                         </div>  
-                    </div>  
-                </div>
-            </div>
 
-            <div class="swiper-slide">
-                <div class="swiper-inr container">  
-                    <div class="row"> 
                         <div class="col-md-3 heightLine_02 item-btn">                                
                             <a href="/Cashier/MakeOrder">
                                 <img src="/assets/cashier/images/dashboard/Set.png" alt="service" class="heightLine_03">
