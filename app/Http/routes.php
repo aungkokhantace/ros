@@ -34,6 +34,13 @@ Route::group(['middleware' => 'web'], function () {
             //Start Category Routes
             Route::group(['middleware'=>'category:Cashier'],function(){
                 Route::get('Category/index', 'Cashier\Category\CategoryController@index');
+                Route::get('Category/create', 'Cashier\Category\CategoryController@create');
+                Route::post('Category/store', 'Cashier\Category\CategoryController@store');
+                Route::get('Category/delete/{id}', 'Cashier\Category\CategoryController@delete');
+                Route::get('Category/edit/{id}', 'Cashier\Category\CategoryController@edit');
+                Route::post('Category/update', 'Cashier\Category\CategoryController@update');
+                Route::get('cat_enabled/{id}', 'Cashier\Category\CategoryController@catenabled');
+                Route::get('cat_disabled/{id}', 'Cashier\Category\CategoryController@catdisabled');
             });
            //End Category Routes
 
@@ -51,6 +58,43 @@ Route::group(['middleware' => 'web'], function () {
             });
             //end set
 
+            //Start Member Type
+            // Route::group(['middleware'=>'memberType:Cashier'],function(){
+            //     Route::get('MemberType/index', 'Cashier\Member\MemberTypeController@index');
+            //     Route::get('MemberType/create', 'Cashier\Member\MemberTypeController@create');
+            //     Route::post('MemberType/store', 'Cashier\Member\MemberTypeController@store');
+            //     Route::get('MemberType/edit/{id}', 'Cashier\Member\MemberTypeController@edit');
+            //     Route::post('MemberType/update', 'Cashier\Member\MemberTypeController@update');
+            //     Route::get('MemberType/delete/{id}', 'Cashier\Member\MemberTypeController@delete');
+
+            // });
+            //End  member_type
+
+            //Start Member
+            // Route::group(['middleware'=>'member:Cashier'],function(){
+            //     Route::get('Member/create', 'Cashier\Member\MemberController@create');
+            //     Route::post('Member/store', 'Cashier\Member\MemberController@store');
+            //     Route::get('Member/index', 'Cashier\Member\MemberController@index');
+            //     Route::get('Member/delete/{id}', 'Cashier\Member\MemberController@delete');
+            //     Route::get('Member/edit/{id}', 'Cashier\Member\MemberController@edit');
+            //     Route::post('Member/update', 'Cashier\Member\MemberController@update');
+
+            // });
+            //End Member
+
+            //Start config
+            // Route::group(['middleware'=>'generalSetting:Cashier'],function(){
+            //     Route::get('Config/general_config', 'Cashier\Config\ConfigController@general_config');
+            //     Route::get('Config/edit/{id}', 'Cashier\Config\ConfigController@edit');
+            //     Route::post('Config/store', 'Cashier\Config\ConfigController@store');
+            //     Route::post('Config/update', 'Cashier\Config\ConfigController@update');
+            //     Route::get('Config/delete/{id}', 'Cashier\Config\ConfigController@delete');
+            //     Route::get('Profile/company_profile','Cashier\Config\ProfileController@profile');
+            //     Route::post('Profile/update','Cashier\Config\ProfileController@update');
+            //     Route::post('Profile/store','Cashier\Config\ProfileController@store');
+            // });
+            //End config
+
             //Report
             Route::group(['middleware'=>'report:Cashier'],function(){
 
@@ -64,12 +108,12 @@ Route::group(['middleware' => 'web'], function () {
                 Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
                 Route::get('invoice/cancel','Cashier\Invoice\InvoiceController@invoiceCancel');
                 Route::get('invoice/cancel/{id}','Cashier\Invoice\InvoiceController@orderCancel');
-                // Route::get('invoice/sort/time/increase','Cashier\Invoice\InvoiceController@invoiceTimeIncrease');
-                // Route::get('invoice/sort/time/decrease','Cashier\Invoice\InvoiceController@invoiceTimeDecrease');
-                // Route::get('invoice/sort/price/increase','Cashier\Invoice\InvoiceController@invoicePriceIncrease');
-                // Route::get('invoice/sort/price/decrease','Cashier\Invoice\InvoiceController@invoicePriceDecrease');
-                // Route::get('invoice/sort/order/increase','Cashier\Invoice\InvoiceController@invoiceOrderIncrease');
-                // Route::get('invoice/sort/order/decrease','Cashier\Invoice\InvoiceController@invoiceOrderDecrease');
+                Route::get('invoice/sort/time/increase','Cashier\Invoice\InvoiceController@invoiceTimeIncrease');
+                Route::get('invoice/sort/time/decrease','Cashier\Invoice\InvoiceController@invoiceTimeDecrease');
+                Route::get('invoice/sort/price/increase','Cashier\Invoice\InvoiceController@invoicePriceIncrease');
+                Route::get('invoice/sort/price/decrease','Cashier\Invoice\InvoiceController@invoicePriceDecrease');
+                Route::get('invoice/sort/order/increase','Cashier\Invoice\InvoiceController@invoiceOrderIncrease');
+                Route::get('invoice/sort/order/decrease','Cashier\Invoice\InvoiceController@invoiceOrderDecrease');
                 Route::get('ajaxInvoiceTimeIncrease','Cashier\Invoice\InvoiceController@ajaxInvoiceTimeIncrease');
                 Route::get('ajaxInvoiceTimeDecrease','Cashier\Invoice\InvoiceController@ajaxInvoiceTimeDecrease');
                 Route::get('ajaxInvoicePriceIncrease','Cashier\Invoice\InvoiceController@ajaxInvoicePriceIncrease');
@@ -85,6 +129,16 @@ Route::group(['middleware' => 'web'], function () {
                 Route::post('transaction_tenders/updateFoc','Cashier\TransactionTenders\TransactionTendersController@updateFoc');
                 Route::post('transaction_tenders/deleteFoc','Cashier\TransactionTenders\TransactionTendersController@deleteFoc');
                 //End Tender Transaction
+            });
+
+            //Promotions
+            Route::group(['middleware'=>'promotion:Cashier'],function() {
+                Route::get('Promotion/create', 'Cashier\Promotion\PromotionController@create');
+                Route::get('Promotion/index', 'Cashier\Promotion\PromotionController@index');
+                Route::post('Promotion/store', 'Cashier\Promotion\PromotionController@store');
+                Route::get('Promotion/edit/{id}', 'Cashier\Promotion\PromotionController@edit');
+                Route::post('Promotion/update', 'Cashier\Promotion\PromotionController@update');
+                Route::get('Promotion/delete/{id}', 'Cashier\Promotion\PromotionController@delete');
             });
 
             //Order
@@ -115,6 +169,33 @@ Route::group(['middleware' => 'web'], function () {
                 Route::post('MakeOrder/order_detail/delete','Cashier\ListViewController@delete');
                 Route::get('MakeOrder/setMenu/{id}/{take}','Cashier\ListViewController@setMenu');
                 Route::get('MakeOrder/continent/{itemID}/{continentID}','Cashier\ListViewController@continent');
+                // Route::get('MakeOrder/category','Cashier\ListViewController@category');
+                // Route::get('MakeOrder/setmenu','Cashier\ListViewController@setmenu');
+                // Route::get('MakeOrder/categorydetail/{id}','Cashier\ListViewController@categoryDetail');
+                // Route::get('MakeOrder/SearchItem/{id}','Cashier\ListViewController@searchItem');
+                // Route::get('MakeOrder/add/{id}/{type}','Cashier\ListViewController@add');
+            });
+
+            //Start Kitchen Setup
+            Route::group(['middleware'=>'kitchen:Cashier'],function(){
+                Route::get('Kitchen/index','Cashier\Kitchen\KitchenController@index');
+                Route::get('Kitchen/create','Cashier\Kitchen\KitchenController@create');
+                Route::post('Kitchen/store','Cashier\Kitchen\KitchenController@store');
+                Route::get('Kitchen/edit/{id}','Cashier\Kitchen\KitchenController@edit');
+                Route::post('Kitchen/update','Cashier\Kitchen\KitchenController@update');
+                Route::get('Kitchen/delete/{id}','Cashier\Kitchen\KitchenController@delete');
+
+
+            });
+
+             //Start Log Middleware
+            Route::group(['middleware'=>'log:Cashier'],function(){
+                Route::get('Pricehistory/{type?}/{id?}','Cashier\Log\PricelogController@search');
+                Route::get('Confighistory','Cashier\Log\ConfiglogController@index');
+                Route::get('Discounthistory','Cashier\Log\DiscountlogController@index');
+                Route::get('SyncApi','Cashier\Log\ApilistController@sync');
+                Route::get('MakeApi','Cashier\Log\ApilistController@make');
+                Route::get('DownloadApi','Cashier\Log\ApilistController@down');
             });
 
             Route::group(['middleware' => 'shift:Cashier'], function () {
@@ -124,6 +205,15 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('DayStart/delete/{id}', 'Cashier\DayStart\DayStartController@delete');
                 Route::get('DayStart/end/{id}', 'Cashier\DayStart\DayStartController@dayend');
                 Route::get('DayStart/Shift/{daycode}/{id}/{status}', 'Cashier\DayStart\DayStartController@orderShift');
+                Route::get('Shift/index', 'Cashier\Shift\ShiftController@index');
+                Route::get('Shift/create', 'Cashier\Shift\ShiftController@create');
+                Route::post('Shift/store', 'Cashier\Shift\ShiftController@store');
+                Route::get('Shift/delete/{id}', 'Cashier\Shift\ShiftController@delete');
+                Route::get('Shift/last_update/{id}', 'Cashier\Shift\ShiftController@last_update');
+                Route::get('Shift/Permission/{id}', 'Cashier\Shift\ShiftController@permission');
+                Route::post('Shift/Permission/update', 'Cashier\Shift\ShiftController@shift_update');
+                // Route::get('Shift/{shift}', 'Cashier\Shift\ShiftController@Shift');
+                // Route::post('Shift/update', 'Cashier\Shift\ShiftController@update');
             });
             //end shift
 
@@ -169,26 +259,37 @@ Route::group(['middleware' => 'web'], function () {
 
 
         //Start Member Type
-        // Route::group(['middleware'=>'memberType:Cashier'],function(){
-        //     Route::get('MemberType/index', 'Backend\Member\MemberTypeController@index');
-        //     Route::get('MemberType/create', 'Cashier\Member\MemberTypeController@create');
-        //     Route::post('MemberType/store', 'Cashier\Member\MemberTypeController@store');
-        //     Route::get('MemberType/edit/{id}', 'Cashier\Member\MemberTypeController@edit');
-        //     Route::post('MemberType/update', 'Cashier\Member\MemberTypeController@update');
-        //     Route::get('MemberType/delete/{id}', 'Cashier\Member\MemberTypeController@delete');
-        // });
+        Route::group(['middleware'=>'memberType:Cashier'],function(){
+            Route::get('MemberType/index', 'Backend\Member\MemberTypeController@index');
+            Route::get('MemberType/create', 'Cashier\Member\MemberTypeController@create');
+            Route::post('MemberType/store', 'Cashier\Member\MemberTypeController@store');
+            Route::get('MemberType/edit/{id}', 'Cashier\Member\MemberTypeController@edit');
+            Route::post('MemberType/update', 'Cashier\Member\MemberTypeController@update');
+            Route::get('MemberType/delete/{id}', 'Cashier\Member\MemberTypeController@delete');
+        });
         //End  member_type
 
         //Start Member
-        // Route::group(['middleware'=>'member:Cashier'],function(){
-        //     Route::get('Member/create', 'Cashier\Member\MemberController@create');
-        //     Route::post('Member/store', 'Cashier\Member\MemberController@store');
-        //     Route::get('Member/index', 'Backend\Member\MemberController@index');
-        //     Route::get('Member/delete/{id}', 'Cashier\Member\MemberController@delete');
-        //     Route::get('Member/edit/{id}', 'Cashier\Member\MemberController@edit');
-        //     Route::post('Member/update', 'Cashier\Member\MemberController@update');
-        // });
+        Route::group(['middleware'=>'member:Cashier'],function(){
+            Route::get('Member/create', 'Cashier\Member\MemberController@create');
+            Route::post('Member/store', 'Cashier\Member\MemberController@store');
+            Route::get('Member/index', 'Backend\Member\MemberController@index');
+            Route::get('Member/delete/{id}', 'Cashier\Member\MemberController@delete');
+            Route::get('Member/edit/{id}', 'Cashier\Member\MemberController@edit');
+            Route::post('Member/update', 'Cashier\Member\MemberController@update');
+        });
         //End Member
+
+
+        //Start Kitchen Setup
+        Route::group(['middleware'=>'kitchen:Cashier'],function(){
+            Route::get('Kitchen/index','Backend\Kitchen\KitchenController@index');
+            Route::get('Kitchen/create','Backend\Kitchen\KitchenController@create');
+            Route::post('Kitchen/store','Backend\Kitchen\KitchenController@store');
+            Route::get('Kitchen/edit/{id}','Backend\Kitchen\KitchenController@edit');
+            Route::post('Kitchen/update','Backend\Kitchen\KitchenController@update');
+            Route::get('Kitchen/delete/{id}','Backend\Kitchen\KitchenController@delete');
+        });
 
 
         //Start Category Routes
@@ -396,7 +497,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Booking/getTables/{date}/{time}','Cashier\Booking\BookingController@getTables');
             Route::get('Booking/getRooms/{date}/{time}','Cashier\Booking\BookingController@getRooms');
 
-            Route::post('Booking/bookingEdit','Backend\Booking\BookingController@bookingEdit');
+            Route::post('Booking/bookingEdit','Cashier\Booking\BookingController@bookingEdit');
             Route::get('Booking/tableListView','Backend\Booking\BookingController@table_list_view');
             Route::get('Booking/roomListView','Backend\Booking\BookingController@room_list_view');
             Route::get('Booking/tableRequest','Backend\Booking\BookingController@tableRequest');
@@ -478,6 +579,36 @@ Route::group(['middleware' => 'web'], function () {
         });
 
         });   
+    });
+
+    Route::group(['prefix' => 'Kitchen'], function () {
+        Route::get('logout', 'Cashier\Auth\AuthController@logout');
+        Route::group(['middleware' => 'custom:Cashier'], function () {
+            Route::get('kitchen', 'Kitchen\OrderViewController@tableView');
+            Route::get('kitchen/design', 'Kitchen\OrderViewController@tableViewDesign');
+            Route::get('kitchen/ajaxOrderRequest', 'Kitchen\OrderViewController@ajaxOrderRequest');
+            Route::get('kitchen/ajaxRequest','Kitchen\OrderViewController@ajaxRequest');
+            Route::get('getCompleteID','Kitchen\OrderViewController@tableView');
+            Route::get('getStartID','Kitchen\OrderViewController@tableView');
+
+            Route::get('kitchen/ajaxRequestProduct','Kitchen\OrderViewController@ajaxRequestProduct');
+            Route::get('getCompleteID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@update');
+            Route::get('getStartID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@start');
+            Route::get('getStart/ajaxRequest/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@itemStart');
+
+            Route::get('productView/CookedItem/{item_id}', 'Kitchen\OrderViewController@CookedItemFromProductView');
+            Route::get('productView/CookingItem/{item_id}', 'Kitchen\OrderViewController@CookingItemFromProductView');
+
+            Route::get('productView/CookedSetMenuItem/{id}','Kitchen\OrderViewController@CookedSetMenuItemFromProductView');
+            Route::get('productView/CookingSetMenuItem/{id}','Kitchen\OrderViewController@CookingSetMenuItemFromProductView');
+
+
+            Route::post('getCancelID/TableView', 'Kitchen\OrderViewController@CancelUpdateFromTableView');
+            Route::post('getCancelID/ProductView', 'Kitchen\OrderViewController@CancelUpdateFromProductView');
+            Route::get('productView', 'Kitchen\OrderViewController@productView');
+            Route::get('test', 'Kitchen\HomeController@pricesPage');
+            Route::get('test-values', 'Kitchen\HomeController@pricesValues');
+        });
     });
 });
 
