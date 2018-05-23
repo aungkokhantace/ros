@@ -88,7 +88,7 @@
                         ?>
                         @endforeach
                         <tr>
-                            <td colspan="3"></td>
+                            <td colspan="2"></td>
                             <td class="money-align">All Total</td>
                             <td class="money-align">{{number_format($discount)}}</td>
                             <td class="money-align">{{number_format($tax)}}</td>

@@ -396,7 +396,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Booking/getTables/{date}/{time}','Cashier\Booking\BookingController@getTables');
             Route::get('Booking/getRooms/{date}/{time}','Cashier\Booking\BookingController@getRooms');
 
-            Route::post('Booking/bookingEdit','Cashier\Booking\BookingController@bookingEdit');
+            Route::post('Booking/bookingEdit','Backend\Booking\BookingController@bookingEdit');
             Route::get('Booking/tableListView','Backend\Booking\BookingController@table_list_view');
             Route::get('Booking/roomListView','Backend\Booking\BookingController@room_list_view');
             Route::get('Booking/tableRequest','Backend\Booking\BookingController@tableRequest');
