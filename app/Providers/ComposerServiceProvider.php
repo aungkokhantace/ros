@@ -14,14 +14,14 @@ class ComposerServiceProvider extends ServiceProvider
     public function boot()
     {
         // Using Closure based composers
-        view()->composer('cashier.layouts.partial.header', function ($view) {
+        view()->composer('Backend.layouts.partial.header', function ($view) {
             $headerData = \DB::table('config')->first();
 //            dd($headerData);
             $view->headerData = $headerData;
 
         });
 
-        view()->composer('cashier.layouts.kitchen.header', function ($view) {
+        view()->composer('Backend.layouts.kitchen.header', function ($view) {
             $headerData = \DB::table('config')->first();
 //            dd($headerData);
             $view->headerData = $headerData;

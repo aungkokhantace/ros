@@ -24,7 +24,7 @@ class EditCategoryRequest extends Request
     public function messages()
     {
         return [
-            'name.required' => 'User Name is required!',
+            'name.required' => 'Category Name is required!',
             'description.required' => 'Please fill out description!',
         ];
     }

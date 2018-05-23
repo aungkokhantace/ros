@@ -6,6 +6,8 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\Table\Table;
 use App\RMS\Room\Room;
+use App\RMS\Transactiontender\Postender;
+use App\RMS\Transactiontender\Transactiontender;
 use App\RMS\Utility;
 use App\Status\StatusConstance;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +18,7 @@ use App\RMS\Category\Category;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\Payment\Payment;
 use App\RMS\Item\Continent;
+use App\RMS\DayStart\DayStart;
 use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
@@ -24,12 +27,22 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	{
 		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$session_status       = StatusConstance::DAY_STARTING_STATUS;
+        $daystart             = DayStart::select('id')
+                              ->where('status',$session_status)
+                              ->whereNull('deleted_at')
+                              ->first();
+        $day_id 			  = '';
+        if (count($daystart) > 0) {
+        	$day_id 			  = $daystart->id;
+        }
 		// $orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `refund`,`created_at`,`total_discount_amount`,`payment_amount`,`status`,`room_charge`
 		// from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `order_time` desc");
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
+					->where('day_id','=',$day_id)
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -39,8 +52,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('created_at', 'desc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -50,8 +64,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('created_at', 'asc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -61,8 +76,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('all_total_amount', 'desc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -72,8 +88,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('all_total_amount', 'asc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -84,7 +101,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -94,8 +111,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'asc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -107,8 +125,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `$sortBy` $sortTo");
 		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy($sortBy,$sortTo)
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -118,8 +137,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		// from `order` where `deleted_at` is null AND status = $order_cancel_status order by `order_time` desc");
 		$orders 	= Order::where('status',$order_cancel_status)
 					->orderBy('id', 'desc')
+					->whereDate('created_at','=',date('Y-m-d'))
 					->whereNull('deleted_at')
-					->paginate(10);
+					->get();
 		return $orders;
 	}
 
@@ -130,19 +150,30 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	}
 
 	public function getPayment($id) {
-		$payment 	= Payment::join('card','payment.payment_type','=','card.id')
-					  ->select('payment.paid_amount as paid_amount','payment.payment_type as payment_type',
-					    'payment.payment_card_id as payment_card_id','payment.uuid as uuid','card.name as name')
-					  ->where('payment.order_id','=',$id)
-					  ->whereNull('payment.deleted_at')
-					  ->get()
-					  ->toArray();
+		// $payment 	= Payment::join('card','payment.payment_type','=','card.id')
+		// 			  ->select('payment.paid_amount as paid_amount','payment.payment_type as payment_type',
+		// 			    'payment.payment_card_id as payment_card_id','payment.uuid as uuid','card.name as name')
+		// 			  ->where('payment.order_id','=',$id)
+		// 			  ->whereNull('payment.deleted_at')
+		// 			  ->get()
+		// 			  ->toArray();
+		$status         = StatusConstance::TRANCTION_PAID_STATUS;
+		$payment 		= Transactiontender::leftjoin('pos_tenders','transaction_tenders.tender_id','=','pos_tenders.id')
+						  ->leftjoin('card_tenders','pos_tenders.card_type','=','card_tenders.id')
+						  ->select(DB::raw("SUM(transaction_tenders.paid_amount * transaction_tenders.qty) as paid_amount"),'card_tenders.code as name')
+						  ->groupBy('card_tenders.code')
+						  ->where('transaction_tenders.order_id',$id)
+						  ->where('transaction_tenders.status',$status)
+						  ->whereNull('transaction_tenders.deleted_at')
+						  ->get()
+						  ->toArray();
+		// dd($payment);
 		return $payment;
 	}
 
 	public function getorder($id)
 	{
-		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge')->where('id',$id)->first();
+		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge','status')->where('id',$id)->first();
 		
 		return $orders;
 	}
@@ -213,6 +244,51 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		}
 		
 		return $addon;
+	}
+
+	public function getTenders($id) {
+		$status         = StatusConstance::TRANCTION_PAID_STATUS;
+		$orderRepo 		= $this->getorder($id);
+		$order_foc 		= $orderRepo->foc_amount;
+		$order_payment 	= $orderRepo->all_total_amount - $order_foc;
+		$transactions 	= Transactiontender::leftjoin('pos_tenders','pos_tenders.id','=','transaction_tenders.tender_id')
+							->select('transaction_tenders.id','transaction_tenders.paid_amount','transaction_tenders.changed_amount','transaction_tenders.qty','pos_tenders.description','pos_tenders.card_type')
+							->where('transaction_tenders.status','=',$status)
+							->where('transaction_tenders.order_id','=',$id)
+							->get();
+		$balance 		= DB::table('transaction_tenders')
+						  ->select(DB::raw("SUM(paid_amount * qty) as count"))
+						  ->where('status',$status)
+						  ->where('order_id',$id)
+						  ->whereNull('deleted_at')
+						  ->first();
+		$change 		= Transactiontender::select('changed_amount')
+						  ->where('status',$status)
+						  ->where('order_id',$id)
+						  ->whereNotNull('changed_amount')
+						  ->first();
+		$tenders 		= array();
+		$invoice 		= array();
+		foreach ($transactions as $key => $transaction) {
+			$t['id'] 	= $transaction->id;
+			$t['paid'] 	= $transaction->paid_amount;
+			$t['card'] 	= $transaction->card_type;
+			$t['description'] 	= $transaction->description;
+			$t['qty'] 			= $transaction->qty;
+			$t['total'] 		= $t['paid'] * $t['qty'];
+			array_push($tenders, $t);
+		}
+		$invoice['pay'] 	=  $tenders;
+		$invoice['balance'] =  $order_payment - $balance->count;
+		if ($invoice['balance'] < 0) {
+            $invoice['balance']     = 0;
+        }
+		if (count($change) > 0) {
+			$invoice['change'] 	=  $change->changed_amount;
+		} else {
+			$invoice['change'] 	=  0;
+		}
+		return $invoice;
 	}
 
 	public function addpaid($id) {

@@ -7,7 +7,10 @@ class UsersTableSeeder extends Seeder
 
     public function run()
     {
+        DB::table('users')->delete();
+        
         DB::table('users')->insert([
+            'id'         => '1',
             'user_name' => 'admin',//Super Admin
             'staff_id'  => '1',
             'password'  => bcrypt('admin123'),
@@ -17,6 +20,7 @@ class UsersTableSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
+            'id'         => '2',
             'user_name' => 'manager',//Manager
             'staff_id'  => '2',
             'password'  => bcrypt('admin123'),
@@ -26,6 +30,7 @@ class UsersTableSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
+            'id'         => '3',
             'user_name' => 'cashier',//Cashier
             'staff_id'  => '3',
             'password'  => bcrypt('admin123'),
@@ -35,6 +40,7 @@ class UsersTableSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
+            'id'         => '4',
             'user_name' => 'kitchen',//Cashier
             'staff_id'  => '4',
             'password'  => bcrypt('admin123'),

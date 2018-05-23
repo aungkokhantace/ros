@@ -16,6 +16,7 @@ interface InvoiceRepositoryInterface
     public function getaddon($id);
     public function getorder($id);
     public function getaddonAmount($id);
+    public function getTenders($id);
     public function getContinent();
     public function orderTable($id);
     public function orderRoom($id);

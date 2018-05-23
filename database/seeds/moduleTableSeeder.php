@@ -7,6 +7,8 @@ class moduleTableSeeder extends Seeder
 
     public function run()
     {
+        DB::table('modules')->delete();
+        
         DB::table('modules')->insert([
             'id' =>'1',
             'module' => 'Dashboard',
@@ -145,6 +147,18 @@ class moduleTableSeeder extends Seeder
             'view'=>'cashier',
             'created_by'=>'1',
         ]);
+        DB::table('modules')->insert([
+            'id'=>'24',
+            'module'=>'Shift',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
 
+        DB::table('modules')->insert([
+            'id'=>'25',
+            'module'=>'Order',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
     }
 }

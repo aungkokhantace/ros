@@ -180,11 +180,6 @@ class ItemController extends Controller
                                 ->WHERE('id','=',$id)
                                 ->first();
             $group_id         =  $group_id_attr->group_id;
-
-            // $itemsObj         = DB::table('items')
-            //                     ->select('id','image','mobile_image','stock_code')
-            //                     ->WHERE('group_id','=',$group_id)
-            //                     ->get();
             $file             = $request->file('input-file-preview');
             $itemID           = $request->get('item-id');
             $continents       = $request->get('continent');
@@ -193,6 +188,7 @@ class ItemController extends Controller
                                 ->whereNull('deleted_at')
                                 ->get()
                                 ->count();
+
             //Check if User add new Continent
             $flagItem         = 0;
             if (count($itemID) > count($continents)) {
@@ -211,6 +207,7 @@ class ItemController extends Controller
                     $paramObj->price        = $continentPrice[$key];
                     $paramObj->continent_id = $continent;
                     $paramObj->category_id  = $category;
+                    $paramObj->status       = $status;
                     $paramObj->standard_cooking_time = $cooking_time;
 
                     //For File Upload
@@ -247,7 +244,7 @@ class ItemController extends Controller
                     $paramObj->mobile_image = $mobileImg;
                     $paramObj->group_id     = $group_id;
                     $paramObj->has_continent= 1;
-                    $paramObj->status       = 1;
+                    $paramObj->status       = $status;
                     $result = $this->ItemRepository->updateNewContinent($paramObj);
                 }
             }

@@ -15,7 +15,7 @@ class LocationEntryRequest extends Request
     public function rules()
     {
         return [
-            'location_type'=>'required|unique:locations',
+            'location_type'=>'required|unique:locations,location_type,NULL,id,deleted_at,NULL',
         ];
     }
 

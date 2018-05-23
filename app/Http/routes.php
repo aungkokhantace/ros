@@ -1,22 +1,23 @@
 <?php
-
-Route::get('master',function() {
-
-    return view('cashier.layouts.master');
-});
 Route::get('logo', 'headerController@logo');
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', function () {
         if (Auth::guard('Cashier')->user())
         {
-            return redirect()->action('Cashier\DashboardController@dashboard');
+            if (Auth::guard('Cashier')->user()->role_id == 4) {
+                return redirect()->action('Cashier\DashboardController@dashboard');
+            } elseif (Auth::guard('Cashier')->user()->role_id == 1 || Auth::guard('Cashier')->user()->role_id == 2 || Auth::guard('Cashier')->user()->role_id == 3) {
+                return redirect()->action('Backend\DashboardController@dashboard');
+            } else {
+                return view('cashier.auth.login');
+            }
         }else{
             return view('cashier.auth.login');
         }
     });
+
     Route::get('login', 'Cashier\Auth\AuthController@getLoginForm');
     Route::post('login', 'Cashier\Auth\AuthController@postDataForCashierLogin');
-    Route::get('socketRequest','Cashier\Booking\BookingController@socketRequest');
 
     Route::group(['prefix' => 'Cashier'], function(){
         Route::get('logout', 'Cashier\Auth\AuthController@logout');
@@ -28,39 +29,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::group(['middleware' => 'dashboard:Cashier'],function(){
                 Route::get('Dashboard','Cashier\DashboardController@dashboard');
             });
-
-            //Start User
-            Route::group(['middleware' => 'staff:Cashier'],function(){
-                Route::get('Staff/index', 'Cashier\Staff\UserController@index');
-                Route::get('Staff/create', 'Cashier\Staff\UserController@create');
-                Route::post('Staff/store', 'Cashier\Staff\UserController@store');
-                Route::get('Staff/edit/{id}', 'Cashier\Staff\UserController@edit');
-                Route::post('Staff/update', 'Cashier\Staff\UserController@update');
-                Route::get('Staff/delete/{id}', 'Cashier\Staff\UserController@delete');
-                Route::get('Staff/active/{id}', 'Cashier\Staff\UserController@active');
-                Route::get('Staff/inactive/{id}', 'Cashier\Staff\UserController@inactive');
-                Route::get('Password/{id}','Cashier\Staff\UserController@profile');
-                Route::post('Password/Change','Cashier\Staff\UserController@updateProfile');
-
-                //Start Permission
-                Route::get('Permission/index','Cashier\Module\ModuleController@index');
-                Route::get('Permission/create','Cashier\Module\ModuleController@create');
-                Route::post('Permission/store','Cashier\Module\ModuleController@store');
-                Route::get('Permission/edit/{id}','Cashier\Module\ModuleController@edit');
-                Route::post('Permission/update','Cashier\Module\ModuleController@update');
-                //End Permission
-            });
             //End User
-           
-            //Staff Role
-            Route::group(['middleware'=>'staffType:Cashier'],function(){
-                Route::get('StaffType/index', 'Cashier\Staff\RoleController@index');
-                Route::get('StaffType/create', 'Cashier\Staff\RoleController@create');
-                Route::post('StaffType/store', 'Cashier\Staff\RoleController@store');
-                Route::get('StaffType/edit/{id}', 'Cashier\Staff\RoleController@edit');
-                Route::post('StaffType/update', 'Cashier\Staff\RoleController@update');
-                Route::get('StaffType/delete/{id}', 'Cashier\Staff\RoleController@delete');
-            });
 
             //Start Category Routes
             Route::group(['middleware'=>'category:Cashier'],function(){
@@ -77,162 +46,53 @@ Route::group(['middleware' => 'web'], function () {
 
             //Start item
             Route::group(['middleware'=>'item:Cashier'],function(){
-
                 Route::get('Item/index', 'Cashier\Item\ItemController@index');
-                Route::get('Item/create', 'Cashier\Item\ItemController@create');
-                Route::post('Item/store', 'Cashier\Item\ItemController@store');
-                Route::get('Item/edit/{id}', 'Cashier\Item\ItemController@edit');
-                Route::post('Item/update', 'Cashier\Item\ItemController@update');
-                Route::get('Item/delete/{id}', 'Cashier\Item\ItemController@delete');
-                Route::get('Item/item_enabled/{id}','Cashier\Item\ItemController@itemenabled');
-                Route::get('Item/item_disabled/{id}', 'Cashier\Item\ItemController@itemdisabled');
 
             });
             //End item
 
-            //extra food
-            Route::group(['middleware'=>'addon:Cashier'],function(){
-                Route::get('AddOn/index', 'Cashier\Addon\AddonController@index');
-                Route::get('AddOn/create', 'Cashier\Addon\AddonController@create');
-                Route::post('AddOn/store', 'Cashier\Addon\AddonController@store');
-                Route::get('AddOn/edit/{id}', 'Cashier\Addon\AddonController@edit');
-                Route::post('AddOn/update', 'Cashier\Addon\AddonController@update');
-                Route::get('AddOn/delete/{id}', 'Cashier\Addon\AddonController@delete');
-            });
-            //end extra food
-
-            //Start Discount
-            Route::group(['middleware'=>'discount:Cashier'],function(){
-                Route::get('Discount/index', 'Cashier\Discount\DiscountController@index');
-                Route::get('Discount/create','Cashier\Discount\DiscountController@create');
-                Route::post('Discount/store', 'Cashier\Discount\DiscountController@store');
-                Route::get('discount_price/{id}', 'Cashier\Discount\DiscountController@price');
-                Route::get('discount', 'Cashier\Discount\DiscountController@selectitem');
-                Route::get('Discount/edit/{id}', 'Cashier\Discount\DiscountController@edit');
-                Route::post('Discount/update', 'Cashier\Discount\DiscountController@update');
-                Route::get('Discount/delete/{id}', 'Cashier\Discount\DiscountController@delete');
-                Route::get('/prices/{id}', ['as' => 'prices', 'uses' => 'Cashier\Discount\DiscountController@price']);
-            });
-            //End Discount
-
             //start set
             Route::group(['middleware'=>'setMenu:Cashier'],function(){
                 Route::get('SetMenu/index', 'Cashier\Setmenu\SetMenuController@index');
-                Route::get('SetMenu/create', 'Cashier\Setmenu\SetMenuController@create');
-                Route::post('SetMenu/store', 'Cashier\Setmenu\SetMenuController@store');
-                Route::get('SetMenu/edit/{id}', 'Cashier\Setmenu\SetMenuController@edit');
-                Route::post('SetMenu/update', 'Cashier\Setmenu\SetMenuController@update');
-                Route::get('SetMenu/delete/{id}', 'Cashier\Setmenu\SetMenuController@delete');
 
             });
             //end set
 
             //Start Member Type
-            Route::group(['middleware'=>'memberType:Cashier'],function(){
-                Route::get('MemberType/index', 'Cashier\Member\MemberTypeController@index');
-                Route::get('MemberType/create', 'Cashier\Member\MemberTypeController@create');
-                Route::post('MemberType/store', 'Cashier\Member\MemberTypeController@store');
-                Route::get('MemberType/edit/{id}', 'Cashier\Member\MemberTypeController@edit');
-                Route::post('MemberType/update', 'Cashier\Member\MemberTypeController@update');
-                Route::get('MemberType/delete/{id}', 'Cashier\Member\MemberTypeController@delete');
+            // Route::group(['middleware'=>'memberType:Cashier'],function(){
+            //     Route::get('MemberType/index', 'Cashier\Member\MemberTypeController@index');
+            //     Route::get('MemberType/create', 'Cashier\Member\MemberTypeController@create');
+            //     Route::post('MemberType/store', 'Cashier\Member\MemberTypeController@store');
+            //     Route::get('MemberType/edit/{id}', 'Cashier\Member\MemberTypeController@edit');
+            //     Route::post('MemberType/update', 'Cashier\Member\MemberTypeController@update');
+            //     Route::get('MemberType/delete/{id}', 'Cashier\Member\MemberTypeController@delete');
 
-            });
+            // });
             //End  member_type
 
             //Start Member
-            Route::group(['middleware'=>'member:Cashier'],function(){
-                Route::get('Member/create', 'Cashier\Member\MemberController@create');
-                Route::post('Member/store', 'Cashier\Member\MemberController@store');
-                Route::get('Member/index', 'Cashier\Member\MemberController@index');
-                Route::get('Member/delete/{id}', 'Cashier\Member\MemberController@delete');
-                Route::get('Member/edit/{id}', 'Cashier\Member\MemberController@edit');
-                Route::post('Member/update', 'Cashier\Member\MemberController@update');
+            // Route::group(['middleware'=>'member:Cashier'],function(){
+            //     Route::get('Member/create', 'Cashier\Member\MemberController@create');
+            //     Route::post('Member/store', 'Cashier\Member\MemberController@store');
+            //     Route::get('Member/index', 'Cashier\Member\MemberController@index');
+            //     Route::get('Member/delete/{id}', 'Cashier\Member\MemberController@delete');
+            //     Route::get('Member/edit/{id}', 'Cashier\Member\MemberController@edit');
+            //     Route::post('Member/update', 'Cashier\Member\MemberController@update');
 
-            });
+            // });
             //End Member
 
-            //Start Room
-            Route::group(['middleware'=>'room:Cashier'],function(){
-                Route::get('Room/index', 'Cashier\Room\RoomController@index');
-                Route::get('Room/create', 'Cashier\Room\RoomController@create');
-                Route::post('Room/store', 'Cashier\Room\RoomController@store');
-                Route::get('Room/edit/{id}', 'Cashier\Room\RoomController@edit');
-                Route::post('Room/update', 'Cashier\Room\RoomController@update');
-                Route::get('Room/delete/{ids}', 'Cashier\Room\RoomController@delete');
-                Route::get('Room/room_enabled/{id}', 'Cashier\Room\RoomController@roomenabled');
-                Route::get('Room/active/{id}', 'Cashier\Room\RoomController@active');
-                Route::get('Room/inactive/{id}', 'Cashier\Room\RoomController@inactive');
-            });
-            //End Room
-
-            Route::group(['middleware' => 'table:Cashier'], function(){
-                Route::get('Location/index','Cashier\Table\LocationController@index');
-                Route::get('Location/create','Cashier\Table\LocationController@create');
-                Route::post('Location/store','Cashier\Table\LocationController@store');
-                Route::get('Location/edit/{id}','Cashier\Table\LocationController@edit');
-                Route::post('Location/update','Cashier\Table\LocationController@update');
-                Route::get('Location/delete/{id}','Cashier\Table\LocationController@delete');
-            });
-
-            //start Table Route
-            Route::group(['middleware'=>'table:Cashier'],function(){
-                Route::get('Table/create', 'Cashier\Table\TableController@create');
-                Route::get('Table/index', 'Cashier\Table\TableController@index');
-                Route::post('Table/store', 'Cashier\Table\TableController@store');
-                Route::get('Table/edit/{id}', 'Cashier\Table\TableController@edit');
-                Route::post('Table/update', 'Cashier\Table\TableController@update');
-                Route::get('Table/delete/{id}', 'Cashier\Table\TableController@delete');
-                Route::get('Table/table_enabled/{id}', 'Cashier\Table\TableController@table_enabled');
-                Route::get('Table/active/{id}', 'Cashier\Table\TableController@active');
-                Route::get('Table/inactive/{id}', 'Cashier\Table\TableController@inactive');
-
-            });
-            //End table
-
-       
-            //Start Booking
-            Route::group(['middleware'=>'booking:Cashier'],function(){
-                Route::get('Booking/index','Cashier\Booking\BookingController@index');
-                Route::get('Booking/create','Cashier\Booking\BookingController@create');
-                Route::post('Booking/search','Cashier\Booking\BookingController@search');
-
-                Route::post('Booking/store','Cashier\Booking\BookingController@store');
-                Route::get('Booking/edit/{id}','Cashier\Booking\BookingController@edit');
-                Route::post('Booking/update','Cashier\Booking\BookingController@update');
-                Route::get('Booking/delete/{id}','Cashier\Booking\BookingController@delete');
-                Route::get('Booking/ajaxBookingRequest','Cashier\Booking\BookingController@ajaxBookingRequest');
-                Route::get('Booking/capacity/{table}{room}','Cashier\Booking\BookingController@checkCapacity');
-
-                Route::get('Booking/getTables/{date}/{time}','Cashier\Booking\BookingController@getTables');
-                Route::get('Booking/getRooms/{date}/{time}','Cashier\Booking\BookingController@getRooms');
-
-                Route::post('Booking/bookingEdit','Cashier\Booking\BookingController@bookingEdit');
-                Route::get('Booking/tableListView','Cashier\Booking\BookingController@table_list_view');
-                Route::get('Booking/roomListView','Cashier\Booking\BookingController@room_list_view');
-                Route::get('Booking/tableRequest','Cashier\Booking\BookingController@tableRequest');
-                Route::get('Booking/roomRequest','Cashier\Booking\BookingController@roomRequest');
-
-
-                Route::get('MakeOrder','Cashier\ListViewController@index');
-                Route::get('MakeOrder/category','Cashier\ListViewController@category');
-                Route::get('MakeOrder/setmenu','Cashier\ListViewController@setmenu');
-                Route::get('MakeOrder/categorydetail/{id}','Cashier\ListViewController@categoryDetail');
-                Route::get('MakeOrder/SearchItem/{id}','Cashier\ListViewController@searchItem');
-                Route::get('MakeOrder/add/{id}/{type}','Cashier\ListViewController@add');
-            });
-            //End Booking
-
             //Start config
-            Route::group(['middleware'=>'generalSetting:Cashier'],function(){
-                Route::get('Config/general_config', 'Cashier\Config\ConfigController@general_config');
-                Route::get('Config/edit/{id}', 'Cashier\Config\ConfigController@edit');
-                Route::post('Config/store', 'Cashier\Config\ConfigController@store');
-                Route::post('Config/update', 'Cashier\Config\ConfigController@update');
-                Route::get('Config/delete/{id}', 'Cashier\Config\ConfigController@delete');
-                Route::get('Profile/company_profile','Cashier\Config\ProfileController@profile');
-                Route::post('Profile/update','Cashier\Config\ProfileController@update');
-                Route::post('Profile/store','Cashier\Config\ProfileController@store');
-            });
+            // Route::group(['middleware'=>'generalSetting:Cashier'],function(){
+            //     Route::get('Config/general_config', 'Cashier\Config\ConfigController@general_config');
+            //     Route::get('Config/edit/{id}', 'Cashier\Config\ConfigController@edit');
+            //     Route::post('Config/store', 'Cashier\Config\ConfigController@store');
+            //     Route::post('Config/update', 'Cashier\Config\ConfigController@update');
+            //     Route::get('Config/delete/{id}', 'Cashier\Config\ConfigController@delete');
+            //     Route::get('Profile/company_profile','Cashier\Config\ProfileController@profile');
+            //     Route::post('Profile/update','Cashier\Config\ProfileController@update');
+            //     Route::post('Profile/store','Cashier\Config\ProfileController@store');
+            // });
             //End config
 
             //Report
@@ -262,89 +122,13 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('ajaxInvoiceOrderDecrease','Cashier\Invoice\InvoiceController@ajaxInvoiceOrderDecrease');
                 Route::get('invoice/manager/confirm/{username}/{password}','Cashier\Invoice\InvoiceController@checkManager');
 
-                //Sale Summary Report & Excel Download
-                Route::get('saleSummaryReport','Cashier\Report\SaleSummaryReportController@saleSummary');
-                Route::get('SaleSummaryExport', 'Cashier\Report\SaleSummaryReportController@saleSummaryExport');
-                Route::get('dailysale/{day}/{month}','Cashier\Report\SaleSummaryReportController@dailySale');
-                Route::get('dailySaleExport/{day}/{month}','Cashier\Report\SaleSummaryReportController@dailySaleExport');
-                Route::post('searchDailySummary','Cashier\Report\SaleSummaryReportController@searchDailySummary');
-                Route::get('searchDailySummaryExport/{start_date}/{end_date}','Cashier\Report\SaleSummaryReportController@searchDailySummaryExport');
-                Route::get('saleSummaryReport/{checked}', 'Cashier\Report\SaleSummaryReportController@saleSummaryReportWithCheck');
-                
-               
-                Route::get('monthlySaleSummaryExport','Cashier\Report\SaleSummaryReportController@monthlySaleSummaryExport'); 
-                Route::post('searchMonthlySummary', 'Cashier\Report\SaleSummaryReportController@searchMonthlySummary');
-                Route::get('searchMonthlySummaryExport/{from_month}/{to_month}','Cashier\Report\SaleSummaryReportController@searchMonthlySummaryExport');
-                Route::get('monthlySale/{year}/{month}', 'Cashier\Report\SaleSummaryReportController@monthlySale');
-                Route::get('monthlySaleExport/{year}/{month}', 'Cashier\Report\SaleSummaryReportController@monthlySaleExport');
-
-                Route::get('yearlySaleSummaryExport','Cashier\Report\SaleSummaryReportController@yearlySaleSummaryExport');    
-                Route::post('searchYearlySummary','Cashier\Report\SaleSummaryReportController@searchYearlySummary');
-                Route::get('searchYearlySummaryExport/{from_year}','Cashier\Report\SaleSummaryReportController@searchYearSummaryExport');
-                Route::get('yearlySale/{year}','Cashier\Report\SaleSummaryReportController@yearlySale');
-                Route::get('yearlySaleExport/{year}','Cashier\Report\SaleSummaryReportController@yearlySaleExport');
-
-               
-                //Item Report & Excel Download
-                Route::get('itemReport', 'Cashier\Report\ReportController@itemReport');
-                Route::get('downloadItemReport', 'Cashier\Report\ReportController@downloadItemReport');
-
-                //Item Report With Date & Excel Download
-                Route::post('itemReportWithDate', 'Cashier\Report\ReportController@itemReportWithDate');
-                Route::get('downloadItemReportWithDate/{start_date}/{end_date}', 'Cashier\Report\ReportController@downloadItemReportWithDateWithNull');
-                Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}', 'Cashier\Report\ReportController@downloadItemReportWithDateAndNumber');
-                Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{from_amount}/{to_amount}', 'Cashier\Report\ReportController@downloadItemReportWithDateAndAmount');
-                Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}/{from_amount}/{to_amount}', 'Cashier\Report\ReportController@downloadItemReportWithAll');
-
-
-                //Favourite Set Menu & Excel Download
-                Route::get('favourite_set_menus', 'Cashier\Report\ReportController@favourite_set_menus');
-                Route::get('downloadsubReport', 'Cashier\Report\ReportController@downloadsubReport');
-
-                //Favourite Set Date Report & Excel Download
-                Route::post('fav_set_date_report', 'Cashier\Report\ReportController@fav_set_date_report');
-                Route::get('downloadsubReportWithDate/{start_date}/{end_date}', 'Cashier\Report\ReportController@downloadsubReportWithDateWithNull');
-                Route::get('downloadsubReportWithDate/{start_date}/{end_date}/{number}', 'Cashier\Report\ReportController@downloadsubReportWithDate');
-
-                
-
-                //Sale Report & Excel Download
-                Route::get('saleReport', 'Cashier\Report\SaleReportController@saleReport');
-                 Route::get('SaleExport', 'Cashier\Report\SaleReportController@saleExport');
-
-                // Search Report for Sale & Excel Download
-                Route::post('search_report', 'Cashier\Report\SaleReportController@search_detail');
-                Route::get('SaleExportDetail/{from}/{to}', 'Cashier\Report\SaleReportController@SaleExportDetail');
-
-                //Category saleSummaryDetailReport & Excel Download
-                Route::get('saleSummaryDetailReport', 'Cashier\Report\CategorySaleSummaryReportController@DailyDetailReport');
-                Route::get('saleSummaryDailyDetailExport', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryDailyDetailExport');
-
-                //Sale Summary Detail Report With Date & Excel Download
-                Route::post('saleSummaryDetailReportWithDate', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryDetailReportWithDate');
-                Route::get('saleSummaryDailyDetailExportWithDate/{from}/{to}/{child}', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryDailyDetailExportWithDate');
-
-                //Sale Summary Detail Report (Daily/Monthly/Yearly) & Excel Download
-                Route::get('saleSummaryDetailReport/{checked}', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryDetailReport');
-                Route::get('saleSummaryMonthlyDetailExport', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryMonthlyDetailExport');
-
-                Route::get('saleSummaryYearlyDetailExport', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryYearlyDetailExport');
-
-                Route::post('saleSummaryYearlyDetailReportWithDate/{checked}', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryYearlyDetailReportWithDate');
-
-                Route::get('saleSummaryYearlyDetailExportWithDate/{year}/{child}', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryYearlyDetailExportWithDate');
-
-                Route::post('saleSummaryMonthlyDetailReportWithDate/{checked}', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryMonthlyDetailReportWithDate');
-
-                Route::get('saleSummaryMonthlyDetailExportWithDate/{from}/{to}/{child}', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryMonthlyDetailExportWithDate');
-
-               
-               //Start Favourite Food Report
-                Route::get('memberFavaourite', 'Cashier\Report\FavouriteFoodReportController@favReportView');
-                Route::get('memberFavaourite/{type}', 'Cashier\Report\FavouriteFoodReportController@filterByMemberType');
-                Route::get('downloadFavourite/{typeId}', 'Cashier\Report\FavouriteFoodReportController@downloadExcelWithID');
-                Route::get('downloadFavourite/{typeId}', 'Cashier\Report\FavouriteFoodReportController@downloadExcelWithID');
-                //End Favourite Food Report
+                // Start Tender Transaction
+                Route::post('transaction_tenders/storeCash','Cashier\TransactionTenders\TransactionTendersController@storeCash');
+                Route::post('transaction_tenders/storeCard','Cashier\TransactionTenders\TransactionTendersController@storeCard');
+                Route::post('transaction_tenders/delete','Cashier\TransactionTenders\TransactionTendersController@delete');
+                Route::post('transaction_tenders/updateFoc','Cashier\TransactionTenders\TransactionTendersController@updateFoc');
+                Route::post('transaction_tenders/deleteFoc','Cashier\TransactionTenders\TransactionTendersController@deleteFoc');
+                //End Tender Transaction
             });
 
             //Promotions
@@ -363,6 +147,33 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('OrderView/index','Cashier\Invoice\OrderViewController@index');
                 Route::get('OrderView/ajaxRequest','Cashier\Invoice\OrderViewController@ajaxRequest');
                 Route::get('FoodOrderList/Detail/{order_id}/{order_status}','Cashier\Invoice\OrderViewController@detail');
+            });
+
+            //Make Order
+            Route::group(['middleware'=>'order:Cashier'],function(){
+
+                Route::get('MakeOrder','Cashier\ListViewController@index');
+                Route::post('MakeOrder/store','Cashier\ListViewController@store');
+                Route::get('MakeOrder/edit/{id}','Cashier\ListViewController@edit');
+                Route::post('MakeOrder/update','Cashier\ListViewController@update');
+                Route::get('MakeOrder/takeAway','Cashier\ListViewController@takeAway');
+                Route::get('MakeOrder/tables','Cashier\ListViewController@tables');
+                Route::get('MakeOrder/table/{id}','Cashier\ListViewController@orderTable');
+                Route::post('MakeOrder/transfer','Cashier\ListViewController@transfer');
+                Route::get('MakeOrder/rooms','Cashier\ListViewController@rooms');
+                Route::get('MakeOrder/room/{id}','Cashier\ListViewController@orderRoom');
+                Route::get('MakeOrder/getCategories/{parent}','Cashier\ListViewController@getCategories');
+                Route::get('MakeOrder/getSetMenu','Cashier\ListViewController@getSetMenu');
+                Route::get('MakeOrder/backCategory/{id}','Cashier\ListViewController@backCategory');
+                Route::get('MakeOrder/item/{id}/{take}','Cashier\ListViewController@item');
+                Route::post('MakeOrder/order_detail/delete','Cashier\ListViewController@delete');
+                Route::get('MakeOrder/setMenu/{id}/{take}','Cashier\ListViewController@setMenu');
+                Route::get('MakeOrder/continent/{itemID}/{continentID}','Cashier\ListViewController@continent');
+                // Route::get('MakeOrder/category','Cashier\ListViewController@category');
+                // Route::get('MakeOrder/setmenu','Cashier\ListViewController@setmenu');
+                // Route::get('MakeOrder/categorydetail/{id}','Cashier\ListViewController@categoryDetail');
+                // Route::get('MakeOrder/SearchItem/{id}','Cashier\ListViewController@searchItem');
+                // Route::get('MakeOrder/add/{id}/{type}','Cashier\ListViewController@add');
             });
 
             //Start Kitchen Setup
@@ -386,10 +197,390 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('MakeApi','Cashier\Log\ApilistController@make');
                 Route::get('DownloadApi','Cashier\Log\ApilistController@down');
             });
+
+            Route::group(['middleware' => 'shift:Cashier'], function () {
+                Route::get('DayStart/index', 'Cashier\DayStart\DayStartController@index');
+                Route::get('DayStart/create', 'Cashier\DayStart\DayStartController@create');
+                Route::post('DayStart/store', 'Cashier\DayStart\DayStartController@store');
+                Route::get('DayStart/delete/{id}', 'Cashier\DayStart\DayStartController@delete');
+                Route::get('DayStart/end/{id}', 'Cashier\DayStart\DayStartController@dayend');
+                Route::get('DayStart/Shift/{daycode}/{id}/{status}', 'Cashier\DayStart\DayStartController@orderShift');
+                Route::get('Shift/index', 'Cashier\Shift\ShiftController@index');
+                Route::get('Shift/create', 'Cashier\Shift\ShiftController@create');
+                Route::post('Shift/store', 'Cashier\Shift\ShiftController@store');
+                Route::get('Shift/delete/{id}', 'Cashier\Shift\ShiftController@delete');
+                Route::get('Shift/last_update/{id}', 'Cashier\Shift\ShiftController@last_update');
+                Route::get('Shift/Permission/{id}', 'Cashier\Shift\ShiftController@permission');
+                Route::post('Shift/Permission/update', 'Cashier\Shift\ShiftController@shift_update');
+                // Route::get('Shift/{shift}', 'Cashier\Shift\ShiftController@Shift');
+                // Route::post('Shift/update', 'Cashier\Shift\ShiftController@update');
+            });
+            //end shift
+
             //End Kitchen Setup
             Route::get('Unauthorized','Cashier\DashboardController@authorized');
        });
     });
+
+    Route::group(['prefix' => 'Backend'], function(){
+        Route::group(['middleware' => 'custom:Cashier'], function(){
+            Route::get('logout', 'Backend\Auth\AuthController@logout');
+            Route::get('userAuth', 'Backend\Staff\UserController@getAuthUser');
+            Route::get('updateDataBeforeLogout', 'Backend\Staff\UserController@updateDataBeforeLogout');
+            Route::group(['middleware' => 'dashboard:Cashier'],function(){
+                Route::get('Dashboard','Backend\DashboardController@dashboard');
+            });
+
+
+        //Start User
+        Route::group(['middleware' => 'staff:Cashier'],function(){
+            Route::get('Staff/index', 'Backend\Staff\UserController@index');
+            Route::get('Staff/create', 'Backend\Staff\UserController@create');
+            Route::post('Staff/store', 'Backend\Staff\UserController@store');
+            Route::get('Staff/edit/{id}', 'Backend\Staff\UserController@edit');
+            Route::post('Staff/update', 'Backend\Staff\UserController@update');
+            Route::get('Staff/delete/{id}', 'Backend\Staff\UserController@delete');
+            Route::get('Staff/active/{id}', 'Backend\Staff\UserController@active');
+            Route::get('Staff/inactive/{id}', 'Backend\Staff\UserController@inactive');
+            Route::get('Password/{id}','Backend\Staff\UserController@profile');
+            Route::post('Password/Change','Backend\Staff\UserController@updateProfile');
+
+             //Start Permission
+            Route::get('Permission/index','Backend\Module\ModuleController@index');
+    
+            //End Permission
+        });
+                //End User
+
+        //Staff Role
+        Route::group(['middleware'=>'staffType:Cashier'],function(){
+            Route::get('StaffType/index', 'Backend\Staff\RoleController@index');
+        });
+
+
+        //Start Member Type
+        Route::group(['middleware'=>'memberType:Cashier'],function(){
+            Route::get('MemberType/index', 'Backend\Member\MemberTypeController@index');
+            Route::get('MemberType/create', 'Cashier\Member\MemberTypeController@create');
+            Route::post('MemberType/store', 'Cashier\Member\MemberTypeController@store');
+            Route::get('MemberType/edit/{id}', 'Cashier\Member\MemberTypeController@edit');
+            Route::post('MemberType/update', 'Cashier\Member\MemberTypeController@update');
+            Route::get('MemberType/delete/{id}', 'Cashier\Member\MemberTypeController@delete');
+        });
+        //End  member_type
+
+        //Start Member
+        Route::group(['middleware'=>'member:Cashier'],function(){
+            Route::get('Member/create', 'Cashier\Member\MemberController@create');
+            Route::post('Member/store', 'Cashier\Member\MemberController@store');
+            Route::get('Member/index', 'Backend\Member\MemberController@index');
+            Route::get('Member/delete/{id}', 'Cashier\Member\MemberController@delete');
+            Route::get('Member/edit/{id}', 'Cashier\Member\MemberController@edit');
+            Route::post('Member/update', 'Cashier\Member\MemberController@update');
+        });
+        //End Member
+
+
+        //Start Kitchen Setup
+        Route::group(['middleware'=>'kitchen:Cashier'],function(){
+            Route::get('Kitchen/index','Backend\Kitchen\KitchenController@index');
+            Route::get('Kitchen/create','Backend\Kitchen\KitchenController@create');
+            Route::post('Kitchen/store','Backend\Kitchen\KitchenController@store');
+            Route::get('Kitchen/edit/{id}','Backend\Kitchen\KitchenController@edit');
+            Route::post('Kitchen/update','Backend\Kitchen\KitchenController@update');
+            Route::get('Kitchen/delete/{id}','Backend\Kitchen\KitchenController@delete');
+        });
+
+
+        //Start Category Routes
+        Route::group(['middleware'=>'category:Cashier'],function(){
+            Route::get('Category/index', 'Backend\Category\CategoryController@index');
+            Route::get('Category/create', 'Backend\Category\CategoryController@create');
+            Route::post('Category/store', 'Backend\Category\CategoryController@store');
+            Route::get('Category/delete/{id}', 'Backend\Category\CategoryController@delete');
+            Route::get('Category/edit/{id}', 'Backend\Category\CategoryController@edit');
+            Route::post('Category/update', 'Backend\Category\CategoryController@update');
+            Route::get('cat_enabled/{id}', 'Backend\Category\CategoryController@catenabled');
+            Route::get('cat_disabled/{id}', 'Backend\Category\CategoryController@catdisabled');
+        });
+       //End Category Routes
+
+
+        //Start item
+        Route::group(['middleware'=>'item:Cashier'],function(){
+            Route::get('Item/index', 'Backend\Item\ItemController@index');
+            Route::get('Item/create', 'Backend\Item\ItemController@create');
+            Route::post('Item/store', 'Backend\Item\ItemController@store');
+            Route::get('Item/edit/{id}', 'Backend\Item\ItemController@edit');
+            Route::post('Item/update', 'Backend\Item\ItemController@update');
+            Route::get('Item/delete/{id}', 'Backend\Item\ItemController@delete');
+            Route::get('Item/item_enabled/{id}','Backend\Item\ItemController@itemenabled');
+            Route::get('Item/item_disabled/{id}', 'Backend\Item\ItemController@itemdisabled');
+
+        });
+        //End item
+
+
+
+         //extra food
+        Route::group(['middleware'=>'addon:Cashier'],function(){
+            Route::get('AddOn/index', 'Backend\Addon\AddonController@index');
+            Route::get('AddOn/create', 'Backend\Addon\AddonController@create');
+            Route::post('AddOn/store', 'Backend\Addon\AddonController@store');
+            Route::get('AddOn/edit/{id}', 'Backend\Addon\AddonController@edit');
+            Route::post('AddOn/update', 'Backend\Addon\AddonController@update');
+            Route::get('AddOn/delete/{id}', 'Backend\Addon\AddonController@delete');
+        });
+        //end extra food
+
+        //start set
+        Route::group(['middleware'=>'setMenu:Cashier'],function(){
+            Route::get('SetMenu/index', 'Backend\Setmenu\SetMenuController@index');
+            Route::get('SetMenu/create', 'Backend\Setmenu\SetMenuController@create');
+            Route::post('SetMenu/store', 'Backend\Setmenu\SetMenuController@store');
+            Route::get('SetMenu/edit/{id}', 'Backend\Setmenu\SetMenuController@edit');
+            Route::post('SetMenu/update', 'Backend\Setmenu\SetMenuController@update');
+            Route::get('SetMenu/delete/{id}', 'Backend\Setmenu\SetMenuController@delete');
+
+        });
+        //end set
+
+         //start Table Route
+        Route::group(['middleware'=>'table:Cashier'],function(){
+            Route::get('Table/create', 'Backend\Table\TableController@create');
+            Route::get('Table/index', 'Backend\Table\TableController@index');
+            Route::post('Table/store', 'Backend\Table\TableController@store');
+            Route::get('Table/edit/{id}', 'Backend\Table\TableController@edit');
+            Route::post('Table/update', 'Backend\Table\TableController@update');
+            Route::get('Table/delete/{id}', 'Backend\Table\TableController@delete');
+            Route::get('Table/table_enabled/{id}', 'Cashier\Table\TableController@table_enabled');
+            Route::get('Table/active/{id}', 'Backend\Table\TableController@active');
+            Route::get('Table/inactive/{id}', 'Backend\Table\TableController@inactive');
+
+        });
+        //End table
+
+
+         //Start Room
+        Route::group(['middleware'=>'room:Cashier'],function(){
+            Route::get('Room/index', 'Backend\Room\RoomController@index');
+            Route::get('Room/create', 'Backend\Room\RoomController@create');
+            Route::post('Room/store', 'Backend\Room\RoomController@store');
+            Route::get('Room/edit/{id}', 'Backend\Room\RoomController@edit');
+            Route::post('Room/update', 'Backend\Room\RoomController@update');
+            Route::get('Room/delete/{ids}', 'Backend\Room\RoomController@delete');
+            Route::get('Room/room_enabled/{id}', 'Backend\Room\RoomController@roomenabled');
+            Route::get('Room/active/{id}', 'Backend\Room\RoomController@active');
+            Route::get('Room/inactive/{id}', 'Backend\Room\RoomController@inactive');
+        });
+        //End Room
+
+         Route::group(['middleware' => 'table:Cashier'], function(){
+            Route::get('Location/index','Backend\Table\LocationController@index');
+            Route::get('Location/create','Backend\Table\LocationController@create');
+            Route::post('Location/store','Backend\Table\LocationController@store');
+            Route::get('Location/edit/{id}','Backend\Table\LocationController@edit');
+            Route::post('Location/update','Backend\Table\LocationController@update');
+            Route::get('Location/delete/{id}','Backend\Table\LocationController@delete');
+        });
+
+        //Start config
+        Route::group(['middleware'=>'generalSetting:Cashier'],function(){
+            Route::get('Config/general_config', 'Backend\Config\ConfigController@general_config');
+            Route::get('Config/edit/{id}', 'Backend\Config\ConfigController@edit');
+            Route::post('Config/store', 'Backend\Config\ConfigController@store');
+            Route::post('Config/update', 'Backend\Config\ConfigController@update');
+            Route::get('Config/delete/{id}', 'Backend\Config\ConfigController@delete');
+            Route::get('Profile/company_profile','Backend\Config\ProfileController@profile');
+            Route::post('Profile/update','Backend\Config\ProfileController@update');
+            Route::post('Profile/store','Backend\Config\ProfileController@store');
+        });
+        //End config
+        
+
+
+        //Start Discount
+        Route::group(['middleware'=>'discount:Cashier'],function(){
+            Route::get('Discount/index', 'Backend\Discount\DiscountController@index');
+            Route::get('Discount/create','Backend\Discount\DiscountController@create');
+            Route::post('Discount/store', 'Backend\Discount\DiscountController@store');
+            Route::get('discount_price/{id}', 'Backend\Discount\DiscountController@price');
+            Route::get('discount', 'Backend\Discount\DiscountController@selectitem');
+            Route::get('Discount/edit/{id}', 'Backend\Discount\DiscountController@edit');
+            Route::post('Discount/update', 'Backend\Discount\DiscountController@update');
+            Route::get('Discount/delete/{id}', 'Backend\Discount\DiscountController@delete');
+            Route::get('/prices/{id}', ['as' => 'prices', 'uses' => 'Backend\Discount\DiscountController@price']);
+        });
+        //End Discount
+       
+        //Order
+        Route::group(['middleware'=>'orderList:Cashier'],function(){
+            //Route::get('OrderView/index','Backend\Invoice\OrderViewController@index');
+            Route::get('OrderView/ajaxRequest','Backend\Invoice\OrderViewController@ajaxRequest');
+            Route::get('FoodOrderList/Detail/{order_id}/{order_status}','Backend\Invoice\OrderViewController@detail');
+        });
+
+
+         //Report
+        Route::group(['middleware'=>'report:Cashier'],function(){
+
+            Route::get('invoice','Backend\Invoice\InvoiceController@invoiceList');
+            Route::get('ajaxSearchRequest','Backend\Invoice\InvoiceController@SearchRequest');
+            Route::get('ajaxSearchTimeIncreaseRequest','Backend\Invoice\InvoiceController@TimeIncreaseRequest');
+            Route::get('ajaxSearchTimeDecreaseRequest','Backend\Invoice\InvoiceController@TimeDecreaseRequest');
+            Route::get('ajaxSearchPriceIncreaseRequest','Backend\Invoice\InvoiceController@PriceIncreaseRequest');
+            Route::get('ajaxSearchPriceDecreaseRequest','Backend\Invoice\InvoiceController@PriceDecreaseRequest');
+            Route::get('ajaxSearchCancelRequest','Backend\Invoice\InvoiceController@CancelRequest');
+            Route::get('ajaxRequest','Backend\Invoice\InvoiceController@ajaxRequest');
+            Route::get('invoice/ajaxInvoiceRequest','Backend\Invoice\InvoiceController@ajaxInvoiceRequest');
+            Route::get('invoice/detail/{id}','Backend\Invoice\InvoiceController@invoicedetail');
+            Route::get('invoice/detail/print/{id}','Backend\Invoice\InvoiceController@invoicePrint');
+            Route::get('invoice/paid/{id}','Backend\Invoice\InvoiceController@invoicePaid');
+            Route::get('invoice/paid/ajaxPaymentRequest/{id}','Backend\Invoice\InvoiceController@ajaxPaymentRequest');
+            Route::post('invoice/add_paid','Backend\Invoice\InvoiceController@invoiceAddpaid');
+            Route::get('invoice/cancel','Backend\Invoice\InvoiceController@invoiceCancel');
+            Route::get('invoice/cancel/{id}','Backend\Invoice\InvoiceController@orderCancel');
+            Route::get('invoice/sort/time/increase','Backend\Invoice\InvoiceController@invoiceTimeIncrease');
+            Route::get('invoice/sort/time/decrease','Backend\Invoice\InvoiceController@invoiceTimeDecrease');
+            Route::get('invoice/sort/price/increase','Backend\Invoice\InvoiceController@invoicePriceIncrease');
+            Route::get('invoice/sort/price/decrease','Backend\Invoice\InvoiceController@invoicePriceDecrease');
+            Route::get('invoice/sort/order/increase','Backend\Invoice\InvoiceController@invoiceOrderIncrease');
+            Route::get('invoice/sort/order/decrease','Backend\Invoice\InvoiceController@invoiceOrderDecrease');
+            Route::get('ajaxInvoiceTimeIncrease','Backend\Invoice\InvoiceController@ajaxInvoiceTimeIncrease');
+            Route::get('ajaxInvoiceTimeDecrease','Backend\Invoice\InvoiceController@ajaxInvoiceTimeDecrease');
+            Route::get('ajaxInvoicePriceIncrease','Backend\Invoice\InvoiceController@ajaxInvoicePriceIncrease');
+            Route::get('ajaxInvoicePriceDecrease','Backend\Invoice\InvoiceController@ajaxInvoicePriceDecrease');
+            Route::get('ajaxInvoiceOrderIncrease','Backend\Invoice\InvoiceController@ajaxInvoiceOrderIncrease');
+            Route::get('ajaxInvoiceOrderDecrease','Backend\Invoice\InvoiceController@ajaxInvoiceOrderDecrease');
+            Route::get('invoice/manager/confirm/{username}/{password}','Backend\Invoice\InvoiceController@checkManager');
+
+            //Sale Summary Report & Excel Download
+            Route::get('saleSummaryReport','Backend\Report\SaleSummaryReportController@saleSummary');
+            Route::get('SaleSummaryExport', 'Backend\Report\SaleSummaryReportController@saleSummaryExport');
+            Route::get('dailysale/{day}/{month}','Backend\Report\SaleSummaryReportController@dailySale');
+            Route::get('dailySaleExport/{day}/{month}','Backend\Report\SaleSummaryReportController@dailySaleExport');
+            Route::post('searchDailySummary','Backend\Report\SaleSummaryReportController@searchDailySummary');
+            Route::get('searchDailySummaryExport/{start_date}/{end_date}','Backend\Report\SaleSummaryReportController@searchDailySummaryExport');
+            Route::get('saleSummaryReport/{checked}', 'Backend\Report\SaleSummaryReportController@saleSummaryReportWithCheck');
+            
+           
+            Route::get('monthlySaleSummaryExport','Backend\Report\SaleSummaryReportController@monthlySaleSummaryExport'); 
+            Route::post('searchMonthlySummary', 'Backend\Report\SaleSummaryReportController@searchMonthlySummary');
+            Route::get('searchMonthlySummaryExport/{from_month}/{to_month}','Backend\Report\SaleSummaryReportController@searchMonthlySummaryExport');
+            Route::get('monthlySale/{year}/{month}', 'Backend\Report\SaleSummaryReportController@monthlySale');
+            Route::get('monthlySaleExport/{year}/{month}', 'Backend\Report\SaleSummaryReportController@monthlySaleExport');
+
+            Route::get('yearlySaleSummaryExport','Backend\Report\SaleSummaryReportController@yearlySaleSummaryExport');    
+            Route::post('searchYearlySummary','Backend\Report\SaleSummaryReportController@searchYearlySummary');
+            Route::get('searchYearlySummaryExport/{from_year}','Backend\Report\SaleSummaryReportController@searchYearSummaryExport');
+            Route::get('yearlySale/{year}','Backend\Report\SaleSummaryReportController@yearlySale');
+            Route::get('yearlySaleExport/{year}','Backend\Report\SaleSummaryReportController@yearlySaleExport');
+
+
+        });
+
+
+         
+        //Start Booking
+        Route::group(['middleware'=>'booking:Cashier'],function(){
+            Route::get('Booking/index','Backend\Booking\BookingController@index');
+            Route::get('Booking/create','Backend\Booking\BookingController@create');
+            Route::post('Booking/search','Backend\Booking\BookingController@search');
+
+            Route::post('Booking/store','Backend\Booking\BookingController@store');
+            Route::get('Booking/edit/{id}','Backend\Booking\BookingController@edit');
+            Route::post('Booking/update','Backend\Booking\BookingController@update');
+            Route::get('Booking/delete/{id}','Backend\Booking\BookingController@delete');
+            Route::get('Booking/ajaxBookingRequest','Cashier\Booking\BookingController@ajaxBookingRequest');
+            Route::get('Booking/capacity/{table}{room}','Cashier\Booking\BookingController@checkCapacity');
+
+            Route::get('Booking/getTables/{date}/{time}','Cashier\Booking\BookingController@getTables');
+            Route::get('Booking/getRooms/{date}/{time}','Cashier\Booking\BookingController@getRooms');
+
+            Route::post('Booking/bookingEdit','Cashier\Booking\BookingController@bookingEdit');
+            Route::get('Booking/tableListView','Backend\Booking\BookingController@table_list_view');
+            Route::get('Booking/roomListView','Backend\Booking\BookingController@room_list_view');
+            Route::get('Booking/tableRequest','Backend\Booking\BookingController@tableRequest');
+            Route::get('Booking/roomRequest','Backend\Booking\BookingController@roomRequest');
+
+
+            Route::get('MakeOrder','Backend\ListViewController@index');
+            Route::get('MakeOrder/category','Cashier\ListViewController@category');
+            Route::get('MakeOrder/setmenu','Cashier\ListViewController@setmenu');
+            Route::get('MakeOrder/categorydetail/{id}','Cashier\ListViewController@categoryDetail');
+            Route::get('MakeOrder/SearchItem/{id}','Cashier\ListViewController@searchItem');
+            Route::get('MakeOrder/add/{id}/{type}','Cashier\ListViewController@add');
+        });
+        //End Booking
+
+      //Sale Report & Excel Download
+            Route::get('saleReport', 'Backend\Report\SaleReportController@saleReport');
+            Route::get('saleAjaxRequest', 'Backend\Report\SaleReportController@ajaxRequest');
+            Route::get('SaleExport', 'Backend\Report\SaleReportController@saleExport');
+      
+       // Search Report for Sale & Excel Download
+            Route::post('search_report', 'Backend\Report\SaleReportController@search_detail');
+            Route::get('searchAjaxRequest', 'Backend\Report\SaleReportController@searchAjaxRequest');
+            Route::get('SaleExportDetail/{from}/{to}', 'Backend\Report\SaleReportController@SaleExportDetail');
+             //Item Report & Excel Download
+            Route::get('itemReport', 'Backend\Report\ReportController@itemReport');
+            Route::get('downloadItemReport', 'Backend\Report\ReportController@downloadItemReport');
+
+             
+             //Item Report With Date & Excel Download
+            Route::post('itemReportWithDate', 'Backend\Report\ReportController@itemReportWithDate');
+            Route::get('downloadItemReportWithDate/{start_date}/{end_date}', 'Backend\Report\ReportController@downloadItemReportWithDateWithNull');
+            Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}', 'Backend\Report\ReportController@downloadItemReportWithDateAndNumber');
+            Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithDateAndAmount');
+            Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithAll');
+
+         
+
+          //Favourite Set Menu & Excel Download
+            Route::get('favourite_set_menus', 'Backend\Report\ReportController@favourite_set_menus');
+            Route::get('downloadsubReport', 'Backend\Report\ReportController@downloadsubReport');
+
+             //Favourite Set Date Report & Excel Download
+            Route::post('fav_set_date_report', 'Backend\Report\ReportController@fav_set_date_report');
+            Route::get('downloadsubReportWithDate/{start_date}/{end_date}', 'Backend\Report\ReportController@downloadsubReportWithDateWithNull');
+            Route::get('downloadsubReportWithDate/{start_date}/{end_date}/{number}', 'Backend\Report\ReportController@downloadsubReportWithDate');
+             Route::get('Unauthorized','Backend\DashboardController@authorized');
+
+
+        Route::group(['middleware' => 'shift:Cashier'], function () {
+           
+            Route::get('Shift/index', 'Backend\Shift\ShiftController@index');
+            Route::get('Shift/create', 'Backend\Shift\ShiftController@create');
+            Route::post('Shift/store', 'Backend\Shift\ShiftController@store');
+            Route::get('Shift/edit/{id}','Backend\Shift\ShiftController@edit');
+            Route::post('Shift/update','Backend\Shift\ShiftController@update');
+            Route::get('Shift/delete/{id}', 'Backend\Shift\ShiftController@delete');
+            Route::get('Shift/last_update/{id}', 'Backend\Shift\ShiftController@last_update');
+            Route::get('Shift/Permission/{id}', 'Backend\Shift\ShiftController@permission');
+            Route::post('Shift/Permission/update', 'Backend\Shift\ShiftController@shift_update');
+           
+        });
+        //end shift
+
+        //Sale Summary Detail Report (Daily/Monthly/Yearly) & Excel Download
+            Route::get('saleSummaryDetailReport/{checked}', 'Backend\Report\CategorySaleSummaryReportController@saleSummaryDetailReport');
+            Route::get('saleSummaryMonthlyDetailExport', 'Cashier\Report\CategorySaleSummaryReportController@saleSummaryMonthlyDetailExport');
+
+
+
+         //Start Log Middleware
+        Route::group(['middleware'=>'log:Cashier'],function(){
+            Route::get('Pricehistory/{type?}/{id?}','Backend\Log\PricelogController@search');
+            Route::get('Confighistory','Backend\Log\ConfiglogController@index');
+            Route::get('Discounthistory','Backend\Log\DiscountlogController@index');
+            Route::get('SyncApi','Backend\Log\ApilistController@sync');
+            Route::get('MakeApi','Backend\Log\ApilistController@make');
+            Route::get('DownloadApi','Backend\Log\ApilistController@down');
+        });
+
+        });   
+    });
+
     Route::group(['prefix' => 'Kitchen'], function () {
         Route::get('logout', 'Cashier\Auth\AuthController@logout');
         Route::group(['middleware' => 'custom:Cashier'], function () {
@@ -441,6 +632,8 @@ Route::post('api/v1/room','syncAPIController@room');
 Route::post('api/v1/member','syncAPIController@member');
 Route::post('api/v1/discount','syncAPIController@discount');
 Route::post('api/v1/booking','syncAPIController@booking');
+Route::post('api/v1/booking_table','syncAPIController@booking_table');
+Route::post('api/v1/booking_room','syncAPIController@booking_room');
 Route::post('api/v1/promotion','syncAPIController@promotion');
 Route::post('api/v1/promotion_item','syncAPIController@promotionItem');
 Route::post('api/v1/syncs_table','syncAPIController@getSyncsTable');
@@ -464,6 +657,7 @@ Route::post('api/v1/invoice/member','makeAPIController@member_update');
 Route::post('api/v1/customer_cancel','makeAPIController@customer_cancel');
 Route::post('api/v1/post_kitchen_cancel','makeAPIController@post_kitchen_cancel');
 Route::post('api/v1/order_status','makeAPIController@order_status');
+Route::post('api/v1/frontend_log','makeAPIController@frontend_log');
 
 Route::post('api/v1/download_voucher','downloadApiController@download_voucher');
 Route::post('api/v1/download_voucher_detail','downloadApiController@download_voucher_detail');

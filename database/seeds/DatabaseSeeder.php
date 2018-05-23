@@ -18,5 +18,8 @@ class DatabaseSeeder extends Seeder
           $this->call(OrderTypeTableSeeder::class);
           $this->call(ContinentTableSeeder::class);
           $this->call(ApiKeyTableSeeder::class);
+          $this->call(PosTendersTableSeeder::class);
+          $this->call(CardTendersTableSeeder::class);
+          $this->call(ShiftTableSeeder::class);
     }
 }

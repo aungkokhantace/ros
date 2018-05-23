@@ -19,9 +19,9 @@
         <h3 class="font">{{isset($record)? "Edit Item":"Create New Item"}}</h3>
         {{--title--}}
         @if(isset($record))
-            {!! Form::open(array('url' => 'Cashier/Item/update', 'method' => 'post', 'files' => true, 'class'=> 'form-horizontal', 'id'=>'item-validate')) !!}
+            {!! Form::open(array('url' => 'Backend/Item/update', 'method' => 'post', 'files' => true, 'class'=> 'form-horizontal', 'id'=>'item-validate')) !!}
         @else
-            {!! Form::open(array('url' => 'Cashier/Item/store', 'method' => 'post', 'files' => true, 'class'=> 'form-horizontal', 'id'=>'item-validate', 'onsubmit' => 'return validate();')) !!}
+            {!! Form::open(array('url' => 'Backend/Item/store', 'method' => 'post', 'files' => true, 'class'=> 'form-horizontal', 'id'=>'item-validate', 'onsubmit' => 'return validate();')) !!}
         @endif
 
         @if(isset($record))

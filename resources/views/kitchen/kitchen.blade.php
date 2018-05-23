@@ -1,8 +1,8 @@
-@extends('cashier.layouts.kitchen.master')
+@extends('Backend.layouts.kitchen.master')
 @section('title','Order View')
 @section('content')
     {{--title--}}
-   <div class="container">
+  
       {{--Order Listing Table--}}
         <div class="container" id="divAuto" style="cursor: pointer;">
             <div class="row">
@@ -158,13 +158,15 @@
                                             </td>
                                         </tr>
                                         <tr>
+
                                             <td>&nbsp;</td>
                                         </tr>
                                         <tr>
                                             <td>&nbsp;</td>
                                         </tr>
                                         <tr>
-                                            <td></td>
+                                            <td> <hr></td>
+                                            <td><hr></td>
                                         </tr>
 
                                     @endforeach
@@ -218,7 +220,7 @@
                 $(document).ready(function  (){
                     swal({
                         title: "Are you sure?",
-                        text: "You will not be able to recover this payment!",
+                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
                         confirmButtonColor: "#86CCEB",

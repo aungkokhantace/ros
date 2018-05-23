@@ -3,7 +3,7 @@
 namespace App\RMS\Discount;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 class DiscountLog extends Model
 {
     protected $table="discount_log";

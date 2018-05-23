@@ -38,7 +38,7 @@ class UserController extends Controller
         $roles      = $this->userRepository->getRoles();
         $kitchens   = $this->userRepository->getKitchens();
         $cur_time   = Carbon::now();
-        return view('cashier.user.UserList')->with('users', $users)
+        return view('Backend.user.UserList')->with('users', $users)
             ->with('roles', $roles)->with('cur_time', $cur_time)
             ->with('kitchens',$kitchens);
     }
@@ -209,7 +209,11 @@ class UserController extends Controller
             $r = $role->roles->name;
             if($r == "Kitchen"){
                 return redirect('Kitchen/kitchen');
-            }else{
+            }
+            if ($r == "Super Admin" || $r == 'Manager' || $r == 'Supervisor') {
+                return redirect('Backend/Dashboard');
+            }
+            else{
                 return redirect('Cashier/Dashboard');
             }
         }

@@ -547,6 +547,36 @@ $(document).ready(function() {
         }
         
     });
+
+    //For Day Start Form
+    $('#daystartForm').validate({
+        rules: {
+            start_date        : "required"
+        },
+        messages: {
+            start_date        : "Start Date is required."
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+    });
+
+    //For Shift Form
+    $('#shift-validate').validate({
+        rules: {
+            name        : "required",
+            description : "required"
+        },
+        messages: {
+            name        : "Shift Name is required.",
+            description : "Description is required.",
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+    });
 });
 
 

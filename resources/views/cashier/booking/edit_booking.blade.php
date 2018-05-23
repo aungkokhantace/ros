@@ -1,6 +1,8 @@
-@extends('cashier.layouts.master')
+@extends('Backend.layouts.master')
 @section('title','Booking Edit')
 @section('content')
+<div class="content-wrapper">
+
     <div class="row">
         <div class="container">
             <div class="col-md-12">
@@ -134,6 +136,7 @@
             </div>
 
         </div>
+    </div>
 
     </div>
 

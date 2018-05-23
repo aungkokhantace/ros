@@ -74,13 +74,13 @@ class UserRepository implements UserRepositoryInterface
         return $user;
     }
 
-    public function updateWithUserType($id,$name,$staffId,$userType,$kitchenId,$updated_by)
+    public function updateWithUserType($id,$name,$userType,$kitchenId,$updated_by)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
-            DB::table('users')->where('id',$id)->update(['user_name'=>$name,'staff_id'=>$staffId,'role_id'=>$userType,
+            DB::table('users')->where('id',$id)->update(['user_name'=>$name,'role_id'=>$userType,
                 'kitchen_id'=>$kitchenId,'updated_by'=>$updated_by]);
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
@@ -93,12 +93,12 @@ class UserRepository implements UserRepositoryInterface
 
     }
 
-    public function update($id,$name,$staffId,$updated_by){
+    public function update($id,$name,$updated_by){
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
-            DB::table('users')->where('id',$id)->update(['user_name'=>$name,'staff_id'=>$staffId,'updated_by'=>$updated_by]);
+            DB::table('users')->where('id',$id)->update(['user_name'=>$name,'updated_by'=>$updated_by]);
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -124,9 +124,17 @@ class UserRepository implements UserRepositoryInterface
         return $olduser;
     }
 
-    public function getUsersForStaffId(){
-        $all = DB::table('users')->get();
-        return $all;
+    public function getUsersForStaffId($id){
+        $all = DB::table('users')
+                ->select('user_name')
+                ->whereNOTIn('id',[$id])
+                ->whereNull('deleted_at')
+                ->get();
+        $user   = array();
+        foreach ($all as $key => $a) {
+            $user[]         = $a->user_name;
+        }
+        return $user;
     }
 
     public function getKitchens()

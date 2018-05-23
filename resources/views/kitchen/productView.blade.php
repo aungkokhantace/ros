@@ -1,16 +1,18 @@
-@extends('cashier.layouts.kitchen.master')
+@extends('Backend.layouts.kitchen.master')
 @section('title','Order View')
 @section('content')
     {{--title--}}
-    <div class="container">
-        <div class="row">
+
+   
+      
+       
             <div id="body">
                 <div class="container">
                     <div class="row" id="autoDiv">
                     @foreach($product as $orderKey=>$p)
                         <div class="col-md-12 tbl-container">
                             <div class="table-responsive">	
-                                <table class="table">
+                                <table class="table to-down">
                                     <thead class="header">
                                         <tr>
                                             <td class="tdname">
@@ -42,7 +44,7 @@
                                         @foreach($p['product_order'] as $item)
                                             @if($p['item_id'] == $item->id)
                                         <tr class="tr-row" data-ordertime = "{{$item->order_time}}">
-                                            <td>
+                                            <td class="tr_right">
                                                 @if($item->take_id == 1)
                                                     <h4>Take Away</h4>
                                                 @endif
@@ -62,20 +64,20 @@
                                                     @endforeach
                                                 @endif
                                             </td>
-                                            <td>{{ $item->quantity }}</td>
-                                            <td>{{ $item->exception }}</td>
-                                            <td>{{ $item->remark }}</td>
-                                            <td>
+                                            <td class="tr_right">{{ $item->quantity }}</td>
+                                            <td class="tr_right">{{ $item->exception }}</td>
+                                            <td class="tr_right">{{ $item->remark }}</td>
+                                            <td class="tr_right">
                                                 @foreach($extra as $ex)
                                                     @if($ex->order_detail_id == $item->order_detail_id)
                                                         {{ $ex->food_name }},
                                                     @endif
                                                 @endforeach
                                             </td>
-                                            <td class="td-row" data-ordertime = "{{ $item->order_time}}">
+                                            <td class="td-row tr_right" data-ordertime = "{{ $item->order_time}}">
                                                 {{ date('h:i:s A', strtotime($item->order_time)) }}
                                             </td>
-                                            <td >
+                                            <td class="tr_right">
                                                 <!-- @if($item->status_id == '1')
                                                     <span class="duration"></span>
                                                     <input type="hidden" name="duration" class="txt_duration"/>
@@ -84,14 +86,14 @@
                                                     {{ date('h:i:s A', strtotime($item->order_duration)) }}
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="tr_right">
                                                 @if($item->status_id =='2')
                                                     <input type="hidden" name="order_duration" value="{{ $item->order_duration }}"/>
                                                     <span class="cooking_duration"></span>
                                                     <input type="hidden" name="duration" class="txt_cooking_duration"/>
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="tr_right">
                                                 @if($item->status_id == '1')
                                                     <input type="submit" class="start start_duration_item btn_k" id="{{$item->order_detail_id}}" name="start" value="Cooking">
                                                 @endif
@@ -101,7 +103,7 @@
                                             </td>
 
                                             @if($item->status_id == '1')
-                                            <td>
+                                            <td class="tr_right">
                                                 <input type="button" class="cancel btn_k" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
                                                 <div class="modal fade" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
@@ -263,6 +265,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <script type="text/javascript">
         $(document).ready(function(){
@@ -296,11 +299,10 @@
             })
             $('#autoDiv').on('click', '.start_duration_item',function(e){
                 var itemID      = $(this).attr('id');
-
                 $(document).ready(function  (){
                     swal({
                         title: "Are you sure?",
-                        text: "You will not be able to recover this payment!",
+                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
                         confirmButtonColor: "#86CCEB",
@@ -376,8 +378,9 @@
                             success: function (Response) {
                                 var returnResp        = Response.message;
                                 if (returnResp == 'success') {
-                                    var socket      = io.connect( 'http://'+window.location.hostname+':3333' );
-                                    socket.emit('start_cooking', 'start_cooking');
+                                    var socketKey        = "start_cooking";
+                                    var socketValue      = "start_cooking";
+                                    socketEmit(socketKey,socketValue);
                                     swal.close();
                                 }
                             }
@@ -403,8 +406,9 @@
                             success: function (Response) {
                                 var returnResp        = Response.message;
                                 if (returnResp == 'success') {
-                                    var socket = io.connect( 'http://'+window.location.hostname+':3333' );
-                                    socket.emit('cooking_complete','cooking_complete');
+                                    var socketKey        = "start_cooking";
+                                    var socketValue      = "start_cooking";
+                                    socketEmit(socketKey,socketValue);
                                     swal.close();
                                 }
                             }

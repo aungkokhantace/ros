@@ -22,7 +22,7 @@ class ModuleController extends Controller
 
     public function index(){
         $modules = $this->moduleRepository->getModules();
-        return view('cashier.permission.index')->with('modules',$modules);
+        return view('Backend.permission.index')->with('modules',$modules);
     }
 
     public function create(){

@@ -15,7 +15,7 @@ class KitchenEntryRequest extends Request
     public function rules()
     {
         return [
-            'name'=>'required|unique:kitchen',
+            'name'=>'required|unique:kitchen,name,NULL,id,deleted_at,NULL',
         ];
     }
 

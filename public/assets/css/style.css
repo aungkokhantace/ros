@@ -268,9 +268,9 @@ th.sorting_disabled {
 }
 
 .user-button-ok{
-    background-color: #F3A42E;
+    background-color: #354a51;
     border:none;
-    border-radius: 0px;
+    border-radius: 5px;
     padding: 6px 40px;
     color: #FFFFFF;
 }

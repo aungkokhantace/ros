@@ -7,6 +7,8 @@ class CoreSettingsTableSeeder extends Seeder
 
     public function run()
     {
+        DB::table('core_settings')->delete();
+        
         DB::table('core_settings')->insert([
             'code'          => 'ITEMS',
             'type'          => 'ITEMS_TYPE',
