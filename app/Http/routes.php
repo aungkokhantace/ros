@@ -144,7 +144,7 @@ Route::group(['middleware' => 'web'], function () {
             //Order
             Route::group(['middleware'=>'orderList:Cashier'],function(){
 
-                Route::get('OrderView/index','Cashier\Invoice\OrderViewController@index');
+            Route::get('OrderView/index','Cashier\Invoice\OrderViewController@index');
                 Route::get('OrderView/ajaxRequest','Cashier\Invoice\OrderViewController@ajaxRequest');
                 Route::get('FoodOrderList/Detail/{order_id}/{order_status}','Cashier\Invoice\OrderViewController@detail');
             });
@@ -224,6 +224,7 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::group(['prefix' => 'Backend'], function(){
         Route::group(['middleware' => 'custom:Cashier'], function(){
+
             Route::get('logout', 'Backend\Auth\AuthController@logout');
             Route::get('userAuth', 'Backend\Staff\UserController@getAuthUser');
             Route::get('updateDataBeforeLogout', 'Backend\Staff\UserController@updateDataBeforeLogout');
@@ -578,7 +579,24 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('DownloadApi','Backend\Log\ApilistController@down');
         });
 
-        });   
+        /*-----------for csv import-----------*/
+         //csv import
+        Route::group(['middleware'=>'csv:Cashier'],function(){
+            Route::get('import','Backend\CSV\CSVImportController@import');
+            Route::post('import/store','Backend\CSV\CSVImportController@store');
+
+           
+           
+        });
+        //end csv import
+       
+
+            
+            
+        });
+        //end   
+        
+         Route::get('csv', 'Backend\Report\ReportController@favourite_set_menus');
     });
 
     Route::group(['prefix' => 'Kitchen'], function () {

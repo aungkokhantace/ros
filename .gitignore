@@ -8,3 +8,4 @@ composer.lock
 .idea/workspace.xml
 #.env
 public/uploads/
+npm-debug.log

@@ -55,6 +55,12 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind('App\RMS\DayStart\DayStartRepositoryInterface','App\RMS\DayStart\DayStartRepository');
         $this->app->bind('App\RMS\Shift\ShiftRepositoryInterface','App\RMS\Shift\ShiftRepository');
         $this->app->bind('App\RMS\InvoiceBackend\InvoiceBackendRepositoryInterface','App\RMS\InvoiceBackend\InvoiceBackendRepository');
+
+        $this->app->bind('App\RMS\CSV\CSVRepositoryInterface','App\RMS\CSV\CSVRepository');
+        
+        $this->app->bind('App\RMS\Restaurant\RestaurantRepositoryInterface','App\RMS\Restaurant\RestaurantRepository');
+
+        $this->app->bind('App\RMS\Branch\BranchRepositoryInterface','App\RMS\Branch\BranchRepository');
         //End
     }
 }

@@ -598,6 +598,25 @@ $(document).ready(function() {
             form.submit();
         }
     });
+    //for csv import
+        $('#csv_import').validate({
+        rules: {
+            restauranat        : "required",
+            branch             : "required",
+            tbl_name           : "required",
+            csv_upl            : "required",
+        },
+        messages: {
+            restauranat        : "Restauranat is required.",
+            branch             : "Branch is required.",
+            tbl_name           : "Table is required.",
+            csv_upl            : "File is required.",
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+    });
 });
 
 

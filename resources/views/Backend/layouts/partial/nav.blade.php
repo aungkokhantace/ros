@@ -78,6 +78,7 @@
           <ul class="treeview-menu">
             <li><a href="/Backend/Config/general_config"><i class="fa fa-circle-o text-aqua"></i>  Configuration </a></li>
             <li><a href="/Backend/Discount/index"><i class="fa fa-circle-o text-aqua"></i>  Discount</a></li>
+            <li><a href="/Backend/import"><i class="fa fa-circle-o text-aqua"></i> CSV</a></li>
           </ul>
         </li>
         <li class="treeview">

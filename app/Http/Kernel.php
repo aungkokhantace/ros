@@ -73,5 +73,6 @@ class Kernel extends HttpKernel
         'log'=>\App\Http\Middleware\LogMiddleware::class,
         'shift'=>\App\Http\Middleware\ShiftMiddleware::class,
         'order'=>\App\Http\Middleware\OrderMiddleware::class,
+        'csv'=>\App\Http\Middleware\CSVMiddleware::class,
     ];
 }
