@@ -9,4 +9,4 @@ composer.lock
 .env
 public/uploads/
 npm-debug.log
-.env.sample
+# .env.sample
