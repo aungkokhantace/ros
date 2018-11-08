@@ -18,6 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\RMS\ReturnMessage;
 use App\RMS\Utility;
 
+
 class UserRepository implements UserRepositoryInterface
 {
     public function store($paramObj)
@@ -58,8 +59,26 @@ class UserRepository implements UserRepositoryInterface
         $users = User::all();
         return $users;
     }
+      public function getUsersByBranch()
+    {
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+       
+
+        $query         = User::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $kitchen        = $query->get();
+        return $kitchen;
+    }
 
     public function getRoles(){
+        
         $roles = Role::all();
         return $roles;
     }
@@ -141,6 +160,23 @@ class UserRepository implements UserRepositoryInterface
     {
         $kitchens=Kitchen::get();
         return $kitchens;
+    }
+    public function getKitchensByBranch()
+    {
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+       
+
+        $query         = Kitchen::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $kitchen        = $query->get();
+        return $kitchen;
     }
 
     public function active($id) {

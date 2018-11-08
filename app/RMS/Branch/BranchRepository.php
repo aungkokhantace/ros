@@ -8,11 +8,27 @@ use Illuminate\Support\Facades\Input;
 use Monolog\Handler\Curl\Util;
 use App\RMS\ReturnMessage;
 use App\RMS\Branch\Branch;
+use Auth;
 
 class BranchRepository  implements  BranchRepositoryInterface
 {
     public function getAllType() {
-        $Branch = Branch::all();
+
+        $restaurant_id = Auth::guard('Cashier')->user()->restaurant_id;
+        $branch_id     = Auth::guard('Cashier')->user()->branch_id;   
+
+        $query         = Branch::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant_id != 0){
+            $query      = $query->where('restaurant_id',$restaurant_id);
+        }
+        if($branch_id != 0){
+            $query     = $query->where('id',$branch_id);
+        }
+        $Branch        = $query->get();
+
+        
+       
         return $Branch;
     }
 

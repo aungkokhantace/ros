@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Lang;
 use App\Session;
+use App\RMS\Shift\ShiftUser;
 
 class AuthController extends Controller
 {
@@ -58,12 +59,26 @@ class AuthController extends Controller
         
         if ($check_role == 5) {
             return redirect()->back()->withErrors($this->getFailedWaiterLogin());
-        } else {
+        } 
+        else {
             $validation = Auth::guard('Cashier')->attempt([
                 'user_name'=>$request->user_name,
                 'password'=>$request->password,
                 'status'=>$status,
             ]);
+            if($validation){
+                 $id      = Auth::guard('Cashier')->user()->id;
+                 $role_id = Auth::guard('Cashier')->user()->role_id;
+                 if($role_id == 4){
+                    $shift = ShiftUser::where('user_id',$id)->get();                    
+                    if(count($shift)==0){
+                        return redirect('/Cashier/logout')->withErrors($this->getFailedLoginMessage());
+
+                    }
+                }
+
+            }               
+           
             if(!$validation){//if validation has errors,go to getFailedLoginMessage()
                 return redirect()->back()->withErrors($this->getFailedLoginMessage());
             }

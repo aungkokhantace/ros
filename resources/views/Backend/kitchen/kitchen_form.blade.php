@@ -19,6 +19,30 @@
         @endif
 
         <input type="hidden" name="id" value="{{isset($kitchen)? $kitchen->id:''}}"/>
+        @if (Auth::guard('Cashier')->user()->role_id == 1)
+        <div class="form-group">
+            <label for="member-type" class="col-sm-2 control-label left-align label-font">Branch <span class="require">*</span></label>
+            <div class="col-sm-7">                 
+                 @if(isset($kitchen))
+                    @foreach($branchs as $branch)
+                        @if($branch->id == $kitchen->branch_id)
+                         <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
+                       
+                        @endif
+                    @endforeach                 
+                @else
+                <select class="form-control" name="branch">            
+                <option selected disabled>Select Branch </option>
+                    @foreach($branchs as $branch)
+                      <option value="{{$branch->id}}">{{$branch->name}}</option>                
+                    @endforeach
+                @endif
+                </select>
+              
+            </div>
+        </div>
+        @endif
         <div class="form-group">
             <label for="kitchen_name" class="col-sm-2 control-label left-align label-font">Kitchen Name<span class="require">*</span></label>
             <div class="col-sm-5">

@@ -235,6 +235,7 @@ Route::group(['middleware' => 'web'], function () {
 
         //Start User
         Route::group(['middleware' => 'staff:Cashier'],function(){
+            Route::get('Staff/ajaxRequest/{id}','Backend\Staff\UserController@ajaxRequest');
             Route::get('Staff/index', 'Backend\Staff\UserController@index');
             Route::get('Staff/create', 'Backend\Staff\UserController@create');
             Route::post('Staff/store', 'Backend\Staff\UserController@store');

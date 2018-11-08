@@ -47,6 +47,7 @@ tfoot {
                         <th><input type="checkbox" id="check_all"></th>
                         <th>No</th>
                         <th>Kitchen Name</th>
+                        <th >Branch</th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -54,6 +55,7 @@ tfoot {
                             <th></th>
                             <th></th>
                             <th class="search-col" con-id="kitchen_name">Kitchen Name</th>
+                            <th class="search-col" con-id="branch"></th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -64,6 +66,8 @@ tfoot {
                                 </td>
                                 <td></td>
                                 <td><a href="/Backend/Kitchen/edit/{{$kitchen->id}}">{{ $kitchen->name}}</a></td>
+                                <td>{{$kitchen->branch->name}}</td>
+                                
                             </tr>
                         @endforeach
                     </tbody>

@@ -440,10 +440,13 @@ $(document).ready(function() {
     //For Kitchen
     $('#kitchenForm').validate({
         rules: {
-            name    : "required"
+            name    : "required",
+            branch  : "required",
         },
         messages: {
-            name    : "Kitchen Name is required."
+            name    : "Kitchen Name is required.",
+            branch  : "Branch is required.",
+
         }
     });
 

@@ -10,7 +10,7 @@ class Kitchen extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $table= 'kitchen';
-    protected $fillable = ['id','name','created_by','updated_by','deleted_by','created_at','updated_at','deleted_at'];
+    protected $fillable = ['id','name','restaurant_id','branch_id','created_by','updated_by','deleted_by','created_at','updated_at','deleted_at'];
 
     public function category()
     {
@@ -23,4 +23,11 @@ class Kitchen extends Model
 
         return $this->hasMany('App\User');
     }
+
+    public function branch()
+    {
+
+       return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
+    }
+
 }

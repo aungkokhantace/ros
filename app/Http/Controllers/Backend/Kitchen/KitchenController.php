@@ -17,29 +17,44 @@ use Illuminate\Support\Facades\Input;
 
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Branch\BranchRepository;
+use App\RMS\Utility;
 
 class KitchenController extends Controller
 {
     private $KitchenRepository;
-    public function __construct(KitchenRepositoryInterface $KitchenRepository)
+    public function __construct(KitchenRepositoryInterface $KitchenRepository,BranchRepository $branchRepo)
     {
         $this->KitchenRepository = $KitchenRepository;
+        $this->branchRepo        = $branchRepo;
     }
-    public function index(){
-        $kitchen = Kitchen::all();
+    public function index(){   
+    $kitchen = $this->KitchenRepository->getKitchenByBranch();
+ 
         return view('Backend.kitchen.kitchenListing')->with('kitchens', $kitchen);
     }
 
     //To show kitchen entry form
     public function create(){
-        return view('Backend.kitchen.kitchen_form');
+        $branch     = $this->branchRepo->getAllType();
+
+        return view('Backend.kitchen.kitchen_form')->with('branchs',$branch);
     }
 
     public function store(KitchenEntryRequest $request){
         $request->validate();
-        $name = $request->get('name');
-        $paramObj = new Kitchen();
-        $paramObj->name = $name;
+        $name           = $request->get('name');
+        $branch_id      = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant(): "";
+        // dd($branch_id,$restaurant_id);
+
+        
+
+        $paramObj                = new Kitchen();
+        $paramObj->name          = $name;
+        $paramObj->restaurant_id = $restaurant_id;
+        $paramObj->branch_id     = $branch_id;
 
         $result = $this->KitchenRepository->store($paramObj);
 
@@ -56,7 +71,8 @@ class KitchenController extends Controller
 
     public function edit($id){
         $record=Kitchen::find($id);
-        return view('Backend.kitchen.kitchen_form')->with('kitchen',$record);
+        $branch     = $this->branchRepo->getAllType();
+        return view('Backend.kitchen.kitchen_form')->with('kitchen',$record)->with('branchs',$branch);
     }
 
     public function update(KitchenEditRequest $request){

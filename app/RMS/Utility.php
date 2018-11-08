@@ -145,4 +145,15 @@ class Utility
 
         return $rooms;
     }
+
+     public static function getCurrentBranch(){
+        $branch =  Auth::guard('Cashier')->user()->branch_id;
+        return $branch;
+    }
+
+    public static function getCurrentRestaurant(){
+        $restaurant  = Auth::guard('Cashier')->user()->restaurant_id;
+        return $restaurant;
+
+    }
 }

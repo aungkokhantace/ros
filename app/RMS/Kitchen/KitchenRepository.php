@@ -12,6 +12,23 @@ use App\RMS\Utility;
 use App\RMS\ReturnMessage;
 class KitchenRepository implements KitchenRepositoryInterface
 {
+    public function getKitchenByBranch(){
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+       
+
+        $query         = Kitchen::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $kitchen        = $query->get();
+        return $kitchen;
+    }
+
     public function store($paramObj)
     {
         $returnedObj = array();

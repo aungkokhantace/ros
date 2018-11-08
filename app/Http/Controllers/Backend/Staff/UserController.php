@@ -25,30 +25,39 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Branch\BranchRepository;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Branch\Branch;
 
 class UserController extends Controller
 {
     private $userRepository;
-    public function __construct(UserRepositoryInterface $userRepository){
+    public function __construct(UserRepositoryInterface $userRepository, BranchRepository $branchRepo,RestaurantRepository $restaurantRepo){
         $this->userRepository = $userRepository;
+        $this->branchRepo     = $branchRepo;
+        $this->restaurantRepo = $restaurantRepo;
         $this->middleware('custom');
     }
 
     public function index(Request $request){
-        $users      = $this->userRepository->getUsers();
+        $users      = $this->userRepository->getUsersByBranch();
         $roles      = $this->userRepository->getRoles();
         $kitchens   = $this->userRepository->getKitchens();
+
         $cur_time   = Carbon::now();
         return view('Backend.user.UserList')->with('users', $users)
             ->with('roles', $roles)->with('cur_time', $cur_time)
             ->with('kitchens',$kitchens);
     }
 
-    public function create(){
+    public function create(){       
         $roles      = $this->userRepository->getRoles();
-        $kitchens   = $this->userRepository->getKitchens();
+        $kitchens   = $this->userRepository->getKitchensByBranch();
+        $branch     = $this->branchRepo->getAllType();
+        $restaurant = $this->restaurantRepo->getAllType();
+        // dd("a",$branch);
 
-        return view('Backend.user.User')->with('roles', $roles)->with('kitchens',$kitchens);
+        return view('Backend.user.User')->with('roles', $roles)->with('kitchens',$kitchens)->with('branchs',$branch)->with('restaurants',$restaurant);
     }
 
     public function profile($id){
@@ -84,12 +93,16 @@ class UserController extends Controller
         $password   = trim(bcrypt(Input::get('login_password')));
         $roleId     = Input::get('userType');
         $kitchenId  = Input::get('kitchen');
-
+        $branch_id  = Input::get('branch');       
+        $restaurant_id = Auth::guard('Cashier')->user()->restaurant_id != null ? Auth::guard('Cashier')->user()->restaurant_id : Input::get('restaurant');     
+        
         $paramObj               = new User();
         $paramObj->user_name    = $name;
         $paramObj->password     = $password;
         $paramObj->role_id      = $roleId;
         $paramObj->kitchen_id   = $kitchenId;
+        $paramObj->restaurant_id= $restaurant_id;
+        $paramObj->branch_id    = $branch_id;
         $paramObj->status       = 1;
 
         $result = $this->userRepository->store($paramObj);
@@ -108,8 +121,10 @@ class UserController extends Controller
         $user       = $this->userRepository->getID($id);
         $roles      = Role::get();
         $kitchens   = $this->userRepository->getKitchens();
+        $branch     = $this->branchRepo->getAllType();
+        $restaurant = $this->restaurantRepo->getAllType();
 
-        return view('Backend.user.User')->with('user', $user)->with('roles', $roles)->with('kitchens',$kitchens);
+        return view('Backend.user.User')->with('user', $user)->with('roles', $roles)->with('kitchens',$kitchens)->with('branchs',$branch)->with('restaurants',$restaurant);
     }
 
     public function active($id) {
@@ -233,6 +248,10 @@ class UserController extends Controller
         else{
             echo "fail";
         }
+    }
+    public function ajaxRequest($id){
+         $obj            =  Branch::where('restaurant_id',$id)->whereNull('deleted_at')->get();
+        return \Response::json($obj);
     }
     
 
