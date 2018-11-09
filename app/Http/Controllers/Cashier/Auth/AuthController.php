@@ -66,7 +66,7 @@ class AuthController extends Controller
                 'password'=>$request->password,
                 'status'=>$status,
             ]);
-            if($validation){
+            /*if($validation){
                  $id      = Auth::guard('Cashier')->user()->id;
                  $role_id = Auth::guard('Cashier')->user()->role_id;
                  if($role_id == 4){
@@ -77,7 +77,7 @@ class AuthController extends Controller
                     }
                 }
 
-            }               
+            }   */            
            
             if(!$validation){//if validation has errors,go to getFailedLoginMessage()
                 return redirect()->back()->withErrors($this->getFailedLoginMessage());

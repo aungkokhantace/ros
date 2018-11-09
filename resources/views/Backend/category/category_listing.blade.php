@@ -46,7 +46,7 @@ tfoot {
         {{--tables--}}
         <div class="container">
             <div class="row">
-                <div class="col-md-12 tbl-container">
+                <div class="col-md-12 tbl-container table-responsive">
                     <div class="col-md-12"></div>
                     <table class="table table-striped list-table" id="category_list">
                         <thead class="thead_product">
@@ -59,6 +59,7 @@ tfoot {
                                 <th>Category Image</th>
                                 <th>Description</th>
                                 <th>Status</th>
+                                <th>Branch</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -70,6 +71,7 @@ tfoot {
                             <th></th>
                             <th class="search-col" con-id="description">Description</th>
                             <th></th>
+                            <th class="search-col" con-id="branch">Branch</th>
                         </tr>
                     </tfoot>
                         <tbody>
@@ -91,6 +93,7 @@ tfoot {
                                             {{'Not Available'}}
                                         @endif
                                     </td>
+                                    <td>{{$category->branch->name}}</td>
                                 </tr>
                         @endforeach
                         </tbody>

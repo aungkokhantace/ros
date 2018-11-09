@@ -25,8 +25,22 @@ class CategoryRepository implements CategoryRepositoryInterface
     }
 
     public function getAllCategory(){
-        $categories = Category::whereNull('deleted_at')->get();
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+       
+
+        $query         = Category::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $categories        = $query->get();
         return $categories;
+
+      
     }
 
     //show data from db in select box

@@ -16,11 +16,19 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use InterventionImage;
+use App\RMS\Branch\BranchRepository;
+use App\RMS\Utility;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Kitchen\KitchenRepository;
+
 class CategoryController extends Controller
 {
     private $CategoryRepository;
     public function __construct(CategoryRepositoryInterface $CategoryRepository){
         $this->CategoryRepository = $CategoryRepository;
+        $this->branchRepo         = new BranchRepository();
+        $this->restaurantRepo     = new RestaurantRepository();
+        $this->kitchenRepo        = new KitchenRepository();
     }
 
 
@@ -32,15 +40,21 @@ class CategoryController extends Controller
     }
 
     public function create(){
-        $kitchen = $this->CategoryRepository->getKitchen();
+        $kitchen = $this->kitchenRepo->getKitchenByBranch();
         $result  = $this->CategoryRepository->ChooseCat();
+        $branch  = $this->branchRepo->getAllType();
+        $restaurant = $this->restaurantRepo->getAllType();
 
-        return view('Backend.category.category', ['categories' => $result])->with('kitchen',$kitchen);
+
+        return view('Backend.category.category', ['categories' => $result])->with('kitchen',$kitchen)->with('branchs',$branch)->with('restaurants',$restaurant);
     }
 
      public function store(CreateCategoryRequest $request){
         $name                   = $request->get('name');
         $category               = $request->get('parent_category');
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
         //if Parent Category
         if ($category == 0) {
             $kitchen            = $request->get('kitchen');
@@ -76,6 +90,8 @@ class CategoryController extends Controller
         $paramObj->status       = $status;
         $paramObj->level        = $level;
         $paramObj->description  = $description;
+        $paramObj->restaurant_id = $restaurant_id;
+        $paramObj->branch_id     = $branch_id;
         $result = $this->CategoryRepository->store($paramObj);
 
          if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
@@ -125,9 +141,11 @@ class CategoryController extends Controller
         $result              = $this->CategoryRepository->find($id);
         // $result->subcategory = $this->disabledcategoriesTree($result);
         $selected            = $editcategory->parent_id;
+        $branch              = $this->branchRepo->getAllType();
+        $restaurant          = $this->restaurantRepo->getAllType();
         $kitchen=$this->CategoryRepository->getKitchen();
         return view('Backend.category.category', ['categories' => $cats])->with('editcategory',$editcategory)
-            ->with('selected',$selected)->with('title',$title)->with('subtree',$result)->with('kitchen',$kitchen);
+            ->with('selected',$selected)->with('title',$title)->with('subtree',$result)->with('kitchen',$kitchen)->with('branchs',$branch)->with('restaurants',$restaurant);
     }
 
     //to update edited data in database
@@ -389,6 +407,12 @@ class CategoryController extends Controller
         }
 
         return redirect()->action('Cashier\Category\CategoryController@index');
+    }
+
+     public function ajax($id){
+        // dd("aaa");
+        $obj            =  Kitchen::where('branch_id',$id)->whereNull('deleted_at')->get();
+        return \Response::json($obj);
     }
 
 }

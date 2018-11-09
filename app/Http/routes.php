@@ -304,6 +304,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('Category/update', 'Backend\Category\CategoryController@update');
             Route::get('cat_enabled/{id}', 'Backend\Category\CategoryController@catenabled');
             Route::get('cat_disabled/{id}', 'Backend\Category\CategoryController@catdisabled');
+            Route::get('Branch/ajaxRequest/{id}', 'Backend\Category\CategoryController@ajax');
         });
        //End Category Routes
 

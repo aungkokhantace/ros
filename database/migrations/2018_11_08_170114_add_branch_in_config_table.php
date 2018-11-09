@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddBranchInCoreSetting extends Migration
+class AddBranchInConfigTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,8 @@ class AddBranchInCoreSetting extends Migration
      */
     public function up()
     {
-         Schema::table('core_settings', function (Blueprint $table) {
-             $table->integer('restaurant_id')->nullable()->after('description');
-            $table->integer('branch_id')->nullable()->after('restaurant_id');
+        Schema::table('config', function (Blueprint $table) {
+             $table->integer('restaurant_id')->nullable()->after('remark');
         });
     }
 
@@ -25,9 +24,9 @@ class AddBranchInCoreSetting extends Migration
      */
     public function down()
     {
-        Schema::table('core_settings', function (Blueprint $table) {
+         Schema::table('config', function (Blueprint $table) {
            $table->dropColumn('restaurant_id');
-           $table->dropColumn('branch_id');
+          
         });
     }
 }

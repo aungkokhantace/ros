@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Input;
 
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Utility;
 
 class ProfileController extends Controller
 {
@@ -24,6 +25,7 @@ class ProfileController extends Controller
 
     public function index(){
         $profiles = Profile::all();
+        // return view('Backend.profile.profile')->with('profiles',$profiles);
         return view('cashier.profile.profile')->with('profiles',$profiles);
     }
 
@@ -50,10 +52,13 @@ class ProfileController extends Controller
         $profile=$this->ProfileRepository->getAllProfile();
       
         if($profile == null){
-            return view('cashier.profile.profile')->with('profile',$profile);
+            return view('Backend.profile.profile')->with('profile',$profile);
+            
+            // return view('cashier.profile.profile')->with('profile',$profile);
         }
         else if(($profile->tax != 0.0 || $profile->service != 0.0 || $profile->room_charge != 0 ||$profile->booking_warning_time != "00:00:00" || $profile->booking_waiting_time != "00:00:00" || $profile->booking_service_time != "00:00:00" || $profile->message != "" || $profile->remark != "") && ($profile->restaurant_name == "" && $profile->logo == "" && $profile->mobile_logo == "" && $profile->website == "" && $profile->phone == "" && $profile->address == "")){
-            return view('cashier.profile.profile')->with('record',$profile);
+            return view('Backend.profile.profile')->with('profile',$profile);
+            // return view('cashier.profile.profile')->with('record',$profile);
         }
         else{
             return view('Backend.profile.profile')->with('profile',$profile);
@@ -69,12 +74,15 @@ class ProfileController extends Controller
         $email                          = $request->get('email');
         $phone                          = $request->get('phone');
         $address                        = $request->get('address');
+        $restaurant_id                  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant(): $reques->get('restaurant');
         $paramObj                       = new Config();
         $paramObj->restaurant_name      = $name;
         $paramObj->email                = $email;
         $paramObj->website              = $website;
         $paramObj->phone                = $phone;
         $paramObj->address              = $address;
+        $paramObj->restaurant_id        = $restaurant_id;
+
         if(isset($logo) && isset($mobile_logo)){
             $imageName                  = $logo->getClientOriginalName();
             $destination                = 'uploads';
@@ -125,12 +133,15 @@ class ProfileController extends Controller
         $email                          = $request->get('email');
         $phone                          = $request->get('phone');
         $address                        = $request->get('address');
+        $restaurant_id                  = Utility::getCurrentRestaurant();
         $paramObj                       = Config::find($id);
         $paramObj->restaurant_name      = $name;
         $paramObj->email                = $email;
         $paramObj->website              = $website;
         $paramObj->phone                = $phone;
         $paramObj->address              = $address;
+        $paramObj->restaurant_id        = $restaurant_id;
+
         if(($logo != null) && ($mobile_logo != null)){
             $imageName                  = $logo->getClientOriginalName();
             $destination                = 'uploads';

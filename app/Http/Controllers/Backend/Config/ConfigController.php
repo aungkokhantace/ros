@@ -14,6 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use App\RMS\Utility;
 
 class ConfigController extends Controller
 {
@@ -53,8 +54,11 @@ class ConfigController extends Controller
         $service_time                   = gmdate("H:i:s", $service_t);
         $message                        = $request->get('message');
         $remark                         = $request->get('remark');
+        $restaurant_id                  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant(): $reques->get('restaurant');
+
         $paramObj                       = new Config();
         $paramObj->tax                  = $tax;
+        $paramObj->site_activation_key  = 'ap1';
         $paramObj->service              = $service;
         $paramObj->room_charge          = $room;
         $paramObj->booking_warning_time = $before_time;
@@ -62,8 +66,12 @@ class ConfigController extends Controller
         $paramObj->booking_service_time = $service_time;
         $paramObj->message              = $message;
         $paramObj->remark               = $remark;
+        $paramObj->restaurant_id        = $restaurant_id;
+
         $this->ConfigRepository->insert_config($paramObj);
-        return redirect()->action('Cashier\Config\ConfigController@general_config');
+        return redirect()->action('Backend\Config\ConfigController@general_config');
+
+        // return redirect()->action('Cashier\Config\ConfigController@general_config');
     }
 
     public function update(GeneralConfigRequest $request){
@@ -80,6 +88,8 @@ class ConfigController extends Controller
         $service_time                   = gmdate("H:i:s", $service_t);
         $message                        = $request->get('message');
         $remark                         = $request->get('remark');
+        $restaurant_id                  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant(): $reques->get('restaurant');
+
         $paramObj                       = Config::find($id);
         $paramObj->tax                  = $tax;
         $paramObj->service              = $service;
@@ -89,6 +99,9 @@ class ConfigController extends Controller
         $paramObj->booking_service_time = $service_time;
         $paramObj->message              = $message;
         $paramObj->remark               = $remark;
+        $paramObj->restaurant_id        = $restaurant_id;
+
+
         $this->ConfigRepository->update_config($paramObj);
         return redirect()->action('Backend\Config\ConfigController@general_config');
     }

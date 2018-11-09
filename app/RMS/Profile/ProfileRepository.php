@@ -3,6 +3,7 @@ namespace App\RMS\Profile;
 
 use App\RMS\Utility;
 use Illuminate\Support\Facades\DB;
+use App\RMS\Config\Config;
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
@@ -12,7 +13,15 @@ class ProfileRepository implements ProfileRepositoryInterface
     }
 
     public function getAllProfile(){
-        $profile        = DB::table('config')->first();
+        $restaurant    = Utility::getCurrentRestaurant();
+        $query         = Config::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != null){
+            $query     = $query->where('restaurant_id',$restaurant);
+        }
+        $profile       = $query->first(); 
+
+        // dd("aa",$profile);
         return $profile;
     }
     

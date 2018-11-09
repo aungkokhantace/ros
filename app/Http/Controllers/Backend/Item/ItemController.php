@@ -19,6 +19,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use InterventionImage;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Category\CategoryRepository;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Kitchen\KitchenRepository;
+use App\RMS\Branch\BranchRepository;
 
 class ItemController extends Controller
 {
@@ -26,12 +30,17 @@ class ItemController extends Controller
     public function __construct(ItemRepositoryInterface $ItemRepository)
     {
        $this->ItemRepository = $ItemRepository;
+       $this->CategoryRepository = new CategoryRepository();
+       $this->restaurantRepo     = new RestaurantRepository();
+       $this->kitchenRepo        = new KitchenRepository();
+       $this->branchRepo         = new BranchRepository();
     }
     //Item Listing Page
     public function index()
     {
        $items   = Item::all();
-       $cat     = $this->ItemRepository->allCat();
+       // $cat     = $this->ItemRepository->allCat();
+       $cat     = $this->CategoryRepository->getAllCategory();
        return view('Backend.item.ItemListing')->with('items', $items)->with('cat', $cat);
     }
     public function itemenabled($id)
@@ -60,8 +69,13 @@ class ItemController extends Controller
         foreach($parents as $parent){
             array_push($parent_id_arr,$parent->parent_id);
         }
+
         $continent_arr  = $this->ItemRepository->getContinent();
-        return view('Backend.item.item')->with(array('categories'=>$result, 'parent_id_arr'=>$parent_id_arr,'continent_arr'=>$continent_arr));
+        $branch         = $this->branchRepo->getAllType();
+        $restaurant     = $this->restaurantRepo->getAllType();
+        return view('Backend.item.item')->with(array('categories'=>$result, 'parent_id_arr'=>$parent_id_arr,'continent_arr'=>$continent_arr))
+                ->with('branchs',$branch)
+                ->with('restaurants',$restaurant);
     }
     //ItemEntryRequest
     public function store(Request $request)
@@ -75,6 +89,10 @@ class ItemController extends Controller
         $price                  = $request->get('price');
         $check                  = $request->get('check');
         $cooking_time           = Input::get('standard_cooking_time');
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
+
         if ($check == 0) {
             $file                   = $request->file('fileupload');
             $imagedata              = file_get_contents($file);
@@ -97,6 +115,8 @@ class ItemController extends Controller
         $paramObj->category_id              = $category;
         $paramObj->standard_cooking_time    = $cooking_time;
         $paramObj->has_continent            = $check;
+        $paramObj->restaurant_id            = $restaurant_id;
+        $paramObj->branch_id                = $branch_id;
         $result = $this->ItemRepository->store($paramObj,$input);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
@@ -113,8 +133,11 @@ class ItemController extends Controller
 
     public function edit($id)
     {
-        $record = $this->ItemRepository->find($id);
-        $result = $this->ItemRepository->ChooseCat();
+        $record     = $this->ItemRepository->find($id);
+        $result     = $this->ItemRepository->ChooseCat();
+        $branch     = $this->branchRepo->getAllType();
+        $restaurant = $this->restaurantRepo->getAllType();
+
         $r_cat  = DB::table('category')->where('id', $record->category_id)->first()->name;
         $parents = Category::select('parent_id')->where('parent_id','!=', 0)->groupBy('parent_id')->get();
 
@@ -134,7 +157,9 @@ class ItemController extends Controller
                 ->with('r_cat', $r_cat)
                 ->with('parent_id_arr',$parent_id_arr)
                 ->with('continent_arr',$continent_arr)
-                ->with('continent_items',$continent_items);
+                ->with('continent_items',$continent_items)
+                ->with('branchs',$branch)
+                ->with('restaurants',$restaurant);
     }
     //ItemEditRequest
     public function update(Request $request)

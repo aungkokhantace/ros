@@ -24,5 +24,10 @@ class Category extends Model
     {
         return $this->belongsTo('App\RMS\Kitchen\Kitchen', 'kitchen_id', 'id');
     }
+     public function branch()
+    {
+
+       return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
+    }
 }
 

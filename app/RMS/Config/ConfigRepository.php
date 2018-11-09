@@ -16,7 +16,7 @@ class ConfigRepository implements ConfigRepositoryInterface {
 
     public function insert_config($paramObj){
         $tempObj            = Utility::addCreatedBy($paramObj);
-        $tempObj->save();
+        $tempObj->save();       
     }
 
     public function update_config($paramObj){
@@ -26,7 +26,14 @@ class ConfigRepository implements ConfigRepositoryInterface {
     }
 
     public function getAllConfig(){
-        $config=DB::table('config')->first();
+        $restaurant  = Utility::getCurrentRestaurant();
+        $query         = Config::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != null){
+            $query     = $query->where('restaurant_id',$restaurant);
+        }
+        $config       = $query->first(); 
+        // $config=DB::table('config')->first();
         return $config;
     }
 
