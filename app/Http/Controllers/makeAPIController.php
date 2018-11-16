@@ -830,9 +830,11 @@ class MakeAPIController extends ApiGuardController
         $query = Orderdetail::query();
         $query = $query->leftjoin('order','order.id','=','order_details.order_id');
         $query = $query->select('order.id as voucher_no');
+        //complete status is 3 (cooked)
         if($status == "complete"){
           $query = $query->where('order_details.status_id','=',3);
         }
+        //cancel status is 6 (kitchen cancel)
         elseif($status == "cancel"){
           $query = $query->where('order_details.status_id','=',6);
         }
