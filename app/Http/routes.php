@@ -247,7 +247,7 @@ Route::group(['middleware' => 'web'], function () {
 
              //Start Permission
             Route::get('Permission/index','Backend\Module\ModuleController@index');
-    
+
             //End Permission
         });
                 //End User
@@ -396,7 +396,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('Profile/store','Backend\Config\ProfileController@store');
         });
         //End config
-        
+
 
 
         //Start Discount
@@ -412,7 +412,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/prices/{id}', ['as' => 'prices', 'uses' => 'Backend\Discount\DiscountController@price']);
         });
         //End Discount
-       
+
         //Order
         Route::group(['middleware'=>'orderList:Cashier'],function(){
             //Route::get('OrderView/index','Backend\Invoice\OrderViewController@index');
@@ -462,15 +462,15 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('searchDailySummary','Backend\Report\SaleSummaryReportController@searchDailySummary');
             Route::get('searchDailySummaryExport/{start_date}/{end_date}','Backend\Report\SaleSummaryReportController@searchDailySummaryExport');
             Route::get('saleSummaryReport/{checked}', 'Backend\Report\SaleSummaryReportController@saleSummaryReportWithCheck');
-            
-           
-            Route::get('monthlySaleSummaryExport','Backend\Report\SaleSummaryReportController@monthlySaleSummaryExport'); 
+
+
+            Route::get('monthlySaleSummaryExport','Backend\Report\SaleSummaryReportController@monthlySaleSummaryExport');
             Route::post('searchMonthlySummary', 'Backend\Report\SaleSummaryReportController@searchMonthlySummary');
             Route::get('searchMonthlySummaryExport/{from_month}/{to_month}','Backend\Report\SaleSummaryReportController@searchMonthlySummaryExport');
             Route::get('monthlySale/{year}/{month}', 'Backend\Report\SaleSummaryReportController@monthlySale');
             Route::get('monthlySaleExport/{year}/{month}', 'Backend\Report\SaleSummaryReportController@monthlySaleExport');
 
-            Route::get('yearlySaleSummaryExport','Backend\Report\SaleSummaryReportController@yearlySaleSummaryExport');    
+            Route::get('yearlySaleSummaryExport','Backend\Report\SaleSummaryReportController@yearlySaleSummaryExport');
             Route::post('searchYearlySummary','Backend\Report\SaleSummaryReportController@searchYearlySummary');
             Route::get('searchYearlySummaryExport/{from_year}','Backend\Report\SaleSummaryReportController@searchYearSummaryExport');
             Route::get('yearlySale/{year}','Backend\Report\SaleSummaryReportController@yearlySale');
@@ -480,7 +480,7 @@ Route::group(['middleware' => 'web'], function () {
         });
 
 
-         
+
         //Start Booking
         Route::group(['middleware'=>'booking:Cashier'],function(){
             Route::get('Booking/index','Backend\Booking\BookingController@index');
@@ -517,7 +517,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('saleReport', 'Backend\Report\SaleReportController@saleReport');
             Route::get('saleAjaxRequest', 'Backend\Report\SaleReportController@ajaxRequest');
             Route::get('SaleExport', 'Backend\Report\SaleReportController@saleExport');
-      
+
        // Search Report for Sale & Excel Download
             Route::post('search_report', 'Backend\Report\SaleReportController@search_detail');
             Route::get('searchAjaxRequest', 'Backend\Report\SaleReportController@searchAjaxRequest');
@@ -526,7 +526,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('itemReport', 'Backend\Report\ReportController@itemReport');
             Route::get('downloadItemReport', 'Backend\Report\ReportController@downloadItemReport');
 
-             
+
              //Item Report With Date & Excel Download
             Route::post('itemReportWithDate', 'Backend\Report\ReportController@itemReportWithDate');
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}', 'Backend\Report\ReportController@downloadItemReportWithDateWithNull');
@@ -534,7 +534,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithDateAndAmount');
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithAll');
 
-         
+
 
           //Favourite Set Menu & Excel Download
             Route::get('favourite_set_menus', 'Backend\Report\ReportController@favourite_set_menus');
@@ -548,7 +548,7 @@ Route::group(['middleware' => 'web'], function () {
 
 
         Route::group(['middleware' => 'shift:Cashier'], function () {
-           
+
             Route::get('Shift/index', 'Backend\Shift\ShiftController@index');
             Route::get('Shift/create', 'Backend\Shift\ShiftController@create');
             Route::post('Shift/store', 'Backend\Shift\ShiftController@store');
@@ -558,7 +558,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Shift/last_update/{id}', 'Backend\Shift\ShiftController@last_update');
             Route::get('Shift/Permission/{id}', 'Backend\Shift\ShiftController@permission');
             Route::post('Shift/Permission/update', 'Backend\Shift\ShiftController@shift_update');
-           
+
         });
         //end shift
 
@@ -578,7 +578,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('DownloadApi','Backend\Log\ApilistController@down');
         });
 
-        });   
+        });
     });
 
     Route::group(['prefix' => 'Kitchen'], function () {
@@ -616,7 +616,8 @@ Route::group(['middleware' => 'web'], function () {
 //API Get Method
 
 Route::get('api/v1/kitchen_cancel','makeAPIController@kitchen_cancel');
-Route::get('api/v1/order_status','makeAPIController@order_status');
+// Route::get('api/v1/order_status','makeAPIController@order_status');
+Route::get('api/v1/order_status/{status?}','makeAPIController@order_status');
 Route::get('api/v1/setmenu_order_status','makeAPIController@setmenu_order_status');
 //syncControll
 Route::post('api/v1/user', 'syncAPIController@user');//fns

@@ -53,12 +53,12 @@ class MakeAPIController extends ApiGuardController
     public function login()
     {
         $temp     = Input::all();
-        
+
         $username = $temp['username'];
         $password = $temp['password'];
         $key      = $temp['site_activation_key'];
         $site_activation_key = Config::all();
-        
+
         $activate_key = 0;
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
@@ -108,7 +108,7 @@ class MakeAPIController extends ApiGuardController
                         }
                     } else {
                        $output = array("message" => "User Disable");
-                        return Response::json($output); 
+                        return Response::json($output);
                     }
                 } else {
                     $output = array("message" => "Fail");
@@ -122,13 +122,13 @@ class MakeAPIController extends ApiGuardController
             $output = array("message" => "Unauthorized");
             return Response::json($output);
         }
-        
+
     }
 
     public function first_time_login()
     {
         $temp       = Input::all();
-        
+
         $teblet_id  = Input::get('tabletId');
         $key        = Input::get('site_activation_key');
         $site_activation_key = Config::all();
@@ -156,7 +156,7 @@ class MakeAPIController extends ApiGuardController
                                 "tablet_generated_id" => $insertID,
                                 "order_id" => $row_count
                                 );
-                return Response::json($output); 
+                return Response::json($output);
             } else {
                 $tablet_generate        = DB::table('tablet_activation')->where('tablet_id', $teblet_id)->first();
                 $row_count    = Order::where('tablet_id','=',$teblet_id)->get()->count();
@@ -168,7 +168,7 @@ class MakeAPIController extends ApiGuardController
             }
         } else {
             $output     = array("message" => "Wrong Activation Key");
-            return Response::json($output); 
+            return Response::json($output);
         }
     }
 
@@ -213,7 +213,7 @@ class MakeAPIController extends ApiGuardController
         $order->day_id                  = $day_id;
         $order->shift_id                = $shift_id;
         $order->status                  = $order_status;
-        
+
         $order->save();
 
         if(isset($order_tables)){
@@ -222,16 +222,16 @@ class MakeAPIController extends ApiGuardController
                 $temp->order_id = $order_id;
                 $temp->table_id = $table->table_id;
                 $temp->save();
-            
+
                 //Update Table Status
                 $table_id       = $table->table_id;
                 $status         = $table->table_status;
                 $tblObj         = Table::find($table_id);
                 $tblObj->status = $status;
-                $tblObj->save();   
+                $tblObj->save();
             }
         }
-        
+
         if(isset($order_rooms)){
             foreach($order_rooms as $room){
                 $temp           = new OrderRoom();
@@ -247,7 +247,7 @@ class MakeAPIController extends ApiGuardController
                 $tblObj->save();
             }
         }
-        
+
         foreach ($order_details as $order_detail) {
             $temp = new Orderdetail();
             $temp->order_id             = $order_id;
@@ -265,7 +265,7 @@ class MakeAPIController extends ApiGuardController
             $temp->status_id            = $order_detail->status;
             $temp->take_item            = $order_detail->take_item;
             $temp->save();
-            
+
             $set_item = $order_detail->set_item;
             $quantity = $order_detail->quantity;
             foreach($set_item as $item){
@@ -313,7 +313,7 @@ class MakeAPIController extends ApiGuardController
         $temp       = Input::all();
         $ordersRaw  = $temp['orderID'];
         $orders     = json_decode($ordersRaw);
-        
+
         $dt         = Carbon::now();
         foreach($orders as $order) {
             $order_id           = $order->order_id;
@@ -325,7 +325,7 @@ class MakeAPIController extends ApiGuardController
             $discount_amount    = $order->discount_amount;
             $extra_price        = $order->extra_price;
         }
-        
+
         $order                          = Order::find($order_id);
         //Check Order is Already Paid
         $order_status                   = $order->status;
@@ -360,7 +360,7 @@ class MakeAPIController extends ApiGuardController
                     $temp->status_id            = $order_detail->status;
                     $temp->take_item            = $order_detail->take_item;
                     $temp->save();
-                
+
                     $set_item = $order_detail->set_item;
                     foreach($set_item as $item){
                         $set = new OrderSetMenuDetail();
@@ -374,7 +374,7 @@ class MakeAPIController extends ApiGuardController
                         $set->quantity        = "1";
                         $set->save();
                     }
-                
+
                     $extra = $order_detail->extra;
                     foreach ($extra as $e) {
                         $extra = new OrderExtra();
@@ -474,7 +474,7 @@ class MakeAPIController extends ApiGuardController
                     }
 
                 }
-            
+
             }
 
             $output = array("message" => "Success");
@@ -485,7 +485,7 @@ class MakeAPIController extends ApiGuardController
 
     public function cancel(){
         $status = Input::all();
-        
+
         $order = Orderdetail::select('status_id','message')->where('status_id','=', 6)->get();
         $output = array("order" => $order);
         return Response::json($output);
@@ -523,7 +523,7 @@ class MakeAPIController extends ApiGuardController
                     $table              = Table::find($table_id);
                     $table->status      = $status;
                     $table->save();
-                    
+
                     $booking_table      = BookingTable::where('booking_id','=',$booking_id)->get();
                     foreach($booking_table as $table){
                         if($table->table_id == $t->table_id){
@@ -628,7 +628,7 @@ class MakeAPIController extends ApiGuardController
         $transfer_from_room_id  = $temp['transfer_from_room_id'];
         $transfer_to_room_id    = $temp['transfer_to_room_id'];
         $transfer_to_room_status_attr      = Room::find($transfer_to_room_id);
-        $transfer_to_room_status           = $transfer_to_room_status_attr->status;       
+        $transfer_to_room_status           = $transfer_to_room_status_attr->status;
         if ($transfer_to_room_status == 1) {
             $output             = array("message" => "Fail");
         } else {
@@ -683,7 +683,7 @@ class MakeAPIController extends ApiGuardController
             $member_discount = Member::where('id', '=', $member_id)->first();
             $member_type_id = MemberType::where('id', '=', $member_discount->member_type_id)->first();
             $order                          = Order::where('id', '=', $voucher_no)->first();
-            
+
             $order->member_id               = $member_id;
             $order->member_discount         = $member_type_id->discount_amount;
             $order->member_discount_amount  = $member_discount_amount;
@@ -750,7 +750,7 @@ class MakeAPIController extends ApiGuardController
                     $detail->status_id = 5;
                     $detail->save();
                 }
-                
+
             }
 
             $order_table      = OrderTable::where('order_id','=',$voucher_no)->get();
@@ -758,15 +758,15 @@ class MakeAPIController extends ApiGuardController
                 $t = Table::where('id','=',$table->table_id)->first();
                 $t->status = 0;
                 $t->save();
-            }    
+            }
 
             $order_room = OrderRoom::where('order_id','=',$voucher_no)->get();
             foreach($order_room as $room){
                 $r = Room::where('id','=',$room->room_id)->first();
                 $r->status = 0;
                 $r->save();
-            }    
-            
+            }
+
         }else {
             $order = Order::where('id', '=', $voucher_no)->first();
             $member_discount = Member::where('id', '=', $member_id)->first();
@@ -815,13 +815,30 @@ class MakeAPIController extends ApiGuardController
 
     }
 
-    public function order_status(){
-
+    public function order_status($status = null){
+        /*
+        //original query before separating by status
         $orderRaw      = Orderdetail::leftjoin('order','order.id','=','order_details.order_id')
             ->select('order.id as voucher_no')
             ->where('order_details.status_id','=',3)->orwhere('order_details.status_id','=',2)->orwhere('order_details.status_id','=',6)
             ->groupBy('order_details.order_id')
             ->get()->toArray();
+        //original query before separating by status
+        */
+
+        // query separated by status from api parameter
+        $query = Orderdetail::query();
+        $query = $query->leftjoin('order','order.id','=','order_details.order_id');
+        $query = $query->select('order.id as voucher_no');
+        if($status == "complete"){
+          $query = $query->where('order_details.status_id','=',3);
+        }
+        elseif($status == "cancel"){
+          $query = $query->where('order_details.status_id','=',6);
+        }
+        $query = $query->groupBy('order_details.order_id');
+        $orderRaw = $query->get()->toArray();
+        // query separated by status from api parameter
 
         $voucherArray = array();
         if(isset($orderRaw) && count($orderRaw)>0){
@@ -837,7 +854,7 @@ class MakeAPIController extends ApiGuardController
             ->select('order.id as voucher_no','tables.table_no as table_name','rooms.room_name')
             ->whereIn('order.id',$voucherArray)
             ->get()->toArray();
-    
+
         // $orderDetails      = Orderdetail::leftjoin('order','order.id','=','order_details.order_id')
         //     ->leftjoin('items','items.id','=','order_details.item_id')
         //     ->leftjoin('order_setmenu_detail','order_setmenu_detail.order_detail_id','=','order_details.id')
@@ -853,18 +870,18 @@ class MakeAPIController extends ApiGuardController
         //     ->where('order_details.cancel_status',NULL)
         //     ->where('order_details.waiter_status',NULL)
         //     ->orwhere('order_setmenu_detail.cancel_status',NULL)
-        //     ->where('order_setmenu_detail.waiter_status',NULL)            
-        //     ->get()->toArray(); 
+        //     ->where('order_setmenu_detail.waiter_status',NULL)
+        //     ->get()->toArray();
 
         $getOrderDetails     = DB::select("SELECT i.name as item_name,sm.set_menus_name,od.id,od.order_id,
-                                od.order_detail_id,ot.type 
-                            as order_type, od.status_id as status,od.cooking_time,od.message,osd.item_id 
-                            as set_item_id,od.cancel_status FROM order_details as od  LEFT JOIN items 
-                            as i ON i.id = od.item_id LEFT JOIN order_setmenu_detail 
-                            as osd ON osd.order_detail_id = od.id LEFT JOIN set_menu 
-                            as sm ON sm.id = osd.setmenu_id LEFT JOIN order_type 
-                            as ot ON ot.id = od.order_type_id WHERE od.status_id = 3 OR od.status_id = 6 
-                            OR osd.status_id = 3 OR osd.status_id = 6 AND od.cancel_status = NULL 
+                                od.order_detail_id,ot.type
+                            as order_type, od.status_id as status,od.cooking_time,od.message,osd.item_id
+                            as set_item_id,od.cancel_status FROM order_details as od  LEFT JOIN items
+                            as i ON i.id = od.item_id LEFT JOIN order_setmenu_detail
+                            as osd ON osd.order_detail_id = od.id LEFT JOIN set_menu
+                            as sm ON sm.id = osd.setmenu_id LEFT JOIN order_type
+                            as ot ON ot.id = od.order_type_id WHERE od.status_id = 3 OR od.status_id = 6
+                            OR osd.status_id = 3 OR osd.status_id = 6 AND od.cancel_status = NULL
                             OR od.waiter_status = NULL OR osd.cancel_status = NULL OR osd.waiter_status = NULL  ");
         $orderDetails = array();
         foreach($getOrderDetails as $order){
@@ -890,10 +907,10 @@ class MakeAPIController extends ApiGuardController
             foreach($orderDetails as $orderDetail) {
                 $orderDetailVoucherId = $orderDetail->order_id;
                 if($keyOrderIndex == $orderDetailVoucherId){
-                    
+
                     array_push($tempOrderDetailArray,$orderDetail);
                 }
-            
+
             }
             $result[$key]['product_list'] = $tempOrderDetailArray;
         }
@@ -906,6 +923,7 @@ class MakeAPIController extends ApiGuardController
         $tempArray = array();
 
         $tempArray['order_status'] = $list;
+
         return Response::json($tempArray);
     }
 
@@ -929,7 +947,7 @@ class MakeAPIController extends ApiGuardController
             }else{
                 $order_setmenu_detail = OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id->detail_id)
                 ->where('setmenu_id','=',$order_detail_id->set_id)
-                ->where('item_id','=',$order_detail_id->set_item_id)->first();   
+                ->where('item_id','=',$order_detail_id->set_item_id)->first();
 
                 $order_setmenu_detail->status_id = $status;
                 $order_setmenu_detail->waiter_id = $waiter_id;
@@ -955,7 +973,7 @@ class MakeAPIController extends ApiGuardController
 
             }
         }
-        
+
         $output             = array("message" => "Success");
         return Response::json($output);
     }
@@ -978,7 +996,7 @@ class MakeAPIController extends ApiGuardController
             return Response::json($output);
         }
     }
-    
+
     public function customer_cancel(){
         $tempObj            = Input::all();
         $orderRaw           = $tempObj['customer_cancel'];
@@ -993,7 +1011,7 @@ class MakeAPIController extends ApiGuardController
 
         $orderObj           = Orderdetail::where('order_detail_id','=',$order_detail_id)
             ->where('order_id','=',$id)->first();
-        
+
             if($orderObj->status_id == 2){
                 $output = array("message" => "Fail To Cancel");
             }
@@ -1005,15 +1023,15 @@ class MakeAPIController extends ApiGuardController
                 $Obj->all_total_amount  = $all_total_amount;
                 $Obj->total_discount_amount = $discount;
                 $Obj->save();
-                
+
                 $orderObj->status_id    = 7;
                 $orderObj->remark       = "Cancel By Custmer";
                 $orderObj->save();
 
                 $output = array("message"=>"Success");
             }
-        
-        
+
+
         return Response::json($output);
     }
 
@@ -1025,7 +1043,7 @@ class MakeAPIController extends ApiGuardController
         foreach($details as $detail)
         {
         $orderObj           = Orderdetail::where('order_detail_id','=',$detail->detail_id)->first();
-        
+
         if($orderObj->status_id == 6){
             $Obj                = Orderdetail::where('id','=',$orderObj->id)->first();
             $Obj->cancel_status = 'Yes';
@@ -1037,9 +1055,8 @@ class MakeAPIController extends ApiGuardController
             $output = array("message"=>"Failed");
         }
         }
-        
+
         return Response::json($output);
     }
 
 }
-
