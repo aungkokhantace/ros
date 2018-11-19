@@ -16,37 +16,55 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\RMS\Infrastructure\Forms\InsertExtraRequest;
 use App\RMS\Infrastructure\Forms\EditExtraRequest;
-
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use InterventionImage;
+use App\RMS\Utility;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Branch\BranchRepository;
+use App\RMS\Category\CategoryRepository;
+
 class AddonController extends Controller
 {
     private $extra_repository;
     public function __construct(AddonRepositoryInterface $extra_repository)
     {
         $this->extra_repository = $extra_repository;
+        $this->restaurantRepo   = new RestaurantRepository();
+        $this->branchRepo       = new BranchRepository();
+        $this->catRepo          = new CategoryRepository();
     }
 
     public function index()
     {
-        $category = DB::table('category')->where('parent_id', '=', 0)->get();
-        $extra    = Addon::all();
 
+        $category = $this->extra_repository->getCategory(); 
+        $extra    = $this->extra_repository->getextra();
+             
         return view('Backend.addon.index')->with('ex', $extra)->with('category', $category);
     }
     public function create()
     {
-        $status   = StatusConstance::CATEGORY_AVAILABLE_STATUS;
-        $category = DB::table('category')->where('parent_id','=',0)
-                ->where('status',$status)
-                ->whereNull('deleted_at')
-                ->get();
-        return view('Backend.addon.addon')->with ('category',$category);
+        // $status   = StatusConstance::CATEGORY_AVAILABLE_STATUS;
+        // $category = DB::table('category')->where('parent_id','=',0)
+        //         ->where('status',$status)
+        //         ->whereNull('deleted_at')
+        //         ->get();
+        $category       = $this->catRepo->getParentCat();     
+        $branch         = $this->branchRepo->getAllType();
+        $restaurant     = $this->restaurantRepo->getAllType();
+        return view('Backend.addon.addon')->with ('category',$category)  
+                                         ->with('branchs',$branch)
+                                         ->with('restaurants',$restaurant);
     }
     public function store(InsertExtraRequest $request)
     {
         $request->validate();
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
+       
+
         $food_name              = Input::get('food_name');
 
         $category_id            = Input::get('category_id');
@@ -74,6 +92,8 @@ class AddonController extends Controller
         $paramObj->mobile_image = base64_encode($image->encoded);
         $paramObj->price        = $price;
         $paramObj->status       = $status;
+        $paramObj->branch_id    = $branch_id;
+        $paramObj->restaurant_id = $restaurant_id;
         $result = $this ->extra_repository->store($paramObj);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
@@ -188,5 +208,16 @@ class AddonController extends Controller
             $this ->extra_repository->extra_delete($id);
         }
         return redirect()->action('Backend\Addon\AddonController@index')->withMessage(FormatGenerator::message('Success', 'Item deleted ...'));
+    }
+
+    public function ajax($branch_id,$restaurant_id= null)
+    {       
+
+        if($restaurant_id == "undefined"){
+            $restaurant_id = null;
+        }
+
+        $result     = $this->extra_repository->get_CatBranch($branch_id,$restaurant_id);
+         return \Response::json($result);
     }
 }

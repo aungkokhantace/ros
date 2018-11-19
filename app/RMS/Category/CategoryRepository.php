@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use League\Flysystem\Util;
 use App\RMS\ReturnMessage;
+use App\Status\StatusConstance;
+
 class CategoryRepository implements CategoryRepositoryInterface
 {
     public function ChooseCat(){
@@ -227,6 +229,23 @@ class CategoryRepository implements CategoryRepositoryInterface
         $level_attr  = Category::select('level')->where('id','=',$category)->first();
         $level       = $level_attr->level;
         return $level;
+    }
+
+    public function getParentCat(){
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+        $status        = StatusConstance::CATEGORY_AVAILABLE_STATUS;
+        $query         = Category::query();
+        if($branch != 0 || $branch != null){
+            $query     = $query->where('branch_id',$branch);
+        }
+        if($restaurant != 0 || $restaurant != null){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        $category       = $query->where('parent_id','=',0)->where('status',$status)
+                                ->whereNull('deleted_at')->get();       
+     
+        return $category;
     }
 
 }

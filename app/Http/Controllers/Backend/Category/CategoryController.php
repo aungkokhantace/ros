@@ -44,8 +44,7 @@ class CategoryController extends Controller
         $result  = $this->CategoryRepository->ChooseCat();
         $branch  = $this->branchRepo->getAllType();
         $restaurant = $this->restaurantRepo->getAllType();
-
-
+        
         return view('Backend.category.category', ['categories' => $result])->with('kitchen',$kitchen)->with('branchs',$branch)->with('restaurants',$restaurant);
     }
 

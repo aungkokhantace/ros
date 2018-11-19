@@ -24,43 +24,124 @@ use Illuminate\Support\Facades\Input;
 class SetMenuRepository implements SetMenuRepositoryInterface
 {
     public function getCategories(){
-        $category = Category::select('id', 'parent_id', 'name')->get()->toArray();
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+       
 
+        $query         = Category::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $category        = $query->select('id','parent_id','name')->get()->toArray();
         return $category;
+        // $category = Category::select('id', 'parent_id', 'name')->get()->toArray();
+
+        // return $category;
     }
 
 
     public function getItems(){
-        $status  = StatusConstance::ITEM_AVAILABLE_STATUS;
-        $items = Item::select('id', 'category_id', 'name','continent_id','has_continent')->whereNull('deleted_at')->where('status','=',$status)->get()->toArray();
+        $status        = StatusConstance::ITEM_AVAILABLE_STATUS;
+
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();       
+
+        $query         = Item::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $items        = $query->select('id','category_id','name','continent_id','has_continent')->where('status','=',$status)->get()->toArray();
+
+        // $items   = Item::select('id', 'category_id', 'name','continent_id','has_continent')->whereNull('deleted_at')->where('status','=',$status)->get()->toArray();
 
         return $items;
     }
 
     public function getContinent() {
-        $continent  = Continent::whereNull('deleted_at')->get()->toArray();
+        $restaurant          = Utility::getCurrentRestaurant();
+        $query               = Continent::query();
+
+        if($restaurant != null || $restaurant != 0){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        $continent           = $query->select('id','name','description')->whereNull('deleted_at')->get()->toArray();         
         return $continent;
     }
 
-    public function getKitchen(){
-        $kitchens = Kitchen::all();
-        
+    public function getKitchen(){       
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();       
+
+        $query         = Kitchen::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $kitchens        = $query->get();    
         return $kitchens;
     }
 
     public function getSetItem(){
-        $joinType = SetItem::get();
+        // $joinType       = SetItem::get();
+        $branch         = Utility::getCurrentBranch();
+        $restaurant     = Utility::getCurrentRestaurant();       
+
+        $query          = SetItem::query();
+        $query          = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch      != 0){
+            $query       = $query->where('branch_id',$branch);
+        }
+        $joinType        = $query->get(); 
 
         return $joinType;
     }
 
     public function getAllItem(){
-        $Item = DB::table('items')->get();
+        $branch         = Utility::getCurrentBranch();
+        $restaurant     = Utility::getCurrentRestaurant();       
+
+        $query          = Item::query();
+        $query          = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch      != 0){
+            $query       = $query->where('branch_id',$branch);
+        }
+        $Item            = $query->get(); 
+        
         return $Item;
     }
 
     public function getAllSet(){
-        $set = DB::table('set_menu')->get();
+        
+        $branch         = Utility::getCurrentBranch();
+        $restaurant     = Utility::getCurrentRestaurant();       
+
+        $query          = SetMenu::query();
+        $query          = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch      != 0){
+            $query       = $query->where('branch_id',$branch);
+        }
+        $set            = $query->get(); 
+        // $set = DB::table('set_menu')->get();
 
         return $set;
     }
@@ -73,11 +154,16 @@ class SetMenuRepository implements SetMenuRepositoryInterface
         try {
             $tempObj = Utility::addCreatedBy($paramObj);
             $tempObj->save();
-            $id      = $paramObj->id;
+            $id             = $paramObj->id;
+            $branch_id      = $paramObj->branch_id;
+            $restaurant_id  = $paramObj->restaurant_id;
+
             foreach($items as $item){
                 $paramObj                = new SetItem();
                 $paramObj->set_menu_id   = $id;
-                $paramObj->item_id       = $item;
+                $paramObj->sitem_id       = $item;
+                $paramObj->branch_id     = $branch_id;
+                $paramObj->restaurant_id = $restaurant_id;
                 $tempItem                = Utility::addCreatedBy($paramObj);
                 $tempItem->save();
             }
@@ -204,5 +290,64 @@ class SetMenuRepository implements SetMenuRepositoryInterface
         $all_names  = SetMenu::select('set_menus_name')->get();
 
         return $all_names;
+    }
+
+    public function getCategoriesByBranch($branch_id,$restaurant_id){   
+
+        $query         = Category::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant_id != 0 || $restaurant_id != null){
+            $query      = $query->where('restaurant_id',$restaurant_id);
+        }
+        if($branch_id != 0){
+            $query     = $query->where('branch_id',$branch_id);
+        }
+        $category        = $query->select('id','parent_id','name')->get()->toArray();
+        return $category;       
+    }
+
+
+    public function getItemsByBranch($branch_id,$restaurant_id){
+        $status        = StatusConstance::ITEM_AVAILABLE_STATUS;
+
+       // dd($restaurant_id,$branch_id);
+
+        $query         = Item::query();
+        $query         = $query->whereNull('deleted_at');
+         if($restaurant_id != 0 || $restaurant_id != null){
+            $query      = $query->where('restaurant_id',$restaurant_id);
+        }
+        if($branch_id != 0){
+            $query     = $query->where('branch_id',$branch_id);
+        }
+        $items        = $query->select('id','category_id','name','continent_id','has_continent')->where('status','=',$status)->get()->toArray();     
+        // dd($items);
+
+        return $items;
+    }
+
+    public function getContinentByBranch($branch_id,$restaurant_id){      
+
+        $query               = Continent::query();
+
+        if($restaurant_id != null || $restaurant_id != 0){
+            $query           = $query->where('restaurant_id',$restaurant_id);
+        }
+        $continent           = $query->select('id','name','description')->whereNull('deleted_at')->get()->toArray();         
+        return $continent;
+    }
+
+    public function getKitchenByBranch($branch_id,$restaurant_id){            
+
+        $query         = Kitchen::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant_id != 0 || $restaurant_id != null){
+            $query      = $query->where('restaurant_id',$restaurant_id);
+        }
+        if($branch_id != 0){
+            $query     = $query->where('branch_id',$branch_id);
+        }
+        $kitchens        = $query->get();    
+        return $kitchens;
     }
 }

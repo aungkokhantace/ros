@@ -105,7 +105,19 @@ class ItemRepository implements ItemRepositoryInterface
 
     public function ChooseCat()
     {
-        $category   = Category::select('id', 'parent_id', 'name','status')->where('status','1')->get()->toArray();
+        // $category   = Category::select('id', 'parent_id', 'name','status')->where('status','1')->get()->toArray();
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+        $query               = Category::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('branch_id',$branch);
+        }
+        $category           = $query->select('id', 'parent_id', 'name','status')
+                                    ->where('status','1')->get()->toArray();
         return $category;
     }
 
@@ -145,7 +157,12 @@ class ItemRepository implements ItemRepositoryInterface
 
     public function getContinent()
     {
-        $continent     = Continent::select('id','name','description')->whereNull('deleted_at')->get()->toArray();
+        $restaurant          = Utility::getCurrentRestaurant();
+        $query               = Continent::query();
+        if($restaurant != null || $restaurant != 0){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        $continent           = $query->select('id','name','description')->whereNull('deleted_at')->get()->toArray();  
         return $continent;
     }
 
@@ -278,5 +295,37 @@ class ItemRepository implements ItemRepositoryInterface
         $tempObj->deleted_at = date('Y-m-d H:m:i');
         $tempObj->save();
     }
+
+     public function getCategory($branch_id,$restaurant_id)
+    {
+       
+        $query               = Category::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant_id != 0 || $restaurant_id != null || $restaurant_id != ''){           
+            $query           = $query->where('restaurant_id',$restaurant_id);
+        }
+        if($branch_id != 0 || $branch_id != null){
+            $query          = $query->where('branch_id',$branch_id);
+        }
+        $category           = $query->select('id', 'parent_id', 'name','status')
+                                    ->where('status','1')->get()->toArray();        
+          
+        return $category;
+    }
+
+     public function ChooseCatByID($branch_id)
+    {       
+      
+        $query               = Category::query();
+        $query               = $query->whereNull('deleted_at');
+       
+        if($branch_id != 0 || $branch_id != null){
+            $query          = $query->where('branch_id',$branch_id);
+        }
+        $category           = $query->select('id', 'parent_id', 'name','status')
+                                    ->where('status','1')->get()->toArray();
+        return $category;
+    }
+
 
 }

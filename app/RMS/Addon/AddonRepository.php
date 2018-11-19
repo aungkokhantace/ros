@@ -15,11 +15,24 @@ use Illuminate\Support\Facades\Input;
 use Monolog\Handler\Curl\Util;
 use App\RMS\ReturnMessage;
 use App\RMS\Addon\Addon;
+use App\Status\StatusConstance;
+use App\RMS\Category\Category;
 
 class AddonRepository  implements  AddonRepositoryInterface
 {
     public function getAllType() {
-        $addon = Addon::all();
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+        $query               = Addon::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('branch_id',$branch);
+        }
+        $addon              = $query->get();
+        // $addon = Addon::all();
         return $addon;
     }
 
@@ -121,5 +134,62 @@ class AddonRepository  implements  AddonRepositoryInterface
     public function getAllNames(){
         $all_names  = Addon::select('food_name')->get();
         return $all_names;
+    }
+
+    public function get_CatBranch($branch_id,$restaurant_id){       
+        $status        = StatusConstance::CATEGORY_AVAILABLE_STATUS;
+
+        $query         = Category::query();
+        if($restaurant_id != 0 || $restaurant_id != null || $restaurant_id != ''){
+        $query           = $query->where('restaurant_id',$restaurant_id);
+        
+        }
+        if($branch_id != 0 || $branch_id != null){
+            $query          = $query->where('branch_id',$branch_id);
+        }
+        $category           = $query->where('parent_id','=',0)
+                                    ->where('status',$status)
+                                    ->whereNull('deleted_at')
+                                    ->get();       
+        return $category;
+    }
+
+
+    public function getCategory(){
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+       
+
+        $query         = Category::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $categories        = $query->where('parent_id', '=', 0)->get();
+        return $categories;
+
+      
+    }
+
+    public function getextra(){
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+       
+
+        $query         = Addon::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $addon        = $query->get();
+        return $addon;
+
+      
     }
 }

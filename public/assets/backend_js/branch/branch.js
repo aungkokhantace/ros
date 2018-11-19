@@ -10,11 +10,11 @@ $("#restaurant").change(function(){
                     "_token": "{{ csrf_token() }}"
                   }
             }).done(function(result){
-                console.log(result);
+                // console.log(result);
                 $('#branch').empty();
                 $('#branch').append("<option disabled selected>Select Branch</option>");
                 $(result).each(function(){
-                  console.log(this.id,this.name);
+                  // console.log(this.id,this.name);
                   $('#branch').append($('<option>',{
                     value : this.id,
                     text: this.name,

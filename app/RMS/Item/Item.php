@@ -10,7 +10,7 @@ class Item extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $table= 'items';
-    protected $fillable = ['id','name','image','description','price','status','category_id','standard_cooking_time','created_by','updated_by',
+    protected $fillable = ['id','name','image','description','price','status','category_id','standard_cooking_time','branch_id','created_by','updated_by',
     'deleted_by','created_at','updated_at','deleted_at'];
 
 
@@ -46,6 +46,11 @@ class Item extends Model
     public function Continent()
     {
         return $this->belongsTo('App\RMS\Item\Continent', 'continent_id', 'id');
+    }
+    public function branch()
+    {
+
+       return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
     }
 }
 

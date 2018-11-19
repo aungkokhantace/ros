@@ -94,7 +94,7 @@
                     @endforeach                 
                 @else
                 <select class="form-control" name="branch" id="branch" >            
-                <option selected disabled>Select Branch </option>
+                <option selected disabled>Select Branchesss </option>
                     @foreach($branchs as $branch)
                       <option value="{{$branch->id}}">{{$branch->name}}</option>                
                     @endforeach
@@ -120,7 +120,7 @@
         <div class="form-group">
             <label for="category" class="col-sm-3 control-label">Item Category<span class="require">*</span></label>
             <div class="col-sm-7">
-                <select name="parent_category" id="" class="form-control ">
+                <select name="parent_category" id="" class="form-control parent_category ">
                     @if(isset($record))
 
                         {!! generateItemCategoryListEdit($categories, $parentId=0, $indent=0,$parent_id_arr,$record->category_id) !!}
@@ -362,5 +362,25 @@ $(document).ready(function() {
         });
     });
 });
+
+$("#branch").change(function(){           
+            var branch =$("#branch").val();
+            var restaurant = $("#restaurant").val();   
+            // console.log(restaurant);
+
+            console.log("/Backend/get_body/ajaxRequest/"+branch+"/"+restaurant);
+                     
+             $.ajax({
+                  type: "GET",
+                  // url: "/Backend/get_body/ajaxRequest/"+branch,
+                  url: "/Backend/get_body/ajaxRequest/"+branch+"/"+restaurant,
+                  
+            }).done( function(data){
+                // console.log('data' +        );
+
+            $('#render').html(data.html);
+        })
+           
+        });
 </script>
 @endsection

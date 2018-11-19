@@ -19,6 +19,84 @@
         @endif
 
         <input  type="hidden" name="id" value="{{isset($resource)? $resource->id:""}}">
+
+          @if (Auth::guard('Cashier')->user()->restaurant_id == null)
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label left-align label-font">Restaurant <span class="require">*</span></label>
+            <div class="col-sm-7">                 
+                 @if(isset($record))
+                    @foreach($restaurants as $restaurant)
+                        @if($restaurant->id == $record->restaurant_id)
+                         <input type="text" class="form-control" value="{{ $restaurant->name }}" readonly />
+                         <input type="hidden" class="form-control" id="restaurant" name="restaurant" value="{{ $restaurant->id }}" />                         
+                       
+                        @endif
+                    @endforeach                 
+                @else
+                <select class="form-control" name="restaurant" id="restaurant">            
+                <option selected disabled>Select Restaurant </option>
+                    @foreach($restaurants as $restaurant)
+                      <option value="{{$restaurant->id}}">{{$restaurant->name}}</option>                
+                    @endforeach
+                @endif
+                </select>
+              
+            </div>
+        </div>
+        @endif
+        @if (Auth::guard('Cashier')->user()->branch_id == null || Auth::guard('Cashier')->user()->branch_id == 0 )                      
+
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label left-align label-font">Branch <span class="require">*</span></label>
+            <div class="col-sm-7">                 
+                 @if(isset($record))
+                    @foreach($branchs as $branch)
+                        @if($branch->id == $record->branch_id)
+                         <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
+                       
+                        @endif
+                    @endforeach                 
+                @else
+                <select class="form-control" name="branch" id="branch">            
+                <option selected disabled>Select Branch </option>
+                  @foreach($branchs as $branch)
+                      <option value="{{$branch->id}}">{{$branch->name}}</option>                
+                    @endforeach
+                   
+                @endif
+                </select>
+              
+            </div>
+        </div>
+       
+        @elseif (Auth::guard('Cashier')->user()->branch_id == null || Auth::guard('Cashier')->user()->branch_id == 0 )
+
+        <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label left-align label-font">Branch <span class="require">*</span></label>
+            <div class="col-sm-7">                 
+                 @if(isset($editcategory))
+                    @foreach($branchs as $branch)
+                        @if($branch->id == $editcategory->branch_id)
+                         <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
+                       
+                        @endif
+                    @endforeach                 
+                @else
+                <select class="form-control" name="branch" id="branch" >            
+                <option selected disabled>Select Branchesss </option>
+                    @foreach($branchs as $branch)
+                      <option value="{{$branch->id}}">{{$branch->name}}</option>                
+                    @endforeach
+                @endif
+                </select>
+              
+            </div>
+        </div>
+        @endif
+        <!--end restaturant session -->
+
         <div class="form-group">
             <label for="discount" class="col-sm-3 control-label left-align label-font">Add-on Name<span class="require">*</span></label>
             <div class="col-sm-7">
@@ -99,7 +177,7 @@
 
            <div class="form-group">
                <div class="col-sm-8 col-sm-offset-3">
-                   <input type="submit" name="submit" value="{{isset($resource)? 'Update' : 'ADD'}}" class="user-button-ok" >
+                   <input type="submit" name="submit" value="{{isset($resource)? 'Update' :     'ADD'}}" class="user-button-ok" >
                    <input type="reset" value="CANCEL" class="user-button-cancel" onclick="extra_listing_form_back();">
                </div>
            </div>
@@ -109,5 +187,31 @@
 </div>
 </div>
 </div>
+<script src="/assets/backend_js/branch/branch.js"></script>
+<script type="text/javascript">
+    $("#branch").change(function(){           
+            var branch =$("#branch").val();
+            var restaurant = $("#restaurant").val();                 
+            $.ajax({
+                  type: "GET",
+                
+                  url: "/Backend/get_addon/ajaxRequest/"+branch+"/"+restaurant,
+                  
+            }).done( function(data){
+                $('#product').empty();
+                $('#product').append("<option disabled selected>Select Category</option>");
+                $(data).each(function(){
+                  // console.log(this.id,this.name);
+                  $('#product').append($('<option>',{
+                    value : this.id,
+                    text: this.name,
+                  }));
+                })
+                
+        })
+           
+        });
+</script>
+
 
 @endsection

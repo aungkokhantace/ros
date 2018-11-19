@@ -23,7 +23,9 @@ $(document).ready(function() {
                 minlength   : 8,
                 equalTo     : "#login_password"
             },
-            userType    : "required"
+            userType    : "required",
+            restaurant  : "required",
+            branch      : "required",
         },
         messages: {
             name        : {
@@ -39,7 +41,9 @@ $(document).ready(function() {
                 required    : "Confirm Password is required.",
                 equalTo     : "Password and Confirm Password must match."
             },
-            userType    : "Staff Type is required."
+            userType    : "Staff Type is required.",
+            restaurant  : "Restauranat is required.",
+            branch      : "Branch is required.",
         },
         submitHandler: function(form) {
             $('input[type="submit"]').attr('disabled','disabled');
@@ -132,13 +136,18 @@ $(document).ready(function() {
             name        : "required",
             kitchen     : "required",
             image       : "required",
-            description : "required"
+            description : "required",
+            restaurant  : "required",
+            branch      : "required",
         },
         messages: {
             name        : "Category Name is required.",
             kitchen     : "Kitchen is required.",
             image       : "Category Image is required.",
-            description : "Description is required."
+            description : "Description is required.",
+            restaurant  : "Restauranat is required.",
+            branch      : "Branch is required.",
+
         },
         submitHandler: function(form) {
             $('input[type="submit"]').attr('disabled','disabled');
@@ -160,7 +169,9 @@ $(document).ready(function() {
                 number : true
             },
             filename    : "required",
-            description : "required"
+            description : "required",
+            restaurant  : "required",
+            branch      : "required",
         },
         messages: {
             name        : "Item Name is required.",
@@ -171,7 +182,10 @@ $(document).ready(function() {
               number : "Item Price must be numeric."
             },
             filename       : "Item Image is required.",
-            description    : "Item Description is required."
+            description    : "Item Description is required.",
+            restaurant     : "Restauranat is required.",
+            branch         : "Branch is required.",
+
         },
         submitHandler: function(form) {
             $('input[type="submit"]').attr('disabled','disabled');
@@ -193,7 +207,9 @@ $(document).ready(function() {
             price       : {
               required : true,
               number : true
-            }
+            },
+            restaurant  : "required",
+            branch      : "required",
         },
         messages: {
             food_name   : "Add-on Name is required.",
@@ -204,7 +220,9 @@ $(document).ready(function() {
             price       : {
                 required : "Add-on Price is requried.",
                 number : "Add-on Price must be numeric."
-            }
+            },
+            restaurant  : "Restauranat is required.",
+            branch      : "Branch is required.",
         },
         submitHandler: function(form) {
             $('input[type="submit"]').attr('disabled','disabled');
@@ -442,10 +460,12 @@ $(document).ready(function() {
         rules: {
             name    : "required",
             branch  : "required",
+            restaurant : "required",
         },
         messages: {
             name    : "Kitchen Name is required.",
             branch  : "Branch is required.",
+            restaurant : "Restauranat is required.",
 
         }
     });

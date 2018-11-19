@@ -11,11 +11,16 @@ class Addon extends Model
     protected $dates = ['deleted_at'];
     protected $table = 'add_on';
 
-    protected $fillable=['id','food_name','category_id','description','image','price','status','created_by','updated_by',
+    protected $fillable=['id','food_name','category_id','description','image','branch_id','price','status','created_by','updated_by',
     'deleted_by','created_at','updated_at','deleted_at'];
 
     public function order_detail()
     {
         return $this->hasMany('App\OrderExtra\OrderExtra');
+    }
+     public function branch()
+    {
+
+       return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
     }
 }

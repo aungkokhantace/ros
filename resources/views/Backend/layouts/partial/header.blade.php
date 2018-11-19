@@ -94,7 +94,7 @@
     {!! Html::script('/assets/js/socket-io/socket_functions.js') !!}
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini" id="render">
 <div class="wrapper">
 
   <header class="main-header">

@@ -60,6 +60,7 @@ tfoot {
                             <th>image</th>
                             <th>Price</th>
                             <th>Status</th>
+                            <th>Branch</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -72,6 +73,7 @@ tfoot {
                             <th></th>
                             <th class="search-col" con-id="price">Price</th>
                             <th></th>
+                            <th class="search-col" con-id="branch">Branch</th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -103,6 +105,9 @@ tfoot {
                                 @else
                                {{"Available"}}
                                 @endif
+                            </td>
+                            <td>
+                                {{$extras->branch->name}}
                             </td>
                         </tr>
                         @endforeach

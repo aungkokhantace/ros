@@ -21,16 +21,23 @@ use Illuminate\Support\Facades\File;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use InterventionImage;
+use App\RMS\Utility;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Branch\BranchRepository;
+
 class SetMenuController extends Controller
 {
     private $setMenuRepository;
 
     public function __construct(SetMenuRepositoryInterface $setMenuRepository){
         $this->setMenuRepository = $setMenuRepository;
+        $this->restaurantRepo    = new RestaurantRepository();
+        $this->branchRepo        = new BranchRepository();
     }
 
     public function index(){
-        $set_menu = SetMenu::whereNull('deleted_at')->get();
+        // $set_menu = SetMenu::whereNull('deleted_at')->get();
+        $set_menu = $this->setMenuRepository->getAllSet();
         $set_item = $this->setMenuRepository->getSetItem();
         $items    = $this->setMenuRepository->getAllItem();
         return view('Backend.set.set_menus_listing', compact('set_menu', 'set_item', 'items'));
@@ -41,11 +48,18 @@ class SetMenuController extends Controller
         $items      = $this->setMenuRepository->getItems();
         $kitchens   = $this->setMenuRepository->getKitchen();
         $continents = $this->setMenuRepository->getContinent();
-        return view('Backend.set.set_menus', compact('category', 'items','kitchens','continents'));
+
+        $branchs    = $this->branchRepo->getAllType();
+        $restaurants= $this->restaurantRepo->getAllType();
+        return view('Backend.set.set_menus', compact('category', 'items','kitchens','continents','restaurants','branchs'));
     }
 
     public function store(SetMenuInsertRequest $request)
     {
+        $branch_id                  = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id              = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
+
         $set_menus_name             = Input::get('set_menus_name');
         $set_menus_price            = Input::get('set_menus_price');
         $file                       = $request->file('fileupload');
@@ -63,6 +77,9 @@ class SetMenuController extends Controller
         $paramObj->image            = $photo;
         $paramObj->mobile_image     = base64_encode($image->encoded);
         $paramObj->status           = $status;
+        $paramObj->restaurant_id    = $restaurant_id;
+        $paramObj->branch_id        = $branch_id;
+        
         $result                     = $this->setMenuRepository->store($paramObj, $items);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
@@ -89,19 +106,28 @@ class SetMenuController extends Controller
 
     public function edit($id){
         $resource    = SetMenu::find($id);
+        $restaurant_id = $resource->restaurant_id;
+        $branch_id     = $resource->branch_id;
+
         $set_item    = SetItem::where('set_menu_id','=',$id)->lists('item_id')->toArray();
+
         $member_type = $this->setMenuRepository->getAllSet();
-        $Item        = $this->setMenuRepository->getAllItem();
-        $category    = $this->setMenuRepository->getCategories();
-        $items       = $this->setMenuRepository->getItems();
-        $continents = $this->setMenuRepository->getContinent();
+        $Item        = $this->setMenuRepository->getItemsByBranch($branch_id,$restaurant_id);
+        $category    = $this->setMenuRepository->getCategoriesByBranch($branch_id,$restaurant_id);
+        $items       = $this->setMenuRepository->getItemsByBranch($branch_id,$restaurant_id);
+        $continents  = $this->setMenuRepository->getContinentByBranch($branch_id,$restaurant_id);
+
+        $branch     = $this->branchRepo->getAllType();
+        $restaurant = $this->restaurantRepo->getAllType();
         return view('Backend.set.set_menus')->with('member_type', $member_type)
                                             ->with('category', $category)
                                             ->with('items', $items)
                                             ->with('Item', $Item)
                                             ->with('resource', $resource)
                                             ->with('set_item',$set_item)
-                                            ->with('continents',$continents);
+                                            ->with('continents',$continents)
+                                            ->with('branchs',$branch)
+                                            ->with('restaurants',$restaurant);
     }
 
     public function update(SetMenuEditRequest $request){
@@ -182,4 +208,29 @@ class SetMenuController extends Controller
         }
 
     }
+     public function  render_SetMenu($branch_id,$restaurant_id = null){
+      
+        if($restaurant_id == "undefined"){
+            $restaurant_id = null;
+        }
+
+        $category   = $this->setMenuRepository->getCategoriesByBranch($branch_id,$restaurant_id);
+        $items      = $this->setMenuRepository->getItemsByBranch($branch_id,$restaurant_id);
+        $kitchens   = $this->setMenuRepository->getKitchenByBranch($branch_id,$restaurant_id);
+        $continents = $this->setMenuRepository->getContinentByBranch($branch_id,$restaurant_id);
+        // dd($items);
+        if($restaurant_id != 0 || $restaurant_id != null || $restaurant_id != ''){
+            $branchs        = $this->branchRepo->getByRestaurant($restaurant_id);
+             $restaurants   = $this->restaurantRepo->getAllType();  
+        }
+        else{
+            $restaurant_id   = Utility::getCurrentRestaurant(); 
+            $branchs         = $this->branchRepo->getByRestaurant($restaurant_id);
+        }     
+      
+        // $items               = $this->setMenuRepository->getItems();
+        $view                = view("Backend.set.set_menus_ajax",compact('category','items','kitchens','continents','branch_id','restaurant_id','restaurants','branchs'))->render();
+
+        return response()->json(['html'=>$view]);
+        }
 }

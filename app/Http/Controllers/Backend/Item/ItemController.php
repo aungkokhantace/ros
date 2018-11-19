@@ -23,6 +23,7 @@ use App\RMS\Category\CategoryRepository;
 use App\RMS\Restaurant\RestaurantRepository;
 use App\RMS\Kitchen\KitchenRepository;
 use App\RMS\Branch\BranchRepository;
+use App\RMS\Branch\Branch;
 
 class ItemController extends Controller
 {
@@ -61,7 +62,8 @@ class ItemController extends Controller
     }
 
     //Item Entry Form
-    public function create(){
+    public function create(){        
+
         $result = $this->ItemRepository->ChooseCat();
         $parents = Category::select('parent_id')->where('parent_id','!=', 0)->groupBy('parent_id')->get();
 
@@ -80,7 +82,9 @@ class ItemController extends Controller
     //ItemEntryRequest
     public function store(Request $request)
     {
-        // $request->validate();
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
         $input                  = $request->all();
         $name                   = $request->get('name');
         $category               = Input::get('parent_category');
@@ -89,14 +93,13 @@ class ItemController extends Controller
         $price                  = $request->get('price');
         $check                  = $request->get('check');
         $cooking_time           = Input::get('standard_cooking_time');
-        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
-
-        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
+       
+        // dd($branch_id,$restaurant_id);
 
         if ($check == 0) {
-            $file                   = $request->file('fileupload');
-            $imagedata              = file_get_contents($file);
-            $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
+            $file                = $request->file('fileupload');
+            $imagedata           = file_get_contents($file);
+            $photo               = uniqid().'.'.$file->getClientOriginalExtension();
             $file->move('uploads', $photo );
             // resizing image
             $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
@@ -106,8 +109,8 @@ class ItemController extends Controller
         $paramObj                           = new Item();
         $paramObj->name                     = $name;
         if ($check == 0) {
-            $paramObj->image                    = $photo;
-            $paramObj->mobile_image             = base64_encode($image->encoded);
+            $paramObj->image                = $photo;
+            $paramObj->mobile_image         = base64_encode($image->encoded);
         }
         $paramObj->description              = $description;
         $paramObj->price                    = $price;
@@ -117,7 +120,7 @@ class ItemController extends Controller
         $paramObj->has_continent            = $check;
         $paramObj->restaurant_id            = $restaurant_id;
         $paramObj->branch_id                = $branch_id;
-        $result = $this->ItemRepository->store($paramObj,$input);
+        $result                             = $this->ItemRepository->store($paramObj,$input);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
             return redirect()->action('Backend\Item\ItemController@index')
@@ -134,7 +137,9 @@ class ItemController extends Controller
     public function edit($id)
     {
         $record     = $this->ItemRepository->find($id);
-        $result     = $this->ItemRepository->ChooseCat();
+        $branch_id  = $record->branch_id;
+      
+        $result     = $this->ItemRepository->ChooseCatByID($branch_id);
         $branch     = $this->branchRepo->getAllType();
         $restaurant = $this->restaurantRepo->getAllType();
 
@@ -365,4 +370,49 @@ class ItemController extends Controller
         }
         return redirect()->action('Backend\Item\ItemController@index')->withMessage(FormatGenerator::message('Success', 'Item Deleted ...')); //to redirect listing page
     }
+
+     public function ajax($id)
+    {               
+        $obj            =  Category::where('branch_id',$id)->whereNull('deleted_at')->where('status','1')->get()->toArray();
+        // dd($obj);
+        $parents = Category::select('parent_id')->where('parent_id','!=', 0)->groupBy('parent_id')->get();
+
+        $parent_id_arr = array();
+        foreach($parents as $parent){
+            array_push($parent_id_arr,$parent->parent_id);
+        }
+
+        return \Response::json(array($obj,$parent_id_arr));
+    }       
+        
+    public function  renderFunction ($branch_id,$restaurant_id = null){
+        // dd('rews',$restaurant_id);     
+
+        if($restaurant_id == "undefined"){
+            $restaurant_id = null;
+        }
+
+        $categories         = $this->ItemRepository->getCategory($branch_id,$restaurant_id);      
+        $parents            = Category::select('parent_id')->where('parent_id','!=', 0)->groupBy('parent_id')->where('branch_id',$branch_id)->get();     
+
+        $parent_id_arr      = array();
+        foreach($parents as $parent){
+            array_push($parent_id_arr,$parent->parent_id);
+        }
+
+        $continent_arr      = $this->ItemRepository->getContinent();
+
+        if($restaurant_id != 0 && $restaurant_id != null && $restaurant_id != ''){
+            $branchs        = $this->branchRepo->getByRestaurant($restaurant_id);
+             $restaurants   = $this->restaurantRepo->getAllType();  
+        }
+        else{
+            $restaurant_id   = Utility::getCurrentRestaurant(); 
+            $branchs         = $this->branchRepo->getByRestaurant($restaurant_id);
+        }   
+        $view                = view("Backend.item.item_ajax",compact('categories','branchs','restaurants','parent_id_arr','branch_id','restaurant_id','continent_arr'))->render();
+
+        return response()->json(['html'=>$view]);
+        }
+
 }

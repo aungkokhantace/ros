@@ -64,6 +64,7 @@ tfoot {
                             <th>Item Description</th>
                             <th>Item Price</th>
                             <th>Status</th>
+                            <th>Branch</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -76,6 +77,7 @@ tfoot {
                             <th class="search-col" con-id="item_description">Description</th>
                             <th class="search-col" con-id="item_price">Price</th>
                             <th></th>
+                           <th class="search-col" con-id="branch">Branch</th>
                         </tr>
                       </tfoot>
                         <tbody>
@@ -98,6 +100,7 @@ tfoot {
                                         {{'Not Available'}}
                                     @endif
                                 </td>
+                                <td>{{$item->branch->name}}</td>
                             </tr>
                             @endif
                         @endforeach

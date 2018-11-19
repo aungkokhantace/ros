@@ -131,4 +131,8 @@ class BranchRepository  implements  BranchRepositoryInterface
         $all_names  = Branch::select('food_name')->get();
         return $all_names;
     }
+    public function getByRestaurant($restaurant_id){
+        $branchs            = Branch::where('restaurant_id',$restaurant_id)->whereNull('deleted_at')->get();
+        return $branchs;
+    }
 }

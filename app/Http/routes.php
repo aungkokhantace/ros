@@ -319,6 +319,8 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Item/delete/{id}', 'Backend\Item\ItemController@delete');
             Route::get('Item/item_enabled/{id}','Backend\Item\ItemController@itemenabled');
             Route::get('Item/item_disabled/{id}', 'Backend\Item\ItemController@itemdisabled');
+            Route::get('category/ajaxRequest/{id}', 'Backend\Item\ItemController@ajax');
+            Route::get('get_body/ajaxRequest/{branch_id}/{restaurant?}','Backend\Item\ItemController@renderFunction');
 
         });
         //End item
@@ -333,6 +335,9 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('AddOn/edit/{id}', 'Backend\Addon\AddonController@edit');
             Route::post('AddOn/update', 'Backend\Addon\AddonController@update');
             Route::get('AddOn/delete/{id}', 'Backend\Addon\AddonController@delete');
+            Route::get('get_addon/ajaxRequest/{branch_id}/{restaurant_id}', 'Backend\Addon\AddonController@ajax');
+            
+
         });
         //end extra food
 
@@ -344,6 +349,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('SetMenu/edit/{id}', 'Backend\Setmenu\SetMenuController@edit');
             Route::post('SetMenu/update', 'Backend\Setmenu\SetMenuController@update');
             Route::get('SetMenu/delete/{id}', 'Backend\Setmenu\SetMenuController@delete');
+            Route::get('get_menu_body/ajaxRequest/{branch_id}/{restaurant_id?}','Backend\Setmenu\SetMenuController@render_SetMenu');
 
         });
         //end set
