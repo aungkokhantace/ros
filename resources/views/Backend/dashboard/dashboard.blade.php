@@ -3,14 +3,14 @@
 @section('title','Dashboard')
 @section('content')
 <div class="content-wrapper">
-    
+
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
         Dashboard
         <small>Control panel</small>
       </h1>
-      
+
     </section>
 
     <!-- Main content -->
@@ -78,18 +78,18 @@
         </div>
 
          <div class="col-md-6 ">
-            <canvas id="myChart" width="400" height="400"></canvas>  
+            <canvas id="myChart" width="400" height="400"></canvas>
          </div>
 
          <div class="col-md-6 ">
-            <canvas id="my_dev_Chart" width="400" height="400"></canvas>  
+            <canvas id="my_dev_Chart" width="400" height="400"></canvas>
          </div>
         <!-- ./col -->
       </div>
-   
-    
 
-            
+
+
+
 
 
     </div>
@@ -128,12 +128,12 @@ var myChart = new Chart(ctx, {
     data: {
         labels: <?php echo json_encode($label_arr) ?>,
         datasets: [{
-            label: 'Montly Sale Report',
+            label: 'Monthly Sale Report',
 
             data: <?php echo json_encode($data_arr) ?>,
             backgroundColor: [
                 '#00b160',
-                
+
             ],
             borderColor: [
                 'rgba(255,99,132,1)',

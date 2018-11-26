@@ -3,22 +3,22 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
-     
+
       <!-- search form -->
-      
+
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <li>
-          
+
           <a href="/Backend/Dashboard">
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             <span class="pull-right-container">
-              
+
             </span>
           </a>
-          
+
         </li>
         <li class="treeview">
           <a href="#">
@@ -29,7 +29,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-           
+
             <li><a href="/Backend/Permission/index"><i class="fa fa-circle-o text-aqua"></i>  Permission</a></li>
             <li><a href="/Backend/StaffType/index"><i class="fa fa-circle-o text-aqua"></i>  Staff Type</a></li>
             <li><a href="/Backend/Staff/index"><i class="fa fa-circle-o text-aqua"></i>  Staff</a></li>
@@ -94,7 +94,7 @@
             <li><a href="/Backend/saleReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Report</a></li>
             <li><a href="/Backend/itemReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Item Report</a></li>
             <li><a href="/Backend/favourite_set_menus"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Set Report</a></li>
-            
+
           </ul>
         </li>
 
@@ -107,9 +107,9 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            
+
             <li><a href="/Backend/Shift/index"><i class="fa fa-circle-o text-aqua"></i>  Shift</a></li>
-          
+
           </ul>
         </li>
         <li class="treeview">
@@ -120,19 +120,19 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            
+
             <li><a href="/Backend/Pricehistory/all"><i class="fa fa-circle-o text-aqua"></i>  Price Histories</a></li>
             <li><a href="/Backend/Confighistory"><i class="fa fa-circle-o text-aqua"></i>  Config Histories</a></li>
             <li><a href="/Backend/Discounthistory"><i class="fa fa-circle-o text-aqua"></i>  Discount Histories</a></li>
             <li><a href="/Backend/SyncApi"><i class="fa fa-circle-o text-aqua"></i>  Api List</a></li>
-          
+
           </ul>
         </li>
         <li>
         <a href="/Backend/logout">
             <i class="fa fa-circle-o text-danger"></i>
             <span>Logout</span>
-            
+
           </a>
         </li>
       </ul>
@@ -147,12 +147,12 @@
 
         $(hassub).removeClass('active');
         $(submenu).removeClass('active');
-          
+
         $(".treeview-menu li a").each(function () {
             var href = $(this).attr('href');
             // var child_href = href+'/';
             var child_href = href.replace('index','');
-            
+
             //check for child hrefs also (eg. room and room/create)
             if (path == href || path.includes(child_href)) {
 

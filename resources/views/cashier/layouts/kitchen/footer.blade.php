@@ -1,7 +1,7 @@
 <!--Start Footer -->
 <div id="footer">
-    <p class="footer-status">&copy;Copyright 2016.All rights reserved by <a href="http://www.aceplussolutions.com/">
-            AcePlus Solutions.,Co Ltd</a></p>
+    <p class="footer-status">&copy;Copyright <?php echo date('Y');?>. All rights reserved by <a href="http://www.aceplussolutions.com/">
+            AcePlus Solutions Co., Ltd.</a></p>
 </div>
 <!-- <script src="/assets/js/jquery.js"></script>
 <script src="/assets/js/jquery-2.1.3.min.js"></script>

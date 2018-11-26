@@ -52,7 +52,7 @@ if (! function_exists('generateFoodCategoryListsEdit')) {
 if (! function_exists('generateCategoryLists')) {
     function generateCategoryLists(array $elements, $parentId = 0,$indent = 0) {
         foreach ($elements as $key => $element) {
-            
+
             if ($element['parent_id'] == $parentId) {
                 echo '<option value ="'. $element['id'] .'">';
                 echo ($indent != 0) ? str_repeat("&mdash; ", $indent) : '';
@@ -215,7 +215,7 @@ if (! function_exists('submenusitemsEdit')) {
 
 if (! function_exists('gitVersion')) {
     function gitVersion() {
-        $version        = "3.0.2";
+        $version        = "3.0.6";
         return $version;
     }
 }
@@ -241,5 +241,3 @@ if (! function_exists('getChildCategory')) {
     }
 }
 ?>
-
-
