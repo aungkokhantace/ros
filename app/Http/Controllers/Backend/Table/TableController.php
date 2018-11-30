@@ -24,13 +24,19 @@ use App\RMS\CheckingBooking;
 
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Branch\BranchRepository;
+use App\RMS\Utility;
 
 class TableController extends Controller
 {
     private $tableRepository;
     public function __construct(TableRepositoryInterface $tableRepository)
     {
-        $this->tableRepository = $tableRepository;
+        $this->tableRepository  = $tableRepository;
+        $this->restaurantRepo   = new RestaurantRepository();
+        $this->branchRepo       = new BranchRepository();
+
     }
 
     //get table listing view
@@ -41,9 +47,17 @@ class TableController extends Controller
 
     }
     public function create(){
-        $locations = location::where('deleted_at',NULL)->get();
+        $branch         = $this->branchRepo->getAllType();
+        $restaurant     = $this->restaurantRepo->getAllType();
+        $restaurant_id     = Utility::getCurrentRestaurant();
+        // dd($restaurant);
+        $locations      = location::where('deleted_at',NULL)->get();
+
         
-        return view('Backend.table.table')->with('locations',$locations);
+        return view('Backend.table.table')->with('locations',$locations)
+                                        ->with('branchs',$branch)
+                                         ->with('restaurants',$restaurant)
+                                         ->with('restaurant_id',$restaurant_id);
     }
     public function All()
     {
@@ -56,6 +70,9 @@ class TableController extends Controller
     public function store(TableRequest $request)
     {
         $request->validate();
+        $branch_id      = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
         $name           = Input::get('table_no');
         $capacity       = Input::get('capacity');
         $location       = Input::get('location');
@@ -66,6 +83,8 @@ class TableController extends Controller
         $paramObj->capacity     = $capacity;
         $paramObj->location_id  = $location;
         $paramObj->area         = $area;
+        $paramObj->branch_id    = $branch_id;
+        $paramObj->restaurant_id = $restaurant_id;
 
         $result = $this->tableRepository->store($paramObj);
 
@@ -82,9 +101,14 @@ class TableController extends Controller
 
     //get id to edit and go to edit page
     public function edit($id){
-        $tables = $this->tableRepository->table_edit($id);
-        $locations = $this->tableRepository->get_locations();
-        return view('Backend.table.table')->with('tables', $tables)->with('locations',$locations);
+        $tables         = $this->tableRepository->table_edit($id);
+        $locations      = $this->tableRepository->get_locations();
+        $branch         = $this->branchRepo->getAllType();
+        $restaurant     = $this->restaurantRepo->getAllType();
+        return view('Backend.table.table')->with('tables', $tables)
+                                        ->with('locations',$locations)
+                                        ->with('branchs',$branch)
+                                        ->with('restaurants',$restaurant);
 
     }
 
@@ -212,6 +236,11 @@ class TableController extends Controller
         }
 
         return redirect()->action('Backend\Table\TableController@index');
+    }
+    public function ajax($branch_id,$restaurant_id){
+        $location           = $this->tableRepository->get_locationbyBranch($branch_id,$restaurant_id);
+        return \Response::json($location);
+      
     }
     
     

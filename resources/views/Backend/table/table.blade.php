@@ -16,6 +16,82 @@
             {!! Form::open(array('url' => 'Backend/Table/store','class' => 'form-horizontal user-form-border','id'=>'table-form-entry')) !!}
         @endif
         <input type="hidden" name="id" value="{{isset($tables)? $tables->id:''}}">
+
+<!-- restaturant session -->
+        @if (Auth::guard('Cashier')->user()->restaurant_id == null)
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label left-align label-font">Restaurant <span class="require">*</span></label>
+            <div class="col-sm-8">                 
+                 @if(isset($tables))
+                    @foreach($restaurants as $restaurant)
+                        @if($restaurant->id == $tables->restaurant_id)
+                         <input type="text" class="form-control" value="{{ $restaurant->name }}" readonly />
+                         <input type="hidden" class="form-control" id="restaurant" name="restaurant" value="{{ $restaurant->id }}" />                         
+                       
+                        @endif
+                    @endforeach                 
+                @else
+                <select class="form-control" name="restaurant" id="restaurant">            
+                <option selected disabled>Select Restaurant </option>
+                    @foreach($restaurants as $restaurant)
+                      <option value="{{$restaurant->id}}">{{$restaurant->name}}</option>                
+                    @endforeach
+             
+                </select>
+                   @endif
+              
+            </div>
+        </div>
+     
+
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label left-align label-font">Branch <span class="require">*</span></label>
+            <div class="col-sm-8">                 
+                 @if(isset($tables))
+                    @foreach($branchs as $branch)
+                        @if($branch->id == $tables->branch_id)
+                         <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
+                       
+                        @endif
+                    @endforeach                 
+                @else
+                <select class="form-control" name="branch" id="branch">            
+                <option selected disabled>Select Branch </option>
+                   
+                @endif
+                </select>
+              
+            </div>
+        </div>
+         @elseif (Auth::guard('Cashier')->user()->branch_id == null || Auth::guard('Cashier')->user()->branch_id == 0 )
+
+        <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label left-align label-font">Branch <span class="require">*</span></label>
+            <div class="col-sm-8">                 
+                 @if(isset($tables))
+                    @foreach($branchs as $branch)
+                        @if($branch->id == $tables->branch_id)
+                         <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
+                       
+                        @endif
+                    @endforeach                 
+                @else
+                <select class="form-control" name="branch" id="branch" >            
+                <option selected disabled>Select Branch </option>
+                    @foreach($branchs as $branch)
+                      <option value="{{$branch->id}}">{{$branch->name}}</option>                
+                    @endforeach
+                @endif
+                </select>
+              
+            </div>
+        </div>
+        @endif
+        <!--end restaturant session -->
+
+
         <div class="form-group">
             <label for="member-type" class="col-sm-3 control-label left-align label-font">Table No<span class="require">*</span> </label>
             <div class="col-sm-8">
@@ -66,7 +142,7 @@
         <div class="form-group">
             <label for="description" class="col-sm-3 control-label left-align label-font">Location<span class="require">*</span></label>
             <div class="col-sm-8">
-                <select name="location" class="form-control">
+                <select name="location" class="form-control" id="location">
                     @foreach($locations as $location)
                         @if(isset($tables))
                             @if($tables->location_id == $location->id)
@@ -117,6 +193,31 @@
         //to select only one checkbox
         $('.one-check input:checkbox').click(function(){
             $('.one-check input:checkbox').not(this).prop('checked',false);
+        });
+    </script>
+<script src="/assets/backend_js/branch/branch.js"></script>
+<script type="text/javascript">
+    $("#branch").change(function(){           
+            var branch =$("#branch").val();
+            var restaurant = $("#restaurant").val();                 
+            $.ajax({
+                  type: "GET",
+                
+                  url: "/Backend/get_location/ajaxRequest/"+branch+"/"+restaurant,
+                  
+            }).done( function(data){
+                $('#location').empty();
+                $('#location').append("<option disabled selected>Select Location</option>");
+                $(data).each(function(){
+                  // console.log(this.id,this.name);
+                  $('#location').append($('<option>',{
+                    value : this.id,
+                    text: this.location_type,
+                  }));
+                })
+                
+        })
+           
         });
     </script>
 @endsection

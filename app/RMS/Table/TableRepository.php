@@ -14,7 +14,19 @@ class TableRepository implements  TableRepositoryInterface
 {
     //get all tables from db for table listing
     public function getAllTable(){
-        $tables = Table::all();
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+
+        $query               = Table::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('branch_id',$branch);
+        }
+        $tables           = $query->get();
+        // $tables = Table::all();
 
         return $tables;
     }
@@ -245,6 +257,7 @@ class TableRepository implements  TableRepositoryInterface
     }
 
     public function get_locations(){
+
         $tempObj    = Location::all();
         return $tempObj;
     }
@@ -254,5 +267,10 @@ class TableRepository implements  TableRepositoryInterface
         DB::table('tables')
             ->where('id',$id)
             ->update(['status'=>$table_enable]);
+    }
+
+    public function get_locationbyBranch($branch_id,$restaurant_id){
+        $location           = Location::where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->whereNull('deleted_at')->get();
+        return $location;
     }
 }

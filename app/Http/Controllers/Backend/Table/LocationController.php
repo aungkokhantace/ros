@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Input;
 
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Utility;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Branch\BranchRepository;
+
 
 class LocationController extends Controller
 {
@@ -24,23 +28,35 @@ class LocationController extends Controller
     public function __construct(LocationRepositoryInterface $LocationRepository)
     {
         $this->LocationRepository = $LocationRepository;
+        $this->restaurantRepo   = new RestaurantRepository();
+        $this->branchRepo       = new BranchRepository();
     }
     public function index(){
-        $locations = Location::all();
+        $locations = $this->LocationRepository->get_location();
+        // $locations = Location::all();
         return view('Backend.Location.index')->with('locations', $locations);
     }
 
     public function create(){
-        return view('Backend.Location.location');
+        $branch         = $this->branchRepo->getAllType();
+        $restaurant     = $this->restaurantRepo->getAllType();
+      
+        return view('Backend.Location.location')->with('branchs',$branch)
+                                         ->with('restaurants',$restaurant);
+       
     }
 
     public function store(LocationEntryRequest $request){
         $request->validate();
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
 
-        $name = $request->get('location_type');
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
+        $name                   = $request->get('location_type');
 
-        $paramObj = new Location();
+        $paramObj                = new Location();
         $paramObj->location_type = $name;
+        $paramObj->restaurant_id = $restaurant_id;
+        $paramObj->branch_id     = $branch_id;
 
         $result = $this->LocationRepository->store($paramObj);
 
@@ -97,4 +113,6 @@ class LocationController extends Controller
         return redirect()->action('Backend\Table\LocationController@index')->withMessage(FormatGenerator::message('Success', 'Location Deleted ...'));
 
     }
+
+   
 }

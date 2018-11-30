@@ -161,7 +161,7 @@ class SetMenuRepository implements SetMenuRepositoryInterface
             foreach($items as $item){
                 $paramObj                = new SetItem();
                 $paramObj->set_menu_id   = $id;
-                $paramObj->sitem_id       = $item;
+                $paramObj->item_id       = $item;
                 $paramObj->branch_id     = $branch_id;
                 $paramObj->restaurant_id = $restaurant_id;
                 $tempItem                = Utility::addCreatedBy($paramObj);

@@ -365,6 +365,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Table/table_enabled/{id}', 'Cashier\Table\TableController@table_enabled');
             Route::get('Table/active/{id}', 'Backend\Table\TableController@active');
             Route::get('Table/inactive/{id}', 'Backend\Table\TableController@inactive');
+            Route::get('get_location/ajaxRequest/{branch_id}/{restaurant_id?}', 'Backend\Table\TableController@ajax');
 
         });
         //End table
@@ -381,6 +382,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Room/room_enabled/{id}', 'Backend\Room\RoomController@roomenabled');
             Route::get('Room/active/{id}', 'Backend\Room\RoomController@active');
             Route::get('Room/inactive/{id}', 'Backend\Room\RoomController@inactive');
+            
         });
         //End Room
 

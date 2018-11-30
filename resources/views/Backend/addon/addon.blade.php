@@ -24,9 +24,9 @@
          <div class="form-group">
             <label for="member-type" class="col-sm-3 control-label left-align label-font">Restaurant <span class="require">*</span></label>
             <div class="col-sm-7">                 
-                 @if(isset($record))
+                 @if(isset($resource))
                     @foreach($restaurants as $restaurant)
-                        @if($restaurant->id == $record->restaurant_id)
+                        @if($restaurant->id == $resource->restaurant_id)
                          <input type="text" class="form-control" value="{{ $restaurant->name }}" readonly />
                          <input type="hidden" class="form-control" id="restaurant" name="restaurant" value="{{ $restaurant->id }}" />                         
                        
@@ -43,41 +43,35 @@
               
             </div>
         </div>
-        @endif
-        @if (Auth::guard('Cashier')->user()->branch_id == null || Auth::guard('Cashier')->user()->branch_id == 0 )                      
-
          <div class="form-group">
             <label for="member-type" class="col-sm-3 control-label left-align label-font">Branch <span class="require">*</span></label>
-            <div class="col-sm-7">                 
-                 @if(isset($record))
+            <div class="col-sm-7">
+            @if(isset($resource))
                     @foreach($branchs as $branch)
-                        @if($branch->id == $record->branch_id)
+                        @if($branch->id == $resource->branch_id)
                          <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
-                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                        
                        
                         @endif
                     @endforeach                 
                 @else
                 <select class="form-control" name="branch" id="branch">            
                 <option selected disabled>Select Branch </option>
-                  @foreach($branchs as $branch)
-                      <option value="{{$branch->id}}">{{$branch->name}}</option>                
-                    @endforeach
                    
                 @endif
                 </select>
               
             </div>
-        </div>
-       
+        </div>    
+
         @elseif (Auth::guard('Cashier')->user()->branch_id == null || Auth::guard('Cashier')->user()->branch_id == 0 )
 
         <div class="form-group">
             <label for="member-type" class="col-sm-3 control-label left-align label-font">Branch <span class="require">*</span></label>
             <div class="col-sm-7">                 
-                 @if(isset($editcategory))
+                 @if(isset($resource))
                     @foreach($branchs as $branch)
-                        @if($branch->id == $editcategory->branch_id)
+                        @if($branch->id == $resource->branch_id)
                          <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
                          <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
                        
@@ -190,7 +184,7 @@
 <script src="/assets/backend_js/branch/branch.js"></script>
 <script type="text/javascript">
     $("#branch").change(function(){           
-            var branch =$("#branch").val();
+            var branch     =$("#branch").val();
             var restaurant = $("#restaurant").val();                 
             $.ajax({
                   type: "GET",

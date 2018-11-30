@@ -16,13 +16,19 @@ use Illuminate\Support\Facades\Input;
 
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Branch\BranchRepository;
+use App\RMS\Utility;
 
 class RoomController extends Controller
 {
     private $roomRepository;
 
     public function __construct(RoomRepositoryInterface $roomRepository){
-        $this->roomRepository = $roomRepository;
+        $this->roomRepository   = $roomRepository;
+        $this->restaurantRepo   = new RestaurantRepository();
+        $this->branchRepo       = new BranchRepository();
+
     }
 
     public function index(){//get all rooms from db
@@ -31,16 +37,26 @@ class RoomController extends Controller
     }
 
     public function create(){ //go to entry form
-        return view('Backend.room.room');
+        $branch         = $this->branchRepo->getAllType();
+        $restaurant     = $this->restaurantRepo->getAllType();
+
+        return view('Backend.room.room')->with('branchs',$branch)
+                                        ->with('restaurants',$restaurant);
     }
     public function store(RoomEntryRequest $request){//get data and insert into db and then go to room listing page
         $request->validate();
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
         $name                   = trim(Input::get('room_name'));
         $capacity               = trim(Input::get('capacity'));
         $paramObj               = new Room();
         $paramObj->room_name    = $name;
         $paramObj->capacity     = $capacity;
         $paramObj->status       = 0;
+        $paramObj->restaurant_id= $restaurant_id;
+        $paramObj->branch_id    = $branch_id;
+
         $result = $this->roomRepository->store($paramObj);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
@@ -169,4 +185,5 @@ class RoomController extends Controller
         return redirect()->action('Backend\Room\RoomController@index')
         ->withMessage(FormatGenerator::message('Fail', 'Room Inactive create ...')); //to redirect listing page
     }
+   
 }

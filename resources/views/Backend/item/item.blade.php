@@ -94,7 +94,7 @@
                     @endforeach                 
                 @else
                 <select class="form-control" name="branch" id="branch" >            
-                <option selected disabled>Select Branchesss </option>
+                <option selected disabled>Select Branch </option>
                     @foreach($branchs as $branch)
                       <option value="{{$branch->id}}">{{$branch->name}}</option>                
                     @endforeach
