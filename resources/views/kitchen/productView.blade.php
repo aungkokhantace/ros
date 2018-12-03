@@ -2,12 +2,9 @@
 @section('title','Order View')
 @section('content')
     {{--title--}}
-
-   
-      
        
             <div id="body">
-                <div class="container">
+                <div class="container product">
                     <div class="row" id="autoDiv">
                     @foreach($product as $orderKey=>$p)
                         <div class="col-md-12 tbl-container">
@@ -29,14 +26,14 @@
                                         <tr class="tr_header">
                                             <td>Table/Room Name/Take Away</td>
                                             <td>Quantity</td>
-                                            <td>Exception</td>
+                                            <!-- <td>Exception</td> -->
                                             <td>Remark</td>
                                             <td>Add On</td>
-                                            <td>StartTime</td>
-                                            <td>Order Duration</td>
-                                            <td>Cooking Duration</td>
+                                            <!-- <td>StartTime</td> -->
+                                            <td>Order Time</td>
+                                           <!--  <td>Cooking Duration</td> -->
                                             <td>Order Status</td>
-                                            <td>Cancel</td>
+                                            <td colspan="2">Action</td>
                                         </tr>
                                     </thead>
                                     <tbody class="body">
@@ -65,7 +62,7 @@
                                                 @endif
                                             </td>
                                             <td class="tr_right">{{ $item->quantity }}</td>
-                                            <td class="tr_right">{{ $item->exception }}</td>
+                                            <!-- <td class="tr_right">{{ $item->exception }}</td> -->
                                             <td class="tr_right">{{ $item->remark }}</td>
                                             <td class="tr_right">
                                                 @foreach($extra as $ex)
@@ -77,28 +74,22 @@
                                             <td class="td-row tr_right" data-ordertime = "{{ $item->order_time}}">
                                                 {{ date('h:i:s A', strtotime($item->order_time)) }}
                                             </td>
-                                            <td class="tr_right">
-                                                <!-- @if($item->status_id == '1')
-                                                    <span class="duration"></span>
-                                                    <input type="hidden" name="duration" class="txt_duration"/>
-                                                @endif -->
-                                                @if($item->status_id =='2')
-                                                    {{ date('h:i:s A', strtotime($item->order_duration)) }}
+                                            <td>
+                                                @if($item->status_id == '1')
+                                                Order
                                                 @endif
-                                            </td>
-                                            <td class="tr_right">
                                                 @if($item->status_id =='2')
-                                                    <input type="hidden" name="order_duration" value="{{ $item->order_duration }}"/>
-                                                    <span class="cooking_duration"></span>
-                                                    <input type="hidden" name="duration" class="txt_cooking_duration"/>
+                                                Cooking
                                                 @endif
+
                                             </td>
+
                                             <td class="tr_right">
                                                 @if($item->status_id == '1')
-                                                    <input type="submit" class="start start_duration_item btn_k" id="{{$item->order_detail_id}}" name="start" value="Cooking">
+                                                    <input type="submit" class="start start_duration_item btn_k" id="{{$item->order_detail_id}}" name="start" value="Start Cooking">
                                                 @endif
                                                 @if($item->status_id =='2')
-                                                    <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="Cooked">
+                                                    <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="Complete Cooking">
                                                 @endif
                                             </td>
 
@@ -177,7 +168,7 @@
                                                         @endif
                                                     </td>
                                                     <td>{{ $setmenu->quantity }}</td>
-                                                    <td>{{ $setmenu->exception }}</td>
+                                                    <!-- <td>{{ $setmenu->exception }}</td> -->
                                                     <td>{{ $setmenu->remark }}</td>
                                                     <td>
                                                         @foreach($extra as $ex)
@@ -189,24 +180,28 @@
                                                     <td class="td-row" data-ordertime = "{{ $setmenu->order_time}}">
                                                         {{ date('h:i:s A', strtotime($setmenu->order_time)) }}
                                                     </td>
-                                                    <td >
-                                                        @if($setmenu->status_id =='2')
-                                                            {{ date('h:i:s A', strtotime($setmenu->order_duration)) }}
-                                                        @endif
-                                                    </td>
                                                     <td>
+                                                    @if($setmenu->status_id == '1')
+                                                    Order
+                                                    @endif
+                                                    @if($setmenu->status_id =='2')
+                                                    Cooking
+
+                                                    @endif
+                                                    </td>
+                                                    <!-- <td>
                                                         @if($setmenu->status_id =='2')
                                                             <input type="hidden" name="order_duration" value="{{ $setmenu->order_duration }}"/>
                                                             <span class="cooking_duration"></span>
                                                             <input type="hidden" name="duration" class="txt_cooking_duration"/>
                                                         @endif
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         @if($setmenu->status_id == '1')
-                                                            <input type="submit" class="start start_duration_setmenu btn_k" id="{{$setmenu->id}}" name="start" value="Cooking">
+                                                            <input type="submit" class="start start_duration_setmenu btn_k" id="{{$setmenu->id}}" name="start" value="Start Cooking">
                                                         @endif
                                                         @if($setmenu->status_id =='2')
-                                                            <input type="submit" class="complete complete_duration_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Cooked">
+                                                            <input type="submit" class="complete complete_duration_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Complete Cooking">
                                                         @endif
                                                     </td>  
                                                     @if($setmenu->status_id == '1')

@@ -718,7 +718,7 @@ thead label{color: #FFFFFF;}
 .start ,
 .cancel,
 .complete {
-    width: 100px;
+    width: 200px !important;
     padding: 5px 0;
     text-align: center;
     border: 1px solid #966D61;
