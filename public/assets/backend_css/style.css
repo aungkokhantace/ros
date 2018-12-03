@@ -735,7 +735,7 @@ thead label{color: #FFFFFF;}
 .start ,
 .cancel,
 .complete {
-    width: 100px;
+    width: 150px;
     padding: 5px 0;
     text-align: center;
     border: 1px solid #966D61;
@@ -752,6 +752,7 @@ thead label{color: #FFFFFF;}
     border:none;
     padding:5px;*/
     color:#fff !important;
+
 }
 .tdname{
   /*  background-color:#E87E7E;*/
@@ -1200,4 +1201,15 @@ order page
 }
 .navbar-nav>li>a:hover{
     text-decoration: none !important;
+}
+
+#divAuto{
+    font-size: 17px;
+}
+.cancel_bottom{
+     margin-bottom: 25px !important;
+}
+.product{
+   font-size: 17px;
+
 }
