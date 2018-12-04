@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>RMS - @yield('title')</title>{{--// yield(title) is for only title--}}
+    <title>ROS - @yield('title')</title>{{--// yield(title) is for only title--}}
     <link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
     <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/bootstrap-datepicker/css/datepicker3.css">
@@ -22,7 +22,7 @@
     <link href="/assets/css/sweetalert.css" rel="stylesheet">
     <link href="/assets/css/multiple-select.css" rel="stylesheet">
     <link href="/assets/css/jktCuteDropdown.css" refl="stylesheet">
-    
+
     <link href="/assets/js/datatables/dataTables.bootstrap.css" rel="stylesheet">
 
     <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css">
@@ -83,4 +83,3 @@
         </div>
     </div>
 </div>
-

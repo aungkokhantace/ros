@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>RMS - @yield('title')</title>{{--// yield(title) is for only title--}}
+    <title>ROS - @yield('title')</title>{{--// yield(title) is for only title--}}
     <link rel="stylesheet" href="/assets/backend_css/bootstrap.min.css">
       <link rel="stylesheet" href="/assets/backend_css/AdminLTE.min.css">
   <link rel="stylesheet" href="/assets/backend_css/AdminLTE.css">
@@ -34,7 +34,7 @@
   <script src="/assets/js/jquery-2.1.4.js"></script>
   <script src="/assets/backend_js/jquery-ui/jquery-ui.min.js"></script>
   <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-  <script src="/assets/plugins/jquery/jquery-migrate-1.1.0.min.js"></script> 
+  <script src="/assets/plugins/jquery/jquery-migrate-1.1.0.min.js"></script>
   <script src="/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js"></script>
   <script src="/assets/backend_plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
   <script src="/assets/backend_js/booking_validation.js"></script>
@@ -47,7 +47,7 @@
     $.widget.bridge('uibutton', $.ui.button);
   </script>
   <script src="/assets/backend_js/Chart.js"></script>
- 
+
   <script src="/assets/backend_js/validation/jquery.validate.js"></script>
   <script src="/assets/js/checkall.js"></script>
   <script src="/assets/backend_js/raphael.min.js"></script>
@@ -73,8 +73,8 @@
  <script src="/assets/js/checkall.js"></script>
  <script src="/assets/js/enabled-disabled.js"></script>
 <script>
-   
-    
+
+
         $(document).ready(function() {
             //check for notification
             //TableManageTableTools.init();
@@ -101,9 +101,9 @@
     <!-- Logo -->
     <a href="/Backend/Dashboard" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>R</b>OS</span>
+      <span class="logo-mini">ROS</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>ROS</span>
+      <span class="logo-lg"><b>Admin</b>@ROS</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -117,12 +117,12 @@
           <!-- Messages: style can be found in dropdown.less-->
           <li class="dropdown messages-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              
+
             </a>
-            
+
           </li>
-        
-         
+
+
           <!-- Control Sidebar Toggle Button -->
           <li>
             <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
@@ -132,4 +132,3 @@
     </nav>
   </header>
 </div>
-

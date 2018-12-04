@@ -875,6 +875,7 @@ class MakeAPIController extends ApiGuardController
         //     ->where('order_setmenu_detail.waiter_status',NULL)
         //     ->get()->toArray();
 
+
         $getOrderDetails     = DB::select("SELECT i.name as item_name,sm.set_menus_name,od.id,od.order_id,
                                 od.order_detail_id,ot.type
                             as order_type, od.status_id as status,od.cooking_time,od.message,osd.item_id
@@ -885,6 +886,8 @@ class MakeAPIController extends ApiGuardController
                             as ot ON ot.id = od.order_type_id WHERE od.status_id = 3 OR od.status_id = 6
                             OR osd.status_id = 3 OR osd.status_id = 6 AND od.cancel_status = NULL
                             OR od.waiter_status = NULL OR osd.cancel_status = NULL OR osd.waiter_status = NULL  ");
+        
+
         $orderDetails = array();
         foreach($getOrderDetails as $order){
 
@@ -909,8 +912,27 @@ class MakeAPIController extends ApiGuardController
             foreach($orderDetails as $orderDetail) {
                 $orderDetailVoucherId = $orderDetail->order_id;
                 if($keyOrderIndex == $orderDetailVoucherId){
-
+                  /*
+                    // original
                     array_push($tempOrderDetailArray,$orderDetail);
+                    // original
+                  */
+
+                  //added to filter by status
+                  if($status == "complete"){
+                    if($orderDetail->status == 3){
+                      array_push($tempOrderDetailArray,$orderDetail);
+                    }
+                  }
+                  elseif($status == "cancel"){
+                    if($orderDetail->status == 6){
+                      array_push($tempOrderDetailArray,$orderDetail);
+                    }
+                  }
+                  else{
+                    array_push($tempOrderDetailArray,$orderDetail);
+                  }
+                  //added to filter by status
                 }
 
             }
@@ -1044,18 +1066,18 @@ class MakeAPIController extends ApiGuardController
 
         foreach($details as $detail)
         {
-        $orderObj           = Orderdetail::where('order_detail_id','=',$detail->detail_id)->first();
+          $orderObj           = Orderdetail::where('order_detail_id','=',$detail->detail_id)->first();
 
-        if($orderObj->status_id == 6){
-            $Obj                = Orderdetail::where('id','=',$orderObj->id)->first();
-            $Obj->cancel_status = 'Yes';
-            $Obj->save();
+          if($orderObj->status_id == 6){
+              $Obj                = Orderdetail::where('id','=',$orderObj->id)->first();
+              $Obj->cancel_status = 'Yes';
+              $Obj->save();
 
-            $output = array("message"=>"Success");
-        }else{
-
+              $output = array("message"=>"Success");
+          }
+          else{
             $output = array("message"=>"Failed");
-        }
+          }
         }
 
         return Response::json($output);

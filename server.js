@@ -95,6 +95,13 @@ io.on('connection', function (socket) {
     io.sockets.emit( 'take','take');
   });
 
+  //Socket Fire From Cancel Known
+  socket.on('cancel_known_by', function( data ) {
+    console.log('Cancel Known By Waiter');
+
+    io.sockets.emit( 'cancel_known','cancel_known');
+  });
+
   //Socket Fire From Order Payment Button Click
   socket.on('order_payment_done', function( data ) {
     console.log('Order Payment Button Done');

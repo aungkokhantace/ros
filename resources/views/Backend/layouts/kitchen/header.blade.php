@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>RMS - @yield('title')</title>{{--// yield(title) is for only title--}}
+    <title>ROS - @yield('title')</title>{{--// yield(title) is for only title--}}
     <link rel="stylesheet" href="/assets/backend_css/bootstrap.min.css">
       <link rel="stylesheet" href="/assets/backend_css/AdminLTE.min.css">
   <link rel="stylesheet" href="/assets/backend_css/AdminLTE.css">
@@ -35,17 +35,17 @@
 <script src="/assets/backend_js/jquery-ui/jquery-ui.min.js"></script>
   <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 
-  
- 
-  <script src="/assets/plugins/jquery/jquery-migrate-1.1.0.min.js"></script> 
+
+
+  <script src="/assets/plugins/jquery/jquery-migrate-1.1.0.min.js"></script>
   <script src="/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js"></script>
   <script src="/assets/backend_plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
   <script src="/assets/backend_js/booking_validation.js"></script>
-  
+
  <script src="/assets/backend_js/moment.min.js"></script>
 
-  
-  
+
+
   <script src="/assets/backend_js/custom-datepicker.js"></script>
   <script src="/assets/backend_js/date.js"></script>
   <script src="/assets/js/czMore/js/jquery.czMore-1.5.3.2.js"></script>
@@ -54,10 +54,10 @@
   </script>
   <script src="/assets/js/checkall.js"></script>
   <script src="/assets/backend_js/Chart.js"></script>
- 
+
   <script src="/assets/backend_js/validation/jquery.validate.js"></script>
-  
-  
+
+
   <script src="/assets/backend_js/raphael.min.js"></script>
   <script src="/assets/backend_js/morris.min.js"></script>
   <script src="/assets/backend_js/jquery.sparkline.min.js"></script>
@@ -114,8 +114,8 @@
 
 
 <script>
-   
-    
+
+
         $(document).ready(function() {
             //check for notification
             //TableManageTableTools.init();
@@ -140,7 +140,7 @@
     <!-- Logo -->
     <a href="index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span ><b>Kitchen</b>LTE</span>
+      <span ><b>Kitchen</b>@ROS</span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg"><b>Admin</b>LTE</span>
     </a>
@@ -148,37 +148,37 @@
     <nav class="navbar navbar-fixed-top">
       <!-- Sidebar toggle button-->
       <div class="navbar-custom-menu " style="float:left">
-        
+
         <ul class="nav navbar-nav">
 
         <li  @if(Request::path() == 'Kitchen/kitchen')class="active" @endif>
-          
+
           <a href="/Kitchen/kitchen">
             <i class="fa fa-sliders"></i> <span>Table View</span>
             <span class="pull-right-container">
-              
+
             </span>
           </a>
-          
+
         </li>
         <li  @if(Request::path() == 'Kitchen/productView') class="active" @endif>
-          
+
           <a href="/Kitchen/productView">
            <i class="fa fa-suitcase"></i> <span>Product View</span>
             <span class="pull-right-container">
-              
+
             </span>
           </a>
-          
+
         </li>
        </ul>
 
       </div>
 
       <div class="navbar-custom-menu">
- 
-       
-       
+
+
+
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
           <li class="dropdown messages-menu">
@@ -194,7 +194,7 @@
                   <li><!-- start message -->
                     <a href="#">
                       <div class="pull-left">
-                       
+
                       </div>
                       <h4>
                         Support Team
@@ -207,7 +207,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        
+
                       </div>
                       <h4>
                         AdminLTE Design Team
@@ -219,7 +219,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        
+
                       </div>
                       <h4>
                         Developers
@@ -231,7 +231,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                       
+
                       </div>
                       <h4>
                         Sales Department
@@ -243,7 +243,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        
+
                       </div>
                       <h4>
                         Reviewers
@@ -354,7 +354,7 @@
                       </div>
                     </a>
                   </li>
-                  
+
                 </ul>
               </li>
               <li class="footer">
@@ -362,19 +362,19 @@
               </li>
             </ul>
           </li>
-          
+
           <li>
             <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
           </li>
           <li>
-          
+
           <a href="/Backend/updateDataBeforeLogout">
            <i class="fa fa-circle-o text-danger"></i> <span>Logout</span>
             <span class="pull-right-container">
-              
+
             </span>
           </a>
-          
+
         </li>
         </ul>
       </div>
@@ -386,7 +386,7 @@
 <div class="row header">
     <div class="container">
         <div class="row head_row">
-     
+
             <div class="col-md-4 logout">
                 @if (Auth::guard('Cashier')->user())
                     {{Auth::guard('Cashier')->user()->user_name . " (" . Auth::guard('Cashier')->user()->roles->name . ")" }}
@@ -398,4 +398,3 @@
         </div>
     </div>
 </div> -->
-

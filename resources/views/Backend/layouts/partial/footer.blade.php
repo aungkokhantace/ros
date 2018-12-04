@@ -10,7 +10,7 @@
   <b>Version</b> {!! gitVersion() !!}
 </div>
 <div class="col-md-5">
-<strong> <p class="footer-status ">&copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/">AcePlus Solutions.,Co Ltd</a></p></strong>
+<strong> <p class="footer-status ">&copy;Copyright <?php echo date('Y');?>. All rights reserved by <a href="http://www.aceplussolutions.com/">AcePlus Solutions Co., Ltd.</a></p></strong>
 </div>
 </footer>
 <a href="#" class="scrollToTop btn btn-icon btn-circle "><i class="fa fa-angle-double-up"></i></a>
@@ -18,7 +18,7 @@
 
 <script>
     $(document).ready(function() {
-        
+
 
       //for scroll to top
             $(window).scroll(function(){
@@ -36,7 +36,7 @@
     });
 
     });
-</script> 
+</script>
 
 
 <script>
@@ -50,11 +50,11 @@
         });
         return false;
     };
-    
 
 
- 
-       
+
+
+
     $(document).ready(function(){
 
         var t = $('#example1').DataTable( {
@@ -71,7 +71,7 @@
             t.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
                 cell.innerHTML = i+1;
             } );
-        } ).draw(); 
+        } ).draw();
 
         $('#invoice').DataTable( {
             "ordering":false,
@@ -119,7 +119,7 @@
             $('.daily').hide();
             $('.monthly').show();
             $('.yearly').hide();
-            
+
             window.location.href = '/Backend/saleSummaryDetailReport/' + data;
         }
         else{
