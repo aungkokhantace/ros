@@ -578,6 +578,20 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('DownloadApi','Backend\Log\ApilistController@down');
         });
 
+          //Start Remark
+        Route::group(['middleware'=>'remark:Cashier'],function(){
+            Route::get('Remark/index', 'Backend\Remark\RemarkController@index');
+            Route::get('Remark/create', 'Backend\Remark\RemarkController@create');
+            Route::post('Remark/store', 'Backend\Remark\RemarkController@store');
+            Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
+            Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
+            Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
+          
+            Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
+            Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
+        });
+        //End remark
+
         });
     });
 
