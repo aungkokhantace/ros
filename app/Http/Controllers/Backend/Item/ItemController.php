@@ -171,10 +171,9 @@ class ItemController extends Controller
         $remark_arr                = array();
             foreach ($remark_item as $key => $value) {                
                 array_push($remark_arr,$value->remark_id);
-        }          
-
+        }   
         
-         return view('Backend.item.item', ['categories' => $result])->with('record', $record)
+        return view('Backend.item.item', ['categories' => $result])->with('record', $record)
                 ->with('r_cat', $r_cat)
                 ->with('parent_id_arr',$parent_id_arr)
                 ->with('continent_arr',$continent_arr)
