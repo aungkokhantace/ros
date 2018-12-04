@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="before" class="col-sm-3 control-label left-align label-font">Booking Warning Time</label>
             <div class="col-sm-7">
                 @if(isset($config))
@@ -124,9 +124,9 @@
                 @endif
                 <p class="text-danger">{{$errors->first('before')}}</p>
             </div>
-        </div>
+        </div> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="after" class="col-sm-3 control-label left-align label-font">Booking Waiting Time</label>
             <div class="col-sm-7">
                 @if(isset($config))
@@ -188,9 +188,9 @@
                 @endif
                 <p class="text-danger">{{$errors->first('after')}}</p>
             </div>
-        </div>
+        </div> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="service_time" class="col-sm-3 control-label left-align label-font">Booking Service Time</label>
             <div class="col-sm-7">
                 @if(isset($config))
@@ -276,9 +276,9 @@
                 @endif
                 <p class="text-danger">{{$errors->first('service_time')}}</p>
             </div>
-        </div>
+        </div> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="message" class="col-sm-3 form-label left-align label-font">Message</label>
             <div class="col-sm-7">
                 <textarea class="form-control" id="message" name="message" placeholder="Enter Message" rows="7" cols="40">{{isset($config)? $config->message:Input::old('message')}}</textarea>
@@ -292,7 +292,7 @@
                 <textarea class="form-control" id="remark" name="remark" placeholder="Enter Remark" rows="7" cols="40">{{isset($config)? $config->remark:Input::old('remark')}}</textarea>
                 <p class="text-danger">{{$errors->first('remark')}}</p>
             </div>
-        </div>
+        </div> -->
 
         <div class="form-group">
             <div class="col-sm-8 col-sm-offset-3">
