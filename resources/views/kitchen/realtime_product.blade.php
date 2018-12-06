@@ -1,12 +1,12 @@
  @foreach($product as $orderKey=>$p)
                         <div class="col-md-12 tbl-container">
-                            <div class="table-responsive">  
+                            <div class="table-responsive">
                                 <table class="table to-down">
                                     <thead class="header">
                                         <tr>
                                             <td class="tdname">
                                                 <h4>{{$p['item_name']}}
-                                                    @if ($p['has_continent'] == 1)
+                                                    @if ($p['has_continent'] == 1 && $p['continent'] != '')
                                                     ( {{ $p['continent']}} )
                                                     @endif
                                                 </h4>
@@ -73,6 +73,9 @@
                                                 @if($item->status_id =='2')
                                                 Cooking
                                                 @endif
+                                                @if($item->status_id =='3')
+                                                Ready
+                                                @endif
 
                                             </td>
 
@@ -82,6 +85,10 @@
                                                 @endif
                                                 @if($item->status_id =='2')
                                                     <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="Complete Cooking">
+                                                @endif
+
+                                                @if($item->status_id =='3')
+                                                    <input type="submit" class="taken complete_taken_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="Taken">
                                                 @endif
                                             </td>
 
@@ -126,11 +133,11 @@
                                                 </div>
                                                 <!-- Modal -->
                                             </td>
-                                            @endif 
-                                                                                
+                                            @endif
+
                                         </tr>
                                         @endif
-                                        @endforeach    
+                                        @endforeach
                                     @endif
 
 
@@ -180,6 +187,9 @@
                                                     Cooking
 
                                                     @endif
+                                                    @if($setmenu->status_id =='3')
+                                                     Ready
+                                                    @endif
                                                     </td>
                                                     <!-- <td>
                                                         @if($setmenu->status_id =='2')
@@ -195,7 +205,11 @@
                                                         @if($setmenu->status_id =='2')
                                                             <input type="submit" class="complete complete_duration_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Complete Cooking">
                                                         @endif
-                                                    </td>  
+
+                                                        @if($setmenu->status_id =='3')
+                                                            <input type="submit" class="taken complete_taken_item btn_k" id="{{$setmenu->id}}" name="complete" value="Taken">
+                                                        @endif
+                                                    </td>
                                                     @if($setmenu->status_id == '1')
                                                     <td>
                                                         <input type="button" class="cancel btn_k" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
@@ -237,11 +251,11 @@
                                                         </div>
                                                         <!-- Modal -->
                                                     </td>
-                                                    @endif                          
-                                                </tr>    
+                                                    @endif
+                                                </tr>
                                             @endif
-                                        @endforeach    
-                                    @endif 
+                                        @endforeach
+                                    @endif
                                     </tbody>
                                 </table>
                             </div>

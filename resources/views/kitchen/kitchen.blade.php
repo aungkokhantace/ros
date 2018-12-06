@@ -2,7 +2,7 @@
 @section('title','Order View')
 @section('content')
     {{--title--}}
-       
+
 <div id="body">
     <div class="container" id="divAuto" style="cursor: pointer;">
         <div class="row" id="autoDiv">
@@ -10,7 +10,7 @@
         @if(isset($orderValue->items) && count($orderValue->items) > 0)
 
             <div class="col-md-12 tbl-container">
-                <div class="table-responsive">  
+                <div class="table-responsive">
                     <table class="table to-down">
                         <thead class="header">
                             <tr>
@@ -20,9 +20,9 @@
                                           @if($orderValue->take_id != 0)
                                           <h4>Take Away </h4>
                                            @endif
-                                        
 
-                                       
+
+
                                          @if(isset($tables))
                                            @foreach($tables as $table)
                                                 @if($table->order_id == $orderKey)
@@ -66,7 +66,7 @@
                                         @if($orderKey)
                                          <span>Order No  &nbsp &nbsp: &nbsp</span>
                                          {{ $orderValue->id }}
-                                       
+
                                          <br>
                                          <span>Item Name : &nbsp</span>
                                           {{ $item->name }}
@@ -85,7 +85,7 @@
                                             @endif
 
                                         @endif
-                                        
+
                                         <span> Order  type : &nbsp </span>
                                         @if($item->order_type_id == '1')
                                                 {{ " Dine in" }}
@@ -94,7 +94,7 @@
                                         @endif
                                     </td>
 
-                                   
+
                                     <td class="food-type">
                                         {{ $item->quantity }}
                                     </td>
@@ -107,17 +107,17 @@
                                     @if ($item->remark !== '')
                                      {{ $item->remark }}
                                     @endif
-                                    </td> 
+                                    </td>
                                     <td>
                                     @foreach($extra as $ex)
                                         @if($ex->order_detail_id == $item->id && $item->setmenu_id == 0)
-                                        
+
                                             {{ $ex->food_name }}
-                                        
+
                                         @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
-                                        
+
                                             {{ $ex->food_name }}
-                                        
+
                                         @endif
                                     @endforeach
                                     </td>
@@ -132,14 +132,16 @@
                                     <td>
                                         @if ($item->status_id == 1)
                                          Order
-                                        @else
+                                        @elseif($item->status_id == 2)
                                         Cooking
+                                        @else
+                                        Ready
                                         @endif
                                     </td>
                                     <!-- <td>
                                         @if($item->status_id =='2')
                                             <input type="hidden" name="order_duration" value="{{ $item->order_duration }}" />
-                                              <span class="cooking_duration"></span>                      
+                                              <span class="cooking_duration"></span>
                                             <input type="hidden" name="duration" class="txt_cooking_duration" />
                                         @endif
                                     </td> -->
@@ -147,11 +149,15 @@
                                     <td>
                                         @if ($item->status_id == 1)
                                                 <input type="submit" class="start btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking" /><br><br>
-                                               
-                                        @else
+
+                                        @elseif($item->status_id == 2)
                                                 <input type="submit" class="complete btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Complete Cooking" /><br><br>
+                                        @else
+
+                                                <input type="submit" class="taken btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Taken" /><br><br>
+
                                         @endif
-                                        
+
                                     </td>
                                     <td>
                                         @if ($item->status_id == 1)
@@ -194,21 +200,21 @@
                                                 </div>
 
                                     </td>
-                                            
-                                        
-                                    
+
+
+
                                 </tr>
 
                             @endforeach
 
                     </table>
-                    
+
                 </div>
             </div>
 
         @endif
         @endforeach
-        </div>  
+        </div>
      </div>
 </div>
 
@@ -222,7 +228,7 @@
                     var currentTime = moment();
 
                     var orderTime = moment($(this).data("ordertime"), 'YYYY-MM-DD hh:mm:ss tt');
-                
+
                     var diff = currentTime.diff(orderTime);
                     var d = moment.duration(diff);
                     var s = Math.floor(d.asHours()) + moment.utc(diff).format(":mm:ss");
@@ -273,9 +279,43 @@
                     });
                 });
             });
-            
-            
-        
+
+
+            $('#divAuto').on('click', '.taken', function(e){
+                var itemID      = $(this).attr('id');
+                $(document).ready(function  (){
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this item!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+
+                        if (isConfirm) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/taken/ajaxRequest/' + itemID,
+                                success: function (Response) {
+
+                                    console.log(Response);
+                                    //Socket Emit
+                                    var socketKey        = "taken_by";
+                                    var socketValue      = "taken_by";
+                                    socketEmit(socketKey,socketValue);
+                                    swal.close();
+                                }
+                            });
+                        };
+                    });
+                });
+            });
+
+
+
+
             $('#divAuto').on('click', '.complete',function (e) {
                 var itemID      = $(this).attr('id');
                 $(document).ready(function(){
@@ -376,7 +416,9 @@
             //Order Eidt
             var edit      = "edit";
             socketOn(edit,url,div);
+            //Taken order socket
+            var taken_by_waiter  = 'take';
+            socketOn(taken_by_waiter,url,div);
         });
     </script>
 @endsection
-
