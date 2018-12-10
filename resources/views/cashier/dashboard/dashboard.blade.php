@@ -2,25 +2,8 @@
 @extends('cashier.layouts.master')
 @section('title','Dashboard')
 @section('content')
-<style>
-    .avaliable-btn{
-        font-size: 30px;
-        height: 100px;
-        width: 150px;
-        background: #8FC251;
-    }
-    .service-btn{
-        font-size: 30px;
-        height: 100px;
-        width: 150px;
-        background: #5295D7;
-    }
-    .active{
-        color:#fff !important;
-    }
-</style>
+
     <div class="container">
-    
         @section('dayEnd')
             @if($sessions->daystart->status == 1)
             <button class="btn btn-large dash-btn ml-2" id="{{ $sessions->daystart->start_date}}/{{$sessions->daystart->status }}" style="background:rgb(75, 146, 221);">
@@ -47,7 +30,7 @@
             <button type="button" value="{{$location->id}}" class="btn btn-outline-dark btn-lg mr-2 mt-2 location_btn">{{ $location->location_type }}</button>
         @endforeach
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 mb-2">
                 <p class="mt-5 float-right"><i class="fa fa-square"  style="color:#8EC449; font-size:30px; aria-hidden="true"></i>
                     <span class="">Avaliable</span>
                 </p>
@@ -122,7 +105,8 @@
     <script type="text/javascript">
         $(document).ready(function(){
 
-            var locationId = $(".location_btn").val();                    
+            var locationId = $(".location_btn").val();     
+                           
             getTables(locationId);
 
         });
@@ -167,6 +151,7 @@
                 }
             },
             complete: function(){
+
             }
             });
         }

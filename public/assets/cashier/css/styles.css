@@ -1458,3 +1458,19 @@ button.close {
 	    font-size: 25px;
 	}
 }
+
+.avaliable-btn{
+	font-size: 30px;
+	height: 100px;
+	width: 150px;
+	background: #8FC251;
+}
+.service-btn{
+	font-size: 30px;
+	height: 100px;
+	width: 150px;
+	background: #5295D7;
+}
+.active{
+	color:#fff !important;
+}
