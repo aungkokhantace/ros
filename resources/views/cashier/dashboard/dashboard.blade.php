@@ -120,6 +120,42 @@
         @endif
 
     <script type="text/javascript">
+    
+        $(document).ready(function(){
+            var locationId = $(".location_btn").val();
+            
+            $.ajax({
+                url: '/Cashier/Tables/'+locationId,
+                type:"GET",
+                dataType:"json",
+                beforeSend: function(){
+
+                },
+
+                success:function(response) {
+
+                    var lengths = Object.keys(response).length;
+                    
+                    for (i = 0; i < lengths; i++) {
+                        if(response[i].status == 0){
+
+                            var a = $('.append_list').append("<div class='col-lg-2 col-md-3 col-sm-4 mb-2 other'><button class='btn btn-success avaliable-btn'>"+response[i].table_no+"</button></div>");
+
+                        }else{
+
+                            var a = $('.append_list').append("<div class='col-lg-2 col-md-3 col-sm-4 mb-2 other'><button class='btn btn-info service-btn'>"+response[i].table_no+"</button></div>");
+
+                        }
+                    }
+                },
+                complete: function(){
+                }
+            });
+        });
+
+    </script>
+            
+    <script type="text/javascript">
 
         $(".location_btn").click(function(){
 
