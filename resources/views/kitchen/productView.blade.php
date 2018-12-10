@@ -79,7 +79,7 @@
                                                 Order
                                                 @endif
                                                 @if($item->status_id =='2')
-                                                Cooking
+                                                {{($item->is_ready_food) ? "Ready Food" : "Cooking"}}
                                                 @endif
 
                                             </td>
@@ -89,7 +89,7 @@
                                                     <input type="submit" class="start start_duration_item btn_k" id="{{$item->order_detail_id}}" name="start" value="Start Cooking">
                                                 @endif
                                                 @if($item->status_id =='2')
-                                                    <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="Complete Cooking">
+                                                    <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="{{($item->is_ready_food) ? "Make Ready" : "Complete Cooking"}}">
                                                 @endif
                                             </td>
 

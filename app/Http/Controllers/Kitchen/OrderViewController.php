@@ -51,7 +51,7 @@ class OrderViewController extends Controller
         $order_setmenu_cooked_status   = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
 
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name 
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name, items.is_ready_food 
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
@@ -120,6 +120,7 @@ class OrderViewController extends Controller
         }
 
         // dd($orders);
+        return compact('orders');
         return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
     
@@ -342,7 +343,7 @@ class OrderViewController extends Controller
             $item_id        = $item->id;
             $has_continent  = $item->has_continent;
 
-            $orderDetails = DB::select("SELECT i.id, i.name, i.has_continent, ct.name AS continent_name, c.kitchen_id,
+            $orderDetails = DB::select("SELECT i.id, i.name, i.has_continent, i.is_ready_food, ct.name AS continent_name, c.kitchen_id,
             o.id as order_id, o.take_id, od1.order_time,od1.order_duration,od1.quantity,
             od1.remark,od1.setmenu_id,
             od1.id as order_detail_id, od1.exception,od1.status_id
@@ -389,7 +390,7 @@ class OrderViewController extends Controller
 
             }
         }
-
+        return compact('product');
         return view('kitchen.productView')->with('product',$product)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
     public function ajaxRequestProduct(Request $request)
