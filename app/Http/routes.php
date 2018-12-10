@@ -28,6 +28,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('updateDataBeforeLogout', 'Cashier\Staff\UserController@updateDataBeforeLogout');
             Route::group(['middleware' => 'dashboard:Cashier'],function(){
                 Route::get('Dashboard','Cashier\DashboardController@dashboard');
+                Route::get('/Tables/{location_id}','Cashier\DashboardController@getTable');
             });
             //End User
 
@@ -174,6 +175,7 @@ Route::group(['middleware' => 'web'], function () {
                 // Route::get('MakeOrder/categorydetail/{id}','Cashier\ListViewController@categoryDetail');
                 // Route::get('MakeOrder/SearchItem/{id}','Cashier\ListViewController@searchItem');
                 // Route::get('MakeOrder/add/{id}/{type}','Cashier\ListViewController@add');
+
             });
 
             //Start Kitchen Setup

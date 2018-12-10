@@ -14,6 +14,8 @@ use App\RMS\Item\Item;
 use App\RMS\Category\Category;
 use App\RMS\DayStart\DayStart;
 use App\RMS\Shift\Shift;
+use App\RMS\Location\Location;
+use App\RMS\Table\Table;
 use App\RMS\Shift\OrderShift;
 use App\Status\StatusConstance;
 use Carbon\Carbon;
@@ -24,7 +26,8 @@ class DashboardController extends Controller
     public function dashboard(Request $request)
     {    
         $sessions        = $this->getDayStart();
-        return view('cashier.dashboard.dashboard')->with('sessions',$sessions);
+        $locations = Location::all();
+        return view('cashier.dashboard.dashboard',compact('sessions','locations'));
     }
 
     protected function getDayStart() 
@@ -91,6 +94,12 @@ class DashboardController extends Controller
         return $get_day;
     }
 
+    public function getTable($location_id)
+    {   
+        $tables = Table::where('location_id',$location_id)->get();
+        return json_encode($tables);
+
+    }
     public function authorized(){
         return view('cashier.error.401');
     }
