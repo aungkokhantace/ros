@@ -397,7 +397,7 @@ class OrderViewController extends Controller
 
             }
         }
-        dd($product);
+        //dd($product);
 
         return view('kitchen.productView')->with('product',$product)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
