@@ -108,22 +108,21 @@ class ItemController extends Controller
         $paramObj->category_id              = $category;
         $paramObj->standard_cooking_time    = $cooking_time;
         $paramObj->has_continent            = $check;
-        $result                             = $this->ItemRepository->store($paramObj,$input,$remark);
-        // dd($result);
-        $item_arr                           = $result['data'];
+        $result                             = $this->ItemRepository->store($paramObj,$input,$remark);        
+        $item_arr                           = $result['data'];       
         if($result['aceplusStatusCode']     !=  ReturnMessage::OK){
           DB::rollback();
             return redirect()->action('Backend\Item\ItemController@index')
                 ->withMessage(FormatGenerator::message('Success', 'Item did not created ...'));
-        }
+        }       
 
-      if(count($remark) >0){
-        foreach ($remark as $rkey => $rvalue) {
-            foreach ($item_arr as $key => $value) {
+      if(count($remark) >0){       
+        foreach ($remark as $rkey => $rvalue) {            
+            foreach ($item_arr as $key => $value) {             
             $obj                              = new Item_Remark();
             $obj->item_id                     = $value;
             $obj->remark_id                   = $rvalue;
-            $itemRemark                       = $this->Item_RemarkRepo->store($obj);
+            $itemRemark                       = $this->Item_RemarkRepo->store($obj);            
               if($result['aceplusStatusCode']     !=  ReturnMessage::OK){
                 DB::rollback();
                     return redirect()->action('Backend\Item\ItemController@index')
@@ -353,6 +352,7 @@ class ItemController extends Controller
                     $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
 
                     $paramObj                           = Item::find($id);
+                    $itemID[]                           = $paramObj->id;
                     $paramObj->name                     = $name;
                     $paramObj->image                    = $photo;
                     $paramObj->mobile_image             = base64_encode($image->encoded);
@@ -362,6 +362,30 @@ class ItemController extends Controller
                     $paramObj->category_id              = $category;
                     $paramObj->standard_cooking_time    = $cooking_time;
                     $result = $this->ItemRepository->updateAllItem($paramObj,$oldprice);
+
+                    /* start item remark */
+                    foreach ($itemID as $key => $value) {
+                        Item_Remark::where('item_id',$value)->delete();
+
+                    }
+
+                    if(count($remark) >0){
+                    foreach ($remark as $rkey => $rvalue) {
+                    foreach ($itemID as $key => $value) {
+                    $obj                              = new Item_Remark();
+                    $obj->item_id                     = $value;
+                    $obj->remark_id                   = $rvalue;
+                    $itemRemark                       = $this->Item_RemarkRepo->store($obj);
+                      if($itemRemark['aceplusStatusCode']     !=  ReturnMessage::OK){
+                        // DB::rollback();
+                            return redirect()->action('Backend\Item\ItemController@index')
+                        ->withMessage(FormatGenerator::message('Success', 'Item Remark did not created ...'));
+                        }
+
+                    }
+                }//foreach
+              }//if
+              /* end item remark */
 
                     if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                         return redirect()->action('Backend\Item\ItemController@index')
@@ -387,6 +411,7 @@ class ItemController extends Controller
                 $price                           = $request->get('price');
                 $status                          = $request->get('status');
                 $paramObj                        = Item::find($id);
+                $itemID[]                        = $paramObj->id;
                 $paramObj->name                  = $name;
                 $paramObj->description           = $description;
                 $paramObj->price                 = $price;
@@ -395,6 +420,29 @@ class ItemController extends Controller
                 $paramObj->standard_cooking_time = $cooking_time;
 
                 $result                          = $this->ItemRepository->updateItem($paramObj,$oldprice);
+                  /* start item remark */
+                  foreach ($itemID as $key => $value) {
+                    Item_Remark::where('item_id',$value)->delete();
+
+                }
+
+                if(count($remark) >0){
+                foreach ($remark as $rkey => $rvalue) {
+                foreach ($itemID as $key => $value) {
+                $obj                              = new Item_Remark();
+                $obj->item_id                     = $value;
+                $obj->remark_id                   = $rvalue;
+                $itemRemark                       = $this->Item_RemarkRepo->store($obj);
+                  if($itemRemark['aceplusStatusCode']     !=  ReturnMessage::OK){
+                    // DB::rollback();
+                        return redirect()->action('Backend\Item\ItemController@index')
+                    ->withMessage(FormatGenerator::message('Success', 'Item Remark did not created ...'));
+                    }
+
+                }
+            }//foreach
+          }//if
+          /* end item remark */
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->action('Backend\Item\ItemController@index')

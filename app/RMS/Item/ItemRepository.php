@@ -36,6 +36,8 @@ class ItemRepository implements ItemRepositoryInterface
                 $paramObj = Item::find($inserted_id);
                 $paramObj->stock_code = $stock_code;
                 $paramObj->save();
+                $id  = $paramObj->id;                   
+                array_push($id_arr, $id);
             } else {
                 $count      = count($input['continent']);
                 $maxID      = DB::table('items')->max('id');
@@ -79,6 +81,7 @@ class ItemRepository implements ItemRepositoryInterface
                     $paramObj->stock_code = $stock_code;
                     $paramObj->save();
                     $id  = $paramObj->id;
+                    // dd($id,"awef");
                     array_push($id_arr, $id);
                }
             }
