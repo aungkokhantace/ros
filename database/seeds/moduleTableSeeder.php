@@ -160,5 +160,12 @@ class moduleTableSeeder extends Seeder
             'view'=>'cashier',
             'created_by'=>'1',
         ]);
+
+        DB::table('modules')->insert([
+            'id'=>'26',
+            'module'=>'Remark',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
     }
 }

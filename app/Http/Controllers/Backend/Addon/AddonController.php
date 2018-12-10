@@ -63,7 +63,7 @@ class AddonController extends Controller
         $photo                  = uniqid().'.'.$file->getClientOriginalExtension();
         $file->move('uploads', $photo);
         // resizing image
-        $image = InterventionImage::make(sprintf('uploads' .'/%s',$photo))->resize(200, 200)->save();
+        $image                  = InterventionImage::make(sprintf('uploads' .'/%s',$photo))->resize(200, 200)->save();
 
         $status                 = Input::get('status');
         $paramObj               = new Addon();
