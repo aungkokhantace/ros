@@ -44,7 +44,7 @@
         @endsection
 
         @foreach($locations as $location)
-            <button type="button" value="{{$location->id}}" class="btn btn-outline-dark btn-lg mr-2 location_btn">{{ $location->location_type }}</button>
+            <button type="button" value="{{$location->id}}" class="btn btn-outline-dark btn-lg mr-2 mt-2 location_btn">{{ $location->location_type }}</button>
         @endforeach
         <div class="row">
             <div class="col-md-6">
@@ -121,9 +121,10 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
+
             var locationId = $(".location_btn").val();                    
             getTables(locationId);
-        
+
         });
 
          $(".location_btn").click(function(){
