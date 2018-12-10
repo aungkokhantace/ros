@@ -133,7 +133,6 @@
             type:"GET",
             dataType:"json",
             beforeSend: function(){
-
             },
             success:function(response) {
 
