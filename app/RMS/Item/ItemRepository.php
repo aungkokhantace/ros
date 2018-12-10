@@ -47,7 +47,7 @@ class ItemRepository implements ItemRepositoryInterface
                     $isDefault  = 0;
                     if ($i == 0) {
                         $isDefault  = 1;
-                    }               
+                    }
 
                     $tempObj                = new item();
                     $tempObj->name          = $input['name'];
@@ -83,7 +83,7 @@ class ItemRepository implements ItemRepositoryInterface
                }
             }
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
-             $returnedObj['data']              = $id_arr;           
+             $returnedObj['data']              = $id_arr;
             return $returnedObj;
         }
         catch(Exception $e){
@@ -116,7 +116,7 @@ class ItemRepository implements ItemRepositoryInterface
         return $category;
     }
 
-   
+
     public function ChooseDisabled()
     {
         $disabled   = Category::select('id', 'parent_id', 'name','status')
@@ -162,7 +162,7 @@ class ItemRepository implements ItemRepositoryInterface
         ->where('group_id','=',$groupID)->whereNull('deleted_at')->get();
         return $continent_items;
     }
-    
+
     public function updateAllItem($paramObj,$oldprice)
     {
         $returnedObj = array();
@@ -177,7 +177,7 @@ class ItemRepository implements ItemRepositoryInterface
                 //Save item Price change history
                 Utility::savePriceTracking('items',$tempObj->id,'integer','update',$oldprice,$tempObj->price,$currentUser,$tempObj->updated_at);
             }
-            
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -257,7 +257,7 @@ class ItemRepository implements ItemRepositoryInterface
             $paramObj = Item::find($inserted_id);
             $paramObj->stock_code = $stock_code;
             $paramObj->save();
-            
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -282,7 +282,7 @@ class ItemRepository implements ItemRepositoryInterface
     }
 
     public function delete($id){
-       
+
         // $tempObj = Item::find($id);
         $tempObj    = Item::where('id',$id)->get();
         $a=(object)$tempObj;

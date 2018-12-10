@@ -81,7 +81,7 @@ class RemarkController extends Controller
                 ->withMessage(FormatGenerator::message('Fail', 'Remark did not create ...'));
 
         }
-       
+
     }
 
     /**
@@ -132,20 +132,20 @@ class RemarkController extends Controller
            return redirect()->action('Backend\Remark\RemarkController@index')
                 ->withMessage(FormatGenerator::message('Success', 'Remark created ...'));
         }
-        
+
         else{
             return redirect()->action('Backend\Remark\RemarkController@index')
                 ->withMessage(FormatGenerator::message('Fail', 'Remark did not create ...'));
         }
-        
+
 
       }
       catch(\Exception $e){
        return redirect()->action('Backend\Remark\RemarkController@index')
                 ->withMessage(FormatGenerator::message('Fail', 'Remark did not create ...'));
         }
-      
-    
+
+
     }
 
     /**
@@ -156,7 +156,7 @@ class RemarkController extends Controller
      */
     public function delete($id)
     {
-        
+
         $new_string = explode(',',$id);
         foreach($new_string as $id)
         {
@@ -164,5 +164,5 @@ class RemarkController extends Controller
         }
         return redirect()->action('Backend\Remark\RemarkController@index')->withMessage(FormatGenerator::message('Success', 'Remark deleted ...'));
     }
-    
+
 }

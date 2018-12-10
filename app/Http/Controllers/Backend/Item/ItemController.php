@@ -83,7 +83,7 @@ class ItemController extends Controller
         $check                  = $request->get('check');
         $price                  = $request->get('price');
         $check                  = $request->get('check');
-        $remark                 = $request->get('remark');       
+        $remark                 = $request->get('remark');
         $cooking_time           = Input::get('standard_cooking_time');
         if ($check == 0) {
             $file                   = $request->file('fileupload');
@@ -110,9 +110,9 @@ class ItemController extends Controller
         $paramObj->has_continent            = $check;
         $result                             = $this->ItemRepository->store($paramObj,$input,$remark);
         // dd($result);
-        $item_arr                           = $result['data'];       
+        $item_arr                           = $result['data'];
         if($result['aceplusStatusCode']     !=  ReturnMessage::OK){
-          DB::rollback();            
+          DB::rollback();
             return redirect()->action('Backend\Item\ItemController@index')
                 ->withMessage(FormatGenerator::message('Success', 'Item did not created ...'));
         }
@@ -125,12 +125,12 @@ class ItemController extends Controller
             $obj->remark_id                   = $rvalue;
             $itemRemark                       = $this->Item_RemarkRepo->store($obj);
               if($result['aceplusStatusCode']     !=  ReturnMessage::OK){
-                DB::rollback();            
+                DB::rollback();
                     return redirect()->action('Backend\Item\ItemController@index')
                 ->withMessage(FormatGenerator::message('Success', 'Item Remark did not created ...'));
-                }       
+                }
 
-            }                 
+            }
         }//foreach
       }//if
         DB::commit();
@@ -139,7 +139,7 @@ class ItemController extends Controller
 
 
        }//try
-       catch(\Expection $e){        
+       catch(\Expection $e){
         return redirect()->action('Backend\Item\ItemController@index')
                 ->withMessage(FormatGenerator::message('Fail', 'Item did not create ...'));
        }
@@ -150,13 +150,13 @@ class ItemController extends Controller
         $remark             = $this->RemarkRepo->getRemark();
         $record             = $this->ItemRepository->find($id);
 
-        $result             = $this->ItemRepository->ChooseCat();        
-        $r_cat              = DB::table('category')->where('id', $record->category_id)->first()->name;        
-        $parents            = Category::select('parent_id')->where('parent_id','!=', 0)->groupBy('parent_id')->get();     
-        $remark_item        = $this->Item_RemarkRepo->findRemark_Item($id);    
+        $result             = $this->ItemRepository->ChooseCat();
+        $r_cat              = DB::table('category')->where('id', $record->category_id)->first()->name;
+        $parents            = Category::select('parent_id')->where('parent_id','!=', 0)->groupBy('parent_id')->get();
+        $remark_item        = $this->Item_RemarkRepo->findRemark_Item($id);
 
-        $groupID            = $record->group_id;   
-        
+        $groupID            = $record->group_id;
+
         $parent_id_arr      = array();
         foreach($parents as $parent){
             array_push($parent_id_arr,$parent->parent_id);
@@ -165,19 +165,19 @@ class ItemController extends Controller
         $continent_arr      = $this->ItemRepository->getContinent();
         $has_continent      = $record->has_continent;
         $continent_items    = [];
-        if ($has_continent  == 1) {        
+        if ($has_continent  == 1) {
             $continent_items    = $this->ItemRepository->getContinentByGroupID($groupID);
         }
         $remark_arr                = array();
-            foreach ($remark_item as $key => $value) {                
+            foreach ($remark_item as $key => $value) {
                 array_push($remark_arr,$value->remark_id);
-        }   
-        
+        }
+
         return view('Backend.item.item', ['categories' => $result])->with('record', $record)
                 ->with('r_cat', $r_cat)
                 ->with('parent_id_arr',$parent_id_arr)
                 ->with('continent_arr',$continent_arr)
-                ->with('continent_items',$continent_items)               
+                ->with('continent_items',$continent_items)
                 ->with('remarks',$remark)
                 ->with('remark_arr',$remark_arr);
     }
@@ -185,7 +185,7 @@ class ItemController extends Controller
     //ItemEditRequest
     public function update(Request $request)
     {
-       
+
         $category_id    = "";
         // $request->validate();
         $id             = $request->get('id');
@@ -206,7 +206,7 @@ class ItemController extends Controller
 
         //if users don't want to edit name and want to edit other field
         if($lower_name == $lower_old_name ){
-            $flag = 1;           
+            $flag = 1;
 
         }
         else{
@@ -228,11 +228,11 @@ class ItemController extends Controller
         if ($checkConti > 0) {
             $group_id_attr    = DB::table('items')->select('group_id')
                                 ->WHERE('id','=',$id)
-                                ->first();           
+                                ->first();
             $group_id         =  $group_id_attr->group_id;
             $file             = $request->file('input-file-preview');
             $itemID           = $request->get('item-id');
-            
+
             $continents       = $request->get('continent');
             $continentPrice   = $request->get('continent-price');
             $oldItemCount     = Item::where('group_id','=',$group_id)
@@ -247,12 +247,12 @@ class ItemController extends Controller
                 // dd('item if ',$flagItem);
             }
 
-            $count              = 0;            
-            foreach($continents as $key => $continent) {               
+            $count              = 0;
+            foreach($continents as $key => $continent) {
                 $count                  = $count + 1;
 
-                if ($count <= $oldItemCount) {                   
-                    $postID                 = $itemID[$key];                 
+                if ($count <= $oldItemCount) {
+                    $postID                 = $itemID[$key];
                     $paramObj               = Item::find($postID);
                     //Get Old Price for Price History
                     $oldprice               = $paramObj->price;
@@ -269,25 +269,25 @@ class ItemController extends Controller
                         $imagedata              = file_get_contents($file[$key]);
                         $photo  = uniqid().'.'.$file[$key]->getClientOriginalExtension();
                         $file[$key]->move('uploads', $photo);
-                        
+
                         // resizing image
                         $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
                         $mobileImg = base64_encode($image->encoded);
                         $paramObj->image        = $photo;
                         $paramObj->mobile_image = $mobileImg;
-                       
-                    }                    
+
+                    }
                     $result                     = $this->ItemRepository->updateContinent($paramObj,$oldprice);
 
-                } 
+                }
 /* ------------------start contient is > itemid -------------------------------------*/
                 else {
-                    dd("update new");
+                    // dd("update new");
 
                     $imagedata              = file_get_contents($file[$key]);
                     $photo  = uniqid().'.'.$file[$key]->getClientOriginalExtension();
                     $file[$key]->move('uploads', $photo);
-                    
+
                     // resizing image
                     $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
                     $mobileImg = base64_encode($image->encoded);
@@ -311,8 +311,8 @@ class ItemController extends Controller
 /*----------------- start item remark -----------------------------------------------------------*/
 
                     foreach ($itemID as $key => $value) {
-                        Item_Remark::where('item_id',$value)->delete();                   
-                        
+                        Item_Remark::where('item_id',$value)->delete();
+
                     }
                     if(count($remark) >0){
                     foreach ($remark as $rkey => $rvalue) {
@@ -322,12 +322,12 @@ class ItemController extends Controller
                     $obj->remark_id                   = $rvalue;
                     $itemRemark                       = $this->Item_RemarkRepo->store($obj);
                       if($result['aceplusStatusCode']     !=  ReturnMessage::OK){
-                        DB::rollback();            
+                        DB::rollback();
                             return redirect()->action('Backend\Item\ItemController@index')
                         ->withMessage(FormatGenerator::message('Success', 'Item Remark did not created ...'));
-                        }       
+                        }
 
-                    }                 
+                    }
                 }//foreach
               }//if
 /*----------------- end item remark -----------------------------------------------------------*/
@@ -338,20 +338,20 @@ class ItemController extends Controller
 
          }
 /*----------------- start item does not contain contient -----------------------------------*/
-         else {       
+         else {
 //Not Comtinent item
             $file = $request->file('fileupload');
 /*--------- if users want to upload new photo,"if" condition will work.and if users don't want to upload new photo,'else' function will work ----*/
-            if($file != null){               
+            if($file != null){
                     $imagedata              = file_get_contents($file);
                     $name                   = Input::get('name');
                     $photo  = uniqid().'.'.$file->getClientOriginalExtension();
 
                     $file->move('uploads', $photo);
-                    
+
                     // resizing image
                     $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
-                    
+
                     $paramObj                           = Item::find($id);
                     $paramObj->name                     = $name;
                     $paramObj->image                    = $photo;
@@ -374,7 +374,7 @@ class ItemController extends Controller
                 }
 
 
-            else{              
+            else{
                 $name                            = $request->get('name');
                 $category                        = $request->get('parent_category');
                 $data                            = DB::table('category')->get();
@@ -393,7 +393,7 @@ class ItemController extends Controller
                 $paramObj->status                = $status;
                 $paramObj->category_id           = $category;
                 $paramObj->standard_cooking_time = $cooking_time;
-               
+
                 $result                          = $this->ItemRepository->updateItem($paramObj,$oldprice);
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
@@ -406,11 +406,11 @@ class ItemController extends Controller
                 }
 
         }
-                
 
-         } 
+
+         }
 /*----------------- end item does not contain contient -----------------------------------*/
-           
+
 
 }
 /*----------------- end flag 1 -- -----------------------------------*/
@@ -428,29 +428,29 @@ class ItemController extends Controller
         $group_id_arr       = [];
         $id_arr             = array();
         $id_arr_val         =[];
-        $new_string         = explode(',', $id);       
+        $new_string         = explode(',', $id);
         $groups             = DB::table('items')
                     ->whereIn('id', $new_string)
                     ->select('group_id')
                     ->get();
-       
+
         foreach ($groups as $key => $value) {
-            $group_id_arr[]= $value->group_id;            
-        } 
+            $group_id_arr[]= $value->group_id;
+        }
 
          $id_arr     = DB::table('items')
                     ->whereIn('group_id', $group_id_arr)
                     ->select('id')
                     ->get();
-        
-       foreach ($id_arr as $id_key =>$id_value) {        
-        $aa         = (array)$id_value;      
+
+       foreach ($id_arr as $id_key =>$id_value) {
+        $aa         = (array)$id_value;
 
              $this->ItemRepository->delete($aa);
              $this->Item_RemarkRepo->delete($aa);
-        }  
+        }
 
-       
+
         return redirect()->action('Backend\Item\ItemController@index')->withMessage(FormatGenerator::message('Success', 'Item Deleted ...')); //to redirect listing page
     }
 }
