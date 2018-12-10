@@ -106,8 +106,10 @@
         $(document).ready(function(){
 
             var locationId = $(".location_btn").val();     
-                           
-            getTables(locationId);
+
+            getTables(locationId);  
+
+            $(`.location_btn[value=${locationId}]`).prop("disabled",true);
 
         });
 
