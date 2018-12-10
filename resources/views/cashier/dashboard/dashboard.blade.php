@@ -135,7 +135,6 @@
             beforeSend: function(){
 
             },
-
             success:function(response) {
 
                 var lengths = Object.keys(response).length;
