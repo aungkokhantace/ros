@@ -747,6 +747,30 @@ class syncAPIController extends ApiGuardController
                     }
                 }
 
+                if ($sync->table_name == "remark") {
+                    if ($sync->version > $temp['remark']) {
+                        $remark = DB::select("SELECT id,name,remark_code,status FROM remark WHERE deleted_at IS NULL");
+                        $remark_count     = count($remark);
+                        if ($remark_count > 0) {
+                             $returnArr['remark'] = $room;
+                        } else {
+                            $returnArr['remark'] = Null;
+                        }
+                    }
+                }
+
+                if ($sync->table_name == "item_remark") {
+                    if ($sync->version > $temp['item_remark']) {
+                        $item_remark = DB::select("SELECT item_id,remark_id  FROM item_remark WHERE deleted_at IS NULL");
+                        $item_remark_count     = count($item_remark);
+                        if ($item_remark_count > 0) {
+                             $returnArr['item_remark'] = $room;
+                        } else {
+                            $returnArr['item_remark'] = Null;
+                        }
+                    }
+                }
+
                 if ($sync->table_name == "tables") {
                     if ($sync->version > $temp['tables']) {
                         $table = DB::select("SELECT id,table_no,status FROM tables WHERE deleted_at IS NULL");
