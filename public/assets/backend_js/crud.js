@@ -433,6 +433,38 @@ function remark_edit() {
         window.location = "/Backend/Remark/edit/" + data;
 }
 
+function remark_enable() {
+    var data = [];
+    $("input[name='remark_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one remark to active !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one remark to active in one time!", "error");
+    }
+    else
+        window.location = "/Backend/Remark/active/" + data;
+}
+
+function remark_disable() {
+    var data = [];
+    $("input[name='remark_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one remark to inactive!", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one remark to inactive in one time!", "error");
+    }
+    else
+        window.location = "/Backend/Remark/inactive/" + data;
+}
+
 function check_date(){
     var from = $('#datepicker').val();
     var to = $('#datepicker1').val();
