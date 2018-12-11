@@ -57,6 +57,9 @@
                         @if ($key == count($continent_items) - 1)
                         <td>
                             <button type="button" class="btn green btn-sm btn-add-product-detail" ><span class="glyphicon-plus">Add</span></button>
+                           <!--  <button type="button" class="btn green  btn-add-product-detail" onclick="addContinent()"><span class="glyphicon-plus">Add</span></button>
+                            
+                            <button type="button" class="btn red  btn-remove-product-detail" onclick="removeContinent(this)"><span class="glyphicon-minus">Remove</span></button> -->
                         </td>
                         @else
                         <td>&nbsp;</td>
@@ -81,8 +84,11 @@
     $(document).ready(function(){
         $('.btn-add-product-detail').click(function(){
             $(document).on('click', '.btn-add-product-detail', function (event) { 
+        console.log("tesst");
+
                 var imgLength       = $('.preview-img').length;
-                if (imgLength > continentCount) {
+                console.log(imgLength +' and '+ continentCount);
+                    if (imgLength > continentCount) {
                     var hidePreview     = imgLength - 1;
                     $('.preview-img:eq(' + hidePreview + ')').hide();
                     $('.image-preview-filename:eq(' + hidePreview +')').val('');

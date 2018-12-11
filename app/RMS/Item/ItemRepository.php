@@ -17,26 +17,32 @@ use App\RMS\ReturnMessage;
 
 class ItemRepository implements ItemRepositoryInterface
 {
-    public function store($paramObj,$input)
+    public function store($paramObj,$input,$remark)
     {
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
+            $id_arr     = array();
             $check      = $input['check'];
             if ($check <= 0) {
                 $tempObj    = Utility::addCreatedBy($paramObj);
                 $tempObj->save();
 
                 $inserted_id = $tempObj->id;
+                $first_id    = $tempObj->id;
                 $product_type = 1; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
                 $stock_code = Utility::generateStockCode($inserted_id,$product_type);
                 $paramObj = Item::find($inserted_id);
                 $paramObj->stock_code = $stock_code;
                 $paramObj->save();
+                $id  = $paramObj->id;                   
+                array_push($id_arr, $id);
             } else {
                 $count      = count($input['continent']);
                 $maxID      = DB::table('items')->max('id');
+                // dd($maxID);
+
                 $uniqID     = uniqid();
                 $groupID    = $uniqID . $maxID;
                for ($i = 0; $i < $count; $i++) {
@@ -44,7 +50,8 @@ class ItemRepository implements ItemRepositoryInterface
                     if ($i == 0) {
                         $isDefault  = 1;
                     }
-                    $tempObj    = new item();
+
+                    $tempObj                = new item();
                     $tempObj->name          = $input['name'];
                     $file                   = $input['input-file-preview'][$i];
                     $imagedata              = file_get_contents($file);
@@ -73,13 +80,16 @@ class ItemRepository implements ItemRepositoryInterface
                     $paramObj = Item::find($inserted_id);
                     $paramObj->stock_code = $stock_code;
                     $paramObj->save();
+                    $id  = $paramObj->id;
+                    // dd($id,"awef");
+                    array_push($id_arr, $id);
                }
             }
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+             $returnedObj['data']              = $id_arr;
             return $returnedObj;
         }
         catch(Exception $e){
-
             $returnedObj['aceplusStatusMessage'] = $e->getMessage();
             return $returnedObj;
         }
@@ -109,7 +119,7 @@ class ItemRepository implements ItemRepositoryInterface
         return $category;
     }
 
-   
+
     public function ChooseDisabled()
     {
         $disabled   = Category::select('id', 'parent_id', 'name','status')
@@ -155,7 +165,7 @@ class ItemRepository implements ItemRepositoryInterface
         ->where('group_id','=',$groupID)->whereNull('deleted_at')->get();
         return $continent_items;
     }
-    
+
     public function updateAllItem($paramObj,$oldprice)
     {
         $returnedObj = array();
@@ -170,7 +180,7 @@ class ItemRepository implements ItemRepositoryInterface
                 //Save item Price change history
                 Utility::savePriceTracking('items',$tempObj->id,'integer','update',$oldprice,$tempObj->price,$currentUser,$tempObj->updated_at);
             }
-            
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -209,7 +219,9 @@ class ItemRepository implements ItemRepositoryInterface
     }
 
     public function updateContinent($paramObj,$oldprice)
+
     {
+        // dd($paramObj,$oldprice);
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
@@ -248,7 +260,7 @@ class ItemRepository implements ItemRepositoryInterface
             $paramObj = Item::find($inserted_id);
             $paramObj->stock_code = $stock_code;
             $paramObj->save();
-            
+
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
@@ -273,10 +285,22 @@ class ItemRepository implements ItemRepositoryInterface
     }
 
     public function delete($id){
-        $tempObj = Item::find($id);
-        $tempObj = Utility::addDeletedBy($tempObj);
-        $tempObj->deleted_at = date('Y-m-d H:m:i');
-        $tempObj->save();
+
+        // $tempObj = Item::find($id);
+        $tempObj    = Item::where('id',$id)->get();
+        $a=(object)$tempObj;
+        foreach ($a as $key => $value) {
+           $value = Utility::addDeletedBy($value);
+            $value->deleted_at = date('Y-m-d H:m:i');
+             $value->save();
+        }
+        // dd("finies");
+
+        // dd($tempObj,$a);
+        // $tempObj = Utility::addDeletedBy($tempObj);
+        // dd($tempObj);
+        // $tempObj->deleted_at = date('Y-m-d H:m:i');
+        // $tempObj->save();
     }
 
 }

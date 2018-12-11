@@ -578,6 +578,20 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('DownloadApi','Backend\Log\ApilistController@down');
         });
 
+          //Start Remark
+        Route::group(['middleware'=>'remark:Cashier'],function(){
+            Route::get('Remark/index', 'Backend\Remark\RemarkController@index');
+            Route::get('Remark/create', 'Backend\Remark\RemarkController@create');
+            Route::post('Remark/store', 'Backend\Remark\RemarkController@store');
+            Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
+            Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
+            Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
+          
+            Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
+            Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
+        });
+        //End remark
+
         });
     });
 
@@ -595,8 +609,13 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('getCompleteID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@update');
             Route::get('getStartID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@start');
             Route::get('getStart/ajaxRequest/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@itemStart');
+            Route::get('taken/ajaxRequest/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@takenWaiter');
 
             Route::get('productView/CookedItem/{item_id}', 'Kitchen\OrderViewController@CookedItemFromProductView');
+            Route::get('productView/taken/{item_id}', 'Kitchen\OrderViewController@TakenItemFromProductView');
+            Route::get('productView/taken/setmenu/{item_id}', 'Kitchen\OrderViewController@TakenSetMenuFromProductView');
+
+
             Route::get('productView/CookingItem/{item_id}', 'Kitchen\OrderViewController@CookingItemFromProductView');
 
             Route::get('productView/CookedSetMenuItem/{id}','Kitchen\OrderViewController@CookedSetMenuItemFromProductView');

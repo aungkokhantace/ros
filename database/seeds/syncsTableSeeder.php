@@ -217,5 +217,32 @@ class syncsTableSeeder extends Seeder
             'updated_by' => '1',
             'deleted_by' => ''
         ]);
+        DB::table('syncs_tables')->insert([
+            'id'         => '24',
+            'table_name' => 'locations',
+            'version'    => '1',
+            'active'     => '1',
+            'created_by' => '1',
+            'updated_by' => '1',
+            'deleted_by' => ''
+        ]);
+        DB::table('syncs_tables')->insert([
+            'id'         => '25',
+            'table_name' => 'remark',
+            'version'    => '1',
+            'active'     => '1',
+            'created_by' => '1',
+            'updated_by' => '1',
+            'deleted_by' => ''
+        ]);
+        DB::table('syncs_tables')->insert([
+            'id'         => '26',
+            'table_name' => 'item_remark',
+            'version'    => '1',
+            'active'     => '1',
+            'created_by' => '1',
+            'updated_by' => '1',
+            'deleted_by' => ''
+        ]);
     }
 }

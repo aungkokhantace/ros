@@ -50,9 +50,11 @@
           </a>
           <ul class="treeview-menu">
             <li><a href="/Backend/Category/index"><i class="fa fa-circle-o text-aqua"></i>  Category </a></li>
+            <li><a href="/Backend/Remark/index"><i class="fa fa-circle-o text-aqua"></i> </i> Remark</a></li>
             <li><a href="/Backend/Item/index"><i class="fa fa-circle-o text-aqua"></i>  Items</a></li>
             <li><a href="/Backend/AddOn/index"><i class="fa fa-circle-o text-aqua"></i>  Add On</a></li>
             <li><a href="/Backend/SetMenu/index"><i class="fa fa-circle-o text-aqua"></i> </i> Set Menu</a></li>
+
           </ul>
         </li>
         <li class="treeview">

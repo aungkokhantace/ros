@@ -61,9 +61,9 @@ class syncAPIController extends ApiGuardController
         }
         else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output);  
+            return Response::json($output);
         }
-        
+
     }
 
     public function category()
@@ -76,19 +76,19 @@ class syncAPIController extends ApiGuardController
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
-       
+
         if($key == $activate_key){
             $category = DB::select("SELECT id,name,status,parent_id,kitchen_id,image FROM category WHERE status = '1' AND deleted_at IS NULL");
             $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status FROM set_menu WHERE status = '1' AND deleted_at IS NULL");
             $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
-        
+
             $output = array("category" => $category,"set_menu"=>$set_menu,"set_item"=>$set_item);
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output);  
+            return Response::json($output);
         }
-        
+
     }
 
     public function addon()
@@ -101,17 +101,17 @@ class syncAPIController extends ApiGuardController
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
-        
+
         if($key == $activate_key){
             $addon = DB::select("SELECT id,food_name,category_id,image,price,status,mobile_image FROM add_on WHERE status = '1' AND deleted_at IS NULL");
-       
+
             $output = array("addon" => $addon);
             return Response::json($output);
         }else{
              $output = array("Message" => "Unauthorized");
-            return Response::json($output);  
+            return Response::json($output);
         }
-        
+
     }
 
     public function item()
@@ -130,7 +130,7 @@ class syncAPIController extends ApiGuardController
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output);       
+            return Response::json($output);
         }
     }
 
@@ -150,10 +150,10 @@ class syncAPIController extends ApiGuardController
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output);       
+            return Response::json($output);
         }
     }
-    
+
     public function set_menu()
     {
         $temp = Input::all();
@@ -164,14 +164,14 @@ class syncAPIController extends ApiGuardController
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
-        
+
         if($key == $activate_key){
             $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,image,status,mobile_image FROM set_menu WHERE status = '1' AND deleted_at IS NULL");
             $output = array("set_menu" => $set_menu);
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output);  
+            return Response::json($output);
         }
     }
 
@@ -185,20 +185,20 @@ class syncAPIController extends ApiGuardController
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
-        
+
         if($key == $activate_key){
             $set_item = DB::select("SELECT id,set_menu_id,item_id FROM set_item WHERE deleted_at IS NULL");
             $output = array("set_item" => $set_item);
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output);  
+            return Response::json($output);
         }
     }
-   
+
     public function config()
-    {   
-        
+    {
+
         $temp = Input::all();
         $key  = $temp['site_activation_key'];
         $site_activation_key = Config::all();
@@ -207,17 +207,17 @@ class syncAPIController extends ApiGuardController
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
-       
+
         if($key == $activate_key){
             $config = DB::select("SELECT tax,service,booking_warning_time,booking_waiting_time,booking_service_time,room_charge,restaurant_name,logo,mobile_logo,email,website,phone,address,message,remark,mobile_image FROM config");
-        
+
         $output = array("config" => $config);
         return Response::json($output);
         }else{
              $output = array("Message" => "Unauthorized");
-            return Response::json($output);    
+            return Response::json($output);
         }
-        
+
     }
 
     public function table()
@@ -230,7 +230,7 @@ class syncAPIController extends ApiGuardController
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
-        
+
         if($key == $activate_key){
             $cur_date      = date('Y-m-d');
             $default_status         = StatusConstance::BOOKING_DEFAULT_STATUS;
@@ -275,8 +275,8 @@ class syncAPIController extends ApiGuardController
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output);   
-        } 
+            return Response::json($output);
+        }
     }
 
     public function room()
@@ -335,7 +335,7 @@ class syncAPIController extends ApiGuardController
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output);   
+            return Response::json($output);
         }
     }
 
@@ -356,9 +356,9 @@ class syncAPIController extends ApiGuardController
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output); 
+            return Response::json($output);
         }
-        
+
     }
 
     public function promotion()
@@ -378,9 +378,9 @@ class syncAPIController extends ApiGuardController
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output); 
+            return Response::json($output);
         }
-        
+
     }
 
     public function promotionItem()
@@ -400,9 +400,9 @@ class syncAPIController extends ApiGuardController
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output); 
+            return Response::json($output);
         }
-        
+
     }
 
     public function discount()
@@ -424,9 +424,9 @@ class syncAPIController extends ApiGuardController
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output); 
+            return Response::json($output);
         }
-        
+
     }
 
     public function booking()
@@ -445,18 +445,18 @@ class syncAPIController extends ApiGuardController
                 $today = $date->toDateString();
                 $booking = DB::select("SELECT id,customer_name,from_time,to_time FROM booking WHERE booking_date = '$today' AND deleted_at is null ");
                 //print_r($booking);exit();
-                
-                $table  = DB::select("SELECT booking_id,table_id FROM booking_table"); 
+
+                $table  = DB::select("SELECT booking_id,table_id FROM booking_table");
                 $room   = DB::select("SELECT booking_id,room_id FROM booking_room");
-    
+
                 $returnObj = array();
-                
+
                 if(isset($booking)){
-                    foreach($booking as $key => $obj){            
+                    foreach($booking as $key => $obj){
                     $booking_id = $obj->id;
 
-                    $returnObj[] = $obj;             
-                    foreach($table as $booking_table => $t){              
+                    $returnObj[] = $obj;
+                    foreach($table as $booking_table => $t){
                         if($booking_id == $t->booking_id){
                             //Get Table Capicity
                             $capacityObj  = Table::find($t->table_id);
@@ -468,7 +468,7 @@ class syncAPIController extends ApiGuardController
                     }
 
                     $bookingRoomArray = array();
-                    foreach($room as $booking_room => $r){                
+                    foreach($room as $booking_room => $r){
                         if($booking_id == $r->booking_id){
                             //Get Room Capicity
                             $capacityObj    = Room::find($r->room_id);
@@ -500,10 +500,10 @@ class syncAPIController extends ApiGuardController
             }
         } else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output); 
+            return Response::json($output);
         }
-        
-        
+
+
     }
 
 
@@ -541,17 +541,17 @@ class syncAPIController extends ApiGuardController
                     $tempArr['customer_name']= $obj->customer_name;
                     $tempArr['capacity']     = $obj->capacity;
                     array_push($returnObj, $tempArr);
-                }  
+                }
             }
                 //dd($returnObj);
             $output = array("booking" => $returnObj);
             return Response::json($output);
         } else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output); 
+            return Response::json($output);
         }
-        
-        
+
+
     }
 
     public function booking_room()
@@ -588,21 +588,21 @@ class syncAPIController extends ApiGuardController
                     $tempArr['customer_name']= $obj->customer_name;
                     $tempArr['capacity']     = $obj->capacity;
                     array_push($returnObj, $tempArr);
-                }  
+                }
             }
                 //dd($returnObj);
             $output = array("booking" => $returnObj);
             return Response::json($output);
         } else{
             $output = array("Message" => "Unauthorized");
-            return Response::json($output); 
+            return Response::json($output);
         }
-        
-        
+
+
     }
 
     public function getSyncsTable()
-    { 
+    {
         $temp = Input::all();
         $key  = $temp['site_activation_key'];
         $site_activation_key = Config::all();
@@ -627,9 +627,9 @@ class syncAPIController extends ApiGuardController
             //$output['syncs_table'] = array("Message" => "Unauthorized");
             $output['syncs_table'] = [];
             $output['Message'] = "Unauthorized";
-            return Response::json($output); 
+            return Response::json($output);
         }
-        
+
     }
 
     public function sync_table()
@@ -648,8 +648,8 @@ class syncAPIController extends ApiGuardController
         if($key == $activate_key)
         {
             $syncs = DB::select("SELECT table_name,version FROM syncs_tables");
-        
-            foreach ($syncs as $key => $sync) 
+
+            foreach ($syncs as $key => $sync)
             {
                 if ($sync->table_name == "category") {
                     if ($syncs[$key]->version > $temp['category']) {
@@ -666,6 +666,8 @@ class syncAPIController extends ApiGuardController
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
                         $item = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
+
+
                         $item_count     = count($item);
                         if ($item_count > 0) {
                              $returnArr['items'] = $item;
@@ -698,7 +700,7 @@ class syncAPIController extends ApiGuardController
                         }
                     }
                 }
-           
+
                     if ($sync->table_name == "set_menu") {
                     if ($sync->version > $temp['set_menu']) {
                         $set_menu = DB::select("SELECT id,set_menus_name,set_menus_price,status,image FROM set_menu  WHERE status='1' AND deleted_at IS NULL");
@@ -723,6 +725,18 @@ class syncAPIController extends ApiGuardController
                     }
                 }
 
+                if($sync->table_name == "locations"){
+                    if($sync->version > $temp['locations']){
+                        $locations = DB::select("SELECT id,location_type FROM locations WHERE deleted_at IS NULL");
+                        $location_count     = count($locations);
+                        if ($location_count > 0) {
+                             $returnArr['locations'] = $locations;
+                        } else {
+                            $returnArr['locations'] = Null;
+                        }
+                    }
+                }
+
                 if ($sync->table_name == "rooms") {
                     if ($sync->version > $temp['rooms']) {
                         $room = DB::select("SELECT id,room_name,status FROM rooms WHERE deleted_at IS NULL");
@@ -731,6 +745,30 @@ class syncAPIController extends ApiGuardController
                              $returnArr['room'] = $room;
                         } else {
                             $returnArr['room'] = Null;
+                        }
+                    }
+                }
+
+                if ($sync->table_name == "remark") {
+                    if ($sync->version > $temp['remark']) {
+                        $remark = DB::select("SELECT id,name,remark_code,status FROM remark WHERE deleted_at IS NULL");
+                        $remark_count     = count($remark);
+                        if ($remark_count > 0) {
+                             $returnArr['remark'] = $remark;
+                        } else {
+                            $returnArr['remark'] = Null;
+                        }
+                    }
+                }
+
+                if ($sync->table_name == "item_remark") {
+                    if ($sync->version > $temp['item_remark']) {
+                        $item_remark = DB::select("SELECT item_id,remark_id  FROM item_remark WHERE deleted_at IS NULL");
+                        $item_remark_count     = count($item_remark);
+                        if ($item_remark_count > 0) {
+                             $returnArr['item_remark'] = $item_remark;
+                        } else {
+                            $returnArr['item_remark'] = Null;
                         }
                     }
                 }
@@ -749,13 +787,13 @@ class syncAPIController extends ApiGuardController
 
                  if ($sync->table_name == "booking") {
                     if ($sync->version > $temp['booking']) {
-                       
+
                         $date  = Carbon::today();
                         $today = $date->toDateString();
                         $booking = DB::select("SELECT id,customer_name,from_time FROM booking WHERE booking_date = '$today' AND deleted_at is null ");
                         //print_r($booking);exit();
-            
-                        $table  = DB::select("SELECT booking_id,table_id FROM booking_table"); 
+
+                        $table  = DB::select("SELECT booking_id,table_id FROM booking_table");
                         $room   = DB::select("SELECT booking_id,room_id FROM booking_room");
 
                         $returnObj = array();
@@ -764,14 +802,14 @@ class syncAPIController extends ApiGuardController
                                 $booking_id = $obj->id;
 
                                 $returnObj[] = $obj;
-                                 
+
                                 foreach($table as $booking_table => $t){
                                     if($booking_id == $t->booking_id){
                                        $returnObj[$key]->booking_table[] = $t;
                                     }
                                 }
                                 $bookingRoomArray = array();
-                                foreach($room as $booking_room => $r){                
+                                foreach($room as $booking_room => $r){
                                     if($booking_id == $r->booking_id){
                                         array_push( $bookingRoomArray, $r);
 
@@ -785,14 +823,14 @@ class syncAPIController extends ApiGuardController
 
                                         if(!array_key_exists('booking_room', $returnObj[$key])){
                                             $returnObj[$key]->booking_room = array();
-                                        }      
+                                        }
                             }
 
-                            $returnArr['booking'] = $returnObj;      
+                            $returnArr['booking'] = $returnObj;
                         } else{
-                            $returnArr['booking'] = array();    
-                        }   
-                        
+                            $returnArr['booking'] = array();
+                        }
+
                     }
                 }
 
@@ -870,7 +908,7 @@ class syncAPIController extends ApiGuardController
                     }
                 }
             }
-            
+
             if (!array_key_exists('category', $returnArr)) {
                 $returnArr['category'] = array();
             }
@@ -886,7 +924,7 @@ class syncAPIController extends ApiGuardController
             if (!array_key_exists('set_item', $returnArr)) {
                 $returnArr['set_item'] = array();
             }
-            
+
             if (!array_key_exists('room', $returnArr)) {
                 $returnArr['room'] = array();
             }
@@ -899,11 +937,11 @@ class syncAPIController extends ApiGuardController
             if (!array_key_exists('promotion_item', $returnArr)) {
                 $returnArr['promotion_item'] = array();
             }
-            
+
             if (!array_key_exists('member', $returnArr)) {
                 $returnArr['member'] = array();
             }
-            
+
             if (!array_key_exists('config', $returnArr)) {
                 $returnArr['config'] = array();
             }
@@ -928,26 +966,7 @@ class syncAPIController extends ApiGuardController
             $output['SyncsTable'] = "";
             $output['Message']="Unauthorized";
             return Response::json($output);
-        }   
+        }
     }
 
-}        
-
-
-      
-
-            
-            
-           
-            
-           
-           
-            
-            
-           
-            
-    
-    
-
-
-
+}
