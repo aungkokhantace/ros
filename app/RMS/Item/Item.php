@@ -47,5 +47,10 @@ class Item extends Model
     {
         return $this->belongsTo('App\RMS\Item\Continent', 'continent_id', 'id');
     }
+
+    public function isReadyFood()
+    {
+        return (boolean)$this->is_ready_food;
+    }
 }
 

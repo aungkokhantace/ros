@@ -459,6 +459,10 @@ class ListViewController extends Controller
                     $setID                      = ($type[$itemCount] == '1' ? $item[$itemCount] : 0);
 
                     $detailObj                  = new Orderdetail();
+                    $order_detail_status        = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+                    if ($this->findItem($itemID)->isReadyFood()) {
+                    $order_detail_status        = 2;
+                    }
                     $detailObj->order_id        = $order_id;
                     $detailObj->order_detail_id = $order_detail_id;
                     $detailObj->item_id         = $itemID;
@@ -470,7 +474,7 @@ class ListViewController extends Controller
                     $detailObj->amount          = $originamount[$itemCount];
                     $detailObj->amount_with_discount = $price[$itemCount];
                     $detailObj->order_time      = $cur_date;
-                    $detailObj->status_id       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+                    $detailObj->status_id       = $order_detail_status;
                     $detailObj->created_by      = $user_id;
                     $detailObj->created_at      = $cur_date;
                     $detailObj->save();
@@ -1004,6 +1008,13 @@ class ListViewController extends Controller
         $price          = $priceObj->price;
         return $price;
     }
+
+    private function findItem($id)
+    {
+        $item = Item::find($id);
+        return $item;
+    }
+
     // public function category(){
     //     $items = $this->detailRepository->getCategories();
 
@@ -1125,4 +1136,5 @@ class ListViewController extends Controller
         
         
     // }
+
 }

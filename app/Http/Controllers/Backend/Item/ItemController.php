@@ -67,6 +67,7 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         // $request->validate();
+        // return request()->all();
         $input                  = $request->all();
         $name                   = $request->get('name');
         $category               = Input::get('parent_category');
@@ -75,6 +76,7 @@ class ItemController extends Controller
         $price                  = $request->get('price');
         $check                  = $request->get('check');
         $cooking_time           = Input::get('standard_cooking_time');
+        $is_ready_food           = Input::get('is_ready_food');
         if ($check == 0) {
             $file                   = $request->file('fileupload');
             $imagedata              = file_get_contents($file);
@@ -97,6 +99,7 @@ class ItemController extends Controller
         $paramObj->category_id              = $category;
         $paramObj->standard_cooking_time    = $cooking_time;
         $paramObj->has_continent            = $check;
+        $paramObj->is_ready_food            = $is_ready_food;
         $result = $this->ItemRepository->store($paramObj,$input);
 
         if($result['aceplusStatusCode'] ==  ReturnMessage::OK){

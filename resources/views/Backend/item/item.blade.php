@@ -69,6 +69,18 @@
         </div>
 
         <div class="form-group">
+            <label for="item-ready_food" class="col-sm-3 control-label">Is Ready Food<span class="require"></span></label>
+            <div class="col-sm-7">
+                <input name="is_ready_food" value="0" type="hidden">
+                @if(isset($record))
+                <input type="checkbox" name="is_ready_food" id="item-ready_food" value="1" @if($record->is_ready_food == 1) checked @endif disabled/>
+                @else
+                <input type="checkbox" name="is_ready_food" id="item-ready_food" value="1" @if(Input::old('is_ready_food') == 1) checked @endif/>
+                @endif
+                <p class="text-danger">{{$errors->first('price')}}</p>
+            </div>
+        </div>
+       <div class="form-group">
             <label for="item-continent" class="col-sm-3 control-label">Has Contiuent<span class="require">*</span></label>
             <div class="col-sm-7">
                 <input name="check" value="0" type="hidden">
