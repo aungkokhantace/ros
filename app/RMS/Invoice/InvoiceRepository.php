@@ -23,7 +23,7 @@ use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
 
-	public function getinvoice( )
+	public function getinvoice($tableId = NULL)
 	{
 		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
@@ -34,16 +34,28 @@ class InvoiceRepository implements InvoiceRepositoryInterface
                               ->first();
         $day_id 			  = '';
         if (count($daystart) > 0) {
-        	$day_id 			  = $daystart->id;
-        }
-		// $orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `refund`,`created_at`,`total_discount_amount`,`payment_amount`,`status`,`room_charge`
-		// from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `order_time` desc");
-		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+			$day_id 			  = $daystart->id;
+		}
+		
+		$table = Table::find($tableId);
+
+		if($table){
+			$orders = $table->orders()
+						->whereIn('status',[$order_status,$order_paid_status])
+						->orderBy('id','desc')
+						->where('day_id',$day_id)
+						->get();
+		}
+		else{
+			$orders  = Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
 					->where('day_id','=',$day_id)
 					->whereNull('deleted_at')
 					->get();
+		}
+
 		return $orders;
+		
 	}
 
 	public function getinvoiceTimeIncrease()

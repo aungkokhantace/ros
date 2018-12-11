@@ -1017,5 +1017,51 @@ class InvoiceController extends Controller
         return redirect('/');
     }
 
+    public function invoiceListByTableId($tableId)
+    {
+        $today      = Carbon::now();
+    	$cur_date   = Carbon::parse($today)->format('Y-m-d');
+        $orderRepo 	= $this->InvoiceRepository->getinvoice($tableId);
+
+        $continent  = $this->InvoiceRepository->getContinent();
+        //Get Order with table and room
+        $orders     = array();
+        foreach($orderRepo as $key => $order) {
+            $orderID        = $order->id;
+            $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
+                                ->select('tables.table_no as table_name')
+                                ->where('order_tables.order_id','=',$orderID)
+                                ->get();
+            $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
+                                ->select('rooms.room_name as room_name')
+                                ->where('order_room.order_id','=',$orderID)
+                                ->get();
+            //Get Order Detail 
+            $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+            $order->order_detail        = $order_detail;
+            //Get Add On 
+            $add_on         = $this->InvoiceRepository->getaddon($orderID);
+            $order->addon   = $add_on;
+            if (count($orderTable) > 0) {
+                $order->table   = $orderTable;
+            }
+
+            if (count($orderRoom) > 0) {
+                $order->room    = $orderRoom;
+            }
+            //Payment
+            $payment       = $this->InvoiceRepository->getPayment($orderID);
+            
+            $order->paid = $payment;
+            $orders[$key]   = $order;
+        }
+        if (Auth::guard('Cashier')->check()) {
+            $role_id      = Auth::guard('Cashier')->user()->role_id;
+        }
+        $roleArr['role'][]    = $role_id;
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        return view('cashier.invoice.index',compact('orders','config','orderRepo','continent'));
+    }
+
 }
 

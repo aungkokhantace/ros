@@ -28,7 +28,8 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('updateDataBeforeLogout', 'Cashier\Staff\UserController@updateDataBeforeLogout');
             Route::group(['middleware' => 'dashboard:Cashier'],function(){
                 Route::get('Dashboard','Cashier\DashboardController@dashboard');
-                Route::get('/Tables/{location_id}','Cashier\DashboardController@getTable');
+                Route::get('/Tables/{location_id}','Cashier\DashboardController@getTable'); // ajax route
+                Route::get('/{table_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByTableId');
             });
             //End User
 

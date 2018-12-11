@@ -6,7 +6,7 @@
     <div class="container">
         @section('dayEnd')
             @if($sessions->daystart->status == 1)
-            <button class="btn btn-large dash-btn ml-2" id="{{ $sessions->daystart->start_date}}/{{$sessions->daystart->status }}" style="background:rgb(75, 146, 221);">
+            <button class="btn btn-large dash-btn ml-2 start" id="{{ $sessions->daystart->start_date}}/{{$sessions->daystart->status }}" style="background:rgb(75, 146, 221);">
                 Day Start
             </button>
             @else
@@ -139,16 +139,15 @@
             success:function(response) {
 
                 var lengths = Object.keys(response).length;
-                
+
                 for (i = 0; i < lengths; i++) {
                     if(response[i].status == 0){
 
-                        $('.append_list').append("<div class='col-lg-2 col-md-3 col-sm-4 mb-2 other'><button class='btn btn-success avaliable-btn'>"+response[i].table_no+"</button></div>");
+                        $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/${response[i].id}/invoice' class='btn btn-success avaliable-btn'>${response[i].table_no}</a></div>`);
 
                     }else{
 
-                        $('.append_list').append("<div class='col-lg-2 col-md-3 col-sm-4 mb-2 other'><button class='btn btn-info service-btn'>"+response[i].table_no+"</button></div>");
-
+                        $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/${response[i].id}/invoice' class='btn btn-info service-btn'>${response[i].table_no}</a></div>`);
                     }
                 }
             },

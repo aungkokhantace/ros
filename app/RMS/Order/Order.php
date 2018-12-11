@@ -17,6 +17,11 @@ class Order extends Model
     public function User()
     {
     	return $this->belongsTo('App\User', 'user_id', 'id');
+    }   
+
+    public function tables()
+    {
+        return $this->belongsToMany('App\RMS\Table\Table');
     }
 
 }
