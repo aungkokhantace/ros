@@ -2,19 +2,19 @@
 @section('title','Order View')
 @section('content')
     {{--title--}}
-       
+
             <div id="body">
                 <div class="container product">
                     <div class="row" id="autoDiv">
                     @foreach($product as $orderKey=>$p)
                         <div class="col-md-12 tbl-container">
-                            <div class="table-responsive">	
+                            <div class="table-responsive">
                                 <table class="table to-down">
                                     <thead class="header">
                                         <tr>
                                             <td class="tdname">
                                                 <h4>{{$p['item_name']}}
-                                                    @if ($p['has_continent'] == 1)
+                                                    @if ($p['has_continent'] == 1 && $p['continent'] != null)
                                                     ( {{ $p['continent']}} )
                                                     @endif
                                                 </h4>
@@ -37,7 +37,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="body">
-                                    @if($p['product_order'] != null)
+                                    @if(count($p['product_order']) != 0)
                                         @foreach($p['product_order'] as $item)
                                             @if($p['item_id'] == $item->id)
                                         <tr class="tr-row" data-ordertime = "{{$item->order_time}}">
@@ -77,9 +77,15 @@
                                             <td>
                                                 @if($item->status_id == '1')
                                                 Order
+
                                                 @endif
                                                 @if($item->status_id =='2')
                                                 {{($item->is_ready_food) ? "Ready Food" : "Cooking"}}
+
+                                                @elseif($item->status_id == 2)
+                                                Cooking
+                                                @else
+                                                Ready
                                                 @endif
 
                                             </td>
@@ -89,7 +95,14 @@
                                                     <input type="submit" class="start start_duration_item btn_k" id="{{$item->order_detail_id}}" name="start" value="Start Cooking">
                                                 @endif
                                                 @if($item->status_id =='2')
+
                                                     <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="{{($item->is_ready_food) ? "Make Ready" : "Complete Cooking"}}">
+                                                    
+
+                                                @endif
+                                                @if($item->status_id == '3')
+                                                    <input type="submit" class="taken complete_taken_item btn_k" id="{{$item->order_detail_id}}" value="Taken" /><br><br>
+
                                                 @endif
                                             </td>
 
@@ -135,6 +148,7 @@
                                                 <!-- Modal -->
                                             </td>
                                             @endif
+
                                             @if($item->status_id == '2' && $item->is_ready_food)
                                             <td class="tr_right">
                                                 <input type="button" class="cancel btn_k" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
@@ -179,12 +193,12 @@
                                             @endif                              
                                         </tr>
                                         @endif
-                                        @endforeach    
+                                        @endforeach
                                     @endif
 
 
                                     <!-- For Set Menu -->
-                                    @if($p['setmenu'] != null)
+                                    @if(count($p['setmenu']) != 0)
                                         @foreach($p['setmenu'] as $setmenu)
                                             @if($p['item_id'] == $setmenu->item_id)
                                                 <tr class="tr-row"  data-ordertime = "{{$setmenu->order_time}}">
@@ -243,8 +257,13 @@
                                                         @endif
                                                         @if($setmenu->status_id =='2')
                                                             <input type="submit" class="complete complete_duration_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Complete Cooking">
+
                                                         @endif
-                                                    </td>  
+                                                        @if($setmenu->status_id =='3')
+                                                            <input type="submit" class="taken complete_taken_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Taken">
+
+                                                        @endif
+                                                    </td>
                                                     @if($setmenu->status_id == '1')
                                                     <td>
                                                         <input type="button" class="cancel btn_k" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
@@ -286,11 +305,11 @@
                                                         </div>
                                                         <!-- Modal -->
                                                     </td>
-                                                    @endif                          
-                                                </tr>    
+                                                    @endif
+                                                </tr>
                                             @endif
-                                        @endforeach    
-                                    @endif 
+                                        @endforeach
+                                    @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -308,14 +327,14 @@
             var myVar = setInterval(myTimer ,1000);
             function myTimer() {
                 $("table tr.tr-row").each(function () {
-                   var currentTime = moment();                    
+                   var currentTime = moment();
 
                     var orderTime = moment($(this).data("ordertime"), 'YYYY-MM-DD hh:mm:ss tt');
 
                     var diff = currentTime.diff(orderTime);
                     var d = moment.duration(diff);
                     var s = Math.floor(d.asHours()) + moment.utc(diff).format(":mm:ss");
-                   
+
                     $(this).find(".duration").text(s);
                     $(this).find(".txt_duration").val(s);
 
@@ -324,7 +343,7 @@
                     var result        = currentTime.diff(duration);
                     var time          = moment.duration(result);
                     var cooking_time  = Math.floor(d.asHours()) + moment.utc(result).format(":mm:ss");
-                    
+
                     $(this).find(".cooking_duration").text( cooking_time );
                     $(this).find(".txt_cooking_duration").val( cooking_time );
                 });
@@ -382,6 +401,7 @@
                                 type: 'GET',
                                 url: '/Kitchen/productView/CookedItem/' + itemID,
                                 success: function (Response) {
+
                                     var returnResp        = Response.message;
                                     if (returnResp == 'success') {
                                         //Socket Emit
@@ -396,6 +416,83 @@
                     });
                 });
             });
+
+
+            $('#autoDiv').on('click','.complete_taken_item', function (e) {
+                // window.location.href = "/Kitchen/productView/CookedItem/" + $(this).attr('id');
+                var itemID      = $(this).attr('id');
+
+                $(document).ready(function(){
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this item!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+                        if (isConfirm) {
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/productView/taken/' + itemID,
+                                success: function (Response) {
+
+                                    var returnResp        = Response.message;
+                                    console.log(returnResp);
+                                    if (returnResp == 'success') {
+                                        //Socket Emit
+                                        var socketKey        = "taken_by";
+                                        var socketValue      = "taken_by";
+                                        socketEmit(socketKey,socketValue);
+                                        swal.close();
+                                    }
+                                }
+                            });
+                        };
+                    });
+                });
+            });
+
+
+            $('#autoDiv').on('click','.complete_taken_setmenu', function (e) {
+                // window.location.href = "/Kitchen/productView/CookedItem/" + $(this).attr('id');
+                var itemID      = $(this).attr('id');
+
+                $(document).ready(function(){
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this item!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+                        if (isConfirm) {
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/productView/taken/setmenu' + itemID,
+                                success: function (Response) {
+
+                                    var returnResp        = Response.message;
+                                    console.log(returnResp);
+                                    if (returnResp == 'success') {
+                                        //Socket Emit
+                                        var socketKey        = "taken_by";
+                                        var socketValue      = "taken_by";
+                                        socketEmit(socketKey,socketValue);
+                                        swal.close();
+                                    }
+                                }
+                            });
+                        };
+                    });
+                });
+            });
+
             $('#autoDiv').on('click','.start_duration_setmenu',function(e){
                 var itemID      = $(this).attr('id');
                 swal({
@@ -484,7 +581,7 @@
                 });
 
             });
-           
+
         });
     </script>
 
@@ -508,6 +605,9 @@
             var cooking_done      = "cooking_done";
             socketOn(cooking_done,url,div);
 
+            var taken_by_waiter  = 'take';
+            socketOn(taken_by_waiter,url,div);
+
             //Table Transfer
             var tableChange      = "tableChange";
             socketOn(tableChange,url,div);
@@ -518,4 +618,3 @@
         });
     </script>
 @endsection
-

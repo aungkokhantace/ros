@@ -123,6 +123,29 @@
             <span for="camera" class="col-md-1 glyphicon glyphicon-camera camera" onclick="item_HandleBrowseClick();"></span>
         </div>
 
+         <div class="form-group">
+            <label for="item-status" class="col-sm-3 control-label">Remark </label>
+            <div class="col-sm-7">
+                <select class="form-control" id="remark" name="remark[]" multiple="multiple">
+                    @if(isset($record))
+                    @foreach ($remarks as $remark)                  
+                     @if(in_array($remark->id,$remark_arr))                       
+                        <option value="{{$remark->id}}" selected="">{{$remark->name}}</option>
+                    @else
+                     <option value="{{$remark->id}}" >{{$remark->name}}</option>
+                    @endif                 
+                    @endforeach 
+                                           
+                    @else
+                    @foreach ($remarks as $remark)
+                        <option value="{{$remark->id}}">{{$remark->name}}</option>
+                    @endforeach
+                    @endif
+                </select>
+                <p class="text-danger">{{$errors->first('status')}}</p>
+            </div>
+        </div>
+
         <div class="form-group">
             <label for="item-status" class="col-sm-3 control-label">Item Status</label>
             <div class="col-sm-7">

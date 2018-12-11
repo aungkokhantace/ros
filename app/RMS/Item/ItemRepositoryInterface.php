@@ -11,7 +11,7 @@ namespace App\RMS\Item;
 
 interface ItemRepositoryInterface
 {
-    public function store($paramObj,$input);
+    public function store($paramObj,$input,$remark);
     public function ChooseCat();
     public function selectParent();
     public function selectSub();

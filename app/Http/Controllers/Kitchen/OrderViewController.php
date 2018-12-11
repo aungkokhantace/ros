@@ -41,30 +41,36 @@ class OrderViewController extends Controller
         $extra              = $this->OrderRepository->orderExtra();
 
         //Status Lists
-        $order_status                  = StatusConstance::ORDER_CREATE_STATUS;
-        $order_paid_status             = StatusConstance::ORDER_PAID_STATUS;
+        $order_status                       = StatusConstance::ORDER_CREATE_STATUS;
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
         //Order Detail Status
-        $order_details_cooking_status  = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
-        $order_details_cooked_status   = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        $order_details_cooking_status       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+        $order_details_cooked_status        = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        $order_details_cooking_done_status  = StatusConstance::ORDER_DETAIL_COOKING_DONE_STATUS;
         //Setmenu Status
-        $order_setmenu_cooking_status  = StatusConstance::ORDER_SETMENU_COOKING_STATUS;
-        $order_setmenu_cooked_status   = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
+        $order_setmenu_cooking_status       = StatusConstance::ORDER_SETMENU_COOKING_STATUS;
+        $order_setmenu_cooked_status        = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
+        $order_setmenu_cookig_done_status   = StatusConstance::ORDER_SETMENU_COOKING_DONE_STATUS;
 
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
+
         $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name 
+
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
-                                          WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status) ");
-       
+
+
+                                          WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_details_cooking_done_status) ");
+
         $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
-                                          WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status) ");
-        
+                                          WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status,$order_setmenu_cookig_done_status) ");
+
         $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
         $categoryIdArr      = array();
         foreach($categoryRaw as $category){
@@ -99,12 +105,12 @@ class OrderViewController extends Controller
                     if($item_id == 0){
 
                         foreach ($set_menusRaw as $keySM => $set_menu) {
-                            
+
                             $setMenuOrderDetailId   = $set_menu->order_detail_id;
                             $setMenuSetMenuId       = $set_menu->setmenu_id;
                             $setMenuItemId          = $set_menu->item_id;
                             $setCategoryId          = $set_menu->category_id;
-                            
+
                             if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId && in_array($setCategoryId,$categoryIdArr)){
                                 // need to add the item array
                                 array_push($orderItemList,$set_menu);
@@ -118,12 +124,11 @@ class OrderViewController extends Controller
                 }
             }
             $orders[$key]->items = $orderItemList;
- 
         }
 
         return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
-    
+
     public function tableViewDesign() {
         return view('kitchen.kitchen_design');
     }
@@ -135,7 +140,7 @@ class OrderViewController extends Controller
         $tables             = $this->OrderRepository->orderTable();
         $rooms              = $this->OrderRepository->orderRoom();
         $extra              = $this->OrderRepository->orderExtra();
-        
+
         //Status Lists
         $order_status                  = StatusConstance::ORDER_CREATE_STATUS;
         $order_paid_status             = StatusConstance::ORDER_PAID_STATUS;
@@ -145,7 +150,7 @@ class OrderViewController extends Controller
         //Order Detail Status
         $order_details_cooking_status  = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
         $order_details_cooked_status   = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
-        
+
 
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
         $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name
@@ -154,7 +159,7 @@ class OrderViewController extends Controller
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
                                           WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status) ");
-        
+
         $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
@@ -196,12 +201,12 @@ class OrderViewController extends Controller
                     if($item_id == 0){
 
                         foreach ($set_menusRaw as $keySM => $set_menu) {
-                            
+
                             $setMenuOrderDetailId   = $set_menu->order_detail_id;
                             $setMenuSetMenuId       = $set_menu->setmenu_id;
                             $setMenuItemId          = $set_menu->item_id;
                             $setCategoryId          = $set_menu->category_id;
-                            
+
                             if($order_detail_id == $setMenuOrderDetailId && $setmenu_id == $setMenuSetMenuId && in_array($setCategoryId,$categoryIdArr)){
                                 // need to add the item array
                                 array_push($orderItemList,$set_menu);
@@ -232,34 +237,39 @@ class OrderViewController extends Controller
         $kitchen             = Kitchen::find($id);
         $tables              = $this->OrderRepository->orderTable();
         $rooms               = $this->OrderRepository->orderRoom();
-        $extra               = $this->OrderRepository->orderExtra(); 
-        
+        $extra               = $this->OrderRepository->orderExtra();
+
         //Status Lists
         $order_status                  = StatusConstance::ORDER_CREATE_STATUS;
         $order_paid_status             = StatusConstance::ORDER_PAID_STATUS;
         //Order Detail Status
         $order_details_cooking_status  = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
         $order_details_cooked_status   = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        $order_details_cooking_done_status   = StatusConstance::ORDER_DETAIL_COOKING_DONE_STATUS;
         //Setmenu Status
         $order_setmenu_cooking_status  = StatusConstance::ORDER_SETMENU_COOKING_STATUS;
         $order_setmenu_cooked_status   = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
+        $order_setmenu_cooking_done_status = StatusConstance::ORDER_SETMENU_COOKING_DONE_STATUS;
+
 
         $ordersRaw           = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
+
         
         $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,items.is_ready_food,continent.name AS continent_name
+
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
-                                          WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status) ");
+                                          WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_details_cooking_done_status) ");
 
         $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
-                                          WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status) ");
-        
+                                          WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status,$order_setmenu_cooking_done_status) ");
+
         $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
         $categoryIdArr      = array();
         foreach($categoryRaw as $category){
@@ -285,18 +295,18 @@ class OrderViewController extends Controller
             $orderItemList = array();
 
             foreach ($order_detailsRaw as $keyOD => $order_detail) {
-                
+
                 $order_detail_id            = $order_detail->id;
                 $item_id                    = $order_detail->item_id;
                 $setmenu_id                 = $order_detail->setmenu_id;
                 $order_detail_order_id      = $order_detail->order_id;
                 $order_detail_category_id   = $order_detail->category_id;
-                
+
                 if($order_detail_order_id == $order_id){
                     // Set Menu Case
                     if($item_id == 0){
                         foreach ($set_menusRaw as $keySM => $set_menu) {
-                        
+
                             $setMenuOrderDetailId   = $set_menu->order_detail_id;
                             $setMenuSetMenuId       = $set_menu->setmenu_id;
                             $setMenuItemId          = $set_menu->item_id;
@@ -325,8 +335,10 @@ class OrderViewController extends Controller
         $kitchen         = Kitchen::find($id);
         $tables          = $this->OrderRepository->orderTable();
         $rooms           = $this->OrderRepository->orderRoom();
+
         $extra           = $this->OrderRepository->orderExtra(); 
         $itemsMater      = DB::select("SELECT id,name,image,has_continent,is_ready_food FROM `items`");
+
 
         //Status Lists
         $order_status                  = StatusConstance::ORDER_CREATE_STATUS;
@@ -334,11 +346,14 @@ class OrderViewController extends Controller
         //Order Detail Status
         $order_details_cooking_status  = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
         $order_details_cooked_status   = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        $order_cooking_done_status     = StatusConstance::ORDER_DETAIL_COOKING_DONE_STATUS;
         //Setmenu Status
         $order_setmenu_cooking_status  = StatusConstance::ORDER_SETMENU_COOKING_STATUS;
         $order_setmenu_cooked_status   = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
-        
+        $order_setmenu_cooking_done_status = StatusConstance::ORDER_SETMENU_COOKING_DONE_STATUS;
+
         $product         = array();
+
         foreach($itemsMater as $item){
             $item_id        = $item->id;
             $has_continent  = $item->has_continent;
@@ -354,8 +369,8 @@ class OrderViewController extends Controller
             INNER JOIN category AS c ON i.category_id = c.id
             LEFT JOIN continent AS ct ON i.continent_id = ct.id
             WHERE o.status IN ($order_status,$order_paid_status) AND
-            od1.item_id = $item_id AND c.kitchen_id = $kitchen->id AND od1.status_id IN ($order_details_cooking_status,$order_details_cooked_status)");
-            
+            od1.item_id = $item_id AND c.kitchen_id = $kitchen->id AND od1.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_cooking_done_status)");
+
             $setMenus = DB::select("SELECT os.item_id,os.id,os.exception,os.remark,os.status_id,os.order_duration,
             c.kitchen_id,i.name,o.take_id,os.order_time,os.setmenu_id,
             os.order_type_id,os.quantity,od1.id as order_detail_id,
@@ -368,7 +383,7 @@ class OrderViewController extends Controller
             INNER JOIN items AS i ON i.id = os.item_id
             INNER JOIN category AS c ON i.category_id = c.id
             WHERE o.status IN ($order_status,$order_paid_status) AND
-            os.item_id = $item_id AND c.kitchen_id = $kitchen->id AND os.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status)");
+            os.item_id = $item_id AND c.kitchen_id = $kitchen->id AND os.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status,$order_setmenu_cooking_done_status)");
 
             if($orderDetails != null || $setMenus != null){
                 $tempItem                   = array();
@@ -381,19 +396,18 @@ class OrderViewController extends Controller
                     foreach($orderDetails as $orderDetail) {
                         $continent      = $orderDetail->continent_name;
                     }
-                    $tempItem['continent']  = $continent; 
+                    $tempItem['continent']  = $continent;
                 } else {
                     $tempItem['continent']  = '';
                 }
-                $tempItem['product_order']  = $orderDetails;   
-                $tempItem['setmenu']        = $setMenus; 
+                $tempItem['product_order']  = $orderDetails;
+                $tempItem['setmenu']        = $setMenus;
                 $product[]                  = $tempItem;
 
             }
         }
         // return response()->json($itemsMater);
 
-        // return compact('product');
         return view('kitchen.productView')->with('product',$product)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
     public function ajaxRequestProduct(Request $request)
@@ -402,20 +416,22 @@ class OrderViewController extends Controller
         $kitchen         = Kitchen::find($id);
         $tables          = $this->OrderRepository->orderTable();
         $rooms           = $this->OrderRepository->orderRoom();
-        $extra           = $this->OrderRepository->orderExtra(); 
+        $extra           = $this->OrderRepository->orderExtra();
 
         $itemsMater      = DB::select("SELECT id,name,image,has_continent FROM `items`");
         $product         = array();
 
         //Status Lists
-        $order_status                  = StatusConstance::ORDER_CREATE_STATUS;
-        $order_paid_status             = StatusConstance::ORDER_PAID_STATUS;
+        $order_status                       = StatusConstance::ORDER_CREATE_STATUS;
+        $order_paid_status                  = StatusConstance::ORDER_PAID_STATUS;
         //Order Detail Status
-        $order_details_cooking_status  = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
-        $order_details_cooked_status   = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        $order_details_cooking_status       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+        $order_details_cooked_status        = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
+        $order_cooking_done_status          = StatusConstance::ORDER_DETAIL_COOKING_DONE_STATUS;
         //Setmenu Status
-        $order_setmenu_cooking_status  = StatusConstance::ORDER_SETMENU_COOKING_STATUS;
-        $order_setmenu_cooked_status   = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
+        $order_setmenu_cooking_status       = StatusConstance::ORDER_SETMENU_COOKING_STATUS;
+        $order_setmenu_cooked_status        = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
+        $order_setmenu_cooking_done_status  = StatusConstance::ORDER_SETMENU_COOKING_DONE_STATUS;
 
         foreach($itemsMater as $item){
             $item_id = $item->id;
@@ -430,9 +446,9 @@ class OrderViewController extends Controller
             INNER JOIN  `order` AS o ON od1.order_id = o.id
             INNER JOIN category AS c ON i.category_id = c.id
             LEFT JOIN continent AS ct ON i.continent_id = ct.id
-            WHERE o.status IN ($order_status,$order_paid_status) AND 
-            od1.item_id = $item_id AND c.kitchen_id = $kitchen->id AND od1.status_id IN ($order_details_cooking_status,$order_details_cooked_status)");
-        
+            WHERE o.status IN ($order_status,$order_paid_status) AND
+            od1.item_id = $item_id AND c.kitchen_id = $kitchen->id AND od1.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_cooking_done_status)");
+
             $setMenus = DB::select(" SELECT os.item_id,os.id,os.exception,os.remark,os.status_id,os.order_duration,c.kitchen_id,i.name,o.take_id,os.order_time,os.setmenu_id,os.order_type_id,os.quantity,od1.id as order_detail_id,od1.setmenu_id,od1.order_id
             FROM order_setmenu_detail AS os
             INNER JOIN order_details AS od1 ON os.order_detail_id = od1.id
@@ -441,8 +457,8 @@ class OrderViewController extends Controller
             -- LEFT JOIN tables AS t ON ot.table_id = t.id
             INNER JOIN items AS i ON i.id = os.item_id
             INNER JOIN category AS c ON i.category_id = c.id
-            WHERE o.status IN ($order_status,$order_paid_status) AND 
-            os.item_id = $item_id AND c.kitchen_id = $kitchen->id AND os.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status)");
+            WHERE o.status IN ($order_status,$order_paid_status) AND
+            os.item_id = $item_id AND c.kitchen_id = $kitchen->id AND os.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status,$order_setmenu_cooking_done_status)");
 
             if($orderDetails != null || $setMenus != null){
                 $tempItem                   = array();
@@ -455,12 +471,12 @@ class OrderViewController extends Controller
                     foreach($orderDetails as $orderDetail) {
                         $continent      = $orderDetail->continent_name;
                     }
-                    $tempItem['continent']  = $continent; 
+                    $tempItem['continent']  = $continent;
                 } else {
                     $tempItem['continent']  = '';
                 }
-                $tempItem['product_order']  = $orderDetails;   
-                $tempItem['setmenu']        = $setMenus; 
+                $tempItem['product_order']  = $orderDetails;
+                $tempItem['setmenu']        = $setMenus;
                 $product[]                  = $tempItem;
 
             }
@@ -490,7 +506,7 @@ class OrderViewController extends Controller
 
             DB::statement('update order_setmenu_detail set status_id=?, order_duration=? where id=?',[$order_setmenu_cooked_status,$date, $id]);
 
-            
+
         }
         return redirect()->action('Kitchen\OrderViewController@tableView');
     }
@@ -528,6 +544,38 @@ class OrderViewController extends Controller
         return \Response::json(($output));
     }
 
+    public function takenWaiter($id=null,$setmenu_id = null){
+
+        $carbon  = Carbon::now();
+        $date    = $carbon->toDateTimeString();
+        //Order Detail Status
+        $order_delivery_status   = StatusConstance::ORDER_DETAIL_DELIEVERED_STATUS;
+
+        if($id != 0 && $setmenu_id == 0){
+            DB::statement('update order_details set status_id=?, order_duration=? where id=?',[$order_delivery_status,$date, $id]);
+            $orders     = Orderdetail::where('id','=',$id)->get()->toArray();
+        }
+        else{
+            $setMenu                        = OrderSetMenuDetail::find($id);
+            $orderDetail                    = OrderDetail::find($setMenu->order_detail_id);
+            if($orderDetail->status_id == 3){
+                $orderDetail->order_duration    = $date;
+                $orderDetail->status_id         = $order_delivery_status;
+                $orderDetail->save();
+            }
+
+            DB::statement('update order_setmenu_detail set status_id=?, order_duration=? where id=?',[$order_delivery_status,$date, $id]);
+            $orders     = Orderdetail::where('id','=',$setMenu->order_detail_id)->get()->toArray();;
+        }
+
+        foreach($orders as $key => $order) {
+            $clickID            = $id . "/" . $setmenu_id;
+            $output             = $order;
+            $output['click_id'] = $clickID;
+        }
+        return \Response::json(($output));
+    }
+
     public function update($item_id,$setmenu_id)
     {
         $carbon = Carbon::now();
@@ -535,6 +583,7 @@ class OrderViewController extends Controller
 
         //Order Detail Status
         $order_details_done_status     = StatusConstance::ORDER_DETAIL_COOKING_DONE_STATUS;
+
         //Setmenu Status
         $order_setmenu_done_status     = StatusConstance::ORDER_SETMENU_COOKING_DONE_STATUS;
 
@@ -598,6 +647,36 @@ class OrderViewController extends Controller
         // return redirect()->action('Kitchen\OrderViewController@productView');
     }
 
+    public function TakenItemFromProductView($item_id){
+
+        $carbon = Carbon::now();
+        $date   = $carbon->toDateTimeString();
+        //Order Detail Status
+        $order_delivery_status     = StatusConstance::ORDER_DETAIL_DELIEVERED_STATUS;
+
+        $obj = Orderdetail::where('id',$item_id)->first();
+
+        $obj->status_id = 4;
+        $obj->save();
+        $output     = array('message'=>'success');
+        return \Response::json($output);
+    }
+
+
+    public function TakenSetMenuFromProductView($item_id){
+      $carbon = Carbon::now();
+      $date   = $carbon->toDateTimeString();
+      //Order Detail Status
+      $order_delivery_status     = StatusConstance::ORDER_DETAIL_DELIEVERED_STATUS;
+
+      $obj = OrderSetMenuDetail::where('id',$item_id)->first();
+
+      $obj->status_id = 4;
+      $obj->save();
+      $output     = array('message'=>'success');
+      return \Response::json($output);
+    }
+
     public function CookingSetMenuItemFromProductView($id){
 
         $carbon             = Carbon::now();
@@ -658,7 +737,7 @@ class OrderViewController extends Controller
 
     public function CancelUpdateFromTableView()
     {
-        
+
         $id             = Input::get('order_details_id');
         $setmenu_id     = Input::get('setmenu_id');
         $date           = date('Y-m-d H:m:i');
@@ -669,7 +748,7 @@ class OrderViewController extends Controller
         $config         = Config::select('tax','service')->first();
         $tax            = $config->tax;
         $service        = $config->service;
-        
+
         //Order Detail Status
         $order_details_cancel_status   = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
         //Setmenu Status
@@ -698,14 +777,14 @@ class OrderViewController extends Controller
 
             $order_detail->status_id = $order_details_cancel_status;
             $order_detail->message   = $message;
-            
+
             $order_detail->save();
 
         }else{
             $order_detail   = Orderdetail::find($id);
 
             $order_id = $order_detail->order_id;
-            $price    = $order_detail->amount_with_discount;   
+            $price    = $order_detail->amount_with_discount;
 
             $order                      = Order::where('id','=',$order_id)->first();
             $total                      = (($order->total_price) - ($price));
@@ -721,11 +800,11 @@ class OrderViewController extends Controller
 
             $order_detail->status_id = $order_details_cancel_status;
             $order_detail->message   = $message;
-            
+
             $order_detail->save();
         }
         // return redirect()->action('Kitchen\OrderViewController@tableView');
-        
+
         $output     = array('message'=>'success','order_id'=> $order_id);
         return \Response::json($output);
     }

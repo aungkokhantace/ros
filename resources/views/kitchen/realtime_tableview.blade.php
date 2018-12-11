@@ -127,8 +127,14 @@
                                     <td>
                                         @if ($item->status_id == 1)
                                          Order
+                                        @elseif($item->is_ready_food)
+                                        Ready Food
+                                         @elseif($item->status_id == 2)
+                                        Cooking
                                         @else
-                                        {{($item->is_ready_food) ? "Ready Food" : "Cooking"}}
+                                        Ready
+
+
                                         @endif
                                     </td>
                                     <!-- <td>
@@ -139,12 +145,18 @@
                                         @endif
                                     </td> -->
 
+
                                     <td>
                                         @if ($item->status_id == 1)
                                                 <input type="submit" class="start btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking" /><br><br>
-                                               
-                                        @else
-                                                <input type="submit" class="complete btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="{{($item->is_ready_food) ? "Make Ready" : "Complete Cooking"}}"  /><br><br>
+
+                                        @elseif($item->status_id == 2)
+                                                <input type="submit" class="complete btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="{{($item->is_ready_food) ? "Ready Food" : "Cooking"}}" /><br><br>
+                                        @elseif($item->status_id == 3)
+
+                                                <input type="submit" class="taken btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Taken" /><br><br>
+
+
                                         @endif
                                         
                                     </td>
@@ -152,7 +164,7 @@
                                         @if ($item->status_id == 1)
                                          <input type="button" class="cancel btn_k cancel_bottom" id="{{$item->id}}-{{$item->setmenu_id}}" data-toggle="modal" data-target="#{{$item->id}}-{{$item->setmenu_id}}modal" value="Cancel">
                                         @endif
-                                        @if ($item->status_id == 2 && $item->is_ready_food)
+                                        @if ($item->status_id == '2' && $item->is_ready_food)
                                          <input type="button" class="cancel btn_k cancel_bottom" id="{{$item->id}}-{{$item->setmenu_id}}" data-toggle="modal" data-target="#{{$item->id}}-{{$item->setmenu_id}}modal" value="Cancel">
                                         @endif
                                         <div class="modal fade" id="{{$item->id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -196,6 +208,7 @@
                                         
                                     
                                 </tr>
+
 
                             @endforeach
 

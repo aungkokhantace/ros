@@ -178,9 +178,12 @@ $(document).ready(function() {
             form.submit();
         }
     });
+    $('#remark').multipleSelect();
+
     $('#item_browse').on('change',function(){
         $('#item-validate').valid();
-    });
+    }); 
+
 
     //For Extra Food or Add On
     $('#extraForm').validate({
@@ -598,6 +601,21 @@ $(document).ready(function() {
             form.submit();
         }
     });
+    //for remark
+        $('#remarkForm').validate({
+        rules: {
+            remark_name        : "required",
+            
+        },
+        messages: {
+            remark_name        : "Name is required."
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+    });
+
 });
 
 

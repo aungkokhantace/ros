@@ -8,7 +8,7 @@ class CoreSettingsTableSeeder extends Seeder
     public function run()
     {
         DB::table('core_settings')->delete();
-        
+
         DB::table('core_settings')->insert([
             'code'          => 'ITEMS',
             'type'          => 'ITEMS_TYPE',
@@ -35,6 +35,13 @@ class CoreSettingsTableSeeder extends Seeder
             'type'          => 'SET_MENU_TYPE',
             'value'         => '4',
             'description'   => 'SET_MENU code will generate Whent get value 4'
+        ]);
+
+        DB::table('core_settings')->insert([
+            'code'          => 'Remark',
+            'type'          => 'Remark_TYPE',
+            'value'         => '5',
+            'description'   => 'Remark code will generate Whent get value 4'
         ]);
     }
 }
