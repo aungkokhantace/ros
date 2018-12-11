@@ -21,8 +21,9 @@ tfoot {
             </div>
                 <div class="col-md-9 pull-right">
                     <div class="buttons">
-                        <!-- <input type="image" class="img_btn" src="../../../assets/images/enable.png" onclick="remark_enable();">
-                        <input class="img_btn" src="../../../assets/images/disable.png" onclick="remark_disable();" type="image"> -->
+                 <!--    <input type="image" class="img_btn" src="../../../assets/images/enable.png" onclick="remark_enable();">
+                        <input type="image" class="img_btn" src="../../../assets/images/disable.png" onclick="remark_disable();"> -->
+
                         <button type="button"  onclick='remark_create();' class="btn btn-default btn-md first_btn">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </button>
@@ -49,8 +50,9 @@ tfoot {
                             <th><input type="checkbox" id="remark_check_all"></th>
                             <th>No</th>
                             <th>Name</th>
+                            <!-- <th>Status</th> -->
                             <th>Description</th>
-                            
+
                         </tr>
                         </thead>
                         <tfoot>
@@ -58,8 +60,9 @@ tfoot {
                             <th></th>
                             <th></th>
                             <th class="search-col" con-id="name">Name</th>
+                            <!-- <th class="search-col" con-id="status">Status</th> -->
                             <th class="search-col" con-id="description">Description</th>
-                           
+
                         </tr>
                     </tfoot>
                         <tbody>
@@ -70,8 +73,9 @@ tfoot {
                                 </td>
                                 <td></td>
                                 <td><a href="/Backend/Remark/edit/{{$remark->id}}">{{ $remark->name}}</a></td>
+                                {{-- <td>@if($remark->status ==1) Available @else Not Available @endif</td> --}}
                                 <td>{{ $remark->description }}</td>
-                               
+
                             </tr>
                         @endforeach
                         </tbody>
@@ -88,7 +92,7 @@ tfoot {
                 var title = $('#remark_list thead th').eq( $(this).index() ).text();
                 $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
             } );
-            
+
             var table = $('#remark_list').DataTable({
                 aLengthMenu: [
                     [5,25, 50, 100, 200, -1],
@@ -100,7 +104,7 @@ tfoot {
                 "bFilter": true,
                 "bInfo": false,
                 "bAutoWidth": false,
-                
+
                 "columnDefs": [ {
                 "searchable": false,
                 "orderable": false,
@@ -116,7 +120,7 @@ tfoot {
             table.column(1,).nodes().each( function (cell, i) {
                 cell.innerHTML = i+1;
             } );
-        } ).draw(); 
+        } ).draw();
 //            new $.fn.dataTable.FixedHeader( table, {
 //            });
 
@@ -134,4 +138,3 @@ tfoot {
         });
  </script>
 @endsection
-

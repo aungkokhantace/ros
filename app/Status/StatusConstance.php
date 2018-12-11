@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace App\Status;
 
 /**
@@ -115,9 +115,13 @@ class StatusConstance
     const CASHIER_ROLE                          = 4;
     const WAITER_ROLE                           = 5;
     const KITCHEN_ROLE                          = 6;
-    
+
 
     //Shift Name
     const DAY_SHIFT_NAME                        = 'DAY SHIFT';//Day Shift Name
     const NIGHT_SHIFT_NAME                      = 'NIGHT SHIFT';//Night Shift Name
+
+    //remark
+   const REMARK_AVAILABLE_STATUS                 = 1; //ITEM AVAILABLE STATUS
+   const REMARK_UNAVAILABLE_STATUS               = 0; //ITEM UNAVAILABLE STATUS
 }

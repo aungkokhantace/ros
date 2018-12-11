@@ -165,4 +165,21 @@ class RemarkController extends Controller
         return redirect()->action('Backend\Remark\RemarkController@index')->withMessage(FormatGenerator::message('Success', 'Remark deleted ...'));
     }
 
+    public function active($id)
+    {
+   $new_string = explode(',', $id);
+   foreach($new_string as $id){
+       $this->remarkRepository->Remark_active($id);
+   }
+   return redirect()->action('Backend\Remark\RemarkController@index');
+ }
+public function inactive($id)
+{
+   $new_string = explode(',', $id);
+   foreach($new_string as $id){
+       $this->remarkRepository->Remark_inactive($id);
+   }
+   return redirect()->action('Backend\Remark\RemarkController@index');
+}
+
 }

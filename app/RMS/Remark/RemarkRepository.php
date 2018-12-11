@@ -79,7 +79,7 @@ class RemarkRepository implements RemarkRepositoryInterface
         $tempObj->save();
     }
 
-    
+
 
     public function Remarkenabled($id){
         $Remark_enable    = StatusConstance::Remark_AVAILABLE_STATUS;
@@ -89,16 +89,16 @@ class RemarkRepository implements RemarkRepositoryInterface
     }
 
     public function Remark_active($id){
-        $status     = StatusConstance::Remark_ACTIVE_STATUS;
-        $tempObj    = Remark::find($id);
-        $tempObj->active = $status;
-        $tempObj->save();
-    }
+         $status     = StatusConstance::REMARK_AVAILABLE_STATUS;
+         $tempObj    = Remark::find($id);
+         $tempObj->status = $status;
+         $tempObj->save();
+     }
 
-    public function Remark_inactive($id){
-        $status     = StatusConstance::Remark_INACTIVE_STATUS;
-        $tempObj    = Remark::find($id);
-        $tempObj->active = $status;
-        $tempObj->save();
-    }
+     public function Remark_inactive($id){
+         $status     = StatusConstance::REMARK_UNAVAILABLE_STATUS;
+         $tempObj    = Remark::find($id);
+         $tempObj->status = $status;
+         $tempObj->save();
+     }
 }
