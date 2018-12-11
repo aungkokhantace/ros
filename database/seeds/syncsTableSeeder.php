@@ -218,7 +218,7 @@ class syncsTableSeeder extends Seeder
             'deleted_by' => ''
         ]);
         DB::table('syncs_tables')->insert([
-            'id'         => '23',
+            'id'         => '24',
             'table_name' => 'locations',
             'version'    => '1',
             'active'     => '1',
@@ -227,7 +227,7 @@ class syncsTableSeeder extends Seeder
             'deleted_by' => ''
         ]);
         DB::table('syncs_tables')->insert([
-            'id'         => '23',
+            'id'         => '25',
             'table_name' => 'remark',
             'version'    => '1',
             'active'     => '1',
@@ -236,7 +236,7 @@ class syncsTableSeeder extends Seeder
             'deleted_by' => ''
         ]);
         DB::table('syncs_tables')->insert([
-            'id'         => '23',
+            'id'         => '26',
             'table_name' => 'item_remark',
             'version'    => '1',
             'active'     => '1',
