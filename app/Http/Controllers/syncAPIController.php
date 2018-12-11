@@ -723,6 +723,18 @@ class syncAPIController extends ApiGuardController
                     }
                 }
 
+                if($sync->table_name == "locations"){
+                    if($sync->version > $temp['locations']){
+                        $locations = DB::select("SELECT id,location_type FROM locations WHERE deleted_at IS NULL");
+                        $location_count     = count($locations);
+                        if ($location_count > 0) {
+                             $returnArr['locations'] = $locations;
+                        } else {
+                            $returnArr['locations'] = Null;
+                        }
+                    }
+                }
+
                 if ($sync->table_name == "rooms") {
                     if ($sync->version > $temp['rooms']) {
                         $room = DB::select("SELECT id,room_name,status FROM rooms WHERE deleted_at IS NULL");
