@@ -22,7 +22,7 @@ class DashboardController extends Controller
     {
         $member     = Member::all()->count();
         $set        = SetMenu::whereNull('deleted_at')->where('status',1)->count();
-        $item       = Item::where('status',1)->count();
+        $item       = Item::where('status',1)->groupBy('name')->get()->count();
         $category   = Category::where('status',1)->count();
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
 
