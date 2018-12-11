@@ -20,6 +20,7 @@ class Item_RemarkRepository implements Item_RemarkRepositoryInterface
 {
     public function store($paramObj)
     {
+       
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
        
@@ -30,7 +31,7 @@ class Item_RemarkRepository implements Item_RemarkRepositoryInterface
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
         }
-        catch(Exception $e){        
+        catch(Exception $e){          
 
             $returnedObj['aceplusStatusMessage'] = $e->getMessage();
             return $returnedObj;
