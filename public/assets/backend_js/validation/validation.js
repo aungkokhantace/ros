@@ -172,21 +172,48 @@ $(document).ready(function() {
             description : "required",
             restaurant  : "required",
             branch      : "required",
+            filename    :{
+                required: true,
+                 extension: "jpg,jpeg,png,GIF",
+            },
+            'input-file-preview[]' :{
+                required: true,
+                extension :  "jpg,jpeg,png,GIF",
+            },
         },
         messages: {
             name        : "Item Name is required.",
             parent_category: "Parent category is required.",
-            //price       : "Item Price is required.",
+            //price       : "Item Price is requ,GIFired.",
             price        : {
               required : "Item Price is required.",
               number : "Item Price must be numeric."
             },
-            filename       : "Item Image is required.",
+            filename       : {
+                required   : "Item Image is required.",
+                extension  : " Only image type jpg/png/jpeg/gif is allowed.",
+            },
+
+            'input-file-preview[]'      : {
+                required   : "Item Image is required.",
+                extension  : " Only image type jpg/png/jpeg/gif is allowed.",
+            },
+
             description    : "Item Description is required.",
             restaurant     : "Restauranat is required.",
             branch         : "Branch is required.",
 
         },
+
+         errorPlacement: function(error, element) {
+
+                  if (element.attr("name") == "input-file-preview[]") {
+                      error.appendTo('#div_err');
+                  }
+                  else {
+                      error.insertAfter(element);
+                  }
+                },
         submitHandler: function(form) {
             $('input[type="submit"]').attr('disabled','disabled');
             form.submit();
@@ -640,6 +667,22 @@ $(document).ready(function() {
             form.submit();
         }
     });
+
+    //for remark
+        $('#remarkForm').validate({
+        rules: {
+            remark_name        : "required",
+            
+        },
+        messages: {
+            remark_name        : "Name is required."
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+    });
+          $('#remark').multipleSelect();
 });
 
 

@@ -61,6 +61,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind('App\RMS\Restaurant\RestaurantRepositoryInterface','App\RMS\Restaurant\RestaurantRepository');
 
         $this->app->bind('App\RMS\Branch\BranchRepositoryInterface','App\RMS\Branch\BranchRepository');
+
+        $this->app->bind('App\RMS\Remark\RemarkRepositoryInterface','App\RMS\Remark\RemarkRepository');
+        $this->app->bind('App\RMS\Item_Remark\RemarkRepositoryInterface','App\RMS\Item_Remark\Item_RemarkRepository');
         //End
     }
 }

@@ -40,9 +40,13 @@
                                                 <span class="glyphicon glyphicon-folder-open"></span>
                                                 <span class="image-preview-input-title">Browse</span>
                                                 <input type="file" accept="image/png, image/jpeg, image/gif" name="input-file-preview[]" class="input-file" onchange="getFileName()" /> <!-- rename it -->
+
                                             </div>
+
                                         </span>
+
                                     </div><!-- /input-group image-preview [TO HERE]--> 
+                                    <div id="div_err"></div>
                                     <label class="browse-error text-danger" style="display:none">Required Image Upload</label>
                                     
                                     @if(isset($record))

@@ -321,6 +321,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Item/item_disabled/{id}', 'Backend\Item\ItemController@itemdisabled');
             Route::get('category/ajaxRequest/{id}', 'Backend\Item\ItemController@ajax');
             Route::get('get_body/ajaxRequest/{branch_id}/{restaurant?}','Backend\Item\ItemController@renderFunction');
+            Route::get('Remark/ajaxRequest/{id}', 'Backend\Item\ItemController@Remarkajax');
 
         });
         //End item
@@ -589,6 +590,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('DownloadApi','Backend\Log\ApilistController@down');
         });
 
+
         /*-----------for csv import-----------*/
          //csv import
         Route::group(['middleware'=>'csv:Cashier'],function(){
@@ -599,6 +601,22 @@ Route::group(['middleware' => 'web'], function () {
            
         });
         //end csv import
+
+
+        //Start Remark
+        Route::group(['middleware'=>'remark:Cashier'],function(){
+            Route::get('Remark/index', 'Backend\Remark\RemarkController@index');
+            Route::get('Remark/create', 'Backend\Remark\RemarkController@create');
+            Route::post('Remark/store', 'Backend\Remark\RemarkController@store');
+            Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
+            Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
+            Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
+          
+            Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
+            Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
+
+        });
+        //End remark
        
 
             

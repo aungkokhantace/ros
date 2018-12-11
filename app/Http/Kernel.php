@@ -74,5 +74,6 @@ class Kernel extends HttpKernel
         'shift'=>\App\Http\Middleware\ShiftMiddleware::class,
         'order'=>\App\Http\Middleware\OrderMiddleware::class,
         'csv'=>\App\Http\Middleware\CSVMiddleware::class,
+        'remark'=>\App\Http\Middleware\RemarkMiddleware::class,
     ];
 }

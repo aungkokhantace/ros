@@ -82,6 +82,10 @@ function shift_last_create(id){
 function shift_permission_create(id){
     window.location ='/Backend/Shift/Permission/' + id;
 }
+
+function remark_create(){
+    window.location = '/Backend/Remark/create';
+}
 //For Edit 
 
 /**
@@ -411,6 +415,54 @@ function role_edit() {
     else {
         window.location = "/Backend/StaffType/edit/" + data;
     }
+}
+//remark_edit
+function remark_edit() {
+    var data = [];
+    $("input[name='remark_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one remark to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one remark to edit in one time!", "error");
+    }
+    else
+        window.location = "/Backend/Remark/edit/" + data;
+}
+
+function remark_enable() {
+    var data = [];
+    $("input[name='remark_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one remark to active !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one remark to active in one time!", "error");
+    }
+    else
+        window.location = "/Backend/Remark/active/" + data;
+}
+
+function remark_disable() {
+    var data = [];
+    $("input[name='remark_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one remark to inactive!", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one remark to inactive in one time!", "error");
+    }
+    else
+        window.location = "/Backend/Remark/inactive/" + data;
 }
 
 function check_date(){
@@ -1176,6 +1228,9 @@ function room_cancel(){
 function role_cancel(){
     window.location.href='/Cashier/StaffType/index';
 }
+function remark_cancel(){
+    window.location.href = '/Backend/Remark/index';
+}
 
 function extra_listing_form_back()
 {
@@ -1321,6 +1376,40 @@ function checkRole() {
         }
     });
 }
+
+//remark delete
+function remark_delete() {
+    var data = [];
+    $("input[name='remark_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+    if (data[0] == null) {
+        sweetAlert("Oops...", "Please select at least one remark to delete !", "error");
+    }
+    else {
+        swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this record!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55  ",
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    window.location.href = "/Backend/Remark/delete/" + data;
+                    //route path to do deletion in controller
+                } else {
+                    window.location.href = "/Backend/Remark/index";
+                    //index page which show list
+                }
+            });
+    }
+}
+
 
 
 

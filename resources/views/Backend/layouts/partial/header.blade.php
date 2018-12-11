@@ -72,6 +72,10 @@
   <script src="/assets/js/datatables/dataTables.bootstrap.js"></script>
  <script src="/assets/js/checkall.js"></script>
  <script src="/assets/js/enabled-disabled.js"></script>
+
+  <script src="/assets/backend_js/additional-methods.min.js"></script>
+
+ <!-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script> -->
 <script>
    
     

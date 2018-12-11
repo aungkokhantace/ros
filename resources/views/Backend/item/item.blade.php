@@ -33,7 +33,7 @@
         @if(isset($record))
         <input type="hidden" name="id" value={{$record->id}}>
         @endif
-                   <!-- restaturant session -->
+    <!-- restaturant session -->
         @if (Auth::guard('Cashier')->user()->restaurant_id == null)
          <div class="form-group">
             <label for="member-type" class="col-sm-3 control-label left-align label-font">Restaurant <span class="require">*</span></label>
@@ -120,7 +120,7 @@
         <div class="form-group">
             <label for="category" class="col-sm-3 control-label">Item Category<span class="require">*</span></label>
             <div class="col-sm-7">
-                <select name="parent_category" id="" class="form-control parent_category ">
+                <select name="parent_category" id="category" class="form-control parent_category ">
                     @if(isset($record))
 
                         {!! generateItemCategoryListEdit($categories, $parentId=0, $indent=0,$parent_id_arr,$record->category_id) !!}
@@ -184,6 +184,29 @@
             </div>
             <span for="camera" class="col-md-1 glyphicon glyphicon-camera camera" onclick="item_HandleBrowseClick();"></span>
         </div>
+           <div class="form-group">
+            <label for="remark" class="col-sm-3 control-label">Remark </label>
+            <div class="col-sm-7">
+                <select class="form-control" id="remark" name="remark[]" multiple="multiple">
+                    @if(isset($record))
+                    @foreach ($remarks as $remark)                  
+                     @if(in_array($remark->id,$remark_arr))                       
+                        <option value="{{$remark->id}}" selected="">{{$remark->name}}</option>
+                    @else
+                     <option value="{{$remark->id}}" >{{$remark->name}}</option>
+                    @endif                 
+                    @endforeach 
+                                           
+                    @else
+                    @foreach ($remarks as $remark)
+                        <option value="{{$remark->id}}">{{$remark->name}}</option>
+                    @endforeach
+                    @endif
+                </select>
+                <p class="text-danger">{{$errors->first('remark')}}</p>
+            </div>
+        </div>
+        
 
         <div class="form-group">
             <label for="item-status" class="col-sm-3 control-label">Item Status</label>
@@ -365,15 +388,14 @@ $(document).ready(function() {
 
 $("#branch").change(function(){           
             var branch =$("#branch").val();
-            var restaurant = $("#restaurant").val();   
-            // console.log(restaurant);
+            var restaurant = $("#restaurant").val();
+            
 
-            console.log("/Backend/get_body/ajaxRequest/"+branch+"/"+restaurant);
+            // console.log("/Backend/get_body/ajaxRequest/"+branch+"/"+restaurant);
                      
              $.ajax({
                   type: "GET",
-                  // url: "/Backend/get_body/ajaxRequest/"+branch,
-                  url: "/Backend/get_body/ajaxRequest/"+branch+"/"+restaurant,
+                 url: "/Backend/get_body/ajaxRequest/"+branch+"/"+restaurant,
                   
             }).done( function(data){
                 // console.log('data' +        );
@@ -382,5 +404,29 @@ $("#branch").change(function(){
         })
            
         });
+
+$("#branch").change(function(){   
+    var branch =$("#branch").val();
+      
+             $.ajax({
+                  type: "GET",
+                  url: "/Backend/Remark/ajaxRequest/"+branch,
+                  data: {
+                    "_token": "{{ csrf_token() }}"
+                  }
+            }).done(function(result){
+                console.log(result);
+                $('#remark').empty();
+                // $('#remark').append("<option disabled selected>Select Remark</option>");
+                $(result).each(function(){
+                  // console.log(this.id,this.name);
+                  $('#remark').append($('<option>',{
+                    value : this.id,
+                    text: this.name,
+                  }));
+                })
+              })
+});
+
 </script>
 @endsection

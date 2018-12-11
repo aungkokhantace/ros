@@ -177,6 +177,29 @@
         </div>
 
         <div class="form-group">
+            <label for="remark" class="col-sm-3 control-label">Remark </label>
+            <div class="col-sm-7">
+                <select class="form-control" id="remark" name="remark[]" multiple="multiple">
+                    @if(isset($record))
+                    @foreach ($remarks as $remark)                  
+                     @if(in_array($remark->id,$remark_arr))                       
+                        <option value="{{$remark->id}}" selected="">{{$remark->name}}</option>
+                    @else
+                     <option value="{{$remark->id}}" >{{$remark->name}}</option>
+                    @endif                 
+                    @endforeach 
+                                           
+                    @else
+                    @foreach ($remarks as $remark)
+                        <option value="{{$remark->id}}">{{$remark->name}}</option>
+                    @endforeach
+                    @endif
+                </select>
+                <p class="text-danger">{{$errors->first('remark')}}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label for="item-status" class="col-sm-3 control-label">Item Status</label>
             <div class="col-sm-7">
                 <select class="form-control" id="item-status" name="status">
@@ -356,8 +379,7 @@ $(document).ready(function() {
 
 $("#branch").change(function(){           
             var branch =$("#branch").val();
-            var restaurant = $("#restaurant").val(); 
-            console.log(branch + restaurant);           
+            var restaurant = $("#restaurant").val();                  
              $.ajax({
                   type: "GET",
                   // url: "/Backend/get_body/ajaxRequest/"+branch,
@@ -370,5 +392,26 @@ $("#branch").change(function(){
         })
            
         });
+$("#branch").change(function(){   
+    var branch =$("#branch").val();      
+             $.ajax({
+                  type: "GET",
+                  url: "/Backend/Remark/ajaxRequest/"+branch,
+                  data: {
+                    "_token": "{{ csrf_token() }}"
+                  }
+            }).done(function(result){
+                console.log(result);
+                $('#remark').empty();
+                // $('#remark').append("<option disabled selected>Select Remark</option>");
+                $(result).each(function(){
+                  // console.log(this.id,this.name);
+                  $('#remark').append($('<option>',{
+                    value : this.id,
+                    text: this.name,
+                  }));
+                })
+              })
+});
 </script>
 @endsection

@@ -71,8 +71,11 @@ class RoomController extends Controller
     }
 
     public function edit($id){//get data by ID and go to edit form
-        $room = $this->roomRepository->getRoomById($id);
-        return view('Backend.room.room')->with('room',$room);
+        $room           = $this->roomRepository->getRoomById($id);
+        $branch         = $this->branchRepo->getAllType();
+        $restaurant     = $this->restaurantRepo->getAllType();
+        return view('Backend.room.room')->with('room',$room)->with('branchs',$branch)
+                                        ->with('restaurants',$restaurant);
     }
 
     public function update(RoomEditRequest $request){//get data from edit form

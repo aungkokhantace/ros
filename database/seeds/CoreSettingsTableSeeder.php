@@ -36,5 +36,11 @@ class CoreSettingsTableSeeder extends Seeder
             'value'         => '4',
             'description'   => 'SET_MENU code will generate Whent get value 4'
         ]);
+        DB::table('core_settings')->insert([
+            'code'          => 'REMARK',
+            'type'          => 'REMARK_TYPE',
+            'value'         => '5',
+            'description'   => 'Remark code will generate Whent get value 4'
+        ]);
     }
 }

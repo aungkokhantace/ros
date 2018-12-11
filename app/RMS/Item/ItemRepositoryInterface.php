@@ -11,13 +11,13 @@ namespace App\RMS\Item;
 
 interface ItemRepositoryInterface
 {
-    public function store($paramObj,$input);
+    public function store($paramObj,$input,$remark,$branch_id ,$restaurant_id);
     public function ChooseCat();
     public function selectParent();
     public function selectSub();
 
     //  Testing for multilevel
-        public function selectCat();
+    public function selectCat();
     //  Testing for multilevel
     public function find($id);
 

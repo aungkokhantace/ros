@@ -2,7 +2,7 @@
 $("#restaurant").change(function(){
 //            var tmp=$('#userType').val();
             var restaurant_id =$("#restaurant").val();
-            console.log(restaurant_id);
+            // console.log(restaurant_id);
              $.ajax({
                   type: "GET",
                   url: "/Backend/Staff/ajaxRequest/"+restaurant_id,
