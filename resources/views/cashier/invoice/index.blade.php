@@ -38,7 +38,11 @@
                             {{ $order->status == 2 ? "Paid" : "To Pay" }}
                             </a> --}}
                         </td>
-                        <td><a class="btn btn-info status-btn" href="/Cashier/MakeOrder/edit/{{$order->id}}">Edit</a></td>
+                        @if($order->status == 2)
+                            <td><i class="fa fa-lock ml-4" style="font-size:20px;"></i></td>
+                            @else 
+                            <td><a class="btn btn-info status-btn" href="/Cashier/MakeOrder/edit/{{$order->id}}">Edit</a></td>
+                        @endif
                         <td>
                             @if($order->status == 2)
                             <button class="btn print-btn" id = '{{$order->id}}' data-toggle="modal" data-target="#printModal" data-id="{{$order->id}}" onclick="printInvoice('{{$order->id}}')"></button>

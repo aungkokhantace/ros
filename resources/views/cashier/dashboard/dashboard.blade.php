@@ -71,7 +71,7 @@
                                     <th><label>Total Amount</label></th>
                                     <th><label>Date</label></th>
                                     <th><label>Pay</label></th>
-                                    <th><label>Void</label></th>
+                                    {{-- <th><label>Void</label></th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -83,13 +83,14 @@
                                     <td>
                                         <a href="/Cashier/invoice/paid/{{ $order->id }}" class="btn btn-success">Pay</a>
                                     </td>
-                                    <td>
+                                    {{-- <td> 
                                         <a href="/Cashier/invoice" class="btn btn-danger">Cancel</a>
-                                    </td>
+                                     </td> --}}
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+                        <a href="/Cashier/invoice" class="btn btn-primary btn-sm">Go to invoice list</a>
                     </div>
                 </div>
                 </div>
