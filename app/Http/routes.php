@@ -624,6 +624,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('productView', 'Kitchen\OrderViewController@productView');
             Route::get('test', 'Kitchen\HomeController@pricesPage');
             Route::get('test-values', 'Kitchen\HomeController@pricesValues');
+            Route::resource('stock-requisition', 'Kitchen\OrderViewController', ['only' => ['index', 'store']]);
         });
     });
 });

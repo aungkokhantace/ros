@@ -796,4 +796,20 @@ class OrderViewController extends Controller
         return \Response::json($output);
         // return redirect()->action('Kitchen\OrderViewController@productView');
     }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index()
+    {
+        return view('kitchen.stock_requisition');
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function store(Request $request)
+    {
+        dd($request);
+    }
 }

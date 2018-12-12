@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="/assets/backend_css/bootstrap-timepicker.css">
   <!-- <link rel="stylesheet" href="/assets/backend_css/datepicker3.css"> -->
   <link href="/assets/css/multiple-select.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('assets/css/stock_requisition_style.css') }}">
 
   <script src="/assets/backend_js/jquery.min.js"></script>
   <!-- <script src="/assets/js/jquery-2.1.4.js"></script> -->
@@ -170,6 +171,12 @@
             </span>
           </a>
 
+        </li>
+        <li  @if(Request::path() == 'Kitchen/stock-requisition') class="active" @endif>
+            <a href="/Kitchen/stock-requisition">
+                <i class="fa fa-wpforms"></i>&nbsp;&nbsp;<span><b>Stock Requisition Form</b></span>
+                <span class="pull-right-container"></span>
+            </a>
         </li>
        </ul>
 
