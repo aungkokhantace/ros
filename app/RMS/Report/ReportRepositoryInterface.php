@@ -30,6 +30,35 @@ interface ReportRepositoryInterface
     public function getMemberTypes();
     public function getMemberFavouriteFoodWithJoin($typeId);
 
+    /**
+     * Get category_sale_report
+     *
+     * @return mixed
+     */
+    public function getCategorySaleReport();
+
+    /**
+     * @param $limit
+     * @param $offset
+     * @return mixed
+     */
+    public function getCategorySaleReportByParams($limit, $offset);
+
+    /**
+     * Get category by parent_id
+     *
+     * @param $parent_id
+     * @return mixed
+     */
+    public function getParentCategory($parent_id);
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function getCategorySaleReportByDate($params);
+
+    public function getCategorySaleReportCount();
 
    
     

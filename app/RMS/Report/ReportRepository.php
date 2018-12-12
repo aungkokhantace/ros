@@ -1,5 +1,7 @@
 <?php
+
 namespace App\RMS\Report;
+
 use App\RMS\Category\Category;
 use App\RMS\Favourite\Favourite;
 use App\RMS\MemberType\MemberType;
@@ -7,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\Order\Order;
 use App\Status\StatusConstance;
+
 class ReportRepository implements ReportRepositoryInterface
 {
     public function getStartDate(){
@@ -416,6 +419,76 @@ class ReportRepository implements ReportRepositoryInterface
         return $data;
     }
 
+    /**
+     * Get category_sale_report by limit and offset
+     *
+     * @param $limit
+     * @param $offset
+     * @return mixed
+     */
+    public function getCategorySaleReportByParams($limit, $offset)
+    {
+        $data = $this->getCategorySaleReportConnection()
+            ->whereNull('category.deleted_at')
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
 
-     
+        return $data;
+    }
+
+    /**
+     * Get category by parent_id
+     *
+     * @param $parent_id
+     * @return mixed
+     */
+    public function getParentCategory($parent_id)
+    {
+        return DB::table('category')
+            ->where('id', '=', $parent_id)
+            ->first();
+    }
+
+    public function getCategorySaleReportByDate($params)
+    {
+        $data = $this->getCategorySaleReportConnection()
+            ->whereNull('category.deleted_at')
+            ->whereBetween('order.order_time', [$params->from, $params->to])
+            ->get();
+
+        return $data;
+    }
+
+    public function getCategorySaleReportCount()
+    {
+        return $this->getCategorySaleReportConnection()->count();
+    }
+
+    /**
+     * Get category_sale_report
+     *
+     * @return mixed
+     */
+    public function getCategorySaleReport()
+    {
+        return $this->getCategorySaleReportConnection()->get();
+    }
+
+    public function getCategorySaleReportConnection()
+    {
+        return DB::table('category')
+            ->join('items', 'category.id', '=', 'items.category_id')
+            ->join('order_details', 'items.id', '=', 'order_details.item_id')
+            ->join('order', 'order_details.order_id', '=', 'order.id')
+            ->select(
+                'category.id as category_id',
+                'category.name as category_name',
+                'items.name as item_name',
+                'order_details.quantity as quantity',
+                'order_details.amount as amount',
+                'category.parent_id',
+                'order_details.item_id'
+            );
+    }
 }

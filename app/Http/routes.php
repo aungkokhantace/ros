@@ -1,4 +1,10 @@
 <?php
+if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
+// Ignores notices and reports all other kinds... and warnings
+    error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
+// error_reporting(E_ALL ^ E_WARNING); // Maybe this is enough
+}
+
 Route::get('logo', 'headerController@logo');
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', function () {
@@ -222,7 +228,7 @@ Route::group(['middleware' => 'web'], function () {
        });
     });
 
-    Route::group(['prefix' => 'Backend'], function(){
+    Route::group(['prefix' => 'Backend'], function() {
         Route::group(['middleware' => 'custom:Cashier'], function(){
             Route::get('logout', 'Backend\Auth\AuthController@logout');
             Route::get('userAuth', 'Backend\Staff\UserController@getAuthUser');
@@ -525,6 +531,16 @@ Route::group(['middleware' => 'web'], function () {
              //Item Report & Excel Download
             Route::get('itemReport', 'Backend\Report\ReportController@itemReport');
             Route::get('downloadItemReport', 'Backend\Report\ReportController@downloadItemReport');
+
+
+            Route::resource('categorySaleReport', 'Backend\Report\ReportController', [
+                'only' => ['index']
+            ]);
+
+            Route::get('categorySaleAjaxRequest', 'Backend\Report\ReportController@getCategorySaleAjax');
+            Route::post('category-sale-search', 'Backend\Report\ReportController@getCategorySaleByDate');
+            Route::get('category-sale-export', 'Backend\Report\ReportController@getCategorySaleExport');
+            Route::get('category-sale-export/{from}/{to}', 'Backend\Report\ReportController@getCategorySaleExportByDate');
 
 
              //Item Report With Date & Excel Download

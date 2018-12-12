@@ -359,5 +359,173 @@ class ReportController extends Controller
     public function saleSummaryDetailReport_checked($checked){
         return view('cashier.report.SaleSummaryDetailReport')->with('checked',$checked);
     }
+
+    public function index()
+    {
+        return view('Backend.report.CategorySaleReport');
+    }
+
+    public function getCategorySaleAjax(Request $request)
+    {
+        $limit  = (int) $request->input('length');
+        $offset = (int) $request->input('start');
+
+        $categories = $this->reportRepository->getCategorySaleReportByParams($limit, $offset);
+        $data       = $this->getFinalResultForCategorySaleReport($categories);
+        $result     = [];
+        $total      = 0;
+
+        foreach ($data as $category) {
+            $nestedData[0] = $category->category_name;
+            $nestedData[1] = $category->item_name;
+            $nestedData[2] = $category->quantity;
+            $nestedData[3] = $category->amount;
+            $total += $category->amount;
+            $result[] = $nestedData;
+        }
+
+            $nestedData[0] = '';
+            $nestedData[1] = '';
+            $nestedData[2] = '<b>Grand Total</b>';
+            $nestedData[3] = '<b>'.$total.'</b>';
+            $result[] = $nestedData;
+
+        $count = $this->reportRepository->getCategorySaleReportCount();
+
+        $array = [
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($count),
+            "recordsFiltered" => intval($count),
+            "data"            => $result
+        ];
+
+        return \Response::json($array);
+    }
+
+    public function getCategorySaleByDate(Request $request)
+    {
+        if (empty($request->from) || empty($request->to)) {
+            alert()->warning('Please Choose Date!')->persistent('Close');
+            return redirect()->back()->withInput();
+        }
+
+        $date = [
+            'from' => $request->from,
+            'to'   => $request->to
+        ];
+
+        $request->from = Date('Y-m-d', strtotime($request->from));
+        $request->to   = Date('Y-m-d', strtotime($request->to));
+        $category_sale_reports = $this->reportRepository->getCategorySaleReportByDate($request);
+        $result = $this->getFinalResultForCategorySaleReport($category_sale_reports);
+        return view('Backend.report.CategorySaleReport', compact('result', 'date'));
+    }
+
+    public function getCategorySaleExport()
+    {
+        ob_end_clean();
+        ob_start();
+
+        $category_sale_reports = $this->reportRepository->getCategorySaleReport();
+        $data = $this->getFinalResultForCategorySaleReport($category_sale_reports);
+
+        foreach ($data as $key => $category_sale_report) {
+            $items[$key]['Parent Category Name'] = $category_sale_report->category_name;
+            $items[$key]['Category Name']        = $category_sale_report->item_name;
+            $items[$key]['Quantity']             = $category_sale_report->quantity;
+            $items[$key]['Total Amount']         = $category_sale_report->amount;
+        }
+
+        Excel::create('Category Sale Report', function ($excel) use ($data, $items) {
+            $excel->sheet('Category Sale Report', function ($sheet) use ($data, $items) {
+                $sheet->fromArray($items);
+                $total = 0;
+                foreach ($data as $value) {
+                    $total += $value->amount;
+                }
+
+                $sheet->appendRow(array('', '', 'Grand Total', $total));
+                $sheet->row(1, function($row) {
+                    $row->setBackground('#f3a42e');
+                });
+            });
+        })->download('xls');
+
+        ob_flush();
+        return Redirect();
+    }
+
+    public function getCategorySaleExportByDate($from, $to)
+    {
+        ob_end_clean();
+        ob_start();
+
+        $date = [
+            'from' => Date('Y-m-d', strtotime($from)),
+            'to'   => Date('Y-m-d', strtotime($to))
+        ];
+
+        $category_sale_reports = $this->reportRepository->getCategorySaleReportByDate((object)$date);
+        $data = $this->getFinalResultForCategorySaleReport($category_sale_reports);
+
+        foreach ($data as $key => $category_sale_report) {
+            $items[$key]['Parent Category Name'] = $category_sale_report->category_name;
+            $items[$key]['Category Name']        = $category_sale_report->item_name;
+            $items[$key]['Quantity']             = $category_sale_report->quantity;
+            $items[$key]['Total Amount']         = $category_sale_report->amount;
+        }
+
+        Excel::create('Category Sale Report', function($excel)use($data, $items) {
+            $excel->sheet('Category Sale Report', function($sheet)use($data, $items) {
+                $sheet->fromArray($items);
+                $total = 0;
+                foreach ($data as $value) {
+                    $total += $value->amount;
+                }
+                $sheet->appendRow(array('', '', 'Grand Total', $total));
+                $sheet->row(1,function($row) {
+                    $row->setBackground('#f3a42e');
+                });
+            });
+        })->download('xls');
+
+        ob_flush();
+        return Redirect();
+    }
+
+    public function getFinalResultForCategorySaleReport(array $data)
+    {
+        $result = [];
+        $item   = [];
+        $i = 0;
+        if (!empty($data)) {
+            foreach ($data as $category_sale_report) {
+                if (array_search($category_sale_report->item_id, $item)) {
+                    $duplicate = array_search($category_sale_report->item_id, $item);
+                    $data = $result[$duplicate];
+                    $category_sale_report->quantity += $data->quantity;
+                    $category_sale_report->amount   += $data->amount;
+                    unset($result[$duplicate]);
+                    unset($item[$duplicate]);
+                }
+                $parent_id = $category_sale_report->parent_id;
+                if ($parent_id !== 0) {
+                    $child = $this->reportRepository->getParentCategory($parent_id);
+                    if ($child->parent_id !== 0) {
+                        $sub_child = $child = $this->reportRepository->getParentCategory($child->parent_id);
+                        $category_sale_report->item_name = $sub_child->item_name;
+                    }
+                    $category_sale_report->item_name     = $category_sale_report->category_name;
+                    $category_sale_report->category_name = $child->name;
+                }
+
+                $item['id'.$i] = $category_sale_report->item_id;
+                $result['id'.$i] = $category_sale_report;
+                $i++;
+            }
+        }
+
+        return $result;
+    }
 }
 
