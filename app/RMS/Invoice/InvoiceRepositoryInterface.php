@@ -8,7 +8,7 @@ namespace App\RMS\Invoice;
  */
 interface InvoiceRepositoryInterface
 {
-    public function getinvoice($tableId);
+    public function getinvoice($tableId,$roomId);
     public function getinvoiceCancel();
     public function getCard();
     public function getPayment($id);

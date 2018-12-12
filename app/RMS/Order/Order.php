@@ -24,4 +24,9 @@ class Order extends Model
         return $this->belongsToMany('App\RMS\Table\Table');
     }
 
+    public function rooms()
+    {
+        return $this->belongsToMany('App\RMS\Room\Room');
+    }
+
 }

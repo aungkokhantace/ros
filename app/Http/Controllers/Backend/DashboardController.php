@@ -30,7 +30,7 @@ class DashboardController extends Controller
         ->where('order_time','>=',DB::raw('DATE_ADD(now(),INTERVAL - 12 MONTH)'))
         ->where('status',$order_paid_status)->whereYear('order_time','=',date('Y'))
         ->groupBy(DB::raw('MONTH(order_time)'))->get();    
-        
+
         $daily_order = Order::select(DB::raw('DATE(order_time) as date'),DB::raw('sum(all_total_amount) as total'))->groupBy(DB::raw('Day(order_time)'))
         ->whereMonth('order_time','=',date('m'))->whereYear('order_time','=',date('Y'))
         ->where('status',$order_paid_status)->limit(7)->orderBy('date','desc')->get();    

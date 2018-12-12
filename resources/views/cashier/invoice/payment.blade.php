@@ -28,10 +28,12 @@
                         <button class="btn print-modal" onclick="printInvoice('{{$order->order_id}}')" data-toggle="modal" data-target="#printModal" data-id="{{$order->order_id}}" id="printInvoice" {{ $order->status == 2 ? "" : "style=display:none;" }}>
                             <img src="/assets/cashier/images/payment/print_img.png" alt="Print Image" class="heightLine_06">
                         </button>
+                    
+                    <a href="{{ url()->previous() }}" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>
 
-                    <a class="btn" href="/Cashier/invoice">                
+                    {{-- <a class="btn" href="/Cashier/invoice">                
                         <img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06">     
-                    </a>
+                    </a> --}}
                   </div>
                 </div> 
               </div> 
@@ -42,6 +44,12 @@
                         <div class="col-md-4 col-sm-4 col-6">
                             <div class="table-responsive">
                                 <table class="table receipt-table">
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Price</th>
+                                        <th>Qty</th>
+                                        <th>Amount</th>
+                                    </tr>
                                     <tr>
                                         <td>Sub Total</td>
                                         <td>{{ number_format($order->total_price) }}</td>

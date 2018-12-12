@@ -148,7 +148,7 @@
                                 </tr>
 
                                 <tr class="text-center">
-                                    <td colspan="4" ><a href="/Cashier/invoice" class="btn btn-primary">Go Back</a></td>
+                                    <td colspan="4" ><a href="{{ url()->previous() }}" class="btn btn-primary">Go Back</a></td>
                                 </tr>
                             </tbody>
                         </table>

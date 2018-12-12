@@ -26,9 +26,10 @@
                             </h3>
                         </div>
                         <div class="col-lg-8 col-md-7 col-sm-6 col-6 receipt-btn">
-                            <button class="btn" onclick="returnBack()">          
+                            <a href="{{ url()->previous() }}" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>
+                            {{-- <button class="btn" onclick="returnBack()">          
                               <img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06">     
-                            </button>
+                            </button> --}}
                          </div>
                     </div> 
                 </div> 
@@ -98,7 +99,8 @@
                                             <tbody>
                                                 <tr>
                                                     <td colspan="2" rowspan="5" class="order-btn-gp">
-                                                        <button class="order-btn" onclick="returnBack()"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06">     </button>
+                                                        <a href="{{ url()->previous() }}" class="btn order-btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06 mt-5"></a>
+                                                        {{-- <button class="order-btn" onclick="returnBack()"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></button> --}}
                                                         <button class="order-btn" id="order-item">Send Order</button>
                                                     </td>
                                                     <td>Sub Total : </td>

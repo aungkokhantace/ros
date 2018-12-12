@@ -23,39 +23,57 @@ use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
 
-	public function getinvoice($tableId = NULL)
+	public function getinvoice($tableId,$roomId)
 	{
+		
 		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$session_status       = StatusConstance::DAY_STARTING_STATUS;
-        $daystart             = DayStart::select('id')
-                              ->where('status',$session_status)
-                              ->whereNull('deleted_at')
-                              ->first();
-        $day_id 			  = '';
-        if (count($daystart) > 0) {
+		$daystart             = DayStart::select('id')
+							->where('status',$session_status)
+							->whereNull('deleted_at')
+							->first();
+		$day_id 			  = '';
+
+		
+
+		if (count($daystart) > 0) {
 			$day_id 			  = $daystart->id;
 		}
 		
-		$table = Table::find($tableId);
+		
+		if($roomId == NULL){
 
-		if($table){
+			$table = Table::find($tableId);
+
 			$orders = $table->orders()
-						->whereIn('status',[$order_status,$order_paid_status])
-						->orderBy('id','desc')
-						->where('day_id',$day_id)
-						->get();
+							->whereIn('status',[$order_status,$order_paid_status])
+							->orderBy('id','desc')
+							->where('day_id',$day_id)
+							->get();
+			return $orders;
+
+
 		}
-		else{
-			$orders  = Order::whereIn('status',[$order_status,$order_paid_status])
+		
+		if($tableId == NULL){
+			$room  = Room::find($roomId);
+			$orders = $room->orders()
+							->whereIn('status',[$order_status,$order_paid_status])
+							->orderBy('id','desc')
+							->where('day_id',$day_id)
+							->get();
+			return $orders;
+		}
+
+		if($tableId == 'all' && $roomId == 'all'){
+			$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
 					->where('day_id','=',$day_id)
 					->whereNull('deleted_at')
 					->get();
-		}
-
-		return $orders;
-		
+			return $orders;
+		}		
 	}
 
 	public function getinvoiceTimeIncrease()
