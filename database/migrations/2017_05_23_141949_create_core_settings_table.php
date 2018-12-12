@@ -16,7 +16,7 @@ class CreateCoreSettingsTable extends Migration
             $table->string('code');
             $table->string('type');
             $table->string('value');
-            $table->string('description');
+            $table->text('description');
 
             //Common to all table ----------------------------------------------
             $table->string('created_by',100)->nullable();
