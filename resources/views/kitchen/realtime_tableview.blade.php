@@ -128,7 +128,7 @@
                                         @if ($item->status_id == 1)
                                          Order
                                         @elseif($item->is_ready_food)
-                                        Ready Food
+                                        Order
                                          @elseif($item->status_id == 2)
                                         Cooking
                                         @else
@@ -151,10 +151,10 @@
                                                 <input type="submit" class="start btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking" /><br><br>
 
                                         @elseif($item->status_id == 2)
-                                                <input type="submit" class="complete btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="{{($item->is_ready_food) ? "Ready Food" : "Cooking"}}" /><br><br>
+                                                <input type="submit" class="complete btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="{{($item->is_ready_food) ? "Food Ready" : "Complete Cooking"}}" /><br><br>
                                         @elseif($item->status_id == 3)
 
-                                                <input type="submit" class="taken btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Taken" /><br><br>
+                                                <input type="submit" class="taken btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Take" /><br><br>
 
 
                                         @endif

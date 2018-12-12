@@ -80,10 +80,7 @@
 
                                                 @endif
                                                 @if($item->status_id =='2')
-                                                {{($item->is_ready_food) ? "Ready Food" : "Cooking"}}
-
-                                                @elseif($item->status_id == 2)
-                                                Cooking
+                                                {{($item->is_ready_food) ? "Order" : "Cooking"}}
                                                 @else
                                                 Ready
                                                 @endif
@@ -96,12 +93,12 @@
                                                 @endif
                                                 @if($item->status_id =='2')
 
-                                                    <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="{{($item->is_ready_food) ? "Make Ready" : "Complete Cooking"}}">
+                                                    <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="{{($item->is_ready_food) ? "Food Ready" : "Complete Cooking"}}">
                                                     
 
                                                 @endif
                                                 @if($item->status_id == '3')
-                                                    <input type="submit" class="taken complete_taken_item btn_k" id="{{$item->order_detail_id}}" value="Taken" /><br><br>
+                                                    <input type="submit" class="taken complete_taken_item btn_k" id="{{$item->order_detail_id}}" value="Take" /><br><br>
 
                                                 @endif
                                             </td>
