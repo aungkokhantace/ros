@@ -81,7 +81,7 @@
                                                 @endif
                                                 @if($item->status_id =='2')
                                                 {{($item->is_ready_food) ? "Order" : "Cooking"}}
-                                                @else
+                                                @elseif($item->status_id =='3')
                                                 Ready
                                                 @endif
 
