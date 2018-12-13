@@ -125,8 +125,20 @@ class syncAPIController extends ApiGuardController
            $activate_key = $k->site_activation_key;
         }
         if($key == $activate_key){
-            $item = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
-            $output = array("items" => $item);
+            $items = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
+            foreach($items as $item){
+             $remarks  = DB::table('item_remark')->join('remark','remark.id','=','item_remark.remark_id')->select('remark.name','remark.id as remark_id','item_remark.item_id')->where('item_id',$item->id)->get();
+             //add selected->false to all remark
+             foreach($remarks as $remark)
+             {
+                $remark->selected = false;
+             }
+              
+              $item->remark = $remarks;
+              $item->remark_extra = '';
+
+            }
+            $output = array("items" => $items);
             return Response::json($output);
         }else{
             $output = array("Message" => "Unauthorized");
@@ -222,8 +234,10 @@ class syncAPIController extends ApiGuardController
 
     public function table()
     {
-        $temp = Input::all();
-        $key  = $temp['site_activation_key'];
+
+        $temp           = Input::all();
+        $key            = $temp['site_activation_key'];
+        $location_id    = $temp['location_id'];
         $site_activation_key = Config::all();
         $activate_key = 0;
 
@@ -244,7 +258,9 @@ class syncAPIController extends ApiGuardController
                               ->where('booking_date','=',$cur_date)
                               ->whereIn('booking.status',$array)
                               ->get();
-            $tables = DB::select("SELECT id,table_no,status FROM tables WHERE active = '$active_status' AND deleted_at IS NULL");
+            $tables = DB::table('tables')->where('location_id',$location_id)->where('active',$active_status)->whereNull('deleted_at')->select('tables.id','tables.table_no','tables.status')->get();
+            
+            // $tables = DB::select("SELECT id,table_no,status FROM tables WHERE active = '$active_status' , WHERE location_id = '$location_id' AND deleted_at IS NULL");
             $table_arr  = array();
             foreach($tables as $key => $table) {
 
@@ -604,6 +620,7 @@ class syncAPIController extends ApiGuardController
     public function getSyncsTable()
     {
         $temp = Input::all();
+
         $key  = $temp['site_activation_key'];
         $site_activation_key = Config::all();
         $activate_key = 0;
@@ -611,16 +628,17 @@ class syncAPIController extends ApiGuardController
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
-
         if($key == $activate_key){
+
             $syncs = SyncsTable::select('id', 'table_name', 'version')->get();
             $returnObj = array();
             foreach($syncs as $sync){
-                if($sync->table_name == "category" || $sync->table_name == "items" || $sync->table_name == "set_menu" || $sync->table_name == "set_item" || $sync->table_name =="discount" || $sync->table_name == "members" || $sync->table_name == "add_on" || $sync->table_name == "rooms" || $sync->table_name == "tables" || $sync->table_name == "booking" || $sync->table_nam == "config" || $sync->table_name == "promotions" || $sync->table_name == "promotion_items" || $sync->table_name == "config" || $sync->table_name == "continent" || $sync->table_name == "shift_category" || $sync->table_name == "shift_setmenu"){
+                if($sync->table_name == "category" || $sync->table_name == "items" || $sync->table_name == "set_menu" || $sync->table_name == "set_item" || $sync->table_name =="discount" || $sync->table_name == "members" || $sync->table_name == "add_on" || $sync->table_name == "rooms" || $sync->table_name == "tables" || $sync->table_name == "booking" || $sync->table_nam == "config" || $sync->table_name == "promotions" || $sync->table_name == "promotion_items" || $sync->table_name == "config" || $sync->table_name == "continent" || $sync->table_name == "shift_category" || $sync->table_name == "shift_setmenu" || $sync->table_name == "locations"){
 
                     $returnObj[] = $sync;
                 }
             }
+
             $output = array("syncs_table" => $returnObj);
             return Response::json($output);
         }else{
@@ -665,14 +683,29 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
-                        $item = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
+                        $items = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
+                        
+                        foreach($items as $item){
+                         $remarks  = DB::table('item_remark')->join('remark','remark.id','=','item_remark.remark_id')->select('remark.name','remark.id as remark_id','item_remark.item_id')->where('item_id',$item->id)->get();
+                         //add selected->false to all remark
+                         foreach($remarks as $remark)
+                         {
+                            $remark->selected = false;
+                         }
+                          
+                          $item->remark = $remarks;
+                          $item->remark_extra = '';
 
-
-                        $item_count     = count($item);
+                         }
+                       
+                        $item_count     = count($items);
                         if ($item_count > 0) {
-                             $returnArr['items'] = $item;
+                             $returnArr['items'] = $items;
+
+                             
                         } else {
                             $returnArr['items'] = Null;
+                          
                         }
                     }
                 }
@@ -726,12 +759,16 @@ class syncAPIController extends ApiGuardController
                 }
 
                 if($sync->table_name == "locations"){
+
                     if($sync->version > $temp['locations']){
+
                         $locations = DB::select("SELECT id,location_type FROM locations WHERE deleted_at IS NULL");
+                       
                         $location_count     = count($locations);
                         if ($location_count > 0) {
                              $returnArr['locations'] = $locations;
                         } else {
+                        
                             $returnArr['locations'] = Null;
                         }
                     }
@@ -960,12 +997,51 @@ class syncAPIController extends ApiGuardController
             if (!array_key_exists('shift_setmenu', $returnArr)) {
                 $returnArr['shift_setmenu'] = array();
             }
+            if (!array_key_exists('locations', $returnArr)) {
+                $returnArr['locations'] = array();
+            }
              return Response::json($returnArr);
         }else{
             //$output = array("Message" => "Unauthorized");
             $output['SyncsTable'] = "";
             $output['Message']="Unauthorized";
             return Response::json($output);
+        }
+    }
+
+    public function tablelist(){
+        $temp                   = Input::all();
+        $key                    = $temp['site_activation_key'];
+        $site_activation_key    = Config::all();
+        $activate_key           = 0;
+        $today                  = Carbon::now();
+        $cur_date               = Carbon::parse($today)->format('Y-m-d');
+        $returnObj              = array();
+        foreach($site_activation_key as $k){
+           $activate_key = $k->site_activation_key;
+        }
+
+        if($key == $activate_key)
+        {
+
+           $location_id = $temp['location_id'];
+           $tables = DB::table('tables')->where('location_id',$location_id)->whereNull('deleted_at')->select('tables.id','tables.table_no','tables.area','tables.capacity')->get();
+
+           if(count($tables)>0)
+           {
+             $returnObj = $tables;
+           }else
+           {
+             $returnObj = null;
+           }
+
+           return Response::json($returnObj);
+
+        }else{
+
+            $returnObj['tables'] = "";
+            $returnObj['Message']="Unauthorized";
+            return Response::json($returnObj);
         }
     }
 

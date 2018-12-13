@@ -658,12 +658,14 @@ Route::post('api/v1/promotion','syncAPIController@promotion');
 Route::post('api/v1/promotion_item','syncAPIController@promotionItem');
 Route::post('api/v1/syncs_table','syncAPIController@getSyncsTable');
 Route::post('api/v1/syncs', 'syncAPIController@sync_table');
+Route::post('api/v1/table_list','syncAPIController@tablelist');
 
 //API Post Method
 Route::post('api/v1/login', 'makeAPIController@login');
 //First Time Login
 Route::post('api/v1/first_time_login', 'makeAPIController@first_time_login');
-
+///Bill split
+Route::post('api/v1/bill_split','makeAPIController@Billsplit');
 Route::post('api/v1/create_voucher','makeAPIController@create_voucher');
 Route::post('api/v1/add_new_to_voucher','makeAPIController@add_new_to_voucher');
 Route::post('api/v1/cancel','makeAPIController@cancel');
