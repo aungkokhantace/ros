@@ -9,6 +9,8 @@
 namespace App\RMS\Discount;
 
 
+use App\RMS\Branch\Branch;
+use App\RMS\Restaurant\Restaurant;
 use App\RMS\Utility;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
@@ -61,18 +63,6 @@ class DiscountRepository implements DiscountRepositoryInterface
     {
         $items = DB::table('items')->get();
         return $items;
-    }
-
-    public function getBranch()
-    {
-        $branches = DB::table('branch')->get();
-        return $branches;
-    }
-
-    public function getRestaurant()
-    {
-        $restaurants = DB::table('restaurant')->get();
-        return $restaurants;
     }
 
     public function discount_edit($id)
@@ -173,4 +163,38 @@ class DiscountRepository implements DiscountRepositoryInterface
         $continent = Continent::select('id', 'name')->get();
         return $continent;
     }
+   public function getRestaurant($restaurant_id){
+       $restaurant            = Branch::where('restaurant_id',$restaurant_id)->whereNull('deleted_at')->get();
+       return $restaurant;
+       }
+
+    public  function getBranch($restaurant_id,$branch_id){
+        $query               = Category::query();
+        $query               = $query->whereNull('deleted_at');
+
+        if($branch_id != 0 || $branch_id != null && $restaurant_id != 0 || $restaurant_id != null){
+            $branch         = $query->where('branch_id',$branch_id);
+            return $branch;
+        }
+
+    }
+    public function getAll(){
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+
+    //dd($branch,$restaurant);
+        $query         = DiscountModel::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $discount        = $query->get();
+        return $discount;
+
+
+    }
+
 }

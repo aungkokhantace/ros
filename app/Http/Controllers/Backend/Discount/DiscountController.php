@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Backend\Discount;
 
 use App\RMS\Discount\DiscountModel;
+use App\RMS\Discount\DiscountRepository;
 use App\RMS\Discount\DiscountRepositoryInterface;
+use App\RMS\Item\ItemRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -22,6 +24,7 @@ use App\RMS\Utility;
 use App\RMS\Restaurant\RestaurantRepository;
 use App\RMS\Branch\BranchRepository;
 
+
 class DiscountController extends Controller
 {
     private $DiscountRepository;
@@ -31,6 +34,7 @@ class DiscountController extends Controller
         $this->DiscountRepository = $DiscountRepository;
         $this->restaurantRepo     = new RestaurantRepository();
         $this->branchRepo         = new BranchRepository();
+        $this->itemRepo           = new ItemRepository();
 
     }
 
@@ -38,8 +42,7 @@ class DiscountController extends Controller
     {
         $discounts     = DiscountModel::get();
         $items         = DB::table('items')->WhereNull('deleted_at')->get();
-        $restaurants   = DB::table('restaurant')->WhereNull('deleted_at')->get();
-        $branches      = DB::table('branch')->WhereNull('deleted_at')->get();
+        $discounts     = $this->DiscountRepository->getAll();
         return view('Backend.discount.discount_listing', compact('discounts', 'items', 'restaurants', 'branches'));
     }
 
@@ -51,9 +54,9 @@ class DiscountController extends Controller
 
     public function create()
     {
-        $items       = DB::table('items')->WhereNull('deleted_at')->get();
-        $branches    = $this->DiscountRepository->getBranch();
-        $restaurants = $this->DiscountRepository->getRestaurant();
+        $items       = $this->itemRepo->getItem();
+        $branches    = $this->branchRepo->getAllType();
+        $restaurants =  $this->restaurantRepo->getAllType();
         $continent   = $this->DiscountRepository->getContinent();
         return view('Backend.discount.discount')
             ->with('continent', $continent)
@@ -65,9 +68,11 @@ class DiscountController extends Controller
     public function store(InsertDiscountRequest $request)
     {
         $request->validate();
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');
+
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant');
+
         $name                      = Input::get('name');
-        $restaurant_id             = Input::get('restaurant');
-        $branch_id                 = Input::get('branch');
         $amount                    = Input::get('amount');
         $type                      = Input::get('choose');
         $product                   = Input::get('product');
