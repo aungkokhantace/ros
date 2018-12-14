@@ -8,6 +8,63 @@
             <div class="col-md-12">
 
                 {!! Form::open(array('url' => 'Backend/Booking/update', 'class'=> 'form-horizontal','id'=>'bookingForm')) !!}
+                  <!-- restaturant session -->
+        @if (Auth::guard('Cashier')->user()->restaurant_id == null)
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label"><b>Restaurant<span class="require">*</span></b> </label>
+              <div class="col-sm-5">           
+                 @if(isset($booking))
+                    @foreach($restaurants as $restaurant)
+                        @if($restaurant->id == $booking->restaurant_id)
+                         <input type="text" class="form-control" value="{{ $restaurant->name }}" readonly />
+                         <input type="hidden" class="form-control" id="restaurant" name="restaurant" value="{{ $restaurant->id }}" />                         
+                       
+                        @endif
+                    @endforeach               
+              
+                   @endif
+              
+            </div>
+        </div>
+     
+
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label"><b>Branch <span class="require">*</span></b> </label>
+             <div class="col-sm-5">            
+                 @if(isset($booking))
+                    @foreach($branchs as $branch)
+                        @if($branch->id == $booking->branch_id)
+                         <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
+                       
+                        @endif
+                    @endforeach              
+                @endif
+                </select>
+              
+            </div>
+        </div>
+         @elseif (Auth::guard('Cashier')->user()->branch_id == null || Auth::guard('Cashier')->user()->branch_id == 0 )
+
+        <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label">Branch<b><span class="require">*</span></b></label>
+              <div class="col-sm-5">    
+                 @if(isset($booking))
+                    @foreach($branchs as $branch)
+                        @if($branch->id == $booking->branch_id)
+                         <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />                         
+                       
+                        @endif
+                    @endforeach                
+                    @endif
+                </select>
+              
+            </div>
+        </div>
+        @endif
+        <!--end restaturant session -->
+
                 <input type="hidden" name="id" value="{{$booking->id}}">
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><b>Date:<span class="require">*</span></b></label>
@@ -22,11 +79,11 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label"><b>From Time:<span class="require">*</span></b></label>
+                    <label class="col-sm-3 control-label"><b>booking Time:<span class="require">*</span></b></label>
                     <div class="col-sm-7">
 
                         <div class="input-group bootstrap-timepicker timepicker">
-                            <input id="from_time" name="from_time" type="text" class="form-control input-small" value="{{isset($booking)? date('h:i:s A',strtotime($booking->from_time)):Request::old('from_time')}}" >
+                            <input id="booking_time" name="booking_time" type="text" class="form-control input-small" value="{{isset($booking)? date('h:i:s A',strtotime($booking->booking_time)):Request::old('booking_time')}}" >
                             <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                         </div>
 
@@ -57,12 +114,12 @@
                 <div class="form-group">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-7">
-                        @if(isset($booking_rooms) && count($booking_rooms) > 0)
-                            <input type="checkbox" name="check" value="room" id="check_room" checked>
+                        @if(isset($booking_bookings) && count($booking_bookings) > 0)
+                            <input type="checkbox" name="check" value="booking" id="check_booking" checked>
                         @else
-                            <input type="checkbox" name="check" value="room" id="check_room">
+                            <input type="checkbox" name="check" value="booking" id="check_booking">
                         @endif
-                            <label class="control-label"><b>Private Room</b></label>
+                            <label class="control-label"><b>Private booking</b></label>
                     </div>
                 </div>
 
@@ -99,16 +156,16 @@
                 <div class="form-group">
                     <div class="col-md-3"></div>
                     <div class="col-md-7">
-                        <div class="row" id="div_room">
-                        @if(isset($rooms) && count($rooms) > 0)
-                            @foreach($rooms as $room)
+                        <div class="row" id="div_booking">
+                        @if(isset($bookings) && count($bookings) > 0)
+                            @foreach($bookings as $booking)
                                 <div class="col-md-4">
                                     <div class="info-box">
                                             <span class="info-box-icon bg-lred" >
-                                                @if(in_array($room->id,$booking_rooms))
-                                                    <input type="checkbox" name="room_check[]" value="{{$room->id}}" style="margin-top: 29px;position: absolute;margin-left: -15px;" class="class_room" checked/>
+                                                @if(in_array($booking->id,$booking_bookings))
+                                                    <input type="checkbox" name="booking_check[]" value="{{$booking->id}}" style="margin-top: 29px;position: absolute;margin-left: -15px;" class="class_booking" checked/>
                                                 @else
-                                                    <input type="checkbox" name="room_check[]" value="{{$room->id}}" style="margin-top: 29px;position: absolute;margin-left: -15px;" class="class_room"/>
+                                                    <input type="checkbox" name="booking_check[]" value="{{$booking->id}}" style="margin-top: 29px;position: absolute;margin-left: -15px;" class="class_booking"/>
                                                 @endif
                                                     <i class="ion ion-fork"></i><i class="ion ion-knife"></i>
 
@@ -116,8 +173,8 @@
 
                                         <div class="info-box-content">
 
-                                            <span class="info-box-text"><b>Room Name: </b></span>{{$room->room_name}}
-                                            <span class="info-box-text"><b>Capacity:</b></span>{{$room->capacity}}
+                                            <span class="info-box-text"><b>booking Name: </b></span>{{$booking->booking_name}}
+                                            <span class="info-box-text"><b>Capacity:</b></span>{{$booking->capacity}}
                                         </div>
                                     </div>
                                 </div>
@@ -141,46 +198,50 @@
    </div>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#from_time').timepicker();
+            $('#booking_time').timepicker();
             $('#to_time').timepicker();
 
             //////////////////////////
-            if($('#check_room').attr('checked')){
+            if($('#check_booking').attr('checked')){
+                console.log("bookign how");
                 $('#div_table').hide();
-                $('#div_room').show();
+                $('#div_booking').show();
             }
             else{
-                $('#div_room').hide();
+                $('#div_booking').hide();
                 $('#div_table').show();
             }
-            $('#date').change(showTablesOrRooms);
-            $('#from_time').change(showTablesOrRooms);
-            $('#check_room').change(showTablesOrRooms);
+            $('#date').change(showTablesOrbookings);
+            $('#booking_time').change(showTablesOrbookings);
+            $('#check_booking').change(showTablesOrbookings);
             /////////////////////////
         });
-        function showTablesOrRooms(){
+        function showTablesOrbookings(){
             var date    = $('#date').val();
-            var time    = $('#from_time').val();
-            if($('#check_room').attr('checked')){
+            var time    = $('#booking_time').val();
+            if($('#check_booking').attr('checked')){
 //                    $('.class_table').removeAttr('checked');
                 $('#div_table').hide();
-                var request = $.get('/Cashier/Booking/getRooms/'+date+'/'+time);
+                // var request = $.get('/Cashier/Booking/getbookings/'+date+'/'+time);
+                var request = $.get('/Backend/Booking/getTables/'+date+'/'+time);
+                
                 var div = "";
-                request.done(function(rooms){
-                    console.log('success',rooms);
-                    $.each(rooms,function(i,room){
+                request.done(function(bookings){
+                    console.log('success',bookings);
+                    $.each(bookings,function(i,booking){
 
-                        div += "<div class='col-md-4'><div class='info-box'><span class='info-box-icon bg-lred'><input type='checkbox' name='room_check[]' value='"+room.id+"' style='margin-top: 29px;position: absolute;margin-left: -15px;' class='class_table'/><i class='ion ion-fork'></i><i class='ion ion-knife'></i></span><div class='info-box-content'><span class='info-box-text'><b>Room Name: </b></span>"+room.room_name+"<span class='info-box-text'><b>Capacity:</b></span>"+room.capacity+"</div></div></div>";
+                        div += "<div class='col-md-4'><div class='info-box'><span class='info-box-icon bg-lred'><input type='checkbox' name='booking_check[]' value='"+booking.id+"' style='margin-top: 29px;position: absolute;margin-left: -15px;' class='class_table'/><i class='ion ion-fork'></i><i class='ion ion-knife'></i></span><div class='info-box-content'><span class='info-box-text'><b>booking Name: </b></span>"+booking.booking_name+"<span class='info-box-text'><b>Capacity:</b></span>"+booking.capacity+"</div></div></div>";
 
                     });
-                    $('#div_room').html(div);
-                    $('#div_room').show();
+                    $('#div_booking').html(div);
+                    $('#div_booking').show();
                 });
             }
             else{
-//                    $('.class_room').removeAttr('checked');
-                $('#div_room').hide();
-                var request = $.get('/Cashier/Booking/getTables/'+date+'/'+time);
+//                    $('.class_booking').removeAttr('checked');
+                $('#div_booking').hide();
+                // var request = $.get('/Cashier/Booking/getTables/'+date+'/'+time);
+                 var request = $.get('/Backend/Booking/getRooms/'+date+'/'+time);
                 var div = "";
                 request.done(function(tables){
                     $.each(tables,function(i,table){

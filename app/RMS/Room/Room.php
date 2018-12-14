@@ -10,6 +10,11 @@ class Room extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $table = "rooms";
-    protected $fillable = ['id','room_name','capacity','room_charges','service','status','created_by',
+    protected $fillable = ['id','room_name','capacity','room_charges','service','status','branch_id','created_by',
     'updated_by','deleted_by','created_at','updated_at','deleted_at'];
+      public function branch()
+    {
+
+       return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
+    }
 }

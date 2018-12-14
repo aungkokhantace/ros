@@ -22,6 +22,11 @@ use App\RMS\Table\Table;
 use App\RMS\Config\Config;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Table\TableRepository;
+use App\RMS\Room\RoomRepository;
+use App\RMS\Restaurant\RestaurantRepository;
+use App\RMS\Branch\BranchRepository;
+use App\RMS\Utility;
 
 class BookingController extends Controller
 {
@@ -29,17 +34,23 @@ class BookingController extends Controller
     public function __construct(BookingRepositoryInterface $bookingRepository)
     {
         $this->bookingRepository = $bookingRepository;
+        $this->TableRepo         = new TableRepository();
+        $this->RoomRepo          = new RoomRepository();
+        $this->restaurantRepo    = new RestaurantRepository();
+        $this->branchRepo        = new BranchRepository();
     }
 
-    public function index(){
+    public function index(){       
 
         $bookings           = $this->bookingRepository->getBookinglist();
 
         $today              = Carbon::now();
         $cur_date           = Carbon::parse($today)->format('Y-m-d');
         
-        $table              = Table::all();
-        $room               = Room::all();
+        // $table              = Table::all();
+        // $room               = Room::all();
+        $table              = $this->TableRepo->getAllTable();
+        $room               = $this->RoomRepo->getAllRoom();
 
         $cur_time           = Carbon::parse($today)->format('H:i:s');
 
@@ -92,16 +103,27 @@ class BookingController extends Controller
     }
 
     public function create(){
+        $branchs             = $this->branchRepo->getAllType();
+        $restaurants         = $this->restaurantRepo->getAllType();
+
         $today              = Carbon::now();
         $cur_date           = Carbon::parse($today)->format('Y-m-d');
  
-        return view('Backend.booking.create_booking',compact('today','cur_date'));
+        return view('Backend.booking.create_booking',compact('today','cur_date','branchs','restaurants'));
     }
 
     public function search(BookingRequest $request){
         $request->validate();
         $date           = Carbon::parse(Input::get('date'))->format('Y-m-d');
         $from           = Input::get('from_time');
+
+        $branch_id      = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant');
+        
+        $restaurant     = $this->restaurantRepo->extra_edit($restaurant_id);
+        $branch         = $this->branchRepo->extra_edit($branch_id);
+        // dd($restaurant,$branch); 
 
         $from_time      = date("H:i:s", strtotime($from));
 
@@ -113,55 +135,67 @@ class BookingController extends Controller
         $to_time        = gmdate('H:i:s',$total_seconds);
         $quantity       = Input::get('quantity');
         $check          = Input::get('check');
+        // dd($check,$total_seconds,$to_time);
+        
         $table_status   = StatusConstance::TABLE_ACTIVE_STATUS;
         $room_status    = StatusConstance::ROOM_ACTIVE_STATUS;
-        if($check == null){
-            $bookinglist = Booking::where('booking_date',$date)->where('from_time','<=',$from_time)->where('to_time','>=',$from_time)->get();
+
+        /* booking table  */
+        if($check             == null){
+            $bookinglist      = Booking::where('booking_date',$date)->where('from_time','<=',$from_time)->where('to_time','>=',$from_time)->get();
+            // dd($bookinglist,$restaurant_id,$branch_id);
+            // dd($bookinglist);
+
             if(isset($bookinglist) && count($bookinglist) >0){
-                $tableIdArr = array();
+                $tableIdArr   = array();
                 $bookingIdArr = array();
                 foreach($bookinglist as $booking){
                     array_push($bookingIdArr,$booking->id);
                 }
 
-                $bookingTables  = BookingTable::select('table_id')->whereIn('booking_id',$bookingIdArr)->groupBy('table_id')->get();
+                $bookingTables      = BookingTable::select('table_id')->whereIn('booking_id',$bookingIdArr)->groupBy('table_id')->get();
                 foreach($bookingTables as $table){
                     array_push($tableIdArr,$table->table_id);
                 }
-                $tables = Table::where('active','=',$table_status)->whereNotIn('id',$tableIdArr)->get();
+                $tables             = Table::where('active','=',$table_status)->whereNotIn('id',$tableIdArr)->get();
                 //If there is no table left
                 if(count($tables) <= 0) {
                     alert()->warning('There is no tables left.')->persistent('Close');
                     return redirect()->back()->withInput();
                 }
-                return view('Backend.booking.booking',compact('tables','date','from','quantity'));
-            }else{
-                $tables = Table::where('active','=',$table_status)->get();
-                return view('Backend.booking.booking',compact('tables','date','from','quantity'));
+                return view('Backend.booking.booking',compact('tables','date','from','quantity','restaurant','branch'));
+            }            
+            else{
+                // dd("else");
+                $tables             = Table::where('active','=',$table_status)->where('restaurant_id',$restaurant_id)->where('branch_id',$branch_id)->get();
+                // dd($tables);
+                return view('Backend.booking.booking',compact('tables','date','from','quantity','restaurant','branch'));
             }
         }else{
-            $bookinglist = Booking::where('booking_date',$date)->where('from_time','<=',$from_time)->where('to_time','>=',$from_time)->get();
+            /* booking room */
+            $bookinglist            = Booking::where('booking_date',$date)->where('from_time','<=',$from_time)->where('to_time','>=',$from_time)->get();
             if(isset($bookinglist) && count($bookinglist) >0){
-                $roomIdArr = array();
-                $bookingIdArr = array();
+                $roomIdArr          = array();
+                $bookingIdArr       = array();
                 foreach($bookinglist as $booking){
                     array_push($bookingIdArr,$booking->id);
                 }
-                $bookingRooms   = BookingRoom::select('room_id')->whereIn('booking_id',$bookingIdArr)->groupBy('room_id')->get();
+                $bookingRooms       = BookingRoom::select('room_id')->whereIn('booking_id',$bookingIdArr)->groupBy('room_id')->get();
                 
                 foreach($bookingRooms as $room){
                     array_push($roomIdArr,$room->room_id);
                 }
-                $rooms = Room::where('active','=',$room_status)->whereNotIn('id',$roomIdArr)->get();
+                $rooms              = Room::where('active','=',$room_status)->whereNotIn('id',$roomIdArr)->where('branch_id',$branch_id)->with('restaurant_id',$restaurant_id)->get();
                 //If there is no room left
-                if(count($rooms) <= 0) {
+                if(count($rooms)    <= 0) {
                     alert()->warning('There is no room left.')->persistent('Close');
                     return redirect()->back()->withInput();
                 }
-                return view('Backend.booking.booking',compact('rooms','date','from','quantity'));
+
+                return view('Backend.booking.booking',compact('rooms','date','from','quantity','restaurant','branch'));
             }else{
-                $rooms = Room::where('active','=',$room_status)->get();
-                return view('Backend.booking.booking',compact('rooms','date','from','quantity'));
+                $rooms              = Room::where('active','=',$room_status)->get();
+                return view('Backend.booking.booking',compact('rooms','date','from','quantity','restaurant','branch'));
             }
         }
     }
@@ -183,8 +217,11 @@ class BookingController extends Controller
         //change seconds
         $service_seconds= strtotime($service_time->booking_service_time)-strtotime('Today');
  
-        $total_seconds = $from_seconds+$service_seconds;
-        $to_time = gmdate('H:i:s',$total_seconds);
+        $total_seconds  = $from_seconds+$service_seconds;
+        $to_time        = gmdate('H:i:s',$total_seconds);       
+        $branch_id      = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant');
 
 
         $paramObj                   = new Booking();
@@ -194,6 +231,8 @@ class BookingController extends Controller
         $paramObj->to_time          = $to_time;
         $paramObj->capacity         = $capacity;
         $paramObj->phone            = $phone;
+        $paramObj->restaurant_id    = $restaurant_id;
+        $paramObj->branch_id        = $branch_id;
 
         if(isset($table_id)){
             $result = $this->bookingRepository->saveBooking($paramObj,$table_id);
@@ -257,7 +296,15 @@ class BookingController extends Controller
 
     public function edit($id){
         $booking          = Booking::find($id);
+        $branchs          = $this->branchRepo->getAllType();
+        $restaurants      = $this->restaurantRepo->getAllType();
+        // dd($booking);
+        $restaurant_id    = $booking->restaurant_id;
+        $branch_id        = $booking->branch_id;
+
         $temp_table       = BookingTable::select('booking_id','table_id')->where('deleted_at','=',NULL)->get();
+        // dd($temp_table);
+        // dd($temp_table);
         $booking_rooms    = array();
         $booking_tables   = array();
         if(isset($temp_table) && count($temp_table) > 0){
@@ -281,7 +328,7 @@ class BookingController extends Controller
         $book_id    = $booking->id;
         $book_date  = $booking->booking_date;
         $book_time  = $booking->from_time;
-        $bookings = Booking::where('booking_date',$book_date)->where('from_time','<=',$book_time)->where('to_time','>=',$book_time)->where('id','!=',$book_id)->get();
+        $bookings   = Booking::where('booking_date',$book_date)->where('from_time','<=',$book_time)->where('to_time','>=',$book_time)->where('id','!=',$book_id)->where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->get();
         if(isset($bookings) && count($bookings) >0){
 
             $tableIdArr     = array();
@@ -291,24 +338,25 @@ class BookingController extends Controller
                 array_push($bookingIdArr,$book->id);
             }
             //Find Available Table
-            $bookingTables  = BookingTable::select('table_id')->whereIn('booking_id',$bookingIdArr)->groupBy('table_id')->get();
+            $bookingTables  = BookingTable::select('table_id')->whereIn('booking_id',$bookingIdArr)->groupBy('table_id')->where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->get();
             foreach($bookingTables as $table){
                 array_push($tableIdArr,$table->table_id);
             }
-            $tables = Table::whereNotIn('id',$tableIdArr)->get();
+            $tables = Table::whereNotIn('id',$tableIdArr)->where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->get();
 
             //Find Available Room
-            $bookingRooms   = BookingRoom::select('room_id')->whereIn('booking_id',$bookingIdArr)->groupBy('room_id')->get();
+            $bookingRooms   = BookingRoom::select('room_id')->whereIn('booking_id',$bookingIdArr)->groupBy('room_id')->where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->get();
             foreach($bookingRooms as $room){
                 array_push($roomIdArr,$room->room_id);
             }
-            $rooms = Room::whereNotIn('id',$roomIdArr)->get();
+            $rooms = Room::whereNotIn('id',$roomIdArr)->where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->get();
         }else{
-            $tables = Table::all();
-            $rooms  = Room::all();
+            $tables = Table::where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->get();
+            $rooms  = Room::where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->get();
         }
+        // dd($rooms);
 
-        return view('Backend.booking.edit_booking',compact('booking','cur_date','tables','rooms','booking_tables','booking_rooms'));
+        return view('Backend.booking.edit_booking',compact('booking','cur_date','tables','rooms','booking_tables','booking_rooms','restaurants','branchs'));
     }
 
     /*
@@ -435,6 +483,9 @@ class BookingController extends Controller
         $service_second = strtotime($service_time->booking_service_time)-strtotime('Today');
         $total_seconds  = $from_second+$service_second;
         $to_time        = gmdate('H:i:s',$total_seconds);
+        $branch_id      = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant');
 
         try{
             DB::beginTransaction();
@@ -445,6 +496,8 @@ class BookingController extends Controller
             $booking->to_time           = $to_time;
             $booking->capacity          = $capacity;
             $booking->phone             = $phone;
+            $booking->restaurant_id     = $restaurant_id;
+            $booking->branch_id         = $branch_id;
             $booking->save();
 
             DB::table('booking_table')->where('booking_id',$id)->delete();
@@ -455,7 +508,11 @@ class BookingController extends Controller
                     $booking_table              = new BookingTable();
                     $booking_table->booking_id  = $id;
                     $booking_table->table_id    = $table;
-                    $booking_table->save();
+                    $booking_table->restaurant_id= $restaurant_id;
+                    $booking_table->branch_id   = $branch_id;
+                    $Obj                        = Utility::addCreatedBy($booking_table);
+                    $Obj->save();
+                    // $booking_table->save();
                 }
 
             }
@@ -464,7 +521,11 @@ class BookingController extends Controller
                     $booking_room               = new BookingRoom();
                     $booking_room->booking_id   = $id;
                     $booking_room->room_id      = $room;
-                    $booking_room->save();
+                    $booking_room->restaurant_id= $restaurant_id;
+                    $booking_room->branch_id    = $branch_id;
+                    $Obj                        = Utility::addCreatedBy($booking_room);
+                    $Obj->save();
+                    // $booking_room->save();
                 }
             }
             DB::commit();
@@ -513,7 +574,9 @@ class BookingController extends Controller
 
     public function table_list_view(){
         $status             = StatusConstance::TABLE_ACTIVE_STATUS;
-        $tables             = Table::where('active',$status)->whereNull('deleted_at')->get();
+        // $tables             = Table::where('active',$status)->whereNull('deleted_at')->get();
+
+        $tables             =  $this->TableRepo->getAllActiveTable();
         // $before_time        = Config::select('booking_warning_time','booking_waiting_time')->first();
         // //quick way of time to seconds
         // $config_time        = strtotime($before_time->booking_warning_time)-strtotime('Today');
@@ -554,7 +617,8 @@ class BookingController extends Controller
     }
     public function room_list_view(){
         $status             = StatusConstance::ROOM_ACTIVE_STATUS;
-        $rooms              = Room::where('active',$status)->whereNull('deleted_at')->get();
+        // $rooms              = Room::where('active',$status)->whereNull('deleted_at')->get();
+        $rooms              = $this->RoomRepo->GetAllActiveRoom();
         // $before_time        = Config::select('booking_warning_time','booking_waiting_time')->first();
         // //quick way of time to seconds
         // $config_time        = strtotime($before_time->booking_warning_time)-strtotime('Today');

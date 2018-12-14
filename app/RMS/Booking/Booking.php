@@ -21,4 +21,9 @@ class Booking extends Model
     {
     	return $this->hasMany('App\RMS\BookingRoom\BookingRoom');
     }
+     public function branch()
+    {
+
+       return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
+    }
 }
