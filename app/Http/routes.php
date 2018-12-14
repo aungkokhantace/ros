@@ -541,6 +541,9 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('category-sale-search', 'Backend\Report\ReportController@getCategorySaleByDate');
             Route::get('category-sale-export', 'Backend\Report\ReportController@getCategorySaleExport');
             Route::get('category-sale-export/{from}/{to}', 'Backend\Report\ReportController@getCategorySaleExportByDate');
+            Route::resource('table-sale-report', 'Backend\Report\SaleReportByTableController', ['only' => ['index', 'store']]);
+            Route::get('table-sale-report/export', 'Backend\Report\SaleReportByTableController@getTableSaleReportExport');
+            Route::get('table-sale-report/export/{from}/{to}', 'Backend\Report\SaleReportByTableController@getTableSaleReportExportByDate');
 
 
              //Item Report With Date & Excel Download

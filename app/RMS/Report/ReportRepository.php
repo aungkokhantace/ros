@@ -486,9 +486,49 @@ class ReportRepository implements ReportRepositoryInterface
                 'category.name as category_name',
                 'items.name as item_name',
                 'order_details.quantity as quantity',
-                'order_details.amount as amount',
+                'order_details.amount_with_discount as amount',
                 'category.parent_id',
                 'order_details.item_id'
+            );
+    }
+
+    /**
+     * Get a list of Sale Report By Table.
+     *
+     * @return mixed
+     */
+    public function getSaleReportByTable()
+    {
+        return $this->getSaleReportTableConnection()->get();
+    }
+
+    /**
+     * Get a list of Sale Report By Table by Date.
+     *
+     * @param $date
+     * @return mixed
+     */
+    public function getSaleReportByTableByDate($date)
+    {
+        return $this->getSaleReportTableConnection()
+            ->whereBetween('order.order_time', [$date->from, $date->to])
+            ->get();
+    }
+
+    /**
+     * Get connection for sale report by table.
+     *
+     * @return mixed
+     */
+    public function getSaleReportTableConnection()
+    {
+        return DB::table('tables')
+            ->join('order_tables', 'tables.id', '=', 'order_tables.table_id')
+            ->join('order', 'order_tables.order_id', '=', 'order.id')
+            ->select(
+                'tables.id as table_id',
+                'tables.table_no',
+                'order.all_total_amount as amount'
             );
     }
 }

@@ -20,6 +20,7 @@ use Illuminate\Support\Collection as Collection;
 class ReportController extends Controller
 {
     private $orderRepository;
+    private $reportRepository;
 
     public function __construct(ReportRepositoryInterface $reportRepository)
     {
@@ -360,11 +361,25 @@ class ReportController extends Controller
         return view('cashier.report.SaleSummaryDetailReport')->with('checked',$checked);
     }
 
+    /**
+     * Get a category sale report
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
-        return view('Backend.report.CategorySaleReport');
+        $categories = $this->reportRepository->getCategorySaleReport();
+        $result     = $this->getFinalResultForCategorySaleReport($categories);
+
+        return view('Backend.report.CategorySaleReport', compact('result'));
     }
 
+    /**
+     * For ajax request but not use.
+     *
+     * @param Request $request
+     * @return mixed
+     */
     public function getCategorySaleAjax(Request $request)
     {
         $limit  = (int) $request->input('length');
@@ -402,6 +417,12 @@ class ReportController extends Controller
         return \Response::json($array);
     }
 
+    /**
+     * Get category sale report by date.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function getCategorySaleByDate(Request $request)
     {
         if (empty($request->from) || empty($request->to)) {

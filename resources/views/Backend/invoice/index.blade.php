@@ -5,6 +5,9 @@
     tfoot {
         display: table-header-group;
     }
+    .dataTables_filter {
+        display: none;
+    }
 </style>
  <div class="content-wrapper">
       <div class="box">
@@ -279,6 +282,7 @@ function DataTableSearch(url) {
         "order": [[ 1, "desc" ]],
         stateSave: false,
         "dom": '<"pull-right m-t-20"i>rt<"bottom"lp><"clear">',
+        "sDom": "lfrti"
 
     });
 
