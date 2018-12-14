@@ -10,6 +10,8 @@ class CreateDiscountTable extends Migration
     {
         Schema::create('discount', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('restaurant_id');
+            $table->integer('branch_id');
             $table->string('name');
             $table->string('amount');
             $table->string('type');
