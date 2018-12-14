@@ -1476,3 +1476,6 @@ button.close {
 .active{
 	color:#fff !important;
 }
+.no-border{
+	border-top:none !important;
+}

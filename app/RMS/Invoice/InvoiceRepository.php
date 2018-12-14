@@ -216,8 +216,8 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		->leftjoin('items','items.id','=','order_details.item_id')
 		->leftjoin('set_menu','set_menu.id','=','order_details.setmenu_id')
 		->leftjoin('users','users.id','=','order.user_id')
-		->select('items.name as item_name','items.has_continent','items.continent_id','set_menu.set_menus_name as set_name','order_details.quantity',
-				'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id',
+		->select('items.id as item_id','items.name as item_name','items.has_continent','items.continent_id','set_menu.set_menus_name as set_name','order_details.quantity',
+				'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id','order_id as order_id',
 				'users.user_name','order.id',
 			'order_details.amount_with_discount')->where('order_id','=',$id)
 		->whereNotIn('status_id',[$order_kitchen_cancel_status,$order_customer_cancel_status])->get();

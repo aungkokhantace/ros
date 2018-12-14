@@ -102,6 +102,7 @@ Route::group(['middleware' => 'web'], function () {
             //Report
             Route::group(['middleware'=>'report:Cashier'],function(){
 
+
                 Route::get('invoice','Cashier\Invoice\InvoiceController@invoiceList');
                 Route::get('ajaxRequest','Cashier\Invoice\InvoiceController@ajaxRequest');
                 Route::get('invoice/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxInvoiceRequest');
@@ -110,6 +111,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');
                 Route::get('invoice/paid/ajaxPaymentRequest/{id}','Cashier\Invoice\InvoiceController@ajaxPaymentRequest');
                 Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
+                Route::post('invoice/paid/{id}/addDiscount','Cashier\Invoice\InvoiceController@addDiscount');
                 Route::get('invoice/cancel','Cashier\Invoice\InvoiceController@invoiceCancel');
                 Route::get('invoice/cancel/{id}','Cashier\Invoice\InvoiceController@orderCancel');
                 Route::get('invoice/sort/time/increase','Cashier\Invoice\InvoiceController@invoiceTimeIncrease');

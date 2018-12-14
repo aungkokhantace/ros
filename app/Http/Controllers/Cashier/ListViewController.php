@@ -765,12 +765,11 @@ class ListViewController extends Controller
         $order_customer_cancel_status   = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
 
         for($count = 0; $count < $row_count; $count++) {
-            $qty                      = $quantity[$count];
-            $extra                    = $extra_prices[$count];
-            $discount_amount          = $discount[$count];
-
-            $extra_array[$count]      = $qty * $extra;
-            $discount_array[$count]   = $qty * $discount_amount;
+            $qty                      = (int)($quantity[$count]);
+            $extra                    = (int)($extra_prices[$count]);
+            $discount_amount          = (int)($discount[$count]);
+            $extra_array[$count]      = (int)($qty * $extra);
+            $discount_array[$count]   = (int)($qty * $discount_amount);
         }
         //Total Extra Price
         $total_extra_price          = array_sum($extra_array);

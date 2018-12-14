@@ -768,8 +768,21 @@ class InvoiceController extends Controller
         $payments        = $this->InvoiceRepository->getPayment($id);
         $tenders        = $this->InvoiceRepository->getTenders($id);
         $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->first();
-        
-        return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
+
+        $v ='';
+
+        $item = array();
+
+        $collection_array = $order_detail->toArray();
+
+        foreach($collection_array as $key => $value)
+        {
+            $item[$key] = $value['item_id'];
+        }
+        array_multisort($item, SORT_DESC, $collection_array);
+
+        $details = collect($collection_array);       
+        return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
     }
 
     public function ajaxPaymentRequest($id) {
@@ -1090,6 +1103,15 @@ class InvoiceController extends Controller
         $roleArr['role'][]    = $role_id;
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         return view('cashier.invoice.index',compact('orders','config','orderRepo','continent'));
+    }   
+
+    public function addDiscount($id,Request $request)
+    {
+        $order = Order::findOrFail($id);
+        $order->total_discount_amount =  $request->discount_input;
+        
+        $order->save();
+        return back();
     }
 
 }

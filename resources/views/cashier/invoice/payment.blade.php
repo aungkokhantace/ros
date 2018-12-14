@@ -41,7 +41,7 @@
             <div class="row"> 
                 <div class="container"> 
                     <div class="row">
-                        <div class="col-md-4 col-sm-4 col-6">
+                        <div class="col-md-5 col-sm-5">
                             <div class="table-responsive">
                                 <table class="table receipt-table">
                                     <tr>
@@ -50,41 +50,61 @@
                                         <th>Qty</th>
                                         <th>Amount</th>
                                     </tr>
+                                    @php $v = '' @endphp
+                                    @foreach($details as $detail)
                                     <tr>
-                                        <td>Sub Total</td>
-                                        <td>{{ number_format($order->total_price) }}</td>
+                                            @php 
+
+                                            $qty = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
+                                                                                ->where('item_id',$detail['item_id'])
+                                                                                ->count() ;                            
+
+                                            @endphp
+                                            @if($qty > 1)
+                                                @if($v != $detail['item_id'])
+                                                @php $v = $detail['item_id'] @endphp
+                                                    <td class="no-border">{{ $detail['item_name'] }}</td>
+                                                    <td class="no-border">{{ $detail['amount'] }}</td>
+                                                    <td class="no-border">{{ $qty }}</td>
+                                                    <td class="no-border">{{ $detail['amount']* $qty }} </td>
+                                                @endif
+                                            @else
+                                                <td class="no-border">{{ $detail['item_name'] }}</td>
+                                                <td class="no-border">{{ $detail['amount'] }}</td>
+                                                <td class="no-border">{{ $qty }}</td>
+                                                <td class="no-border">{{ $detail['amount']*$qty }} </td>
+                                            @endif
                                     </tr>
-                                    <tr>
-                                        <td colspan="2" class="bg-gray">Sub-Total (After All Discount)</td>
+                                    @endforeach
+
+                                    <tr class="big_row_font">
+                                        <td colspan="3"><b>Net Amount</b></td>
+                                        <td><input type ="hidden" class="total_price" value="{{$order->total_price}}">{{ number_format($order->total_price) }}</td>
                                     </tr>
-
-                                    @if ($order->room_charge > 0) 
+                                    
                                     <tr>
-                                        <td>room charge</td>
-                                        <td>{{ number_format($order->room_charge) }}</td>
-                                    </tr> 
-                                    @endif
-
-                                    <tr>
-                                        <td>service charge ({{ $config->service}}%)</td>
-                                        <td>{{ number_format($order->service_amount) }}</td>
+                                        <td colspan="3" class="no-border"><b>Discount</b></td>
+                                        <td class="no-border"><input type="number" name="discount_price" class="discount_price" value=""></td>
                                     </tr>
 
                                     <tr>
-                                        <td>GST({{ $config->tax}}%)</td>
-                                        <td>{{ number_format($order->tax_amount) }} </td>
+                                        <td colspan="3"><b>Sub-Total</b></td>
+                                        <td><b>{{ number_format($sub_total = $order->total_price - $order->total_discount_amount) }}</b></td>
                                     </tr>
 
-                                    @if ($order->total_discount_amount > 0)
                                     <tr>
-                                        <td>discount</td>
-                                        <td>{{ number_format($order->total_discount_amount) }}</td>
-                                    </tr>  
-                                    @endif
+                                        <td colspan="3" class="no-border"><b>service charge ({{ $config->service}}%)</b></td>
+                                        <td class="no-border"><b>{{ number_format($service_tax = $order->service_amount) }}</b></td>
+                                    </tr>
 
-                                    <tr class="foc-tr" style="cursor: pointer;">
-                                        <td>free of charge</td>
-                                        <td class="foc">{{ number_format($order->foc_amount) }}</td>
+                                    <tr>
+                                        <td colspan="3" class="no-border"><b>TAX({{ $config->tax}}%)</b></td>
+                                        <td class="no-border"><b>{{ number_format($gov_tax = $order->tax_amount) }}</b></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3" class="no-border"><b>Total Amount</b></td>
+                                        <td class="no-border"><b>{{ number_format($sub_total + ($service_tax + $gov_tax) ) }}</b></td>
                                     </tr>
                                 </table>
                             </div><!-- table-responsive -->
@@ -107,27 +127,43 @@
                                         <td>{{ $tender['total'] }}</td>
                                     </tr>
                                 @endforeach
-                      <tr>
-                        <td>BALANCE</td>
-                        <td class="balance">{{ $tenders['balance'] }}</td>
-                      </tr>
-                      <tr>
-                        <td>CHANGE</td>
-                        <td class="change">
-                            {{ $tenders['change']}}
-                        </td>
-                      </tr>
-                    </table>
-                  </div><!-- table-responsive -->
-                    <div class="row receipt-btn02">
+                            <tr>
+                                <td>BALANCE</td>
+                                <td class="balance">{{ $tenders['balance'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>CHANGE</td>
+                                <td class="change">
+                                    {{ $tenders['change']}}
+                                </td>
+                            </tr>
+                            </table>
+                        </div><!-- table-responsive -->
+                        <div class="row receipt-btn02">
                         <div class="col-md-6 col-sm-6 col-6"><button class="btn btn-primary item-modal" data-toggle="modal" data-target="#printModal" data-id="{{$order->order_id}}" onclick="itemModal('{{$order->order_id}}')">ITEM LISTS</button></div>
                         <div class="col-md-6 col-sm-6 col-6"><button class="btn btn-primary">VIEW DETAILS</button></div>
                     </div>
-
                 </div> 
-                <div class="col-md-8 col-sm-8 col-6">
-                  <div class="row"> 
-                    <div class="col-md-12 list-group" id="myList" role="tablist">
+                <div class="col-md-7 col-sm-7">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
+                            <b>Discount</b>
+                            <input type="number" name="discount_input" class="form-control discount_input">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
+                            <b>Cash Received</b>
+                            <input type="number" name="discount_input" class="form-control discount_input">
+                        </div>
+                    </div>
+                </div>
+                    
+                   
+                    {{-- <div class="col-md-12 list-group" id="myList" role="tablist">
                         <a class="list-group-item list-group-item-action heightLine_05 active" data-toggle="list" href="#home" role="tab" id="payment-cash">
                           <span class="receipt-type cash-img"></span><span class="receipt-txt">Cash</span>
                         </a>
@@ -194,12 +230,12 @@
                         </div>
                       </div>
 
-                    </div>
+                    </div> --}}
+
                   </div> <!-- row -->     
                 </div> <!-- col-md-8 -->
 
               </div>
-
             </div> 
           </div>
         </div><!-- container-fluid -->
@@ -209,6 +245,16 @@
         @include('cashier.invoice.items_list')
       <script type="text/javascript">
         $(document).ready(function(){
+
+          
+            $('input[name="discount_input"]').on('input', function() {
+
+                var foo = $('input[name="discount_price"]').val($(this).val());        
+                console.log(foo);
+                
+
+            });    
+
             var socket = socketConnect();
             //If Clear button 
             $('.clear-input-btn').click(function(){
