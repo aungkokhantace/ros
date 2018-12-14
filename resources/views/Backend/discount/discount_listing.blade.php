@@ -13,7 +13,7 @@
                     @endif
                 </div>
             </div>
-        
+
                 <div class="col-md-9 pull-right ">
                     <div class="buttons ">
                         <button name="create category" type="button" class="btn btn-default btn-md first_btn" onclick="discount_entry_form_create();">
@@ -45,6 +45,8 @@
                             <th><input type='checkbox' name='check' id='check_all'/></th>
                             <th>No</th>
                             <th>Discount Name</th>
+                            <th>Restaurant Name</th>
+                            <th>Branch Name</th>
                             <th>From</th>
                             <th>To</th>
                             <th>Item</th>
@@ -57,6 +59,8 @@
                                 <td><input class="source" type="checkbox" name="check" value="{{$discount->id}}" ></td>
                                 <td></td>
                                 <td><a href="/Backend/Discount/edit/{{$discount->id}}">{{ $discount->name}}</a></td>
+                                <td><a href="/Backend/Discount/edit/{{$discount->restaurant_id}}">{{ $discount->restaurant->name}}</a></td>
+                                <td><a href="/Backend/Discount/edit/{{$discount->branch_name}}">{{ $discount->branch->name}}</a></td>
                                 <td>{{ \Carbon\Carbon::parse($discount->start_date)->format('d-m-Y')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($discount->end_date)->format('d-m-Y')}}</td>
                                 {{--start item id joining--}}

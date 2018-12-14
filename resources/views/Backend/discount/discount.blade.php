@@ -4,7 +4,7 @@
 <div class="content-wrapper">
       <div class="box">
        <div class="box-header">
-   
+
         <h3 class="h3-font"><b>{{isset($resource) ?  'Edit Discount' : 'Create New Discount ' }}</b></h3>
       </div>
   </div>
@@ -12,11 +12,49 @@
          <div class="col-md-8 user-border-left">
        @if(isset($resource))
             {!! Form::open(array('url' => 'Backend/Discount/update','method' => 'post', 'class'=> 'form-horizontal user-form-border','id'=>"discount")) !!}
+            {!! Form::open(array('url' => 'Backend/Discount/update','method' => 'post', 'class'=> 'form-horizontal user-form-border','id'=>"discount")) !!}
 
         @else
             {!! Form::open(array('url' => 'Backend/Discount/store', 'method' => 'post', 'class'=> 'form-horizontal user-form-border','id'=>"discount")) !!}
         @endif
 
+         <div class="form-group">
+               <label for="discount" class="col-sm-3 control-label left-align label-font" >Restaurant<span class="require">*</span></label>
+               <div class="col-sm-7">
+                   <select id="restaurant" class="form-control" name="restaurant"  onchange="discount_check(value)">
+                       <option value="">Select Restaurant</option>
+                       <?php foreach ($restaurant as $rest) : ?>
+                       <?php if(isset($resource)) : ?>
+                       <option  disabled value="<?php echo $rest->id; ?>" <?php echo $rest->id == $resource->restaurant_id ? 'selected' : '' ?>>
+                           <?php echo $rest->name; ?>
+                       </option>
+                       <?php else : ?>
+                       <option  value="{{ $rest->id }}">   {{ $rest->name }}
+                       </option>
+                       <?php endif; ?>
+                       <?php endforeach; ?>
+                   </select>
+               </div>
+           </div>
+           <input type="hidden" name="branch" value="{{isset($resource)? $discount_edit->branch_id:''}} "/>
+           <div class="form-group">
+               <label for="discount" class="col-sm-3 control-label left-align label-font" >Branch<span class="require">*</span></label>
+               <div class="col-sm-7">
+                   <select id="branch" class="form-control" name="branch"  onchange="discount_check(value)">
+                       <option value="">Select Branch</option>
+                       <?php foreach ($branch as $branch) : ?>
+                       <?php if(isset($resource)) : ?>
+                       <option  disabled value="<?php echo $branch->id; ?>" <?php echo $branch->id == $resource->branch_id ? 'selected' : ''  ?>>
+                           <?php echo $branch->name; ?>
+                       </option>
+                       <?php else : ?>
+                       <option  value="{{ $branch->id }}">   {{ $branch->name }}
+                       </option>
+                       <?php endif; ?>
+                       <?php endforeach; ?>
+                   </select>
+               </div>
+           </div>
         <div class="form-group">
             <label for="discount" class="col-sm-3 control-label left-align label-font">Discount Name  <span class="require">*</span></label>
             <div class="col-sm-7">
@@ -24,8 +62,7 @@
                 <p class="text-danger">{{$errors->first('name')}}</p>
             </div>
         </div>
-
-        <input type="hidden" name="id" value="{{isset($resource)? $discount_edit->id:''}} "/>
+           <input type="hidden" name="id" value="{{isset($resource)? $discount_edit->id:''}} "/>
 
         <div class="form-group">
             <label for="discount" class="col-sm-3 control-label left-align label-font">Start Date<span class="require">*</span></label>
@@ -36,7 +73,7 @@
                         <span class="glyphicon glyphicon-calendar"></span>
                     </div>
                 </div>
-                
+
                 <p class="text-danger">{{$errors->first('from_date')}}</p>
             </div>
         </div>
@@ -64,7 +101,7 @@
                     <?php if(isset($resource)) : ?>
                     <option  value="<?php echo $item->id; ?>" <?php echo $item->id == $resource->item_id ? 'selected' : '' ?>>
                         <?php echo $item->name; ?>
-                        <?php 
+                        <?php
                         if ($item->has_continent == 1) {
                             foreach($continent as $con) {
                                 if ($con->id == $item->continent_id) {
@@ -75,7 +112,7 @@
                         ?>
                     </option>
                     <?php else : ?>
-                    <option  value="{{ $item->id }}">   {{ $item->name }} 
+                    <option  value="{{ $item->id }}">   {{ $item->name }}
                         @if($item->has_continent == 1)
                             @foreach($continent as $con)
                                 @if ($con->id == $item->continent_id)
@@ -145,4 +182,29 @@
     </div>
     </div>
 </div>
+<script src="/assets/backend_js/branch/branch.js"></script>
+<script type="text/javascript">
+    $("#branch").change(function(){
+        var branch     =$("#branch").val();
+        var restaurant = $("#restaurant").val();
+        $.ajax({
+            type: "GET",
+
+            url: "/Backend/get_addon/ajaxRequest/"+branch+"/"+restaurant,
+
+        }).done( function(data){
+            $('#product').empty();
+            $('#product').append("<option disabled selected>Select Category</option>");
+            $(data).each(function(){
+                // console.log(this.id,this.name);
+                $('#product').append($('<option>',{
+                    value : this.id,
+                    text: this.name,
+                }));
+            })
+
+        })
+
+    });
+</script>
 @endsection
