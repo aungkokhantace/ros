@@ -349,5 +349,21 @@ class ItemRepository implements ItemRepositoryInterface
         return $category;
     }
 
+    public function getItem()
+    {
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+        $query               = Item::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query           = $query->where('branch_id',$branch);
+        }
+        $item                =$query->get();
+        return $item;
+    }
+
 
 }

@@ -18,43 +18,52 @@
             {!! Form::open(array('url' => 'Backend/Discount/store', 'method' => 'post', 'class'=> 'form-horizontal user-form-border','id'=>"discount")) !!}
         @endif
 
-         <div class="form-group">
-               <label for="discount" class="col-sm-3 control-label left-align label-font" >Restaurant<span class="require">*</span></label>
-               <div class="col-sm-7">
-                   <select id="restaurant" class="form-control" name="restaurant"  onchange="discount_check(value)">
-                       <option value="">Select Restaurant</option>
-                       <?php foreach ($restaurant as $rest) : ?>
-                       <?php if(isset($resource)) : ?>
-                       <option  disabled value="<?php echo $rest->id; ?>" <?php echo $rest->id == $resource->restaurant_id ? 'selected' : '' ?>>
-                           <?php echo $rest->name; ?>
-                       </option>
-                       <?php else : ?>
-                       <option  value="{{ $rest->id }}">   {{ $rest->name }}
-                       </option>
-                       <?php endif; ?>
-                       <?php endforeach; ?>
-                   </select>
+       <!-- For Restaurant -->
+           @if (Auth::guard('Cashier')->user()->restaurant_id == null)
+               <div class="form-group">
+                   <label for="discount" class="col-sm-3 control-label left-align label-font">Restaurant <span class="require">*</span></label>
+                   <div class="col-sm-7">
+                       @if(isset($resource))
+                           @foreach($restaurant as $rest)
+                               @if($rest->id == $resource->restaurant_id)
+                                   <input type="text" class="form-control" value="{{ $rest->name }}" readonly />
+                                   <input type="hidden" class="form-control" id="restaurant" name="restaurant" value="{{ $rest->id }}" />
+
+                               @endif
+                           @endforeach
+                       @else
+                           <select class="form-control" name="restaurant" id="restaurant">
+                               <option selected disabled>Select Restaurant </option>
+                               @foreach($restaurant as $rest)
+                                   <option value="{{$rest->id}}">{{$rest->name}}</option>
+                               @endforeach
+                           </select>
+                       @endif
+                   </div>
                </div>
-           </div>
-           <input type="hidden" name="branch" value="{{isset($resource)? $discount_edit->branch_id:''}} "/>
-           <div class="form-group">
-               <label for="discount" class="col-sm-3 control-label left-align label-font" >Branch<span class="require">*</span></label>
-               <div class="col-sm-7">
-                   <select id="branch" class="form-control" name="branch"  onchange="discount_check(value)">
-                       <option value="">Select Branch</option>
-                       <?php foreach ($branch as $branch) : ?>
-                       <?php if(isset($resource)) : ?>
-                       <option  disabled value="<?php echo $branch->id; ?>" <?php echo $branch->id == $resource->branch_id ? 'selected' : ''  ?>>
-                           <?php echo $branch->name; ?>
-                       </option>
-                       <?php else : ?>
-                       <option  value="{{ $branch->id }}">   {{ $branch->name }}
-                       </option>
-                       <?php endif; ?>
-                       <?php endforeach; ?>
-                   </select>
+        <!--end restaurant -->
+        <!--For branch-->
+               <div class="form-group">
+                   <label for="discount" class="col-sm-3 control-label left-align label-font">Branch <span class="require">*</span></label>
+                   <div class="col-sm-7">
+                       @if(isset($resource))
+                           @foreach($branch as $branch)
+                               @if($branch->id == $resource->branch_id)
+                                   <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                                   <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id }}" />
+
+                               @endif
+                           @endforeach
+                       @else
+                           <select class="form-control" name="branch" id="branch">
+                               <option selected disabled>Select Branch </option>
+                           </select>
+                       @endif
+                   </div>
                </div>
-           </div>
+          @endif
+       <!--end branch -->
+
         <div class="form-group">
             <label for="discount" class="col-sm-3 control-label left-align label-font">Discount Name  <span class="require">*</span></label>
             <div class="col-sm-7">
