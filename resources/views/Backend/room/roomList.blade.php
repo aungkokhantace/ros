@@ -52,6 +52,7 @@ tfoot {
                             <th>Capacity</th>
                             <th>Room Status</t1h>
                             <th>Action</th>
+                            <th>Branch</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -62,6 +63,7 @@ tfoot {
                             <th class="search-col" con-id="capacity">Capacity</th>
                             <th></th>
                             <th></th>
+                            <th class="search-col" con-id="branch">Branch</th>
                         </tr>
                     </tfoot>
                         <tbody>
@@ -85,6 +87,7 @@ tfoot {
                                 {{ "Disable "}}
                                 @endif
                                 </td>
+                                <td>{{$room->branch->name}}</td>
                             </tr>
                         @endforeach
                         </tbody>

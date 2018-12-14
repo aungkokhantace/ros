@@ -10,6 +10,7 @@
             <th><label>Table/Room</label></th>
             <th><label>Capacity</label></th>
             <th><label>Phone</label></th>
+            <th><label>Branch</label></th>
             
         </tr>
     </thead>
@@ -23,7 +24,8 @@
            <th class="search-col" con-id="to_time">To Time </th>
            <th class="search-col" con-id="Table_room">Table/Room</th>
            <th class="search-col" con-id="capacity">Capacity</th>
-           <th class="search-col" con-id="phone">Capacity</th>                 
+           <th class="search-col" con-id="phone">Capacity</th>  
+           <th class="search-col" con-id="branch">Branch</th>                
         </tr>
     </tfoot>
     <tbody>
@@ -78,6 +80,7 @@
                     </td>
                     <td class="black-text">{{$booking->capacity}}</td>
                     <td class="black-text">{{$booking->phone}}</td>
+                    <td class="black-text">{{$booking->branch->name}}</td>
                     
                 </tr>
         @endforeach

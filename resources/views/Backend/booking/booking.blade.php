@@ -9,6 +9,51 @@
 
                 {!! Form::open(array('url' => 'Backend/Booking/store', 'class'=> 'form-horizontal','id'=>'bookingForm')) !!}
 
+                   <!-- restaturant session -->
+        @if (Auth::guard('Cashier')->user()->restaurant_id == null)
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label"><b>Restaurant<span class="require">*</span></b> </label>
+              <div class="col-sm-7">
+
+                 @if(isset($restaurant))
+                   
+                         <input type="text" class="form-control" value="{{ $restaurant->name}}" readonly />
+                         <input type="hidden" class="form-control" id="restaurant" name="restaurant" value="{{ $restaurant->id}}" />                        
+                   @endif              
+            </div>
+        </div>
+     
+
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label"><b>Branch <span class="require">*</span></b> </label>
+             <div class="col-sm-7">            
+                 @if(isset($branch))
+                  
+                         <input type="text" class="form-control" value="{{ $branch->name }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branch->id}}" />                         
+                       
+                    
+                @endif  
+            </div>
+        </div>
+         @elseif (Auth::guard('Cashier')->user()->branch_id == null || Auth::guard('Cashier')->user()->branch_id == 0 )
+
+        <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label">Branch<b><span class="require">*</span></b></label>
+              <div class="col-sm-7">    
+                 @if(isset($branchs))                  
+                         <input type="text" class="form-control" value="{{ $branchs }}" readonly />
+                         <input type="hidden" class="form-control" id="branch" name="branch" value="{{ $branchs}}" />                       
+                       
+                       
+                @endif
+              
+            </div>
+        </div>
+        @endif
+        <!--end restaturant session -->
+
+
                     <div class="form-group">
                         <label class="col-sm-3 control-label"><b>Date:<span class="require">*</span></b></label>
                         <div class="col-sm-7">

@@ -15,6 +15,25 @@ use App\RMS\ReturnMessage;
 use App\Status\StatusConstance;
 class RoomRepository implements RoomRepositoryInterface
 {
+    
+     public function getAllRoom(){
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+
+        $query               = Room::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('branch_id',$branch);
+        }
+        $tables           = $query->get();
+        // $tables = Table::all();
+
+        return $tables;
+    }
+
     public function store($paramObj){
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
@@ -90,4 +109,23 @@ class RoomRepository implements RoomRepositoryInterface
         $tempObj->active = $status;
         $tempObj->save();
     }
+
+     public function GetAllActiveRoom(){
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+
+        $query               = Room::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('branch_id',$branch);
+        }
+        $tables           = $query->get();
+        // $tables = Table::all();
+
+        return $tables;
+    }
+
 }

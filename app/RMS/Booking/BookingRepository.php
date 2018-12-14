@@ -13,18 +13,23 @@ class BookingRepository implements  BookingRepositoryInterface
 {
    
     public function saveBooking($paramObj,$table_id){
+        
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
-            $tempObj = Utility::addCreatedBy($paramObj);
+            $restaurant    = $paramObj->restaurant_id;
+            $branch        = $paramObj->branch_id;
+            $tempObj       = Utility::addCreatedBy($paramObj);
             $tempObj->save();
-            $id      = $paramObj->id;
+            $id            = $paramObj->id;
             
                 foreach($table_id as $table){
                     $paramObj               = new BookingTable();
                     $paramObj->booking_id   = $id;
                     $paramObj->table_id     = $table;
+                    $paramObj->restaurant_id= $restaurant;
+                    $paramObj->branch_id    = $branch;
                     $Obj                    = Utility::addCreatedBy($paramObj);
                     $Obj->save();
                 }
@@ -39,6 +44,10 @@ class BookingRepository implements  BookingRepositoryInterface
     }
 
     public function saveBookingWithRoom($paramObj,$room_id){
+
+        $restaurant    = $paramObj->restaurant_id;
+        $branch        = $paramObj->branch_id;
+          
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
@@ -51,6 +60,8 @@ class BookingRepository implements  BookingRepositoryInterface
                     $paramObj               = new BookingRoom;
                     $paramObj->booking_id   = $id;
                     $paramObj->room_id      = $room;
+                    $paramObj->restaurant_id= $restaurant;
+                    $paramObj->branch_id    = $branch;
                     $Obj                    = Utility::addCreatedBy($paramObj);
                     $Obj->save();
                 }
@@ -65,10 +76,22 @@ class BookingRepository implements  BookingRepositoryInterface
     }
 
     public function getTodayBooking($cur_date){
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+        
+        $query               = Booking::query();
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('booking.restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('booking.branch_id',$branch);
+        }
       
-        $cur_bookings = Booking::leftjoin('booking_table','booking_table.booking_id','=','booking.id')
-        ->leftjoin('booking_room','booking_room.booking_id','=','booking.id')
-        ->select('booking.*','booking_table.table_id','booking_room.room_id')->where('booking.booking_date','=',$cur_date)->get();
+        $cur_bookings       = $query->leftjoin('booking_table','booking_table.booking_id','=','booking.id')
+                                ->leftjoin('booking_room','booking_room.booking_id','=','booking.id')
+
+                                ->select('booking.*','booking_table.table_id','booking_room.room_id')
+                                ->where('booking.booking_date','=',$cur_date)->get();
 
         return $cur_bookings;
     }
@@ -82,7 +105,19 @@ class BookingRepository implements  BookingRepositoryInterface
     }
 
     public function getBookinglist(){
-        $bookings = Booking::all();
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+
+        $query               = Booking::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('branch_id',$branch);
+        }
+        $bookings           = $query->get();
+        // $bookings = Booking::all();
         return $bookings;
     }
 

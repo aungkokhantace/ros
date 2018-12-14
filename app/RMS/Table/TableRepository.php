@@ -105,7 +105,7 @@ class TableRepository implements  TableRepositoryInterface
         }
     }
 
-    public function saveBooking($paramObj,$table_id){
+    public function saveBooking($paramObj,$table_id){       
         $returnedObj = array();
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
@@ -272,5 +272,23 @@ class TableRepository implements  TableRepositoryInterface
     public function get_locationbyBranch($branch_id,$restaurant_id){
         $location           = Location::where('branch_id',$branch_id)->where('restaurant_id',$restaurant_id)->whereNull('deleted_at')->get();
         return $location;
+    }
+
+    public function getAllActiveTable(){
+        $restaurant          = Utility::getCurrentRestaurant();
+        $branch              = Utility::getCurrentBranch();
+
+        $query               = Table::query();
+        $query               = $query->whereNull('deleted_at');
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('branch_id',$branch);
+        }
+        $tables           = $query->get();
+        // $tables = Table::all();
+
+        return $tables;
     }
 }
