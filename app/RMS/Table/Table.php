@@ -29,4 +29,9 @@ class Table extends Model
     public function Table(){
         return $this->hasMany('App\RMS\BookingTable\BookingTable');
     }
+    
+    public function orders()
+    {
+        return $this->belongsToMany('App\RMS\Order\Order','order_tables');
+    }
 }

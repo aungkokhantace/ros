@@ -1460,12 +1460,14 @@ button.close {
 }
 
 .avaliable-btn{
+	padding-top:8%;
 	font-size: 30px;
 	height: 100px;
 	width: 150px;
 	background: #8FC251;
 }
 .service-btn{
+	padding-top:8%;
 	font-size: 30px;
 	height: 100px;
 	width: 150px;
@@ -1473,4 +1475,7 @@ button.close {
 }
 .active{
 	color:#fff !important;
+}
+.no-border{
+	border-top:none !important;
 }

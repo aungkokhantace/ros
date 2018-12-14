@@ -12,4 +12,9 @@ class Room extends Model
     protected $table = "rooms";
     protected $fillable = ['id','room_name','capacity','room_charges','service','status','created_by',
     'updated_by','deleted_by','created_at','updated_at','deleted_at'];
+
+    public function orders()
+    {
+        return $this->belongsToMany('App\RMS\Order\Order','order_room');
+    }
 }

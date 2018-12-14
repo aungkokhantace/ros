@@ -15,6 +15,7 @@ use App\RMS\Category\Category;
 use App\RMS\DayStart\DayStart;
 use App\RMS\Shift\Shift;
 use App\RMS\Location\Location;
+use App\RMS\Room\Room;
 use App\RMS\Table\Table;
 use App\RMS\Shift\OrderShift;
 use App\Status\StatusConstance;
@@ -107,6 +108,13 @@ class DashboardController extends Controller
         return json_encode($tables);
 
     }
+
+    public function getRoom()
+    {   
+        $rooms = Room::all();
+        return json_encode($rooms);
+    }
+
     public function authorized(){
         return view('cashier.error.401');
     }

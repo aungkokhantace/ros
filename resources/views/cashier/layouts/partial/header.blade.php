@@ -76,7 +76,7 @@
                 <div class="row"> 
                     <div class="col-md-4 col-4 heightLine_01 head-lbox">
                         <div>  
-                            <a class="btn btn-large dash-btn" href="/Cashier/Dashboard">Dashboard</a>
+                            <a class="btn btn-large dash-btn mb-2" href="/Cashier/Dashboard">Dashboard</a>
                             @yield('dayEnd')
                         </div>
                     </div>  
