@@ -49,6 +49,10 @@ class downloadAPIController extends ApiGuardController
         $temp                   = Input::all();
 
         $key                    = $temp['site_activation_key'];
+        $waiter_id    			= $temp['waiter_id'];
+        $filter 				= $temp['filter'];
+
+       
         $site_activation_key    = Config::all();
         $activate_key           = 0;
         $today                  = Carbon::now();
@@ -60,7 +64,75 @@ class downloadAPIController extends ApiGuardController
         $result = array();
 
         if($key == $activate_key){
-        	$voucher = DB::select('SELECT id,user_id,take_id,order_time,total_extra_price,total_discount_amount,total_price ,all_total_amount,status FROM `order` WHERE status = 1');
+        	// $voucher = DB::select('SELECT id,user_id,take_id,order_time,total_extra_price,total_discount_amount,total_price ,all_total_amount,status FROM `order` WHERE status = 1 AND user_id = "$waiter_id" ');
+        	if($filter == 'Now'){
+        		$voucher  = DB::table('order')->where('status',1)->where('user_id',$waiter_id)->select('order.id','order.user_id','order.order_time','order.total_extra_price','order.total_discount_amount','order.total_price','order.all_total_amount','order.status')->get();
+        		if(count($voucher) > 0){
+		        		foreach($voucher as $voucher_check){
+		        			$order_id = $voucher_check->id;
+		        			$rooms = DB::table('order_room')->join('rooms','order_room.room_id','=','rooms.id')->where('order_id',$order_id)->first();
+		        			
+		        			$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->first();
+		        			if(isset($rooms) && count($rooms)>0){
+		        				$voucher_check->isRoom = 'true';
+		        				$voucher_check->roomOrTable = $rooms->room_name;
+		        			}elseif(isset($tables) && count($tables)>0){
+		        				$voucher_check->isRoom = 'false';
+		        				$voucher_check->roomOrTable = $tables->table_no;
+		        			}else{
+		        				$voucher_check->isRoom = 'false';
+		        				$voucher_check->roomOrTable = "Take Away";
+		        			}
+		        		}
+		        	}
+
+        	}
+        	elseif($filter == 'OtherWaiter'){
+        		
+        		$voucher  = DB::table('order')->where('status',1)->whereNotIn('user_id',[$waiter_id])->select('order.id','order.user_id','order.order_time','order.total_extra_price','order.total_discount_amount','order.total_price','order.all_total_amount','order.status')->get();
+        	        if(count($voucher) > 0){
+		        		foreach($voucher as $voucher_check){
+		        			$order_id = $voucher_check->id;
+		        			$rooms = DB::table('order_room')->join('rooms','order_room.room_id','=','rooms.id')->where('order_id',$order_id)->first();
+		        			
+		        			$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->first();
+		        			if(isset($rooms) && count($rooms)>0){
+		        				$voucher_check->isRoom = 'true';
+		        				$voucher_check->roomOrTable = $rooms->room_name;
+		        			}elseif(isset($tables) && count($tables)>0){
+		        				$voucher_check->isRoom = 'false';
+		        				$voucher_check->roomOrTable = $tables->table_no;
+		        			}else{
+		        				$voucher_check->isRoom = 'false';
+		        				$voucher_check->roomOrTable = "Take Away";
+		        			}
+		        		}
+		        	}
+
+        	}else{
+
+        		$voucher  = DB::table('order')->where('status',1)->select('order.id','order.user_id','order.order_time','order.total_extra_price','order.total_discount_amount','order.total_price','order.all_total_amount','order.status')->get();
+        		if(count($voucher) > 0){
+		        		foreach($voucher as $voucher_check){
+		        			$order_id = $voucher_check->id;
+		        			$rooms = DB::table('order_room')->join('rooms','order_room.room_id','=','rooms.id')->where('order_id',$order_id)->first();
+		        			
+		        			$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->first();
+		        			if(isset($rooms) && count($rooms)>0){
+		        				$voucher_check->isRoom = 'true';
+		        				$voucher_check->roomOrTable = $rooms->room_name;
+		        			}elseif(isset($tables) && count($tables)>0){
+		        				$voucher_check->isRoom = 'false';
+		        				$voucher_check->roomOrTable = $tables->table_no;
+		        			}else{
+		        				$voucher_check->isRoom = 'false';
+		        				$voucher_check->roomOrTable = "Take Away";
+		        			}
+		        		}
+		        	}
+        	}
+        	
+        	
         	$result   = $voucher;
         
         	$tables = DB::select('SELECT order_id,table_id FROM order_tables');
@@ -105,16 +177,21 @@ class downloadAPIController extends ApiGuardController
 
 		if($key == $activate_key){
 			$order_raw			= DB::select("SELECT os.*,u.user_name FROM `order` os,`users` u WHERE os.id = '$order_id' AND os.user_id = u.id AND os.deleted_at IS NULL");
+
 			$order_detail_raw 	= DB::select("SELECT * FROM `order_details` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$order_setmenu_raw	= DB::select("SELECT * FROM `order_setmenu_detail` WHERE deleted_at IS NULL");
 			$order_extra_raw	= DB::select("SELECT extra_id,order_detail_id,quantity,amount FROM `order_extra` WHERE status = '$extra_status' AND deleted_at IS NULL");
 			$order_table_raw	= DB::select("SELECT order_id,table_id FROM `order_tables` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$order_room_raw		= DB::select("SELECT order_id,room_id FROM `order_room` WHERE order_id = '$order_id' AND deleted_at IS NULL");
+
+			
+			
 			$set_menu_arr		= array();
 			$extra_arr			= array();
 			$detail_arr			= array();
 			$table_arr			= array();
 			$room_arr			= array();
+			$remark_arr         = array();
 			if(isset($order_detail_raw) && count($order_detail_raw) > 0){
 				foreach($order_detail_raw as $order_detail){
 					//merge setmenu to order_detail
@@ -125,6 +202,12 @@ class downloadAPIController extends ApiGuardController
 							}
 						}
 					}
+
+					if($order_detail->remark_extra == null){
+						$order_detail->remark_extra = "";
+					}
+
+					
 					$order_detail->order_setmenu = $set_menu_arr;
 					unset($set_menu_arr);
 					$set_menu_arr = array();
@@ -164,6 +247,30 @@ class downloadAPIController extends ApiGuardController
 					$order_detail->order_room = $room_arr;
 					unset($room_arr);
 					$room_arr = array();
+              
+					$order_remark_raw   = DB::table('order_detail_remark')->where('order_detail_id',$order_detail->order_detail_id)->whereNull('deleted_at')->get();
+					$remarks = DB::table('item_remark')->join('remark','item_remark.remark_id','=','remark.id')->select('remark.name','item_remark.item_id as item_id','item_remark.remark_id')->where('item_remark.item_id',$order_detail->item_id)->get();
+
+				   if(isset($remarks) && count($remarks)>0){
+						$exist_remark_array = array();
+						foreach($order_remark_raw as $remark_raw){
+							array_push($exist_remark_array,$remark_raw->remark_id);
+						}
+
+						foreach($remarks as $remark){
+							
+							if(in_array($remark->remark_id,$exist_remark_array)){
+								$remark->selected = true;
+							}else{
+								$remark->selected = false;
+							}
+							
+						}
+						
+						
+					}
+					$order_detail->remark = $remarks;
+					
 
 					//For Android to know old item
 					$order_detail->state 	= 'old';

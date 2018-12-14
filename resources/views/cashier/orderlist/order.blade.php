@@ -42,6 +42,7 @@
                                 <div class="table-responsive">
                                     <button onclick="scrollBottom2()" class="scroll-txt cat-to-btm2"><i class="fas fa-angle-double-down"></i></button>
                                     @if(isset($order))
+
                                         {!! Form::open(array('url' => '/Cashier/MakeOrder/update', 'method' => 'post','class'=> 'form-horizontal', 'id' => 'order-form')) !!}
                                     @else
                                         {!! Form::open(array('url' => '/Cashier/MakeOrder/store', 'method' => 'post','class'=> 'form-horizontal', 'id' => 'order-form')) !!}
@@ -145,7 +146,7 @@
                                     </div>
 
                                     <div class="tab-content row" id="cat-tab-content"> 
-                                        <button onclick="scrollBottom()" class="scroll-txt cat-to-btm"><i class="fas fa-angle-double-down"></i></button>
+                                       <!--  <button onclick="scrollBottom()" class="scroll-txt cat-to-btm"><i class="fas fa-angle-double-down"></i></button> -->
                                         <div class="tab-pane active clearfix" id="categoryDiv" role="tabpanel">
 
                                         </div>

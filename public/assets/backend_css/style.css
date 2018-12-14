@@ -734,7 +734,10 @@ thead label{color: #FFFFFF;}
 }
 .start ,
 .cancel,
-.complete {
+
+.complete,
+.taken {
+
     width: 150px;
     padding: 5px 0;
     text-align: center;
@@ -742,6 +745,12 @@ thead label{color: #FFFFFF;}
     border-radius: 2px;
 }
 .start{
+    background-color: #276680;/*
+    border:none;
+    padding:5px;*/
+    color:#fff;
+}
+.taken{
     background-color: #276680;/*
     border:none;
     padding:5px;*/

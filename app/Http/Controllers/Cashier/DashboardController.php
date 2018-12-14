@@ -25,9 +25,11 @@ class DashboardController extends Controller
 {
     public function dashboard(Request $request)
     {    
+
         $sessions        = $this->getDayStart();
         $locations = Location::all();
         return view('cashier.dashboard.dashboard',compact('sessions','locations'));
+
     }
 
     protected function getDayStart() 
@@ -37,15 +39,18 @@ class DashboardController extends Controller
                               ->where('status',$session_status)
                               ->whereNull('deleted_at')
                               ->first();
+
         if (count($daystart) > 0) {
+
             $day_id          = $daystart->id;
             $status          = StatusConstance::SHIFT_AVAILABLE_STATUS;
             $shift_ordering  = DB::select("SELECT id,name,is_last_shift FROM shift WHERE status = '$status' AND deleted_at IS NULL ORDER BY is_last_shift ASC, id ASC");
+            
 
             $current_shift   = OrderShift::where('day_id','=',$day_id)->whereNull('deleted_at')->get();
             $current_count   = count($current_shift);
             if ($current_count > 0) {
-                $count              = 0;
+                $count             = 0;
                 foreach($current_shift as $current) {
                     $count          = $count + 1;
                     if ($count == $current_count) {
@@ -79,9 +84,11 @@ class DashboardController extends Controller
             $daystart->status       = StatusConstance::DAY_START_STATUS;
             $daystart->session_status = StatusConstance::DAY_START_STATUS;
         }
+      
          //if Step is not day end step
         $shiftObj           = [];
         if (isset($current_step)) {
+           
             $shiftObj                   = $shift_ordering[$current_step];
             $shiftObj->current_status   = $current_status;
             $shiftObj->next_status      = $current_status + 1;

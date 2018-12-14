@@ -36,7 +36,7 @@ function formSubmit(variable) {
      socket.on( variable, function( data ) {
         $("#order-item").attr("disabled", true);
         $("#order-form").submit();
-    });   
+    });
 }
 
 function socketOnPayment(name,id) {

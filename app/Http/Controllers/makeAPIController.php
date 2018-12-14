@@ -37,6 +37,7 @@ use App\RMS\BookingRoom\BookingRoom;
 use App\RMS\DayStart\DayStart;
 use App\RMS\Shift\ShiftCategory;
 use App\RMS\Shift\ShiftUser;
+use App\RMS\Order_Detail_Remark\Order_Detail_Remark;
 use Storage;
 use App\Log\LogCustom;
 use App\Status\StatusConstance;
@@ -196,7 +197,9 @@ class MakeAPIController extends ApiGuardController
             $day_id                 = $order->day_id;
             $shift_id               = $order->shift_id;
             $tablet_id              = $order->tablet_id;
+            $stand_number           = $order->stand_number;
         }
+
         $order                          = new Order();
         $order->id                      = $order_id;
         $order->user_id                 = $user_id;
@@ -213,6 +216,7 @@ class MakeAPIController extends ApiGuardController
         $order->day_id                  = $day_id;
         $order->shift_id                = $shift_id;
         $order->status                  = $order_status;
+        $order->stand_number            = $stand_number;
 
         $order->save();
 
@@ -249,6 +253,7 @@ class MakeAPIController extends ApiGuardController
         }
 
         foreach ($order_details as $order_detail) {
+           
             $temp = new Orderdetail();
             $temp->order_id             = $order_id;
             $temp->item_id              = $order_detail->item_id;
@@ -264,10 +269,15 @@ class MakeAPIController extends ApiGuardController
             $temp->order_time           = $dt->toDateTimeString();
             $temp->status_id            = $order_detail->status;
             $temp->take_item            = $order_detail->take_item;
+            if($order_detail->remark_extra != ''){
+              $temp->remark_extra   = $order_detail->remark_extra;
+            }
             $temp->save();
 
             $set_item = $order_detail->set_item;
             $quantity = $order_detail->quantity;
+            
+
             foreach($set_item as $item){
                 $set = new OrderSetMenuDetail();
                 $set->order_detail_id = $temp->id;
@@ -279,6 +289,21 @@ class MakeAPIController extends ApiGuardController
                 $set->status_id       = $temp->status_id;
                 $set->quantity        = $quantity;
                 $set->save();
+            }
+
+            $remarks  = $order_detail->remark;
+
+            if(count($remarks) > 0){
+                 foreach($remarks as $remark){
+                    if($remark->selected == "true"){
+                        $OrderDetailObj = new Order_Detail_Remark();
+                        $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
+                        $OrderDetailObj->remark_id       = $remark->remark_id;
+                        $OrderDetailObj->order_id        = $order_id;
+                        $OrderDetailObj->item_id         = $order_detail->item_id;
+                        $OrderDetailObj->save();
+                    }
+                 }
             }
 
             $extra = $order_detail->extra;
@@ -342,7 +367,8 @@ class MakeAPIController extends ApiGuardController
 
             foreach ($order_details as $order_detail) {
                 $order_detail_id = $order_detail->order_detail_id;
-                $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();   //check order_detail is already exist or not
+                $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
+                   //check order_detail is already exist or not
                 if($detail == null){ //If new order_detail, create order_detail
                     $temp = new Orderdetail();
                     $temp->order_id             = $order_id;
@@ -359,6 +385,9 @@ class MakeAPIController extends ApiGuardController
                     $temp->order_time           = $dt->toDateTimeString();
                     $temp->status_id            = $order_detail->status;
                     $temp->take_item            = $order_detail->take_item;
+                    if($order_detail->remark_extra != ''){
+                     $temp->remark_extra   = $order_detail->remark_extra;
+                    }
                     $temp->save();
 
                     $set_item = $order_detail->set_item;
@@ -374,6 +403,21 @@ class MakeAPIController extends ApiGuardController
                         $set->quantity        = "1";
                         $set->save();
                     }
+
+                    $remarks  = $order_detail->remark;
+                    if(count($remarks) > 0){
+                         foreach($remarks as $remark){
+                            if($remark->selected == "true"){
+                                $OrderDetailObj = new Order_Detail_Remark();
+                                $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
+                                $OrderDetailObj->remark_id       = $remark->remark_id;
+                                $OrderDetailObj->order_id        = $order_id;
+                                $OrderDetailObj->item_id         = $order_detail->item_id;
+                                $OrderDetailObj->save();
+                            }
+                         }
+                    }
+
 
                     $extra = $order_detail->extra;
                     foreach ($extra as $e) {
@@ -405,6 +449,9 @@ class MakeAPIController extends ApiGuardController
                     $temp->order_time           = $dt->toDateTimeString();
                     $temp->status_id            = $order_detail->status;
                     $temp->take_item            = $order_detail->take_item;
+                    if($order_detail->remark_extra != ''){
+                     $temp->remark_extra   = $order_detail->remark_extra;
+                    }
                     $temp->save();
 
                     //OrderSetMenuDetail
@@ -437,6 +484,26 @@ class MakeAPIController extends ApiGuardController
                             $set->quantity        = $quantity;
                             $set->save();
                         }
+                    }
+
+
+                    $remarks  = $order_detail->remark;
+                   
+                    if(count($remarks) > 0){
+                         foreach($remarks as $remark){
+                            if($remark->selected == "true"){
+                                $remark_detail = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$remark->remark_id)->first();
+                                if(!isset($remark_detail)){
+                                    $OrderDetailObj = new Order_Detail_Remark();
+                                    $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
+                                    $OrderDetailObj->remark_id       = $remark->remark_id;
+                                    $OrderDetailObj->order_id        = $order_id;
+                                    $OrderDetailObj->save();
+                                }
+                            }else{
+                                $remark_detail = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$remark->remark_id)->delete();
+                            }
+                         }
                     }
 
                     //Order_Extra
@@ -813,6 +880,53 @@ class MakeAPIController extends ApiGuardController
 
         }*/
 
+    }
+
+    public function Billsplit(){
+        $temp                   = Input::all();
+        $table_id               = Input::get('table_id');
+        $key                    = Input::get('site_activation_key');
+        $site_activation_key    = Config::all();
+
+        $activate_key = 0;
+        foreach($site_activation_key as $k){
+           $activate_key = $k->site_activation_key;
+        }
+
+        if ($activate_key == $key) {
+            $table_id_array = array();
+            $table_id = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('table_id',$table_id)->select('order_id as order_id','tables.table_no as table_name','tables.id as table_id')->get();
+
+            foreach($table_id as $table){
+                $table_name = $table->table_name;
+                $table_id   = $table->table_id;
+                array_push($table_id_array,$table->order_id);
+                
+            }
+
+
+            $orders   = DB::table('order')->whereIn('id',$table_id_array)->select('order.id as voucher_id','order.order_time as date','order.sub_total as total_amount','order.all_total_amount as net_amount')->where('status',1)->get();
+            foreach($orders as $order){
+                $order->voucher_info = $table_name;
+                $order->table_id     = $table_id;
+            }
+            
+             if(count($orders)>0){
+                $output = array();
+                $output['billsplit_list'] = $orders;
+                return Response::json($output);
+             }else{
+                $output = array();
+                $output['billsplit_list'] = [];
+                return Response::json($output);
+             }
+              
+            
+
+        }else {
+            $output     = array("message" => "Wrong Activation Key");
+            return Response::json($output);
+        }
     }
 
     public function order_status($status = null){
