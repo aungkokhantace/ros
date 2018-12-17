@@ -54,15 +54,15 @@ class OrderViewController extends Controller
 
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
 
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name 
 
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
 
-                                          WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_details_cooking_done_status) ");
 
+                                          WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_details_cooking_done_status) ");
 
         $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
                                           FROM `order_setmenu_detail`
@@ -86,6 +86,7 @@ class OrderViewController extends Controller
         foreach ($ordersRaw as $key => $order) {
             $orders[$order->id]   = $order;
         }
+
         foreach ($orders as $key => $order) {
             $order_id = $order->id;
             $orderItemList = array();
@@ -97,6 +98,7 @@ class OrderViewController extends Controller
                 $setmenu_id                 = $order_detail->setmenu_id;
                 $order_detail_order_id      = $order_detail->order_id;
                 $order_detail_category_id   = $order_detail->category_id;
+                $is_ready_food              = $order_detail->is_ready_food;
 
                 if($order_detail_order_id == $order_id){
                     // Set Menu Case
@@ -124,7 +126,6 @@ class OrderViewController extends Controller
             $orders[$key]->items = $orderItemList;
         }
 
-        // dd($orders);
         return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
 
@@ -152,7 +153,7 @@ class OrderViewController extends Controller
 
 
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
@@ -252,7 +253,10 @@ class OrderViewController extends Controller
 
 
         $ordersRaw           = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
+
+        
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,items.is_ready_food,continent.name AS continent_name
+
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
@@ -331,8 +335,10 @@ class OrderViewController extends Controller
         $kitchen         = Kitchen::find($id);
         $tables          = $this->OrderRepository->orderTable();
         $rooms           = $this->OrderRepository->orderRoom();
-        $extra           = $this->OrderRepository->orderExtra();
-        $itemsMater      = DB::select("SELECT id,name,image,has_continent FROM `items`");
+
+        $extra           = $this->OrderRepository->orderExtra(); 
+        $itemsMater      = DB::select("SELECT id,name,image,has_continent,is_ready_food FROM `items`");
+
 
         //Status Lists
         $order_status                  = StatusConstance::ORDER_CREATE_STATUS;
@@ -351,8 +357,9 @@ class OrderViewController extends Controller
         foreach($itemsMater as $item){
             $item_id        = $item->id;
             $has_continent  = $item->has_continent;
+            $is_ready_food  = $item->is_ready_food;
 
-            $orderDetails = DB::select("SELECT i.id, i.name, i.has_continent, ct.name AS continent_name, c.kitchen_id,
+            $orderDetails = DB::select("SELECT i.id, i.name, i.has_continent, i.is_ready_food, ct.name AS continent_name, c.kitchen_id,
             o.id as order_id, o.take_id, od1.order_time,od1.order_duration,od1.quantity,
             od1.remark,od1.setmenu_id,
             od1.id as order_detail_id, od1.exception,od1.status_id
@@ -399,7 +406,7 @@ class OrderViewController extends Controller
 
             }
         }
-
+        // return response()->json($itemsMater);
 
         return view('kitchen.productView')->with('product',$product)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
@@ -430,7 +437,7 @@ class OrderViewController extends Controller
             $item_id = $item->id;
             $has_continent  = $item->has_continent;
 
-            $orderDetails = DB::select("SELECT i.id, i.name, i.has_continent, ct.name AS continent_name, c.kitchen_id,
+            $orderDetails = DB::select("SELECT i.id, i.name, i.is_ready_food, i.has_continent, ct.name AS continent_name, c.kitchen_id,
             o.id as order_id, o.take_id, od1.order_time,od1.order_duration,od1.quantity,
             od1.remark,od1.setmenu_id,
             od1.id as order_detail_id, od1.exception,od1.status_id

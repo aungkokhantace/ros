@@ -542,9 +542,10 @@ class syncAPIController extends ApiGuardController
             $timeStr    = $datetime->toTimeString();
             $booking    = BookingTable::leftjoin('booking','booking_table.booking_id','=','booking.id')
                         ->leftjoin('tables','booking_table.table_id','=','tables.id')
-                        ->select('tables.table_no','booking.booking_date','booking.customer_name','booking.capacity','booking.from_time')
+                        ->select('tables.table_no','booking.booking_date','booking.customer_name','booking.capacity','booking.from_time','booking.deleted_at')
                         ->where('booking.booking_date','>=',$today)
                         ->where('booking.from_time','>',$timeStr)
+                        ->whereNull('booking.deleted_at')
                         ->get();
 
             $returnObj  = array();
@@ -589,9 +590,10 @@ class syncAPIController extends ApiGuardController
             $timeStr    = $datetime->toTimeString();
             $booking    = BookingRoom::leftjoin('booking','booking_room.booking_id','=','booking.id')
                         ->leftjoin('rooms','booking_room.room_id','=','rooms.id')
-                        ->select('rooms.room_name','booking.booking_date','booking.customer_name','booking.capacity','booking.from_time')
+                        ->select('rooms.room_name','booking.booking_date','booking.customer_name','booking.capacity','booking.from_time','booking.deleted_at')
                         ->where('booking.booking_date','>=',$today)
                         ->where('booking.from_time','>',$timeStr)
+                        ->whereNull('booking.deleted_at')
                         ->get();
 
             $returnObj  = array();
