@@ -88,7 +88,7 @@
                                             </td>
 
                                             <td class="tr_right">
-                                                @if($item->status_id == '1')
+                                                @if($item->status_id == '1' && !$item->is_ready_food)
                                                     <input type="submit" class="start start_duration_item btn_k" id="{{$item->order_detail_id}}" name="start" value="Start Cooking">
                                                 @endif
                                                 @if($item->status_id =='2')
