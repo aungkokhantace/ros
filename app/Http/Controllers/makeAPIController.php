@@ -254,7 +254,7 @@ class MakeAPIController extends ApiGuardController
 
         foreach ($order_details as $order_detail) {
             $order_detail_status        = $order_detail->status;
-            if ($this->findItem($itemID)->isReadyFood()) {
+            if ($this->findItem($order_detail->item_id)->isReadyFood()) {
                 $order_detail_status        = 2;
             }
             $temp = new Orderdetail();
