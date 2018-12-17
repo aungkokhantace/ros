@@ -253,7 +253,10 @@ class MakeAPIController extends ApiGuardController
         }
 
         foreach ($order_details as $order_detail) {
-           
+            $order_detail_status        = $order_detail->status;
+            if ($this->findItem($itemID)->isReadyFood()) {
+                $order_detail_status        = 2;
+            }
             $temp = new Orderdetail();
             $temp->order_id             = $order_id;
             $temp->item_id              = $order_detail->item_id;
@@ -267,7 +270,7 @@ class MakeAPIController extends ApiGuardController
             $temp->amount               = $order_detail->price;
             $temp->amount_with_discount = $order_detail->amount;
             $temp->order_time           = $dt->toDateTimeString();
-            $temp->status_id            = $order_detail->status;
+            $temp->status_id            = $order_detail_status;
             $temp->take_item            = $order_detail->take_item;
             if($order_detail->remark_extra != ''){
               $temp->remark_extra   = $order_detail->remark_extra;
@@ -1195,6 +1198,12 @@ class MakeAPIController extends ApiGuardController
         }
 
         return Response::json($output);
+    }
+
+    private function findItem($id)
+    {
+        $item = Item::find($id);
+        return $item;
     }
 
 }
