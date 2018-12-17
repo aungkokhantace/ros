@@ -459,6 +459,10 @@ class ListViewController extends Controller
                     $setID                      = ($type[$itemCount] == '1' ? $item[$itemCount] : 0);
 
                     $detailObj                  = new Orderdetail();
+                    $order_detail_status        = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+                    if ($this->findItem($itemID)->isReadyFood()) {
+                    $order_detail_status        = 2;
+                    }
                     $detailObj->order_id        = $order_id;
                     $detailObj->order_detail_id = $order_detail_id;
                     $detailObj->item_id         = $itemID;
@@ -470,7 +474,7 @@ class ListViewController extends Controller
                     $detailObj->amount          = $originamount[$itemCount];
                     $detailObj->amount_with_discount = $price[$itemCount];
                     $detailObj->order_time      = $cur_date;
-                    $detailObj->status_id       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+                    $detailObj->status_id       = $order_detail_status;
                     $detailObj->created_by      = $user_id;
                     $detailObj->created_at      = $cur_date;
                     $detailObj->save();
@@ -765,12 +769,11 @@ class ListViewController extends Controller
         $order_customer_cancel_status   = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
 
         for($count = 0; $count < $row_count; $count++) {
-            $qty                      = $quantity[$count];
-            $extra                    = $extra_prices[$count];
-            $discount_amount          = $discount[$count];
-
-            $extra_array[$count]      = $qty * $extra;
-            $discount_array[$count]   = $qty * $discount_amount;
+            $qty                      = (int)($quantity[$count]);
+            $extra                    = (int)($extra_prices[$count]);
+            $discount_amount          = (int)($discount[$count]);
+            $extra_array[$count]      = (int)($qty * $extra);
+            $discount_array[$count]   = (int)($qty * $discount_amount);
         }
         //Total Extra Price
         $total_extra_price          = array_sum($extra_array);
@@ -1004,6 +1007,13 @@ class ListViewController extends Controller
         $price          = $priceObj->price;
         return $price;
     }
+
+    private function findItem($id)
+    {
+        $item = Item::find($id);
+        return $item;
+    }
+
     // public function category(){
     //     $items = $this->detailRepository->getCategories();
 
@@ -1125,4 +1135,5 @@ class ListViewController extends Controller
         
         
     // }
+
 }

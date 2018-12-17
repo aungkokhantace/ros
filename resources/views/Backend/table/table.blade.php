@@ -75,7 +75,7 @@
                                 <option value="{{$location->id}}">{{ $location->location_type}}</option>
                             @endif
                         @else
-                            <option value="{{$location->id}}">{{ $location->location_type}}</option>
+                            <option value="{{$location->id}}" {{ (Input::old("location") == $location->id ? "selected":"") }}>{{ $location->location_type}}</option>
                         @endif
                     @endforeach
                 </select>

@@ -2,103 +2,53 @@
 @extends('cashier.layouts.master')
 @section('title','Dashboard')
 @section('content')
-    <div class="swiper-container">
-        <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <div class="swiper-inr container">  
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="item-calendar text-center"> 
-                                <div class="calendar-box">  
-                                    <span class="item-month">{{ Carbon\Carbon::parse($sessions->daystart->start_date)->format('F') }}</span>
-                                    <span class="item-date">{{ Carbon\Carbon::parse($sessions->daystart->start_date)->format('d S') }}</span>
-                                </div>
 
-                                @if($sessions->daystart->status == 1)
-                                <button class="btn btn-primary day-st-btn start" id="{{ $sessions->daystart->start_date}}/{{$sessions->daystart->status }}">Day Start</button>
-                                @else
-                                <button class="btn btn-primary day-st-btn" onclick="dayEnd({{ $sessions->daystart->id }})">Day End</button>
-                                @endif
-                            </div>
-                        </div> 
-                        <div class="col-md-3 heightLine_02 item-btn">
-                            <a href="/Cashier/invoice" class="bg-test">
-                                <img src="/assets/cashier/images/dashboard/Invoice List.png" alt="Member" class="heightLine_03">
-                                <span class="label-type">Invoice List</span>
-                            </a> 
-                        </div> 
-                        <div class="col-md-3 heightLine_02 item-btn">                                
-                            <a href="/Cashier/OrderView/index">
-                                <img src="/assets/cashier/images/dashboard/OrderList.png" alt="Order List" class="heightLine_03">
-                                <span class="label-type">Order List</span>
-                            </a>                                 
-                        </div> 
+    <div class="container">
+        @section('dayEnd')
+            @if($sessions->daystart->status == 1)
+            <button class="btn btn-large dash-btn ml-2 mb-2 start" id="{{ $sessions->daystart->start_date}}/{{$sessions->daystart->status }}" style="background:rgb(75, 146, 221);">
+                Day Start
+            </button>
+            @else
+            <button class="btn btn-large dash-btn ml-2 mb-2" onclick="dayEnd({{ $sessions->daystart->id }})" style="background:rgb(75, 146, 221);">Day End</button>
+            @endif
+        @endsection
 
-                        @if ($sessions->daystart->session_status == 2)
-                        <div class="col-md-3">
-                            <div class="item-calendar text-center "> 
-                                <div class="calendar-box">  
-                                    <span class="item-month">SHIFT</span>
-                                    <span class="shift-name">{{ $sessions->shift->name }}</span>
-                                </div>
-                                <button class="btn btn-primary day-st-btn" onclick="shiftStart(day_id = '{{ $sessions->daystart->id }}',shiftID = {{ $sessions->shift->id }},status = {{ $sessions->shift->next_status }})">{{ $sessions->shift->name }}
-                                    @if($sessions->shift->current_status == 0)
-                                        {{ ' Start'}}
-                                    @else
-                                        {{ ' End'}}
-                                    @endif
-                                </button>
-                            </div>
-                        </div> 
-                        @endif
+        @section('nightEnd')
+            @if ($sessions->daystart->session_status == 2)
+            <button class="btn btn-large dash-btn mb-2" style="background:rgb(75, 146, 221)" onclick="shiftStart(day_id = '{{ $sessions->daystart->id }}',shiftID = {{ $sessions->shift->id }},status = {{ $sessions->shift->next_status }})">{{ $sessions->shift->name }}
+                @if($sessions->shift->current_status == 0)
+                    {{ ' Start'}}
+                @else
+                    {{ ' End'}}
+                @endif
+            </button>
+            @endif
+        @endsection
 
-                        <div class="col-md-3 heightLine_02 item-btn">                                
-                            <a href="/Cashier/SetMenu/index">
-                                <img src="/assets/cashier/images/dashboard/Set.png" alt="service" class="heightLine_03">
-                                <span class="label-type">Set Menu</span>
-                            </a>                                 
-                        </div> 
+        @foreach($locations as $location)
+            <button type="button" value="{{$location->id}}" class="btn btn-outline-dark btn-lg mr-2 mt-1 location_btn">{{ $location->location_type }}</button>
+        @endforeach
 
-                        <div class="col-md-3 heightLine_02 item-btn">                                
-                            <a href="/Cashier/Item/index">
-                                <img src="/assets/cashier/images/dashboard/Item List.png" alt="staff" class="heightLine_03">
-                                <span class="label-type">Item List</span>
-                            </a>                                 
-                        </div>
-
-                        <div class="col-md-3 heightLine_02 item-btn">                                
-                            <a href="/Cashier/Category/index">
-                                <img src="/assets/cashier/images/dashboard/Category.png" alt="report" class="heightLine_03">
-                                <span class="label-type">Category</span>
-                            </a>                                 
-                        </div>   
-                        <div class="col-md-3 heightLine_02 item-btn">                                
-                            <a href="#">
-                                <img src="/assets/cashier/images/dashboard/general.png" alt="general" class="heightLine_03">
-                                <span class="label-type">General</span>
-                            </a>                                 
-                        </div>  
-                    </div>  
-                </div>
+       <button type="button" class="btn btn-outline-dark btn-lg mt-2 room_btn">Rooms</button>
+        <div class="row">
+            <div class="col-md-6">
+                <p class="mt-3 float-right"><i class="fa fa-square"  style="color:#8EC449; font-size:30px; aria-hidden="true"></i>
+                    <span class="">Avaliable</span>
+                </p>
             </div>
-
-            <div class="swiper-slide">
-                <div class="swiper-inr container">  
-                    <div class="row"> 
-                        <div class="col-md-3 heightLine_02 item-btn">                                
-                            <a href="/Cashier/MakeOrder">
-                                <img src="/assets/cashier/images/dashboard/Set.png" alt="service" class="heightLine_03">
-                                <span class="label-type">Make Order</span>
-                            </a>                                 
-                        </div> 
-                    </div>  
-                </div>
+            <div class="col-md-6">
+                <p class="mt-3"><i class="fa fa-square" style="color:#4F94DA; font-size:30px;" aria-hidden="true"></i>
+                    <span class="">Service</span>
+                </p>
             </div>
         </div>
-        <!-- Add Arrows -->
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-    </div><!-- swiper-container -->
+        
+        <div class="row append_list">
+            
+        </div>
+    </div>  
+
 
     @if(!empty(Session::get('error_code')) && Session::get('error_code') == 5)
         <div class="modal image-slide-show-modal" tabindex="-1" role="dialog" aria-labelledby="" id="manager-modal">
@@ -107,9 +57,10 @@
                 <div class="modal-header">
                 <div class="bootstrap-dialog-header">
                     <div class="bootstrap-dialog-close-button" style="display: block;">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
                     </div>
-                    <div class="bootstrap-dialog-title" id="294d853f-691f-4de9-967c-d66fd0adfb69_title">Pay All Invoice Before Day End</div>
+                    <div class="bootstrap-dialog-title" id="294d853f-691f-4de9-967c-d66fd0adfb69_title">
+                        Pay All Invoice Before Day End 
+                    </div>
                 </div>
                 </div>
                 <div class="modal-body" id="order-id">
@@ -123,7 +74,7 @@
                                     <th><label>Total Amount</label></th>
                                     <th><label>Date</label></th>
                                     <th><label>Pay</label></th>
-                                    <th><label>Void</label></th>
+                                    {{-- <th><label>Void</label></th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -135,13 +86,15 @@
                                     <td>
                                         <a href="/Cashier/invoice/paid/{{ $order->id }}" class="btn btn-success">Pay</a>
                                     </td>
-                                    <td>
+                                    {{-- <td> 
                                         <a href="/Cashier/invoice" class="btn btn-danger">Cancel</a>
-                                    </td>
+                                     </td> --}}
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+                        <a href="/Cashier/invoice" class="btn btn-primary btn-sm">Go to invoice list</a>
+                        <a href="/Cashier/Dashboard" class="btn btn-danger btn-sm">Close</a>
                     </div>
                 </div>
                 </div>
@@ -154,6 +107,104 @@
         </script>
         @endif
 
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            var locationId = $(".location_btn").val();     
+
+            getTables(locationId);  
+
+            $(`.location_btn[value=${locationId}]`).prop("disabled",true);
+
+        });
+
+         $(".location_btn").click(function(){
+
+            $(".location_btn").prop("disabled",false);     
+            $(".room_btn").prop("disabled",false);            
+
+            $('.append_list').html('');
+            $('.append_list').text('');
+
+            var locationId = $(this).val();
+
+            $(this).prop("disabled",true);
+            
+            getTables(locationId);
+        });
+
+        $(".room_btn").click(function(){
+
+            var locationId = '';
+            $(".location_btn").prop("disabled",false);     
+            $(".room_btn").prop("disabled",true);                     
+            $('.append_list').html('');
+            $('.append_list').text('');
+            getRooms();
+
+        });
+
+        function getRooms()
+        {
+            $.ajax({
+            url: '/Cashier/Rooms',
+            type:"GET",
+            dataType:"json",
+            beforeSend: function(){
+            },
+            success:function(response) {
+
+                var lengths = Object.keys(response).length;
+
+                for (i = 0; i < lengths; i++) {
+
+                    if(response[i].status == 0){
+
+                        $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/room/${response[i].id}/invoice' class='btn btn-success avaliable-btn'>${response[i].room_name}</a></div>`);
+
+                    }else{
+
+                        $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/room/${response[i].id}/invoice' class='btn btn-info service-btn'>${response[i].room_name}</a></div>`);
+                    }
+                }
+            },
+            complete: function(){
+            }
+            });
+        }
+
+        function getTables(locationId)
+        {
+            $.ajax({
+                url: '/Cashier/Tables/'+locationId,
+                type:"GET",
+                dataType:"json",
+                beforeSend: function(){
+
+                },
+
+                success:function(response) {
+
+                    var lengths = Object.keys(response).length;
+
+                    for (i = 0; i < lengths; i++) {
+                        if(response[i].status == 0){
+
+                            $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/table/${response[i].id}/invoice' class='btn btn-success avaliable-btn'>${response[i].table_no}</a></div>`);
+
+                        }else{
+
+                            $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/table/${response[i].id}/invoice' class='btn btn-info service-btn'>${response[i].table_no}</a></div>`);
+                        }
+                    }
+                },
+                complete: function(){
+                }
+            });
+        }
+
+    </script>
+            
     <script type="text/javascript">
 
         $(document).ready(function(){

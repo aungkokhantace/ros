@@ -25,6 +25,7 @@ class CategoryController extends Controller
 
 
     public function index(){
+        
         $title        = 'Category List';
         $categorylist = $this->CategoryRepository->getAllCategory();
     

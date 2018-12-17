@@ -23,27 +23,57 @@ use App\RMS\ReturnMessage;
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
 
-	public function getinvoice( )
+	public function getinvoice($tableId,$roomId)
 	{
+		
 		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$session_status       = StatusConstance::DAY_STARTING_STATUS;
-        $daystart             = DayStart::select('id')
-                              ->where('status',$session_status)
-                              ->whereNull('deleted_at')
-                              ->first();
-        $day_id 			  = '';
-        if (count($daystart) > 0) {
-        	$day_id 			  = $daystart->id;
-        }
-		// $orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `refund`,`created_at`,`total_discount_amount`,`payment_amount`,`status`,`room_charge`
-		// from `order` where `deleted_at` is null AND status = $order_status OR status = $order_paid_status order by `order_time` desc");
-		$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+		$daystart             = DayStart::select('id')
+							->where('status',$session_status)
+							->whereNull('deleted_at')
+							->first();
+		$day_id 			  = '';
+
+		
+
+		if (count($daystart) > 0) {
+			$day_id 			  = $daystart->id;
+		}
+		
+		
+		if($roomId == NULL){
+
+			$table = Table::find($tableId);
+
+			$orders = $table->orders()
+							->whereIn('status',[$order_status,$order_paid_status])
+							->orderBy('id','desc')
+							->where('day_id',$day_id)
+							->get();
+			return $orders;
+
+
+		}
+		
+		if($tableId == NULL){
+			$room  = Room::find($roomId);
+			$orders = $room->orders()
+							->whereIn('status',[$order_status,$order_paid_status])
+							->orderBy('id','desc')
+							->where('day_id',$day_id)
+							->get();
+			return $orders;
+		}
+
+		if($tableId == 'all' && $roomId == 'all'){
+			$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
 					->where('day_id','=',$day_id)
 					->whereNull('deleted_at')
 					->get();
-		return $orders;
+			return $orders;
+		}		
 	}
 
 	public function getinvoiceTimeIncrease()
@@ -186,8 +216,8 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		->leftjoin('items','items.id','=','order_details.item_id')
 		->leftjoin('set_menu','set_menu.id','=','order_details.setmenu_id')
 		->leftjoin('users','users.id','=','order.user_id')
-		->select('items.name as item_name','items.has_continent','items.continent_id','set_menu.set_menus_name as set_name','order_details.quantity',
-				'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id',
+		->select('items.id as item_id','items.name as item_name','items.has_continent','items.continent_id','set_menu.set_menus_name as set_name','order_details.quantity',
+				'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id','order_id as order_id',
 				'users.user_name','order.id',
 			'order_details.amount_with_discount')->where('order_id','=',$id)
 		->whereNotIn('status_id',[$order_kitchen_cancel_status,$order_customer_cancel_status])->get();

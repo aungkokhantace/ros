@@ -28,6 +28,10 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('updateDataBeforeLogout', 'Cashier\Staff\UserController@updateDataBeforeLogout');
             Route::group(['middleware' => 'dashboard:Cashier'],function(){
                 Route::get('Dashboard','Cashier\DashboardController@dashboard');
+                Route::get('/Tables/{location_id}','Cashier\DashboardController@getTable'); // ajax route
+                Route::get('/Rooms','Cashier\DashboardController@getRoom'); // ajax route
+                Route::get('/table/{table_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByTableId');
+                Route::get('/room/{room_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByRoomId');
             });
             //End User
 
@@ -98,6 +102,7 @@ Route::group(['middleware' => 'web'], function () {
             //Report
             Route::group(['middleware'=>'report:Cashier'],function(){
 
+
                 Route::get('invoice','Cashier\Invoice\InvoiceController@invoiceList');
                 Route::get('ajaxRequest','Cashier\Invoice\InvoiceController@ajaxRequest');
                 Route::get('invoice/ajaxInvoiceRequest','Cashier\Invoice\InvoiceController@ajaxInvoiceRequest');
@@ -106,6 +111,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');
                 Route::get('invoice/paid/ajaxPaymentRequest/{id}','Cashier\Invoice\InvoiceController@ajaxPaymentRequest');
                 Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
+                Route::post('invoice/paid/{id}/addDiscount','Cashier\Invoice\InvoiceController@addDiscount');
                 Route::get('invoice/cancel','Cashier\Invoice\InvoiceController@invoiceCancel');
                 Route::get('invoice/cancel/{id}','Cashier\Invoice\InvoiceController@orderCancel');
                 Route::get('invoice/sort/time/increase','Cashier\Invoice\InvoiceController@invoiceTimeIncrease');
@@ -174,6 +180,7 @@ Route::group(['middleware' => 'web'], function () {
                 // Route::get('MakeOrder/categorydetail/{id}','Cashier\ListViewController@categoryDetail');
                 // Route::get('MakeOrder/SearchItem/{id}','Cashier\ListViewController@searchItem');
                 // Route::get('MakeOrder/add/{id}/{type}','Cashier\ListViewController@add');
+
             });
 
             //Start Kitchen Setup

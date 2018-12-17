@@ -76,7 +76,8 @@
                 <div class="row"> 
                     <div class="col-md-4 col-4 heightLine_01 head-lbox">
                         <div>  
-                            <a class="btn btn-large dash-btn" href="/Cashier/Dashboard">Dashboard</a>
+                            <a class="btn btn-large dash-btn mb-2" href="/Cashier/Dashboard">Dashboard</a>
+                            @yield('dayEnd')
                         </div>
                     </div>  
                     <div class="col-md-4 col-4 heightLine_01">
@@ -84,11 +85,7 @@
                     </div>  
                     <div class="col-md-4 col-4 heightLine_01 head-rbox">
                         <div>   
-                            <span class="staff-name">
-                                @if (Auth::guard('Cashier')->user())
-                                    {{Auth::guard('Cashier')->user()->user_name }}
-                                @endif
-                            </span>
+                            @yield('nightEnd')
                             <div class="dropdown show pull-right">
                               <button role="button" id="dropdownMenuLink" class="btn btn-primary user-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="/assets/cashier/images/login_img.png" alt="login image">
