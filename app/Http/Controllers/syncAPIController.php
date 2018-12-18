@@ -125,7 +125,7 @@ class syncAPIController extends ApiGuardController
            $activate_key = $k->site_activation_key;
         }
         if($key == $activate_key){
-            $items = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
+            $items = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time,is_ready_food FROM items WHERE status = '1' AND deleted_at IS NULL");
             foreach($items as $item){
              $remarks  = DB::table('item_remark')->join('remark','remark.id','=','item_remark.remark_id')->select('remark.name','remark.id as remark_id','item_remark.item_id')->where('item_id',$item->id)->get();
              //add selected->false to all remark
@@ -136,6 +136,13 @@ class syncAPIController extends ApiGuardController
               
               $item->remark = $remarks;
               $item->remark_extra = '';
+
+              $item->remaining_quantity = '5';
+              if($item->is_ready_food == '1'){
+                $item->is_ready_food  = true;
+              }else{
+                 $item->is_ready_food = false;
+              }
 
             }
             $output = array("items" => $items);
@@ -244,8 +251,10 @@ class syncAPIController extends ApiGuardController
         foreach($site_activation_key as $k){
            $activate_key = $k->site_activation_key;
         }
+  
 
         if($key == $activate_key){
+           
             $cur_date      = date('Y-m-d');
             $default_status         = StatusConstance::BOOKING_DEFAULT_STATUS;
             $warning_status         = StatusConstance::BOOKING_WARNING_STATUS;
@@ -685,7 +694,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
-                        $items = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time FROM items WHERE status = '1' AND deleted_at IS NULL");
+                        $items = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time,is_ready_food FROM items WHERE status = '1' AND deleted_at IS NULL");
                         
                         foreach($items as $item){
                          $remarks  = DB::table('item_remark')->join('remark','remark.id','=','item_remark.remark_id')->select('remark.name','remark.id as remark_id','item_remark.item_id')->where('item_id',$item->id)->get();
@@ -697,6 +706,12 @@ class syncAPIController extends ApiGuardController
                           
                           $item->remark = $remarks;
                           $item->remark_extra = '';
+                          $item->remaining_quantity = '5';
+                          if($item->is_ready_food == '1'){
+                            $item->is_ready_food  = true;
+                          }else{
+                             $item->is_ready_food = false;
+                          }
 
                          }
                        

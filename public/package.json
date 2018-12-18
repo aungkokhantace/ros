@@ -6,7 +6,12 @@
   "dependencies": {
     "@types/socket.io-client": "^1.4.31",
     "express": "^4.16.2",
-    "socket.io": "^1.7.4"
+    "express-session": "^1.15.6",
+    "jQuery": "^1.7.4",
+    "jsdom": "^13.1.0",
+    "play-sound": "^1.1.2",
+    "socket.io": "^1.7.4",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {},
   "scripts": {

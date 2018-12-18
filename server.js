@@ -1,5 +1,6 @@
 var socket  = require( './public/node_modules/socket.io' );
 var express = require('./public/node_modules/express');
+var player  = require('./public/node_modules/play-sound')(opts = {});
 var app     = express();
 var server  = require('http').createServer(app);
 var io      = socket.listen( server );
@@ -8,8 +9,6 @@ var port    = process.env.PORT || 3334;
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
-
-
 io.on('connection', function (socket) {
   console.log('Socket Connected!!!');
   io.sockets.emit('user_connected','user_connected');
@@ -33,7 +32,7 @@ io.on('connection', function (socket) {
 
   socket.on('room_transfer', function( data ) {
     console.log('Success Room Transfer Function');
-
+    
     io.sockets.emit( 'roomChange','roomChange');
   });
 
@@ -67,7 +66,7 @@ io.on('connection', function (socket) {
   //Socket Fire From Order Create
   socket.on('order', function( data ) {
     console.log('Success Order Create');
-
+    
     io.sockets.emit( 'invoice_update','invoice_update');
   });
 
@@ -84,14 +83,13 @@ io.on('connection', function (socket) {
   //Socket Fire From Cooking Complete
   socket.on('cooking_complete', function( data ) {
     console.log('Socket Connect Cooking Complete');
-
+    // playAudio();
     io.sockets.emit( 'cooking_done','cooking_done');
   });
 
   //Socket Fire From Order Create
   socket.on('taken_by', function( data ) {
     console.log('Taken By Waiter');
-
     io.sockets.emit( 'take','take');
   });
 
@@ -116,3 +114,9 @@ io.on('connection', function (socket) {
     io.sockets.emit( 'edit',data);
   });
 });
+
+
+
+// function playAudio(){
+//    player.play('http://localhost:8006/noti/notification.mp3');
+// }

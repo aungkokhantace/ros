@@ -125,7 +125,7 @@ class OrderViewController extends Controller
             }
             $orders[$key]->items = $orderItemList;
         }
-
+         
         return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
 
