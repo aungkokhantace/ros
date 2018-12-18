@@ -64,7 +64,7 @@ class OrderViewController extends Controller
 
                                           WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_details_cooking_done_status) ");
 
-        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
+        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,items.is_ready_food,continent.name AS continent_name
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
@@ -125,7 +125,7 @@ class OrderViewController extends Controller
             }
             $orders[$key]->items = $orderItemList;
         }
-
+        // return $orders;
         return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
 
@@ -160,7 +160,7 @@ class OrderViewController extends Controller
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
                                           WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status) ");
 
-        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
+        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,.items.is_ready_food,continent.name AS continent_name
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
@@ -263,7 +263,7 @@ class OrderViewController extends Controller
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
                                           WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_details_cooking_done_status) ");
 
-        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,continent.name AS continent_name
+        $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,items.stock_code,items.is_ready_food,continent.name AS continent_name
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
@@ -372,7 +372,7 @@ class OrderViewController extends Controller
             od1.item_id = $item_id AND c.kitchen_id = $kitchen->id AND od1.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_cooking_done_status)");
 
             $setMenus = DB::select("SELECT os.item_id,os.id,os.exception,os.remark,os.status_id,os.order_duration,
-            c.kitchen_id,i.name,o.take_id,os.order_time,os.setmenu_id,
+            c.kitchen_id,i.name,i.is_ready_food,o.take_id,os.order_time,os.setmenu_id,
             os.order_type_id,os.quantity,od1.id as order_detail_id,
             od1.setmenu_id,od1.order_id
             FROM order_setmenu_detail AS os
@@ -449,7 +449,7 @@ class OrderViewController extends Controller
             WHERE o.status IN ($order_status,$order_paid_status) AND
             od1.item_id = $item_id AND c.kitchen_id = $kitchen->id AND od1.status_id IN ($order_details_cooking_status,$order_details_cooked_status,$order_cooking_done_status)");
 
-            $setMenus = DB::select(" SELECT os.item_id,os.id,os.exception,os.remark,os.status_id,os.order_duration,c.kitchen_id,i.name,o.take_id,os.order_time,os.setmenu_id,os.order_type_id,os.quantity,od1.id as order_detail_id,od1.setmenu_id,od1.order_id
+            $setMenus = DB::select(" SELECT os.item_id,os.id,os.exception,os.remark,os.status_id,os.order_duration,c.kitchen_id,i.name,i.is_ready_food,o.take_id,os.order_time,os.setmenu_id,os.order_type_id,os.quantity,od1.id as order_detail_id,od1.setmenu_id,od1.order_id
             FROM order_setmenu_detail AS os
             INNER JOIN order_details AS od1 ON os.order_detail_id = od1.id
             INNER JOIN `order` AS o ON od1.order_id = o.id
