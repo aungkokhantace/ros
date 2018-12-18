@@ -15,7 +15,8 @@
   <link rel="stylesheet" href="/assets/backend_fonts/font-awesome/css/font-awesome.min.css">
   <!-- <link rel="stylesheet" href="/assets/backend_css/jquery-jvectormap.css"> -->
   <link rel="stylesheet" href="/assets/backend_plugins/bootstrap-datepicker/css/datepicker3.css">
-
+  <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Slabo+27px" rel="stylesheet">
   <link rel="stylesheet" href="/assets/backend_css/_all-skins.min.css">
   <link rel="stylesheet" href="/assets/js/datatables/dataTables.bootstrap.css">
   <link rel="stylesheet" href="/assets/js/datatables/jquery.dataTables.min.css">

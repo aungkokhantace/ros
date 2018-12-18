@@ -155,7 +155,7 @@
             var clickID     = clicked_id;
             var printID     = clickID + "-print-table";
             var test        = document.getElementById(printID);
-            printElement(document.getElementById(printID));
+            printElement(test);
         }
 
         function cancelOrder(id) {
