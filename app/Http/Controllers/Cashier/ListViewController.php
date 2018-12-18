@@ -503,6 +503,9 @@ class ListViewController extends Controller
                     if ($itemID == 0) {
                         $set_items          = $this->detailRepository->getSetItemBySetID($setID);
                         foreach ($set_items as $key => $set) {
+                        if ($this->findItem($set->item_id)->isReadyFood()) {
+                            $item_status        = 2;
+                        }
                             $orderSetObj                    = new OrderSetMenuDetail();  
                             $orderSetObj->order_detail_id   = $detailID;
                             $orderSetObj->setmenu_id        = $setID;
@@ -1011,7 +1014,7 @@ class ListViewController extends Controller
     private function findItem($id)
     {
         $item = Item::find($id);
-        return $item;
+        return $item ? $item : new Item;
     }
 
     // public function category(){
