@@ -435,6 +435,15 @@
             //Taken order socket
             var taken_by_waiter  = 'take';
             socketOn(taken_by_waiter,url,div);
+
+           noti();
+
+            function noti(){
+                 var socket  = io.connect( 'http://'+window.location.hostname  +':' + 3334);
+                 socket.on( invoice_update, function( data ) {
+                    console.log('zinthutun');
+                });
+            }
         });
     </script>
 @endsection
