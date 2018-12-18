@@ -88,7 +88,7 @@
                                             </td>
 
                                             <td class="tr_right">
-                                                @if($item->status_id == '1')
+                                                @if($item->status_id == '1' && !$item->is_ready_food)
                                                     <input type="submit" class="start start_duration_item btn_k" id="{{$item->order_detail_id}}" name="start" value="Start Cooking">
                                                 @endif
                                                 @if($item->status_id =='2')
@@ -233,13 +233,14 @@
                                                         {{ date('h:i:s A', strtotime($setmenu->order_time)) }}
                                                     </td>
                                                     <td>
-                                                    @if($setmenu->status_id == '1')
-                                                    Order
-                                                    @endif
-                                                    @if($setmenu->status_id =='2')
-                                                    Cooking
-
-                                                    @endif
+                                                @if($setmenu->status_id == '1')
+                                                Order
+                                                @endif
+                                                @if($setmenu->status_id =='2')
+                                                {{($setmenu->is_ready_food) ? "Order" : "Cooking"}}
+                                                @elseif($setmenu->status_id =='3')
+                                                Ready
+                                                @endif
                                                     </td>
                                                     <!-- <td>
                                                         @if($setmenu->status_id =='2')
@@ -249,11 +250,11 @@
                                                         @endif
                                                     </td> -->
                                                     <td>
-                                                        @if($setmenu->status_id == '1')
+                                                        @if($setmenu->status_id == '1' && !$setmenu->is_ready_food)
                                                             <input type="submit" class="start start_duration_setmenu btn_k" id="{{$setmenu->id}}" name="start" value="Start Cooking">
                                                         @endif
                                                         @if($setmenu->status_id =='2')
-                                                            <input type="submit" class="complete complete_duration_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Complete Cooking">
+                                                            <input type="submit" class="complete complete_duration_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="{{($setmenu->is_ready_food) ? "Food Ready" : "Complete Cooking"}}">
 
                                                         @endif
                                                         @if($setmenu->status_id =='3')
@@ -262,6 +263,48 @@
                                                         @endif
                                                     </td>
                                                     @if($setmenu->status_id == '1')
+                                                    <td>
+                                                        <input type="button" class="cancel btn_k" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
+                                                        <div class="modal fade" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content pop-up-content">
+                                                                    <div class="modal-header pop-up-header">
+                                                                        <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $setmenu->order_detail_id . "-" . $setmenu->setmenu_id . "form")) !!}
+
+                                                                        @if(isset($setmenu->setmenu_id) && $setmenu->setmenu_id != 0)
+                                                                            <input type="hidden" name="order_details_id" value="{{$setmenu->order_detail_id}}">
+                                                                        @else
+                                                                            <input type="hidden" name="order_details_id" value="{{$setmenu->order_detail_id}}">
+                                                                        @endif
+                                                                        <input type="hidden" name="setmenu_id" value="{{$setmenu->setmenu_id}}">
+
+                                                                        <div class="row">
+                                                                            <label class="col-sm-3 control-label"><b>Enter Message</b></label>
+                                                                            <div class="col-sm-7">
+                                                                                <input type="text" name="message" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
+                                                                                <input type="button" name="submit" value="Save" class="btn btn-primary pop-up-button cancel_product">
+                                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                            </div>
+                                                                        </div>
+                                                                        {!! Form::close() !!}
+                                                                    </div>
+                                                                    <div class="modal-footer pop-up-footer">
+                                                                        <span>AcePlus Solutions.,Co Ltd</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Modal -->
+                                                    </td>
+                                                    @endif
+                                                    @if($setmenu->status_id == '2' && $setmenu->is_ready_food)
                                                     <td>
                                                         <input type="button" class="cancel btn_k" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
                                                         <div class="modal fade" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -153,20 +153,13 @@
                                     </td> -->
 
                                     <td>
-                                        @if ($item->status_id == 1)
+                                        @if ($item->status_id == 1 && !$item->is_ready_food)
                                                 <input type="submit" class="start btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking" /><br><br>
-                                               
-                                        @elseif($item->status_id == 2 && $item->is_ready_food)
-                                                <input type="submit" class="complete btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Food Ready" /><br><br>
-
                                         @elseif($item->status_id == 2)
-                                                <input type="submit" class="complete btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Complete Cooking" /><br><br>
-                                        @else
-
+                                                <input type="submit" class="complete btn_k" id="{{$item->id}}/{{$item->setmenu_id}}"value="{{($item->is_ready_food) ? "Food Ready" : "Complete Cooking"}}" /><br><br>
+                                        @elseif($item->status_id == '3')
                                                 <input type="submit" class="taken btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Take" /><br><br>
-
                                         @endif
-
 
                                     </td>
                                     <td>

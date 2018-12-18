@@ -147,7 +147,7 @@
 
 
                                     <td>
-                                        @if ($item->status_id == 1)
+                                        @if ($item->status_id == 1 && !$item->is_ready_food)
                                                 <input type="submit" class="start btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking" /><br><br>
 
                                         @elseif($item->status_id == 2)
