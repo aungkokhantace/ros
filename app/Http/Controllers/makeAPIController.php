@@ -377,6 +377,10 @@ class MakeAPIController extends ApiGuardController
             foreach ($order_details as $order_detail) {
                 $order_detail_id = $order_detail->order_detail_id;
                 $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
+                $order_detail_status        = $order_detail->status;
+                    if ($this->findItem($order_detail->item_id)->isReadyFood()) {
+                        $order_detail_status        = 2;
+                    }
                    //check order_detail is already exist or not
                 if($detail == null){ //If new order_detail, create order_detail
                     $temp = new Orderdetail();
@@ -392,7 +396,7 @@ class MakeAPIController extends ApiGuardController
                     $temp->amount               = $order_detail->price;
                     $temp->amount_with_discount = $order_detail->amount;
                     $temp->order_time           = $dt->toDateTimeString();
-                    $temp->status_id            = $order_detail->status;
+                    $temp->status_id            = $order_detail_status;
                     $temp->take_item            = $order_detail->take_item;
                     if($order_detail->remark_extra != ''){
                      $temp->remark_extra   = $order_detail->remark_extra;
@@ -401,6 +405,10 @@ class MakeAPIController extends ApiGuardController
 
                     $set_item = $order_detail->set_item;
                     foreach($set_item as $item){
+                        $order_setdetail_status        = $temp->status_id;
+                        if ($this->findItem($item->item_id)->isReadyFood()) {
+                            $order_setdetail_status        = 2;
+                        }
                         $set = new OrderSetMenuDetail();
                         $set->order_detail_id = $temp->id;
                         $set->setmenu_id      = $item->set_menu_id;
@@ -408,7 +416,7 @@ class MakeAPIController extends ApiGuardController
                         $set->order_type_id   = $temp->order_type_id;
                         $set->exception       = $temp->exception;
                         $set->order_time      = $dt->toDateTimeString();
-                        $set->status_id       = $temp->status_id;
+                        $set->status_id       = $order_setdetail_status;
                         $set->quantity        = "1";
                         $set->save();
                     }
@@ -456,7 +464,7 @@ class MakeAPIController extends ApiGuardController
                     $temp->amount               = $order_detail->price;
                     $temp->amount_with_discount = $order_detail->amount;
                     $temp->order_time           = $dt->toDateTimeString();
-                    $temp->status_id            = $order_detail->status;
+                    $temp->status_id            = $order_detail_status;
                     $temp->take_item            = $order_detail->take_item;
                     if($order_detail->remark_extra != ''){
                      $temp->remark_extra   = $order_detail->remark_extra;
