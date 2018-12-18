@@ -254,9 +254,6 @@ class MakeAPIController extends ApiGuardController
 
         foreach ($order_details as $order_detail) {
             $order_detail_status        = $order_detail->status;
-            if ($this->findItem($order_detail->item_id)->isReadyFood()) {
-                $order_detail_status        = 2;
-            }
             $temp = new Orderdetail();
             $temp->order_id             = $order_id;
             $temp->item_id              = $order_detail->item_id;
@@ -283,9 +280,6 @@ class MakeAPIController extends ApiGuardController
 
             foreach($set_item as $item){
                 $status_id = $temp->status_id;
-                if ($this->findItem($item->item_id)->isReadyFood()) {
-                $status_id        = 2;
-                }
                 $set = new OrderSetMenuDetail();
                 $set->order_detail_id = $temp->id;
                 $set->setmenu_id      = $item->set_menu_id;
@@ -378,9 +372,6 @@ class MakeAPIController extends ApiGuardController
                 $order_detail_id = $order_detail->order_detail_id;
                 $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
                 $order_detail_status        = $order_detail->status;
-                    if ($this->findItem($order_detail->item_id)->isReadyFood()) {
-                        $order_detail_status        = 2;
-                    }
                    //check order_detail is already exist or not
                 if($detail == null){ //If new order_detail, create order_detail
                     $temp = new Orderdetail();
@@ -406,9 +397,6 @@ class MakeAPIController extends ApiGuardController
                     $set_item = $order_detail->set_item;
                     foreach($set_item as $item){
                         $order_setdetail_status        = $temp->status_id;
-                        if ($this->findItem($item->item_id)->isReadyFood()) {
-                            $order_setdetail_status        = 2;
-                        }
                         $set = new OrderSetMenuDetail();
                         $set->order_detail_id = $temp->id;
                         $set->setmenu_id      = $item->set_menu_id;

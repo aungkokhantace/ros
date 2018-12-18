@@ -460,9 +460,6 @@ class ListViewController extends Controller
 
                     $detailObj                  = new Orderdetail();
                     $order_detail_status        = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
-                    if ($this->findItem($itemID)->isReadyFood()) {
-                    $order_detail_status        = 2;
-                    }
                     $detailObj->order_id        = $order_id;
                     $detailObj->order_detail_id = $order_detail_id;
                     $detailObj->item_id         = $itemID;
@@ -503,9 +500,6 @@ class ListViewController extends Controller
                     if ($itemID == 0) {
                         $set_items          = $this->detailRepository->getSetItemBySetID($setID);
                         foreach ($set_items as $key => $set) {
-                        if ($this->findItem($set->item_id)->isReadyFood()) {
-                            $item_status        = 2;
-                        }
                             $orderSetObj                    = new OrderSetMenuDetail();  
                             $orderSetObj->order_detail_id   = $detailID;
                             $orderSetObj->setmenu_id        = $setID;
