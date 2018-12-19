@@ -6,6 +6,7 @@ function getCategories(categoryID) {
         type: 'GET',
         url: '/Cashier/MakeOrder/getCategories/' + categoryID,
         success: function (Response) {
+            // console.log(Response);
             $('#categoryDiv').html('');
             $('#categoryDiv').append(Response);
             $('.cat-back').val(categoryID);
@@ -44,10 +45,12 @@ function backBtn() {
 //Function For Order Item
 function orderItem(itemID) {
     var take_id        = $('input#take-id').val();
+    // console.log("here " + take_id);
     $.ajax({
         type: 'GET',
         url: '/Cashier/MakeOrder/item/' + itemID + '/' + take_id,
         success: function (Response) {
+            // console.log("Item Response " + Response);
             $('.item-list > tbody:last-child').append(Response);
             calculateTotal();
         }
@@ -79,7 +82,7 @@ function continentOK(itemID,uniqid) {
         type: 'GET',
         url: '/Cashier/MakeOrder/continent/' + itemID + '/' + continentID,
         success: function (Response) {
-            console.log(Response);
+            // console.log(Response);
             price_with_discount     = parseInt(Response.price_with_discount);
             priceval    = parseInt(Response.price);
             // if (isNaN(price_with_discount)) {
@@ -111,6 +114,7 @@ function continentOK(itemID,uniqid) {
 
 //Function For Add On Checked
 function addOnOK(itemID,uniqid) {
+    // console.log("addon");
     addOnID         = '';
     addOnVal        = 0;
     $('#addon-' + itemID + '-' + uniqid + ' input:checkbox').each(function () {

@@ -18,28 +18,60 @@ use App\RMS\Shift\OrderShift;
 use App\Status\StatusConstance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\RMS\Utility;
 
 class DashboardController extends Controller
 {
     public function dashboard(Request $request)
-    {    
+    {  
+    // dd("cashir");
+
         $sessions        = $this->getDayStart();
+        // dd($sessions);
         return view('cashier.dashboard.dashboard')->with('sessions',$sessions);
     }
 
     protected function getDayStart() 
     {
+        $restaurant         = Utility::getCurrentRestaurant();
+        $branch             = Utility::getCurrentBranch();
+
         $session_status     = StatusConstance::DAY_STARTING_STATUS;
-        $daystart           = DayStart::select('id','start_date','status')
+
+        $query              = DayStart::query();
+
+        if($restaurant != 0 || $restaurant != null){
+            $query           = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0 || $branch != null){
+            $query          = $query->where('branch_id',$branch);
+        }
+
+        $daystart           = $query->select('id','start_date','status')
                               ->where('status',$session_status)
                               ->whereNull('deleted_at')
                               ->first();
+        
+         /* day was already start */ 
         if (count($daystart) > 0) {
             $day_id          = $daystart->id;
             $status          = StatusConstance::SHIFT_AVAILABLE_STATUS;
-            $shift_ordering  = DB::select("SELECT id,name,is_last_shift FROM shift WHERE status = '$status' AND deleted_at IS NULL ORDER BY is_last_shift ASC, id ASC");
+            $shift_ordering  = DB::select("SELECT id,name,is_last_shift FROM shift WHERE status = '$status' AND deleted_at IS NULL  AND restaurant_id = '$restaurant' AND branch_id ='$branch' ORDER BY is_last_shift ASC, id ASC");
+            // dd($shift_ordering);        
 
-            $current_shift   = OrderShift::where('day_id','=',$day_id)->whereNull('deleted_at')->get();
+           
+
+            $shift_query    = OrderShift::query();
+            if($restaurant  != 0 || $restaurant != null){
+                $shift_query = $shift_query->where('restaurant_id',$restaurant);
+            }
+            if($branch != 0 || $branch != null){
+                $shift_query = $shift_query->where('branch_id',$branch);
+            }
+            $current_shift   = $shift_query->where('day_id','=',$day_id)->whereNull('deleted_at')->get();
+            // dd($current_shift);
+
+            /* check shift */
             $current_count   = count($current_shift);
             if ($current_count > 0) {
                 $count              = 0;
@@ -69,15 +101,19 @@ class DashboardController extends Controller
 
             //Add session status to daystar
             $daystart->session_status       = $session_status;
-        } else {
+        }
+        /* day is not start */ 
+        else {
             $get_today              = date('Y-m-d');
             $daystart               = (object) array();
             $daystart->start_date   = $get_today;
             $daystart->status       = StatusConstance::DAY_START_STATUS;
             $daystart->session_status = StatusConstance::DAY_START_STATUS;
+            // dd($daystart);
         }
          //if Step is not day end step
         $shiftObj           = [];
+        // dd($current_step);
         if (isset($current_step)) {
             $shiftObj                   = $shift_ordering[$current_step];
             $shiftObj->current_status   = $current_status;
@@ -88,6 +124,7 @@ class DashboardController extends Controller
         $get_day    = (object) array();
         $get_day->daystart    = $daystart;
         $get_day->shift       = $shiftObj;
+        // dd($get_day);
         return $get_day;
     }
 
