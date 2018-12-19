@@ -1,6 +1,6 @@
-
-    @if (isset($order->items) && count($order->items) > 0)
-        @foreach($order->items as $item)
+@foreach($orders as $orderKey => $orderValue)
+    @if (isset($orderValue->items) && count($orderValue->items) > 0)
+        @foreach($orderValue->items as $item)
             <div class="modal image-slide-show-modal" tabindex="-1" role="dialog" aria-labelledby="" id="{{$item->id}}-print">
                 <div class="modal-dialog" role="document" style="width:430px;">
                     <div class="modal-content" style="background:none;box-shadow:none;">
@@ -28,10 +28,10 @@
                                         <td style="border: 0 !important;">Order type&nbsp;</td>
                                         <td style="border: 0 !important;">&nbsp;:&nbsp;&nbsp;</td>
                                         <td style="border: 0 !important;text-align: left">
-                                            @if($item->order_type_id == '1')
+                                            @if($orderValue->take_id !== 1)
                                                 {{ "Dine in" }}
                                             @else
-                                                {{ "Take Away"}}
+                                                {{ "Parcel"}}
                                             @endif
                                         </td>
                                     </tr>
@@ -47,23 +47,40 @@
                                             <td style="border: 0 !important;text-align: left">{{ $item->remark }}</td>
                                         </tr>
                                     @endif
-                                    <tr>
-                                        <td style="border: 0 !important;">Add On&nbsp;</td>
-                                        <td style="border: 0 !important;">&nbsp;:&nbsp;&nbsp;</td>
-                                        <td style="border: 0 !important;text-align: left">
-                                            @foreach($extra as $ex)
-                                                @if($ex->order_detail_id == $item->id && $item->setmenu_id == 0)
-                                                    <span>
+                                    @foreach($extra as $ex)
+                                        @if($ex->order_detail_id == $item->id)
+                                            @php
+                                                $check = 1;
+                                            @endphp
+                                        @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
+                                            @php
+                                                $check = 1;
+                                            @endphp
+                                        @else
+                                            @php
+                                                $check = null;
+                                            @endphp
+                                        @endif
+                                    @endforeach
+                                    @if (!empty($check))
+                                        <tr>
+                                            <td style="border: 0 !important;">Add On&nbsp;</td>
+                                            <td style="border: 0 !important;">&nbsp;:&nbsp;&nbsp;</td>
+                                            <td style="border: 0 !important;text-align: left">
+                                                @foreach($extra as $ex)
+                                                    @if($ex->order_detail_id == $item->id)
+                                                        <span>
                                                             {{ $ex->food_name }}
                                                         </span>
-                                                @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
-                                                    <span>
+                                                    @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
+                                                        <span>
                                                             {{ $ex->food_name }}
                                                         </span>
-                                                @endif
-                                            @endforeach
-                                        </td>
-                                    </tr>
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -79,10 +96,11 @@
             </div>
         @endforeach
     @endif
+@endforeach
 
-@foreach($orders as $order)
-    @if (isset($order->items) && count($order->items) > 0)
-        @foreach($order->items as $item)
+@foreach($orders as $orderKey => $orderValue)
+    @if (isset($orderValue->items) && count($orderValue->items) > 0)
+        @foreach($orderValue->items as $item)
             <div class="modal image-slide-show-modal" tabindex="-1" role="dialog" aria-labelledby="" id="{{$item->order_detail_id}}-print">
                 <div class="modal-dialog" role="document" style="width:430px;">
                     <div class="modal-content" style="background:none;box-shadow:none;">
@@ -136,10 +154,10 @@
                                         <td style="border: 0 !important;">Order type&nbsp;</td>
                                         <td style="border: 0 !important;">&nbsp;:&nbsp;&nbsp;</td>
                                         <td style="border: 0 !important;text-align: left">
-                                            @if($item->order_type_id == '1')
+                                            @if($orderValue->take_id !== 1)
                                                 {{ "Dine in" }}
                                             @else
-                                                {{ "Take Away"}}
+                                                {{ "Parcel"}}
                                             @endif
                                         </td>
                                     </tr>
@@ -155,22 +173,52 @@
                                             <td style="border: 0 !important;text-align: left">{{ $item->remark }}</td>
                                         </tr>
                                     @endif
+
+                                    @foreach($extra as $ex)
+                                        @if($ex->order_detail_id == $item->id)
+                                            @php
+                                                $check = 1;
+                                            @endphp
+                                        @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
+                                            @php
+                                                $check = 1;
+                                            @endphp
+                                        @else
+                                            @php
+                                                $check = null;
+                                            @endphp
+                                        @endif
+                                    @endforeach
+                                    @if (!empty($check))
+                                        <tr>
+                                            <td style="border: 0 !important;">Add On&nbsp;</td>
+                                            <td style="border: 0 !important;">&nbsp;:&nbsp;&nbsp;</td>
+                                            <td style="border: 0 !important;text-align: left">
+                                                @foreach($extra as $ex)
+                                                    @if($ex->order_detail_id == $item->id)
+                                                        <span>
+                                                            {{ $ex->food_name }}
+                                                        </span>
+                                                    @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
+                                                        <span>
+                                                            {{ $ex->food_name }}
+                                                        </span>
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if($orderValue->take_id == 0)
+                                        <tr>
+                                            <td style="border: 0 !important;">Stand Number&nbsp;</td>
+                                            <td style="border: 0 !important;">&nbsp;:&nbsp;&nbsp;</td>
+                                            <td style="border: 0 !important;text-align: left">{{ $orderValue->stand_number }}</td>
+                                        </tr>
+                                    @endif
                                     <tr>
-                                        <td style="border: 0 !important;">Add On&nbsp;</td>
+                                        <td style="border: 0 !important;">Total Amount&nbsp;</td>
                                         <td style="border: 0 !important;">&nbsp;:&nbsp;&nbsp;</td>
-                                        <td style="border: 0 !important;text-align: left">
-                                            @foreach($extra as $ex)
-                                                @if($ex->order_detail_id == $item->id)
-                                                    <span>
-                                                            {{ $ex->food_name }}
-                                                        </span>
-                                                @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
-                                                    <span>
-                                                            {{ $ex->food_name }}
-                                                        </span>
-                                                @endif
-                                            @endforeach
-                                        </td>
+                                        <td style="border: 0 !important;text-align: left">{{ $item->amount_with_discount }} MMK</td>
                                     </tr>
                                     </tbody>
                                 </table>

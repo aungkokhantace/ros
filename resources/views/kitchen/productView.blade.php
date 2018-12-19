@@ -1,211 +1,240 @@
 @extends('Backend.layouts.kitchen.master')
 @section('title','Order View')
 @section('content')
+    <style>
+        body .tr_header {
+            font-weight: bolder;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        body tbody {
+            font-size: 14px;
+            font-weight: bolder;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+    </style>
     {{--title--}}
-       
-            <div id="body">
-                <div class="container product">
-                    <div class="row" id="autoDiv">
-                    @foreach($product as $orderKey=>$p)
-                        <div class="col-md-12 tbl-container">
-                            <div class="table-responsive">	
-                                <table class="table to-down">
-                                    <thead class="header">
-                                        <tr>
-                                            <td class="tdname">
-                                                <h4>{{$p['item_name']}}
-                                                    @if ($p['has_continent'] == 1)
-                                                    ( {{ $p['continent']}} )
+
+    <div id="body">
+        <div class="container product">
+            <div class="row" id="autoDiv">
+                @foreach($product as $orderKey=>$p)
+                    <div class="col-md-12 tbl-container">
+                        <div class="table-responsive">
+                            <table class="table to-down">
+                                <thead class="header">
+                                <tr>
+                                    <td class="tdname">
+                                        <h4>{{$p['item_name']}}
+                                            @if ($p['has_continent'] == 1 && $p['continent'] != null)
+                                                ( {{ $p['continent']}} )
+                                            @endif
+                                        </h4>
+                                    </td>
+                                    <td colspan="3" class="txt-l">
+                                        <img src="/uploads/{{$p['item_image']}}" alt="food">
+                                    </td>
+                                </tr>
+                                <tr class="tr_header">
+                                    <td>Table/Room Name/Take Away</td>
+                                    <td>Quantity</td>
+                                    <!-- <td>Exception</td> -->
+                                    <td>Remark</td>
+                                    <td>Add On</td>
+                                    <!-- <td>StartTime</td> -->
+                                    <td>Order Time</td>
+                                    <!--  <td>Cooking Duration</td> -->
+                                    <td>Order Status</td>
+                                    <td colspan="2">Action</td>
+                                </tr>
+                                </thead>
+                                <tbody class="body">
+                                @if(count($p['product_order']) != 0)
+                                    @foreach($p['product_order'] as $item)
+                                        @if($p['item_id'] == $item->id)
+                                            <tr class="tr-row" data-ordertime = "{{$item->order_time}}">
+                                                <td class="tr_right">
+                                                    @if($item->take_id == 1)
+                                                        <span style="font-weight: bolder !important;font-family: 'Source Sans Pro', sans-serif; font-size: 15px">
+                                                        Take Away
+                                                    </span>
                                                     @endif
-                                                </h4>
-                                            </td>
-                                            <td colspan="3" class="txt-l">
-                                                <img src="/uploads/{{$p['item_image']}}" alt="food">
-                                            </td>
-                                        </tr>
-                                        <tr class="tr_header">
-                                            <td>Table/Room Name/Take Away</td>
-                                            <td>Quantity</td>
-                                            <!-- <td>Exception</td> -->
-                                            <td>Remark</td>
-                                            <td>Add On</td>
-                                            <!-- <td>StartTime</td> -->
-                                            <td>Order Time</td>
-                                           <!--  <td>Cooking Duration</td> -->
-                                            <td>Order Status</td>
-                                            <td colspan="2">Action</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="body">
-                                    @if($p['product_order'] != null)
-                                        @foreach($p['product_order'] as $item)
-                                            @if($p['item_id'] == $item->id)
-                                        <tr class="tr-row" data-ordertime = "{{$item->order_time}}">
-                                            <td class="tr_right">
-                                                @if($item->take_id == 1)
-                                                    <h4>Take Away</h4>
-                                                @endif
-                                                @if(isset($tables) && count($tables) >0 )
-                                                    @foreach($tables as $table)
-                                                        @if($table->order_id == $item->order_id)
-                                                            <h4>{{$table->table_no}}</h4>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-
-                                                @if(isset($rooms) && count($rooms) > 0)
-                                                    @foreach($rooms as $room)
-                                                        @if($room->order_id == $item->order_id)
-                                                            <h4>{{ $room->room_name }}</h4>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </td>
-                                            <td class="tr_right">{{ $item->quantity }}</td>
-                                            <!-- <td class="tr_right">{{ $item->exception }}</td> -->
-                                            <td class="tr_right">{{ $item->remark }}</td>
-                                            <td class="tr_right">
-                                                @foreach($extra as $ex)
-                                                    @if($ex->order_detail_id == $item->order_detail_id)
-                                                        {{ $ex->food_name }},
-                                                    @endif
-                                                @endforeach
-                                            </td>
-                                            <td class="td-row tr_right" data-ordertime = "{{ $item->order_time}}">
-                                                {{ date('h:i:s A', strtotime($item->order_time)) }}
-                                            </td>
-                                            <td>
-                                                @if($item->status_id == '1')
-                                                Order
-                                                @endif
-                                                @if($item->status_id =='2')
-                                                Cooking
-                                                @endif
-
-                                            </td>
-
-                                            <td class="tr_right">
-                                                @if($item->status_id == '1')
-                                                    <input type="submit" class="start start_duration_item btn_k" id="{{$item->order_detail_id}}" name="start" value="Start Cooking">
-                                                @endif
-                                                @if($item->status_id =='2')
-                                                    <input type="submit" class="complete complete_duration_item btn_k" id="{{$item->order_detail_id}}" name="complete" value="Complete Cooking">
-                                                @endif
-                                            </td>
-
-                                            @if($item->status_id == '1')
-                                            <td class="tr_right">
-                                                <input type="button" class="cancel btn_k" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
-                                                <div class="modal fade" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content pop-up-content">
-                                                            <div class="modal-header pop-up-header">
-                                                                <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $item->order_detail_id . "-" . $item->setmenu_id . "form")) !!}
-
-                                                                @if(isset($item->setmenu_id) && $item->setmenu_id != 0)
-                                                                    <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
-                                                                @else
-                                                                    <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
-                                                                @endif
-                                                                <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
-
-                                                                <div class="row">
-                                                                    <label class="col-sm-3 control-label"><b>Enter Message</b></label>
-                                                                    <div class="col-sm-7">
-                                                                        <input type="text" name="message" class="form-control">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
-                                                                        <button type="button" name="submit" class="btn btn-primary pop-up-button cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">Save</button>
-                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                    </div>
-                                                                </div>
-                                                                {!! Form::close() !!}
-                                                            </div>
-                                                            <div class="modal-footer pop-up-footer">
-                                                                <span>AcePlus Solutions.,Co Ltd</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Modal -->
-                                            </td>
-                                            @endif 
-                                                                                
-                                        </tr>
-                                        @endif
-                                        @endforeach    
-                                    @endif
-
-
-                                    <!-- For Set Menu -->
-                                    @if($p['setmenu'] != null)
-                                        @foreach($p['setmenu'] as $setmenu)
-                                            @if($p['item_id'] == $setmenu->item_id)
-                                                <tr class="tr-row"  data-ordertime = "{{$setmenu->order_time}}">
-                                                    <td>
-                                                        @if($setmenu->take_id == 1)
-                                                            <h4>Take Away</h4>
-                                                        @endif
-                                                        @if(isset($tables) && count($tables) >0 )
-                                                            @foreach($tables as $table)
-                                                                @if($table->order_id == $setmenu->order_id)
-                                                                    <h4>{{$table->table_no}}</h4>
-                                                                @endif
-                                                            @endforeach
-                                                        @endif
-
-                                                        @if(isset($rooms) && count($rooms) > 0)
-                                                            @foreach($rooms as $room)
-                                                                @if($room->order_id == $setmenu->order_id)
-                                                                    <h4>{{ $room->room_name }}</h4>
-                                                                @endif
-                                                            @endforeach
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $setmenu->quantity }}</td>
-                                                    <!-- <td>{{ $setmenu->exception }}</td> -->
-                                                    <td>{{ $setmenu->remark }}</td>
-                                                    <td>
-                                                        @foreach($extra as $ex)
-                                                            @if($ex->order_detail_id == $setmenu->order_detail_id)
-                                                                {{ $ex->food_name }},
+                                                    @if(isset($tables) && count($tables) >0 )
+                                                        @foreach($tables as $table)
+                                                            @if($table->order_id == $item->order_id)
+                                                                <span style="font-weight: bolder !important;font-family: 'Source Sans Pro', sans-serif; font-size: 15px">
+                                                                    {{$table->table_no}}
+                                                                </span>
                                                             @endif
                                                         @endforeach
-                                                    </td>
-                                                    <td class="td-row" data-ordertime = "{{ $setmenu->order_time}}">
-                                                        {{ date('h:i:s A', strtotime($setmenu->order_time)) }}
-                                                    </td>
-                                                    <td>
-                                                    @if($setmenu->status_id == '1')
-                                                    Order
                                                     @endif
-                                                    @if($setmenu->status_id =='2')
-                                                    Cooking
+
+                                                    @if(isset($rooms) && count($rooms) > 0)
+                                                        @foreach($rooms as $room)
+                                                            @if($room->order_id == $item->order_id)
+                                                                {{ $room->room_name }}
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+                                                <td class="tr_right">{{ $item->quantity }}</td>
+                                            <!-- <td class="tr_right">{{ $item->exception }}</td> -->
+                                                <td class="tr_right">{{ $item->remark }}</td>
+                                                <td class="tr_right">
+                                                    @foreach($extra as $ex)
+                                                        @if($ex->order_detail_id == $item->order_detail_id)
+                                                            {{ $ex->food_name }},
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                                <td class="td-row tr_right" data-ordertime = "{{ $item->order_time}}">
+                                                    {{ date('h:i:s A', strtotime($item->order_time)) }}
+                                                </td>
+                                                <td>
+                                                    @if($item->status_id == '1')
+                                                        Order
+
+                                                    @elseif($item->status_id == 2)
+                                                        Cooking
+                                                    @else
+                                                        Ready
+                                                    @endif
+
+                                                </td>
+
+                                                <td class="tr_right" style="border-right: none !important;">
+                                                    @if($item->status_id == '1')
+                                                        <input type="submit" class="start start_duration_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="Start Cooking"><br>
+                                                    @endif
+                                                    @if($item->status_id =='2')
+                                                        <input type="submit" class="complete complete_duration_item btn_k btn btn-success" id="{{$item->order_detail_id}}" name="complete" value="Complete Cooking"><br>
 
                                                     @endif
+                                                    @if($item->status_id == '3')
+                                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Taken" /><br>
+                                                    @endif
+                                                </td>
+
+                                                @if($item->status_id == '1')
+                                                    <td class="tr_right" style="border-left: none !important;">
+                                                        <input type="button" class="cancel btn_k btn btn-danger" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
+                                                        <div class="modal fade" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content pop-up-content">
+                                                                    <div class="modal-header pop-up-header">
+                                                                        <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $item->order_detail_id . "-" . $item->setmenu_id . "form")) !!}
+
+                                                                        @if(isset($item->setmenu_id) && $item->setmenu_id != 0)
+                                                                            <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
+                                                                        @else
+                                                                            <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
+                                                                        @endif
+                                                                        <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
+
+                                                                        <div class="row">
+                                                                            <label class="col-sm-3 control-label"><b>Enter Message</b></label>
+                                                                            <div class="col-sm-7">
+                                                                                <input type="text" name="message" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
+                                                                                <button type="button" name="submit" class="btn btn-primary pop-up-button cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">Save</button>
+                                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                            </div>
+                                                                        </div>
+                                                                        {!! Form::close() !!}
+                                                                    </div>
+                                                                    <div class="modal-footer pop-up-footer">
+                                                                        <span>AcePlus Solutions.,Co Ltd</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Modal -->
                                                     </td>
-                                                    <!-- <td>
+                                                @elseif($item->status_id != '1')
+                                                    <td style="border-left: none !important;"></td>
+                                                @endif
+
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endif
+
+
+                                <!-- For Set Menu -->
+                                @if(count($p['setmenu']) != 0)
+                                    @foreach($p['setmenu'] as $setmenu)
+                                        @if($p['item_id'] == $setmenu->item_id)
+                                            <tr class="tr-row"  data-ordertime = "{{$setmenu->order_time}}">
+                                                <td>
+                                                    @if($setmenu->take_id == 1)
+                                                        <h4>Take Away</h4>
+                                                    @endif
+                                                    @if(isset($tables) && count($tables) >0 )
+                                                        @foreach($tables as $table)
+                                                            @if($table->order_id == $setmenu->order_id)
+                                                                <h4>{{$table->table_no}}</h4>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+
+                                                    @if(isset($rooms) && count($rooms) > 0)
+                                                        @foreach($rooms as $room)
+                                                            @if($room->order_id == $setmenu->order_id)
+                                                                <h4>{{ $room->room_name }}</h4>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+                                                <td>{{ $setmenu->quantity }}</td>
+                                            <!-- <td>{{ $setmenu->exception }}</td> -->
+                                                <td>{{ $setmenu->remark }}</td>
+                                                <td>
+                                                    @foreach($extra as $ex)
+                                                        @if($ex->order_detail_id == $setmenu->order_detail_id)
+                                                            {{ $ex->food_name }},
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                                <td class="td-row" data-ordertime = "{{ $setmenu->order_time}}">
+                                                    {{ date('h:i:s A', strtotime($setmenu->order_time)) }}
+                                                </td>
+                                                <td>
+                                                    @if($setmenu->status_id == '1')
+                                                        Order
+                                                    @endif
+                                                    @if($setmenu->status_id =='2')
+                                                        Cooking
+
+                                                    @endif
+                                                </td>
+                                            <!-- <td>
                                                         @if($setmenu->status_id =='2')
-                                                            <input type="hidden" name="order_duration" value="{{ $setmenu->order_duration }}"/>
+                                                <input type="hidden" name="order_duration" value="{{ $setmenu->order_duration }}"/>
                                                             <span class="cooking_duration"></span>
                                                             <input type="hidden" name="duration" class="txt_cooking_duration"/>
                                                         @endif
                                                     </td> -->
-                                                    <td>
-                                                        @if($setmenu->status_id == '1')
-                                                            <input type="submit" class="start start_duration_setmenu btn_k" id="{{$setmenu->id}}" name="start" value="Start Cooking">
-                                                        @endif
-                                                        @if($setmenu->status_id =='2')
-                                                            <input type="submit" class="complete complete_duration_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Complete Cooking">
-                                                        @endif
-                                                    </td>  
+                                                <td>
                                                     @if($setmenu->status_id == '1')
-                                                    <td>
+                                                        <input type="submit" class="start start_duration_setmenu btn_k" id="{{$setmenu->id}}" name="start" value="Start Cooking">
+                                                    @endif
+                                                    @if($setmenu->status_id =='2')
+                                                        <input type="submit" class="complete complete_duration_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Complete Cooking">
+
+                                                    @endif
+                                                    @if($setmenu->status_id =='3')
+                                                        <input type="submit" class="taken complete_taken_setmenu btn_k" id="{{$setmenu->id}}" name="complete" value="Taken">
+
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($setmenu->status_id == '1')
                                                         <input type="button" class="cancel btn_k" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
                                                         <div class="modal fade" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                             <div class="modal-dialog">
@@ -244,37 +273,37 @@
                                                             </div>
                                                         </div>
                                                         <!-- Modal -->
-                                                    </td>
-                                                    @endif                          
-                                                </tr>    
-                                            @endif
-                                        @endforeach    
-                                    @endif 
-                                    </tbody>
-                                </table>
-                            </div>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                </tbody>
+                            </table>
                         </div>
-                    @endforeach
                     </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
-</div>
+    </div>
+    </div>
+    </div>
 
     <script type="text/javascript">
         $(document).ready(function(){
             var myVar = setInterval(myTimer ,1000);
             function myTimer() {
                 $("table tr.tr-row").each(function () {
-                   var currentTime = moment();                    
+                    var currentTime = moment();
 
                     var orderTime = moment($(this).data("ordertime"), 'YYYY-MM-DD hh:mm:ss tt');
 
                     var diff = currentTime.diff(orderTime);
                     var d = moment.duration(diff);
                     var s = Math.floor(d.asHours()) + moment.utc(diff).format(":mm:ss");
-                   
+
                     $(this).find(".duration").text(s);
                     $(this).find(".txt_duration").val(s);
 
@@ -283,7 +312,7 @@
                     var result        = currentTime.diff(duration);
                     var time          = moment.duration(result);
                     var cooking_time  = Math.floor(d.asHours()) + moment.utc(result).format(":mm:ss");
-                    
+
                     $(this).find(".cooking_duration").text( cooking_time );
                     $(this).find(".txt_cooking_duration").val( cooking_time );
                 });
@@ -341,6 +370,7 @@
                                 type: 'GET',
                                 url: '/Kitchen/productView/CookedItem/' + itemID,
                                 success: function (Response) {
+
                                     var returnResp        = Response.message;
                                     if (returnResp == 'success') {
                                         //Socket Emit
@@ -355,6 +385,83 @@
                     });
                 });
             });
+
+
+            $('#autoDiv').on('click','.complete_taken_item', function (e) {
+                // window.location.href = "/Kitchen/productView/CookedItem/" + $(this).attr('id');
+                var itemID      = $(this).attr('id');
+
+                $(document).ready(function(){
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this item!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+                        if (isConfirm) {
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/productView/taken/' + itemID,
+                                success: function (Response) {
+
+                                    var returnResp        = Response.message;
+                                    console.log(returnResp);
+                                    if (returnResp == 'success') {
+                                        //Socket Emit
+                                        var socketKey        = "taken_by";
+                                        var socketValue      = "taken_by";
+                                        socketEmit(socketKey,socketValue);
+                                        swal.close();
+                                    }
+                                }
+                            });
+                        };
+                    });
+                });
+            });
+
+
+            $('#autoDiv').on('click','.complete_taken_setmenu', function (e) {
+                // window.location.href = "/Kitchen/productView/CookedItem/" + $(this).attr('id');
+                var itemID      = $(this).attr('id');
+
+                $(document).ready(function(){
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this item!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+                        if (isConfirm) {
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/productView/taken/setmenu' + itemID,
+                                success: function (Response) {
+
+                                    var returnResp        = Response.message;
+                                    console.log(returnResp);
+                                    if (returnResp == 'success') {
+                                        //Socket Emit
+                                        var socketKey        = "taken_by";
+                                        var socketValue      = "taken_by";
+                                        socketEmit(socketKey,socketValue);
+                                        swal.close();
+                                    }
+                                }
+                            });
+                        };
+                    });
+                });
+            });
+
             $('#autoDiv').on('click','.start_duration_setmenu',function(e){
                 var itemID      = $(this).attr('id');
                 swal({
@@ -443,7 +550,7 @@
                 });
 
             });
-           
+
         });
     </script>
 
@@ -467,6 +574,9 @@
             var cooking_done      = "cooking_done";
             socketOn(cooking_done,url,div);
 
+            var taken_by_waiter  = 'take';
+            socketOn(taken_by_waiter,url,div);
+
             //Table Transfer
             var tableChange      = "tableChange";
             socketOn(tableChange,url,div);
@@ -477,4 +587,3 @@
         });
     </script>
 @endsection
-
