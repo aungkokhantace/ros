@@ -30,12 +30,69 @@ interface ReportRepositoryInterface
     public function getMemberTypes();
     public function getMemberFavouriteFoodWithJoin($typeId);
 
+    //------------------ For Category Sale Report ----------------------//
 
-   
-    
-    
-   
-    
+    /**
+     * Get a list of category sale report.
+     *
+     * @return mixed
+     */
+    public function getCategorySaleReport();
+
+    /**
+     * Get a list of category sale report by params.
+     *
+     * @param $limit
+     * @param $offset
+     * @return mixed
+     */
+    public function getCategorySaleReportByParams($limit, $offset);
+
+    /**
+     * Get a category by parent_id
+     *
+     * @param $parent_id
+     * @return mixed
+     */
+    public function getParentCategory($parent_id);
+
+    /**
+     * Get a list of category sale report by date.
+     *
+     * @param $params
+     * @return mixed
+     */
+    public function getCategorySaleReportByDate($params);
+
+    /**
+     * Get a total count of category sale report.
+     *
+     * @return mixed
+     */
+    public function getCategorySaleReportCount();
+
+    //----------------------------- End --------------------------------//
+
+
+    //------------------ For Sale Report By Table ----------------------//
+
+    /**
+     * Get a list of Sale Report By Table.
+     *
+     * @return mixed
+     */
+    public function getSaleReportByTable();
+
+    /**
+     * Get a list of Sale Report By Table by Date.
+     *
+     * @param $date
+     * @return mixed
+     */
+    public function getSaleReportByTableByDate($date);
+
+    //----------------------------- End --------------------------------//
+
     // public function getBestSellingItem($value,$start_date,$end_date);
     // public function getBestSellingItemWithDate($value, $start_date, $end_date);
    

@@ -12,7 +12,7 @@ class CreateAddOnTables extends Migration
             $table->increments('id');
             $table->string('food_name');
             $table->integer('category_id');
-            $table->string('description');
+            $table->text('description');
             $table->string('image');
             $table->text('mobile_image');
             $table->integer('price');
