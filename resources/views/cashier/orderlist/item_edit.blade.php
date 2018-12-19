@@ -18,7 +18,7 @@
                             </select>                                     
                             <div class="modal-footer cashier-footer">
                                 <button type="button" data-dismiss="modal" class="ok-btn" onclick="continentOK({{$detail['item_id'] . ',"' . $detail['uniqid'] . '"' }})">OK</button>
-                                <button type="reset" class="cancel-btn" data-dismiss="modal">Cancel</button>
+                                <button type="reset" class="cancel-btn" data-dismiss="modal">Cancel1</button>
                             </div>
                         </form>
                     </div>
@@ -64,7 +64,7 @@
                             @endforeach                         
                             <div class="modal-footer cashier-footer">
                                 <button type="button" data-dismiss="modal" class="ok-btn" onclick="addOnOK({{$detail['item_id'] . ',"' . $detail['uniqid'] . '"' }})">OK</button>
-                                <button type="reset" data-dismiss="modal" class="cancel-btn">Cancel</button>
+                                <button type="reset" data-dismiss="modal" class="cancel-btn">Cancel2</button>
                             </div>
                         </form>
                     </div>
@@ -86,7 +86,9 @@
         </label>
     </td>
     <td>
-        <button class="cancel-btn" type="button" onclick="cancelBtn({{$detail['order_detail_id']}},'{{$detail['uniqid']}}')">Cancel</button>
+        @if($detail['detail_status'] ==1 )
+        <button class="cancel-btn" type="button" onclick="cancelBtn({{$detail['order_detail_id']}},'{{$detail['uniqid']}}')">Cancel3</button>
+        @endif
     </td>
 
     <input type="hidden" name="item[]" value="{{($detail['set_id'] == Null) ? $detail['item_id']: $detail['set_id'] }}" id="item-{{$detail['uniqid'] }}" />

@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\File;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use InterventionImage;
+use App\RMS\Utility;
+
 class DayStartController extends Controller
 {
     private $dayStartRepository;
@@ -95,6 +97,9 @@ class DayStartController extends Controller
     public function store(Request $request)
     {
         try {
+            $restaurant                 = Utility::getCurrentRestaurant();
+            $branch                     = Utility::getCurrentBranch();
+            // dd($request->all());
             $start_date                 = Input::get('start_date');
             $status                     = Input::get('status');
             $date                       = Carbon::parse($start_date)->format('Y-m-d');
@@ -107,6 +112,8 @@ class DayStartController extends Controller
             $paramObj->day_code         = $day_code;
             $paramObj->start_date       = $date;
             $paramObj->status           = $status;
+            $paramObj->restaurant_id    = $restaurant;
+            $paramObj->branch_id        = $branch;
             $result                     = $this->dayStartRepository->store($paramObj);
 
             if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
@@ -123,30 +130,41 @@ class DayStartController extends Controller
         }
 
     }
-
+    /* day start */
     public function orderShift($day_id,$id,$status) {
-        $flag               = 0;
-        $order_shift        = OrderShift::where('day_id','=',$day_id)
-                            ->where('shift_id','=',$id)
-                            ->whereNull('deleted_at')
-                            ->first();
+        // dd($id,$day_id,$status);
+        $restaurant                 = Utility::getCurrentRestaurant();
+        $branch                     = Utility::getCurrentBranch();
+
+        $flag                       = 0;
+        $order_shift                = OrderShift::where('day_id','=',$day_id)
+                                    ->where('shift_id','=',$id)
+                                    ->whereNull('deleted_at')
+                                    ->where('restaurant_id',$restaurant)
+                                    ->where('branch_id',$branch)
+                                    ->first();
+        // dd('order shift',$order_shift);
+
         if (count($order_shift) > 0) {
             //Check The last shift or not
             $flag           = 0;
             $lastShiftObj   = Shift::select('is_last_shift')->where('id','=',$order_shift->shift_id)->first();
+            // dd('shit',$lastShiftObj,$id);
             if ($lastShiftObj->is_last_shift == 1 AND $status == StatusConstance::ORDER_SHIFT_END_STATUS) {
+                // dd($status);
                 //Check all order paid or not
                 $order_status       = StatusConstance::ORDER_CREATE_STATUS;
                 $orders             = Order::select('id','all_total_amount','order_time','status')
                                       ->where('status','=',$order_status)
                                       ->where('day_id','=',$day_id)
                                       ->get();
+                // dd($orders,$order_status);
                 if (count($orders) > 0) {
                     $error_code         = 5;
                     return redirect()->back()->with('error_code',$error_code)->with('orders',$orders);
                 } else {
                     $order_shift->status        = $status;
-                    $result                 = $this->dayStartRepository->update($order_shift);
+                    $result                     = $this->dayStartRepository->update($order_shift);
                     if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                         return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Shift updated ...'));
                     }
@@ -154,9 +172,11 @@ class DayStartController extends Controller
                         return redirect()->back()->withMessage(FormatGenerator::message('Fail', 'Shift did not updated ...'));
                     } 
                 }
-            } else {
+            } 
+            else {
                 $order_shift->status        = $status;
-                $result                 = $this->dayStartRepository->update($order_shift);
+                // dd($status);
+                $result                     = $this->dayStartRepository->update($order_shift);
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                     return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Shift created ...'));
                 }
@@ -164,11 +184,15 @@ class DayStartController extends Controller
                     return redirect()->back()->withMessage(FormatGenerator::message('Fail', 'Shift did not created ...'));
                 }
             }
-        } else {
+        } 
+        /*start there  is no order_shit when day start */
+        else {
             $paramObj               = new OrderShift();
             $paramObj->day_id       = $day_id;
             $paramObj->shift_id     = $id;
             $paramObj->status       = $status;
+            $paramObj->branch_id    = $branch;
+            $paramObj->restaurant_id= $restaurant;
             $result                 = $this->dayStartRepository->store($paramObj);
             if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                 return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Shift created ...'));
@@ -178,14 +202,26 @@ class DayStartController extends Controller
                 return redirect()->back()->with('error_code',$error_code)->with('orders',$orders);
             }
         }
+        /*end there  is no order_shit when day start */
     }
 
     public function dayend($id) {
+        $restaurant         = Utility::getCurrentRestaurant();
+        $branch             = Utility::getCurrentBranch();
+
         $status             = StatusConstance::DAY_END_STATUS;
+        // dd($status);
         //Check All payment have done
         $shift_status       = StatusConstance::SHIFT_AVAILABLE_STATUS;
-        $shift_ordering     = Shift::where('status',$shift_status)->whereNull('deleted_at')->get()->count();
-        $order_shift        = OrderShift::where('day_id','=',$id)->where('status',2)->whereNull('deleted_at')->get()->count();
+        // dd($shift_status);
+        $shift_ordering     = Shift::where('status',$shift_status)->whereNull('deleted_at')->where('restaurant_id',$restaurant)->where('branch_id',$branch)->get()->count();
+        $order_shift        = OrderShift::where('day_id','=',$id)
+                            ->where('status',2)
+                            ->whereNull('deleted_at')
+                            ->where('restaurant_id',$restaurant)
+                            ->where('branch_id',$branch)->get()->count();
+
+        // dd($shift_ordering,$order_shift);
 
         if ($shift_ordering == $order_shift) {
             $paramObj           = DayStart::find($id);

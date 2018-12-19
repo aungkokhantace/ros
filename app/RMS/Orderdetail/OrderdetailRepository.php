@@ -37,19 +37,30 @@ class OrderdetailRepository implements OrderdetailRepositoryInterface
     }
 
     public function getCategoriesByParent($parent_id) {
+        $restaurant         = Utility::getCurrentRestaurant();
+        $branch             = Utility::getCurrentBranch();
+
         $status             = StatusConstance::CATEGORY_AVAILABLE_STATUS;
+
         $categories         = Category::where('parent_id',$parent_id)
                               ->where('status',$status)
                               ->where('deleted_at',NULL)
+                              ->where('restaurant_id',$restaurant)
+                              ->where('branch_id',$branch)
                               ->get();
         return $categories;
     }
 
     public function getSetMenu() {
+      $restaurant   = Utility::getCurrentRestaurant();
+      $branch       = Utility::getCurrentBranch();
+
       $status       = StatusConstance::SETMENU_AVAILABLE_STATUS;
       $setmenu      = SetMenu::select('id','set_menus_name','image')
                       ->where('status',$status)
                       ->whereNull('deleted_at')
+                      ->where('restaurant_id',$restaurant)
+                      ->where('branch_id',$branch)
                       ->get();
       return $setmenu;
     }
@@ -145,7 +156,8 @@ class OrderdetailRepository implements OrderdetailRepositoryInterface
         ->select('items.name as item_name','items.has_continent','items.continent_id','items.id as item_id','items.category_id','set_menu.set_menus_name as set_name','set_menu.id as set_id','continent.name as continent_name','order_details.quantity','order_details.take_item',
                 'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id',
                 'users.user_name','order.id',
-            'order_details.amount_with_discount')->where('order_id','=',$id)
+            'order_details.amount_with_discount','order_details.status_id as detail_status')
+        ->where('order_id','=',$id)
         ->whereNotIn('status_id',[$order_kitchen_cancel_status,$order_customer_cancel_status])->get()->toArray();
         return $order_details;
         

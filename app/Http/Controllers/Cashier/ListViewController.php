@@ -35,12 +35,19 @@ use Illuminate\Support\Facades\Input;
 
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Utility;
+use App\RMS\Table\TableRepository;
+use App\RMS\Room\RoomRepository;
+
 //use App\Session;
 
 class ListViewController extends Controller
 {
     public function __construct(OrderdetailRepositoryInterface $detailRepository){
         $this->detailRepository = $detailRepository;
+        $this->TableRepo        = new TableRepository();
+        $this->RoomRepo         = new RoomRepository();
+
 
     }
 
@@ -78,14 +85,21 @@ class ListViewController extends Controller
     }
 
     public function tables(){
+        $restaurant         = Utility::getCurrentRestaurant();
+        $branch             = Utility::getCurrentBranch();
+
         $take_id            = 0;//1 For Take away 0 for tables and room
         $status             = StatusConstance::TABLE_AVAILABLE_STATUS;
         $order_status       = StatusConstance::ORDER_CREATE_STATUS;
         $unaviable_status   = StatusConstance::TABLE_UNAVAILABLE_STATUS;
+
         $tables             = Table::select('id','table_no')
                               ->where('status',$status)
                               ->whereNull('deleted_at')
+                              ->where('restaurant_id',$restaurant)
+                              ->where('branch_id',$branch)
                               ->get();
+
         $transfer_from      = Table::leftjoin('order_tables','tables.id','=','order_tables.table_id')
                               ->leftjoin('order','order_tables.order_id','=','order.id')
                               ->select('tables.id','tables.table_no','order_tables.order_id')
@@ -94,6 +108,8 @@ class ListViewController extends Controller
                               ->whereNull('tables.deleted_at')
                               ->whereNull('order_tables.deleted_at')
                               ->whereNull('order.deleted_at')
+                              ->where('order_tables.restaurant_id',$restaurant)
+                              ->where('order_tables.branch_id',$branch)
                               ->get();
                               // dd($transfer_from);
         return view('cashier.orderlist.tables')
@@ -103,11 +119,15 @@ class ListViewController extends Controller
     }
 
     public function rooms() {
-        $take_id        = 0;
+        $restaurant         = Utility::getCurrentRestaurant();
+        $branch             = Utility::getCurrentBranch();
+        $take_id            = 0;
         $status             = StatusConstance::ROOM_AVAILABLE_STATUS;
         $rooms              = Room::select('id','room_name')
                               ->where('status',$status)
                               ->whereNull('deleted_at')
+                              ->where('restaurant_id',$restaurant)
+                              ->where('branch_id',$branch)
                               ->get();
         return view('cashier.orderlist.rooms')
                 ->with('rooms',$rooms)
@@ -116,14 +136,20 @@ class ListViewController extends Controller
     }
 
     public function orderTable($id) {
+        $restaurant     = Utility::getCurrentRestaurant();
+        $branch         = Utility::getCurrentBranch();
+
         $day_status     = StatusConstance::DAY_STARTING_STATUS;
         $shift_status   = StatusConstance::ORDER_SHIFT_START_STATUS;
-        $dayStart = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
+        $dayStart       = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
                     ->select('order_day.id as day_id','order_shift.shift_id')
                     ->where('order_day.status','=',$day_status)
                     ->where('order_shift.status','=',$shift_status)
+                    ->where('order_shift.restaurant_id',$restaurant)
+                    ->where('order_shift.branch_id',$branch)
                     ->first();
-        $config             = Config::select('tax','service','room_charge')->first();
+        // dd($dayStart);
+        $config             = Config::select('tax','service','room_charge')->where('restaurant_id',$restaurant)->first();
         $take_id            = 0;//1 For 
         $tables             = $id;
         $rooms              = '';
@@ -210,7 +236,7 @@ class ListViewController extends Controller
         return \Response::json($return_array);
     }
 
-    public function getCategories($parent) {
+    public function getCategories($parent) {    
         $itemRepo           = array();
         $itemArr            = array();
         $categories         = $this->detailRepository->getCategoriesByParent($parent);
@@ -228,6 +254,7 @@ class ListViewController extends Controller
                 }
             }
         }
+        // dd('item',$itemArr);
         return view('cashier.orderlist.category')
                 ->with('parent',$parent)
                 ->with('itemArr',$itemArr)
@@ -240,6 +267,9 @@ class ListViewController extends Controller
                 ->with('setmenu',$setmenu);
     }
     public function item($id,$take) {
+        $restaurant = Utility::getCurrentRestaurant();
+        $branch     = Utility::getCurrentBranch();
+        // dd($id,$take);
         $uniqid     = uniqid();
         $today      = Carbon::now();
         $cur_date   = Carbon::parse($today)->format('Y-m-d');
@@ -249,18 +279,24 @@ class ListViewController extends Controller
                       ->where('status',$status)
                       ->whereNull('deleted_at')
                       ->first();
+        // dd($itemRepo);
         //Set Default Price with discount
         $itemRepo->discount_type       = '';
         $itemRepo->discount            = 0;
         $itemRepo->price_with_discount = 0;
         $itemRepo->uniqid              = $uniqid;
         //Check Discount
+        // dd('here',$itemRepo);
+        // dd($id);
         $discount       = DiscountModel::select('id','amount','type')
                           ->where('item_id',$id)
                           ->whereDate('start_date','<=',$cur_date)
                           ->whereDate('end_date','>=',$cur_date)
                           ->whereNull('deleted_at')
+                          ->where('restaurant_id',$restaurant)
+                          ->where('branch_id',$branch)
                           ->first();
+        // dd($discount,$itemRepo);
         //if discount has
         if(count($discount) > 0) {
             $priecOrigin        = $itemRepo->price;
@@ -280,25 +316,32 @@ class ListViewController extends Controller
         }
         //Check Add on
         $categories         = $this->getCategoriesListArray($itemRepo->category_id);
+        // dd('cat',$categories);
         $status_addon       = StatusConstance::ADDON_AVAILABLE_STATUS;
+        // dd($status_addon);
         $addOn              = Addon::select('id','food_name','price')
                               ->whereIn('category_id',$categories)
                               ->where('status',$status_addon)
                               ->whereNull('deleted_at')
                               ->get()->toArray();
+        // dd($addOn);
         if (count($addOn) > 0) {
             $itemRepo->add_on   = $addOn;
         }
         //Check Continent
+        // dd($itemRepo);
         if ($itemRepo->has_continent == 1) {
             $continents     = Item::leftjoin('continent','items.continent_id','=','continent.id')
                               ->select('items.price as iprice','continent.id as cid','continent.name as cname')
                               ->where('items.status',$status)
                               ->where('items.group_id',$itemRepo->group_id)
                               ->whereNull('items.deleted_at')
+                              ->where('continent.restaurant_id',$restaurant)
                               ->get()->toArray();
+            // dd($continents);
             $itemRepo->continent = $continents;
         }
+        // dd($itemRepo->addon);
         return view('cashier.orderlist.item')->with('itemRepo',$itemRepo)->with('take',$take);
     }
 
@@ -373,7 +416,8 @@ class ListViewController extends Controller
 
     public function store() {
         // dd(Input::all());
-
+        $restaurant     = Utility::getCurrentRestaurant();
+        $branch         = Utility::getCurrentBranch();
         //Create Order ID
         $order_id       = $this->generateOrderID();
         $user_id        = Auth::guard('Cashier')->id();
@@ -396,8 +440,9 @@ class ListViewController extends Controller
         $day_id         = Input::get('day_id');
         $shift_id       = Input::get('shift_id');
         $uniqid         = Input::get('uniqid');
-
+        // dd($quantity);
         $row_count      = count($quantity);
+        // dd($row_count);
         $today          = Carbon::now();
         $cur_date       = Carbon::parse($today)->format('Y-m-d H:i:s');
         $status         = StatusConstance::ORDER_CREATE_STATUS;
@@ -407,6 +452,7 @@ class ListViewController extends Controller
         $price_array    = array();
 
         //Check If Empty Item
+        // dd(count($item),'item');
         if (count($item) <= 0) {
             alert()->warning('Please Choose item!')->persistent('Close');
 //            return back();
@@ -414,12 +460,14 @@ class ListViewController extends Controller
         } else {
             for($count = 0; $count < $row_count; $count++) {
                 $qty                      = (int)($quantity[$count]);
+                // dd($qty,$quantity);
                 $extra                    = (int)($extra_prices[$count]);
                 $discount_amount          = (int)($discount[$count]);
 
                 $extra_array[$count]      = $qty * $extra;
                 $discount_array[$count]   = $qty * $discount_amount;
             }
+            // dd($discount_array,$extra_array);
             //Total Extra Price
             $total_extra_price          = array_sum($extra_array);
             $total_discount_price       = array_sum($discount_array);
@@ -444,6 +492,8 @@ class ListViewController extends Controller
                 $paramObj->status                  = $status;
                 $paramObj->created_by              = $user_id;
                 $paramObj->created_at              = $cur_date;
+                $paramObj->restaurant_id           = $restaurant;
+                $paramObj->branch_id               = $branch;
                 $paramObj->save();
 
                 //Insert Into Order Detail
@@ -473,16 +523,21 @@ class ListViewController extends Controller
                     $detailObj->status_id       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
                     $detailObj->created_by      = $user_id;
                     $detailObj->created_at      = $cur_date;
+                    $detailObj->restaurant_id   = $restaurant;
+                    $detailObj->branch_id       = $branch;
                     $detailObj->save();
 
                     //Get Insert Order Detail ID
                     $detailID                   = $detailObj->id;
                     // $this->detailRepository->store($detailObj);
                     $addon_detail               = $addon[$itemCount];
+                    // dd($addon_detail);
                     $addon_array                = explode(",", $addon_detail);
+                    // dd($addon_array);
                     foreach($addon_array as $add) {
                         if ($add !== '') {
                             $itemQty            = $quantity[$itemCount];
+                            // dd($add);
                             $addonPrice         = $this->getAddonPriceByID($add);
 
                             $extraObj                   = new OrderExtra();
@@ -492,10 +547,13 @@ class ListViewController extends Controller
                             $extraObj->amount           = $addonPrice;
                             $extraObj->created_by       = $user_id;
                             $extraObj->created_at       = $cur_date;
+                            $extraObj->restaurant_id    = $restaurant;
+                            $extraObj->branch_id        = $branch;
                             $extraObj->save();
                         }
                     }
                     //Extract Setmenu to order_setmenu_detail
+                    // dd('a',$itemID);
                     if ($itemID == 0) {
                         $set_items          = $this->detailRepository->getSetItemBySetID($setID);
                         foreach ($set_items as $key => $set) {
@@ -509,10 +567,13 @@ class ListViewController extends Controller
                             $orderSetObj->order_time        = $cur_date;
                             $orderSetObj->created_at        = $cur_date;
                             $orderSetObj->created_by        = $user_id;
+                            $orderSetObj->restaurant_id     = $restaurant;
+                            $orderSetObj->branch_id         = $branch;
                             $orderSetObj->save();
                         }
                     }
                 }
+                // dd("aaa");
 
                 //If table exit
                 if ($tables !== '') {
@@ -525,6 +586,8 @@ class ListViewController extends Controller
                         $tableObj->order_id     = $order_id;
                         $tableObj->table_id     = $t;
                         $tableObj->created_at   = $cur_date;
+                        $tableObj->restaurant_id= $restaurant;
+                        $tableObj->branch_id    = $branch;
                         $tableObj->save();
                         //Make Unaviable table
                         $table_status           = StatusConstance::TABLE_UNAVAILABLE_STATUS;
@@ -543,6 +606,8 @@ class ListViewController extends Controller
                     $roomObj->order_id     = $order_id;
                     $roomObj->room_id      = $rooms;
                     $roomObj->created_at   = $cur_date;
+                    $roomObj->restaurant_id= $restaurant;
+                    $roomObj->branch_id    = $branch;
                     $roomObj->save();
                     //Make Unaviable room
                     $room_status            = StatusConstance::ROOM_UNAVAILABLE_STATUS;
@@ -564,10 +629,12 @@ class ListViewController extends Controller
     }
 
     public function edit($id) {
+        // dd($id);
         $status_addon      = StatusConstance::ADDON_AVAILABLE_STATUS;
         $status_extra      = StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
         $order             = $this->detailRepository->getorder($id);
         $order_details     = $this->detailRepository->getdetail($id);
+        // dd($order_details);
         $od                = array();
         $addon             = array();
         $category_addon    = array();
@@ -628,7 +695,7 @@ class ListViewController extends Controller
         $tables         = $this->detailRepository->orderTable($id);
         $rooms          = $this->detailRepository->orderRoom($id);
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-        // dd($order);
+        //dd('aa',$order);
         return view('cashier.orderlist.order')
                     ->with('config',$config)
                     ->with('order',$order)
@@ -763,15 +830,29 @@ class ListViewController extends Controller
         $extra_status   = StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
         $order_kitchen_cancel_status    = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
         $order_customer_cancel_status   = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
-
+        $count1 = 0;
+        // dd($quantity,"quantity");
+        // dd($row_count,$discount_array[$count1] ,$discount[$count1]);
         for($count = 0; $count < $row_count; $count++) {
+            // dd($quantity[$count]);
             $qty                      = $quantity[$count];
+            // dd($qty);
             $extra                    = $extra_prices[$count];
             $discount_amount          = $discount[$count];
-
+            // var_dump($discount_amount);
+            if($discount_amount == ''){
+                $discount_amount=0;
+            }
+            // var_dump($discount_amount);
+            // dd($extra,$qty);
+            // dd($discount_array);
+            // dd($discount_amount,$qty);
             $extra_array[$count]      = $qty * $extra;
-            $discount_array[$count]   = $qty * $discount_amount;
+            $discount_array[$count]   = $qty * $discount_amount;//error
+            // $aa  = $qty * $discount_amount;
+            // dd($aa);
         }
+        // dd($discount_array);
         //Total Extra Price
         $total_extra_price          = array_sum($extra_array);
         $total_discount_price       = array_sum($discount_array);
