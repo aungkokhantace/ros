@@ -13,7 +13,7 @@ class CreateItemsTable extends Migration
             $table->string('name');
             $table->string('image');
             $table->text('mobile_image');
-            $table->string('description');
+            $table->text('description');
             $table->string('price');
             $table->tinyInteger('status');
             $table->integer('category_id');

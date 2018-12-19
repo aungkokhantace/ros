@@ -11,7 +11,7 @@ class CreateMemberTypeTables extends Migration
         Schema::create('member_type', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type');
-            $table->string('description');
+            $table->text('description');
             $table->double('discount_amount');
             $table->integer('life_time');
             $table->integer('created_by');
