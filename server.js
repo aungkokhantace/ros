@@ -65,8 +65,8 @@ io.on('connection', function (socket) {
 
   //Socket Fire From Order Create
   socket.on('order', function( data ) {
-    console.log('Success Order Create');
-    
+    console.log('Success Order Created');
+    playAudio();
     io.sockets.emit( 'invoice_update','invoice_update');
   });
 
@@ -96,27 +96,24 @@ io.on('connection', function (socket) {
   //Socket Fire From Cancel Known
   socket.on('cancel_known_by', function( data ) {
     console.log('Cancel Known By Waiter');
-
     io.sockets.emit( 'cancel_known','cancel_known');
   });
 
   //Socket Fire From Order Payment Button Click
   socket.on('order_payment_done', function( data ) {
     console.log('Order Payment Button Done');
-
     io.sockets.emit( 'payment_done','payment_done');
   });
 
   //Socket Fire From Order Edit
   socket.on('order_edit', function( data ) {
-    console.log(data);
-
+    console.log('Order Edit');
     io.sockets.emit( 'edit',data);
   });
 });
 
 
 
-// function playAudio(){
-//    player.play('http://localhost:8006/noti/notification.mp3');
-// }
+function playAudio(){
+   player.play('http://localhost:8006/noti/notification.mp3');
+}
