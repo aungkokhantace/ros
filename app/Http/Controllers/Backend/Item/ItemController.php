@@ -176,20 +176,22 @@ class ItemController extends Controller
             foreach ($remark_item as $key => $value) {
                 array_push($remark_arr,$value->remark_id);
         }
-
+        $item_details_count = count($continent_items);
+        // return compact('categories','record','r_cat','parent_id_arr','continent_arr','continent_items','remarks','remark_arr');
         return view('Backend.item.item', ['categories' => $result])->with('record', $record)
                 ->with('r_cat', $r_cat)
                 ->with('parent_id_arr',$parent_id_arr)
                 ->with('continent_arr',$continent_arr)
                 ->with('continent_items',$continent_items)
                 ->with('remarks',$remark)
+                ->with('item_count',$item_details_count)
                 ->with('remark_arr',$remark_arr);
     }
 
     //ItemEditRequest
     public function update(Request $request)
     {
-
+        // return $request->all();
         $category_id    = "";
         // $request->validate();
         $id             = $request->get('id');
@@ -283,6 +285,7 @@ class ItemController extends Controller
                     }
                     $result                     = $this->ItemRepository->updateContinent($paramObj,$oldprice);
 
+
                 }
 /* ------------------start contient is > itemid -------------------------------------*/
                 else {
@@ -312,6 +315,15 @@ class ItemController extends Controller
                 }
 /* ------------------end  contient is > itemid -------------------------------------*/
             }
+/*----------------- start Normalize Item -----------------------------------------------------------*/
+                $specificItem = Item::select(DB::raw('name, max(updated_at) as date'))->groupBy('name')->where('name',$name)->first()->date;
+                Item::where('name',$name)->each(function ($x)use($specificItem)
+        {
+            if ($x->updated_at != $specificItem) {
+                $x->NormalizeItem();
+            }
+        });
+
 /*----------------- start item remark -----------------------------------------------------------*/
 
                     foreach ($itemID as $key => $value) {

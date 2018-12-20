@@ -52,5 +52,14 @@ class Item extends Model
     {
         return (boolean)$this->is_ready_food;
     }
+
+    public function createdAt()
+    {
+        return $this->created_at;
+    }
+    public function NormalizeItem()
+    {
+            $this->delete();
+    }
 }
 

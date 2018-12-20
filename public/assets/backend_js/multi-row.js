@@ -38,10 +38,10 @@ var  productDetailRunningNo = 0;
 // });
 
 function addContinent(){
-    // var productDetailRunningNo = 0; 
+    // let productDetailCount = 0; 
     var count       = $("#product_detail_count").val() ;   
     var counter     = 2;
-        if(count < counter){
+        if(count <= counter){
         console.log(count + 'counter is  ' + counter);
          $("#product_detail_count").val(++count);
             productDetailCount++;
@@ -59,8 +59,7 @@ function addContinent(){
 
 
 function removeContinent(x) {
-    if(productDetailCount==0){
-
+    if(productDetailCount==1){
         alert("There must be at least one item!");
         return false;
     }

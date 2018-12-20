@@ -94,7 +94,8 @@
         </div>
 
         @if(isset($record))
-            @include('Backend.item.continent_edit')
+            @include('Backend.item._multi_condiment_edit')   
+            {{--@include('Backend.item.continent_edit')--}}     
         @else
             @include('Backend.item.continent')
         @endif
