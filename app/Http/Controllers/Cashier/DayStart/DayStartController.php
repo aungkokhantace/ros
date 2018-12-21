@@ -125,6 +125,7 @@ class DayStartController extends Controller
     }
 
     public function orderShift($day_id,$id,$status) {
+
         $flag               = 0;
         $order_shift        = OrderShift::where('day_id','=',$day_id)
                             ->where('shift_id','=',$id)

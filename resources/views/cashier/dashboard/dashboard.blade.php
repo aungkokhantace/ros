@@ -31,6 +31,9 @@
         @endforeach
 
        <button type="button" class="btn btn-outline-dark btn-lg mt-2 room_btn">Rooms</button>
+
+       <a href="/Cashier/takeaway/invoice" class="btn btn-outline-info btn-lg mt-2 ml-2">Take Away</a>
+
         <div class="row">
             <div class="col-md-6">
                 <p class="mt-3 float-right"><i class="fa fa-square"  style="color:#8EC449; font-size:30px; aria-hidden="true"></i>
@@ -211,6 +214,7 @@
 
         $(document).ready(function(){
             $('.start').click(function(){
+
                 id          = $(this).attr('id');
                 id_arr      = id.split('/');
                 start_date  = id_arr[0];
@@ -243,7 +247,6 @@
                             dataType: "json",
                             cache   : false,
                             success: function(data) {
-                                console.log(data);
                                 var success     = data.success;
                                 var error       = data.error;
                                 if (success == '1') {
