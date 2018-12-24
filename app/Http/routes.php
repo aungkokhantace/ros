@@ -33,6 +33,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('/Rooms','Cashier\DashboardController@getRoom'); // ajax route
                 Route::get('/table/{table_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByTableId');
                 Route::get('/room/{room_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByRoomId');
+                Route::get('/takeaway/invoice','Cashier\Invoice\InvoiceController@invoiceListByTakeAway');
             });
             //End User
 
@@ -110,6 +111,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('invoice/detail/{id}','Cashier\Invoice\InvoiceController@invoicedetail');
                 Route::get('invoice/detail/print/{id}','Cashier\Invoice\InvoiceController@invoicePrint');
                 Route::get('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaid');
+                Route::post('invoice/paid/{id}','Cashier\Invoice\InvoiceController@invoicePaidUpdate');
                 Route::get('invoice/paid/ajaxPaymentRequest/{id}','Cashier\Invoice\InvoiceController@ajaxPaymentRequest');
                 Route::post('invoice/add_paid','Cashier\Invoice\InvoiceController@invoiceAddpaid');
                 Route::post('invoice/paid/{id}/addDiscount','Cashier\Invoice\InvoiceController@addDiscount');

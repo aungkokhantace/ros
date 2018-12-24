@@ -1,4 +1,4 @@
-<!-- Modal For Printer -->
+<!-- Modal For Print    r -->
 <div class="modal image-slide-show-modal" tabindex="-1" role="dialog" aria-labelledby="" id="{{$order->order_id}}-print">
     <div class="modal-dialog" role="document" style="width:360px;">
         <div class="modal-content" style="background:none;box-shadow:none;">
@@ -10,6 +10,10 @@
             <div class="modal-body" id="order-id" style="width: 340px;">
                 <div id="{{$order->order_id}}-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
                     <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;background:none;">
+                        <col width="80">
+                        <col width="40">
+                        <col width="40">
+                        <col width="50">
                         <thead>
                             <tr>
                                 <td colspan="4" style="text-align:center;font-size:13px;line-height:25px;padding:5px 7px;">
@@ -35,89 +39,104 @@
                                     @endif
                                 </td>
                             </tr>
-
                             <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
-                                <td width="10%" style="height:25px;padding:5px 7px;">Qty</th>
-                                <td width="50%" style="height:25px;padding:5px 7px;">Product</th>
-                                <td width="20%" style="text-align:right;height:25px;padding:5px 7px;">Price</th>
-                                <td width="20%" style="text-align:right;height:25px;padding:5px 7px;">Amount</th>
+                                <td>Item</th>
+                                <td>Price</th>
+                                <td>Qty</th>
+                                <td align="right">Amount</th>
                             </tr>
                         </thead>
                         
                         <tbody style="font-size:13px;line-height:25px;">
-                            @foreach($order_detail as $detail)
-                            <tr style="vertical-align: text-top;">
-                                <td style="height:25px;padding:5px 7px;"> {{$detail->quantity }}</td>
-                                <td style="height:25px;font-family:zawgyi-one;padding:5px 7px;">
-                                    @if(isset($detail->item_name))
-                                        {{$detail->item_name}}
-                                         @if ($detail->has_continent)
-                                            @foreach($continent as $con)
-                                                @if ($detail->continent_id == $con->id)
-                                                    ({{ $con->name }})
-                                                @endif
-                                            @endforeach
-                                        @endif
-                                    @else
-                                        {{ $detail->set_name }}
-                                    @endif
-                                </td>
-                                <td style="text-align:right;height:25px;padding:5px 7px;">{{ number_format($detail->amount)  }}</td>
-                                <td style="height:25px;text-align:right;padding:5px 7px;">{{number_format($detail->quantity * $detail->amount)}}</td>
-                            </tr>
-                            <!-- Add on -->
-                                 <?php
-                                $default_extra = '0.0';
-                                ?>
-                                @foreach($amount as $am)
-                                    @if($detail->order_detail_id == $am['order_detail_id'])
-                                    <tr style="font-size:13px;line-height:15px;">
-                                        <td style="height:15px;padding:5px 7px;">{{ $am['quantity']}}</td>
-                                        <td style="padding:5px 7px;">{{ $am['food_name']}}</td>
-                                        <td style="text-align:right;height:15px;padding:5px 7px;">{{ $am['amount']}}</td>
-                                        <td style="text-align:right;height:15px;padding:5px 7px;">{{ $am['quantity'] * $am['amount'] }}</td>
-                                    </tr>
-                                    @endif
-                                @endforeach 
+                            @php $v = '' @endphp
+                            @foreach($details as $detail)
+                                <tr>
+    
+                                        @php 
+                                        $qty = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
+                                                                            ->where('item_id',$detail['item_id'])
+                                                                            ->count() ; 
+
+                                        $qty2 = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
+                                        ->where('item_id',$detail['item_id'])
+                                        ->sum('quantity');                         
+
+                                        @endphp
+                                        @if($qty > 1)
+                                            @if($v != $detail['item_id'])
+                                            @php $v = $detail['item_id'] @endphp
+                                                <td class="no-border" style="">{{ $detail['item_name'] }}</td>
+                                                <td class="no-border">{{ $detail['amount'] }}</td>
+                                                <td class="no-border">{{ $qty2 }}</td>
+                                                <td class="no-border" align="right">{{ $detail['amount']* $qty2 }} </td>
+                                            @endif
+                                        @else
+    
+                                            <td class="no-border">{{ $detail['item_name'] }}</td>
+                                            <td class="no-border">{{ $detail['amount'] }}</td>
+                                            <td class="no-border">{{ $qty2 }}</td>
+                                            <td class="no-border" align="right">{{ $detail['amount']* $qty2 }} </td>
+                                        @endif                                                                                            
+                                </tr>
                             @endforeach
-                            <tr style="border-bottom:1px dashed black;">
-                                <td colspan="4" style="height:25px;"></td>
+
+                            @foreach($addon as $add)
+                                       
+                            <tr>
+                                <td class="no-border">{{ $add['food_name']}} (addon)</td>
+                                <td class="no-border">{{ $add['amount'] }}</td>
+                                <td class="no-border">{{ $add['quantity'] }} </td>
+                                <td class="no-border" align="right">{{ $add['amount'] * $add['quantity'] }}</td>
                             </tr>
 
-                            <tr>
-                                <td colspan="3" style="height:25px;padding:5px 7px;">Total: (Exclusive Tax)</td>
-                                <td style="text-align:right;height:25px;padding:5px 7px;">{{ number_format($order->total_price) }}</td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="3" style="height:25px;padding:5px 7px;">Service Tax ({{ $config->service}} %)</td>
-                                <td style="text-align:right;height:25px;padding:5px 7px;">{{ $order->service_amount }}</td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="3" style="height:25px;padding:5px 7px;">GST ({{$config->tax}} %)</td>
-                                <td style="text-align:right;height:25px;padding:5px 7px;">{{ $order->tax_amount }}</td>
-                            </tr>
+                            @endforeach
 
                             <tr style="border-bottom:1px dashed black;">
+                                <td colspan="4" style="height:5px;"></td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Net Amount</td>
+                                <td align="right">{{ number_format($order->total_price) }}</td>
+                            </tr>
+
+                            <tr>
                                 <td colspan="3" style="height:25px;padding:5px 7px;">Discount</td>
-                                <td style="text-align:right;height:25px;padding:5px 7px;">{{ $order->total_discount_amount }}</td>
+                                <td align="right">{{ number_format($order->over_all_discount) }}</td>
                             </tr>
 
                             <tr style="border-bottom:1px dashed black;">
-                                <td colspan="3" style="height:25px;padding:5px 7px;">FOC</td>
-                                <td style="text-align:right;height:25px;padding:5px 7px;" class="foc-amount">{{ $order->foc_amount }}</td>
+                                <td colspan="4" style="height:5px;"></td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Sub Total</td>
+                                <td align="right">{{ number_format($order->sub_total) }}</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Service Charge</td>
+                                <td align="right">{{ $order->service_amount }}</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Tax</td>
+                                <td align="right">{{ $order->tax_amount }}</td>
                             </tr>
                             
+                            <tr style="border-bottom:1px dashed black;">
+                                <td colspan="4" style="height:5px;"></td>
+                            </tr>
+
                             @if(count($rooms) > 0)
                                 <tr style="border-bottom:1px dashed black;">
-                                    <td colspan="3" style="height:25px;padding:5px 7px;">Room Charge</td>
-                                    <td style="text-align:right;height:25px;padding:5px 7px;">{{ number_format($order->room_charge) }} </td>
+                                    <td colspan="3" style="">Room Charge</td>
+                                    <td align="right">{{ number_format($order->room_charge) }} </td>
                                 </tr>
                             @endif
                             <tr style="border-bottom:1px dashed black;" class="net-amount">
-                                <td colspan="3" style="height:25px;padding:5px 7px;">Net Amount</td>
-                                <td style="text-align:right;height:25px;padding:5px 7px;">{{ number_format($order->all_total_amount) }} </td>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Total Amount</td>
+                                <td align="right">{{ number_format($order->all_total_amount) }} </td>
                             </tr>
 
 
@@ -128,9 +147,9 @@
                             </tr>
                             @endforeach
 
-                            <tr style="border-bottom:1px dashed black;">
+                            <tr>
                                 <td colspan="3" style="height:25px;padding:5px 7px;">Change</td>
-                                <td style="text-align:right;height:25px;padding:5px 7px;" class="total-change">{{ number_format($order->refund) }}</td>
+                                <td align="right">{{ number_format($order->refund) }}</td>
                             </tr>
 
                             <tr style="text-align:center;">
@@ -142,10 +161,17 @@
 
                 <div class="spacer-10px"></div>
                 <div align="center">
+                    
                     <button class="btn btn-success btn-lg" id ="{{$order->order_id}}" onClick="print_click(this.id)">Print</button>
-                    <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-lg" onclick="return_btn()">Close</button>
                 </div>  
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<style>
+
+    .right-align{
+        text-align: right;display:inline-block;
+    }
+</style>
