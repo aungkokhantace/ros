@@ -2,9 +2,11 @@
 var categoryID    = 0;
 getCategories(categoryID);
 function getCategories(categoryID) {
+var shift_id = $("#shift_id").val();
+console.log(shift_id);
     $.ajax({
         type: 'GET',
-        url: '/Cashier/MakeOrder/getCategories/' + categoryID,
+        url: '/Cashier/MakeOrder/getCategories/' + categoryID + '/' + shift_id,
         success: function (Response) {
             // console.log(Response);
             $('#categoryDiv').html('');
@@ -15,9 +17,10 @@ function getCategories(categoryID) {
 }
 
 function getSetMenu() {
+    var shift_id = $("#shift_id").val();
     $.ajax({
         type: 'GET',
-        url: '/Cashier/MakeOrder/getSetMenu',
+        url: '/Cashier/MakeOrder/getSetMenu/'+shift_id,
         success: function (Response) {
             $('#categoryDiv').html('');
             $('#categoryDiv').append(Response);
@@ -60,6 +63,7 @@ function orderItem(itemID) {
 //Function For Order SetMenu
 function orderSetMenu(setMenuID) {
     var take_id        = $('input#take-id').val();
+    console.log(setMenuID);
     $.ajax({
         type: 'GET',
         url: '/Cashier/MakeOrder/setMenu/' + setMenuID + '/' + take_id,

@@ -113,7 +113,10 @@ class DashboardController extends Controller
         }
          //if Step is not day end step
         $shiftObj           = [];
-        // dd($current_step);
+        // dd($shift_ordering);
+        // var_dump($shift_ordering);
+        // dd($shift_ordering);
+        // exit();
         if (isset($current_step)) {
             $shiftObj                   = $shift_ordering[$current_step];
             $shiftObj->current_status   = $current_status;

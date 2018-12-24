@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\File;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use InterventionImage;
+use App\RMS\Utility;
+
 class SetMenuController extends Controller
 {
     private $setMenuRepository;
@@ -30,7 +32,11 @@ class SetMenuController extends Controller
     }
 
     public function index(){
-        $set_menu = SetMenu::all();
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+        // dd("we are here");
+        //$set_menu = SetMenu::all();
+        $set_menu = $this->setMenuRepository->getAllSet();
         $set_item = $this->setMenuRepository->getSetItem();
         $items    = $this->setMenuRepository->getAllItem();
         return view('cashier.set.set_menus_listing', compact('set_menu', 'set_item', 'items'));

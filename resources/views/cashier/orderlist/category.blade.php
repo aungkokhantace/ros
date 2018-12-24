@@ -21,3 +21,5 @@
         </div>
     @endforeach
 @endif
+
+ <input type="hidden" name="shift_id" id="shift_id" value="{{$shift_id}}">

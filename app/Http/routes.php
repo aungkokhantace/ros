@@ -162,8 +162,8 @@ Route::group(['middleware' => 'web'], function () {
                 Route::post('MakeOrder/transfer','Cashier\ListViewController@transfer');
                 Route::get('MakeOrder/rooms','Cashier\ListViewController@rooms');
                 Route::get('MakeOrder/room/{id}','Cashier\ListViewController@orderRoom');
-                Route::get('MakeOrder/getCategories/{parent}','Cashier\ListViewController@getCategories');
-                Route::get('MakeOrder/getSetMenu','Cashier\ListViewController@getSetMenu');
+                Route::get('MakeOrder/getCategories/{parent}/{shift}','Cashier\ListViewController@getCategories');
+                Route::get('MakeOrder/getSetMenu/{shift}','Cashier\ListViewController@getSetMenu');
                 Route::get('MakeOrder/backCategory/{id}','Cashier\ListViewController@backCategory');
                 Route::get('MakeOrder/item/{id}/{take}','Cashier\ListViewController@item');
                 Route::post('MakeOrder/order_detail/delete','Cashier\ListViewController@delete');

@@ -38,6 +38,7 @@ use App\RMS\ReturnMessage As ReturnMessage;
 use App\RMS\Utility;
 use App\RMS\Table\TableRepository;
 use App\RMS\Room\RoomRepository;
+use App\RMS\DayStart\DayStartRepository;
 
 //use App\Session;
 
@@ -47,6 +48,7 @@ class ListViewController extends Controller
         $this->detailRepository = $detailRepository;
         $this->TableRepo        = new TableRepository();
         $this->RoomRepo         = new RoomRepository();
+        $this->dayStartRepo     = new DayStartRepository();
 
 
     }
@@ -58,11 +60,17 @@ class ListViewController extends Controller
     public function takeAway() {
         $day_status     = StatusConstance::DAY_STARTING_STATUS;
         $shift_status   = StatusConstance::ORDER_SHIFT_START_STATUS;
-        $dayStart = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
+        $restaurant     = Utility::getCurrentRestaurant();
+        $branch         = Utility::getCurrentBranch();
+
+        $dayStart       = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
                     ->select('order_day.id as day_id','order_shift.shift_id')
                     ->where('order_day.status','=',$day_status)
                     ->where('order_shift.status','=',$shift_status)
+                    ->where('order_shift.branch_id',$branch)
+                    ->where('order_day.branch_id',$branch)
                     ->first();
+
         $config             = Config::select('tax','service','room_charge')->first();
         $take_id            = 1;//1 For 
         $tables             = '';
@@ -112,6 +120,7 @@ class ListViewController extends Controller
                               ->where('order_tables.branch_id',$branch)
                               ->get();
                               // dd($transfer_from);
+   
         return view('cashier.orderlist.tables')
                 ->with('tables',$tables)
                 ->with('transfer_from',$transfer_from)
@@ -150,12 +159,14 @@ class ListViewController extends Controller
                     ->first();
         // dd($dayStart);
         $config             = Config::select('tax','service','room_charge')->where('restaurant_id',$restaurant)->first();
+        // dd($config);
         $take_id            = 0;//1 For 
         $tables             = $id;
         $rooms              = '';
         if (count($dayStart) > 0) {
             $day_id     = $dayStart->day_id;
             $shift_id   = $dayStart->shift_id;
+      //  dd($shift_id);
             return view('cashier.orderlist.order')
                     ->with('config',$config)
                     ->with('day_id',$day_id)
@@ -170,12 +181,17 @@ class ListViewController extends Controller
     }
 
     public function orderRoom($id) {
+        $restaurant     = Utility::getCurrentRestaurant();
+        $branch         = Utility::getCurrentBranch();
+
         $day_status     = StatusConstance::DAY_STARTING_STATUS;
         $shift_status   = StatusConstance::ORDER_SHIFT_START_STATUS;
-        $dayStart = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
+        $dayStart       = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
                     ->select('order_day.id as day_id','order_shift.shift_id')
                     ->where('order_day.status','=',$day_status)
                     ->where('order_shift.status','=',$shift_status)
+                    ->where('order_day.branch_id',$branch)
+                    ->where('order_shift.branch_id',$branch)
                     ->first();
         $config             = Config::select('tax','service','room_charge')->first();
         $take_id            = 0;//1 For 
@@ -236,12 +252,37 @@ class ListViewController extends Controller
         return \Response::json($return_array);
     }
 
-    public function getCategories($parent) {    
+    public function getCategories($parent,$shift_id) {
+        $restaurant     = Utility::getCurrentRestaurant();
+        $branch         = Utility::getCurrentBranch();
+
+
+        if($shift_id =="undefined" || $shift_id =" "){
+
+        $day_status     = StatusConstance::DAY_STARTING_STATUS;
+        $shift_status   = StatusConstance::ORDER_SHIFT_START_STATUS;
+        $dayStart       = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
+                    ->select('order_day.id as day_id','order_shift.shift_id')
+                    ->where('order_day.status','=',$day_status)
+                    ->where('order_shift.status','=',$shift_status)
+                    ->where('order_day.branch_id',$branch)
+                    ->where('order_shift.branch_id',$branch)
+                    ->first();
+        $shift_id   = $dayStart->shift_id;
+        }
+
+        /*mmmm*/
+      
+    // dd("shift",$parent,$shift_id);    
         $itemRepo           = array();
         $itemArr            = array();
-        $categories         = $this->detailRepository->getCategoriesByParent($parent);
+        //$categories         = $this->detailRepository->getCategoriesByParent($parent);
+
+        $categories         = $this->detailRepository->getCategoriesByParent($parent,$shift_id);
         if (count($categories) <= 0) {
+            //dd($categories,'i am here');
             $items          = $this->detailRepository->getItemsByCategory($parent);
+            //dd($items);
 
             foreach($items as $key=>$item) {
                 $itemRepo['id']       = $item->id;
@@ -254,17 +295,25 @@ class ListViewController extends Controller
                 }
             }
         }
-        // dd('item',$itemArr);
+       //dd('item',$itemArr);
         return view('cashier.orderlist.category')
                 ->with('parent',$parent)
                 ->with('itemArr',$itemArr)
-                ->with('categories',$categories);
+                ->with('categories',$categories)
+                ->with('shift_id',$shift_id);
     }
 
-    public function getSetMenu() {
-        $setmenu         = $this->detailRepository->getSetMenu();
+    public function getSetMenu($shift_id) {
+
+        if($shift_id =="undefined" || $shift_id =" "){      
+        $dayStart       = $this->dayStartRepo->getcurrent_dayStart();
+        $shift_id       = $dayStart->shift_id;
+        }
+        $setmenu         = $this->detailRepository->getSetMenu($shift_id);
+        //dd($setmenu);   
         return view('cashier.orderlist.setmenu')
-                ->with('setmenu',$setmenu);
+                ->with('setmenu',$setmenu)
+                ->with('shift_id',$shift_id);
     }
     public function item($id,$take) {
         $restaurant = Utility::getCurrentRestaurant();
@@ -346,6 +395,8 @@ class ListViewController extends Controller
     }
 
     public function setMenu($id,$take) {
+        //dd($id,$take);
+
         $uniqid         = uniqid();
         $today          = Carbon::now();
         $cur_date       = Carbon::parse($today)->format('Y-m-d');
@@ -409,9 +460,14 @@ class ListViewController extends Controller
     }
 
     public function backCategory($id) {
-        $categories       = $this->detailRepository->getBackCategoryByID($id);
+        $current_shift    = $this->dayStartRepo->getcurrent_dayStart();       
+        $shift_id         = $current_shift->shift_id;
+        // dd($id);
+        $categories       = $this->detailRepository->getBackCategoryByID($id,$shift_id);
+       
         return view('cashier.orderlist.category')
-                ->with('categories',$categories);        
+                ->with('categories',$categories)
+                ->with('shift_id',$shift_id);        
     }
 
     public function store() {
@@ -628,7 +684,7 @@ class ListViewController extends Controller
         }
     }
 
-    public function edit($id) {
+    public function edit($id) {        
         // dd($id);
         $status_addon      = StatusConstance::ADDON_AVAILABLE_STATUS;
         $status_extra      = StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
@@ -706,6 +762,7 @@ class ListViewController extends Controller
     }
 
     public function delete(Request $request) {
+
         $order_detail_id        = $request->order_detail_id;
         // $order_detail_id        = $id;
         $status                 = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
@@ -794,7 +851,7 @@ class ListViewController extends Controller
     }
 
     public function update() {
-        // dd(Input::all());
+        //dd(Input::all());
         //Create Order ID
         $order_id       = Input::get('order_id');
         $order_detail_id= (Input::get('order_detail_id') == null ? array() : Input::get('order_detail_id'));

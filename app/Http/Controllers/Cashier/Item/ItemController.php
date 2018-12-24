@@ -19,19 +19,25 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use InterventionImage;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
+use App\RMS\Category\CategoryRepository;
 
 class ItemController extends Controller
 {
     private $ItemRepository;
     public function __construct(ItemRepositoryInterface $ItemRepository)
     {
-       $this->ItemRepository = $ItemRepository;
+       $this->ItemRepository            = $ItemRepository;
+       $this->CategoryRepository        = new CategoryRepository();
     }
     //Item Listing Page
     public function index()
     {
+
        $items   = Item::all();
        $cat     = $this->ItemRepository->allCat();
+       //$cat     = $this->CategoryRepository->getAllCategory();
+       
+       // dd($items,$cat);
        return view('cashier.item.ItemListing')->with('items', $items)->with('cat', $cat);
     }
     public function itemenabled($id)

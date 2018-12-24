@@ -27,10 +27,11 @@ class CategoryController extends Controller
     public function index(){
         $title        = 'Category List';
         $categorylist = $this->CategoryRepository->getAllCategory();
+        // dd($categorylist);
     
         return view('cashier.category.category_listing')->with('categorylist',$categorylist)->with('title',$title);
     }
-
+        
     public function create(){
         $kitchen = $this->CategoryRepository->getKitchen();
         $result  = $this->CategoryRepository->ChooseCat();

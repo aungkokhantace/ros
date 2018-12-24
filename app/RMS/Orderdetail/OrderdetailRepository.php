@@ -36,32 +36,52 @@ class OrderdetailRepository implements OrderdetailRepositoryInterface
 
     }
 
-    public function getCategoriesByParent($parent_id) {
+    public function getCategoriesByParent($parent_id,$shift_id) {
+      // dd("repo",$parent_id,$shift_id);
         $restaurant         = Utility::getCurrentRestaurant();
         $branch             = Utility::getCurrentBranch();
 
         $status             = StatusConstance::CATEGORY_AVAILABLE_STATUS;
 
-        $categories         = Category::where('parent_id',$parent_id)
-                              ->where('status',$status)
-                              ->where('deleted_at',NULL)
-                              ->where('restaurant_id',$restaurant)
-                              ->where('branch_id',$branch)
+        // $categories         = Category::where('parent_id',$parent_id)
+        //                       ->where('status',$status)
+        //                       ->where('deleted_at',NULL)
+        //                       ->where('restaurant_id',$restaurant)
+        //                       ->where('branch_id',$branch)
+        //                       ->get();
+        $categories         = Category::join('shift_category','shift_category.category_id','=','category.id')
+                              ->where('category.parent_id',$parent_id)
+                              ->where('category.status',$status)
+                              ->whereNull('category.deleted_at')
+                              ->where('category.restaurant_id',$restaurant)
+                              ->where('category.branch_id',$branch)
+                              ->where('shift_category.shift_id',$shift_id)
+                              ->select('category.*')
                               ->get();
+       //dd('mm0',$categories);
         return $categories;
     }
 
-    public function getSetMenu() {
+    public function getSetMenu($shift_id) {
       $restaurant   = Utility::getCurrentRestaurant();
       $branch       = Utility::getCurrentBranch();
 
       $status       = StatusConstance::SETMENU_AVAILABLE_STATUS;
-      $setmenu      = SetMenu::select('id','set_menus_name','image')
-                      ->where('status',$status)
-                      ->whereNull('deleted_at')
-                      ->where('restaurant_id',$restaurant)
-                      ->where('branch_id',$branch)
-                      ->get();
+      // $setmenu      = SetMenu::select('id','set_menus_name','image')
+      //                 ->where('status',$status)
+      //                 ->whereNull('deleted_at')
+      //                 ->where('restaurant_id',$restaurant)
+      //                 ->where('branch_id',$branch)
+      //                 ->get();
+      $setmenu         = SetMenu::join('shift_setmenu','shift_setmenu.setmenu_id','=','set_menu.id')                              
+                              ->where('set_menu.status',$status)
+                              ->whereNull('set_menu.deleted_at')
+                              ->where('set_menu.restaurant_id',$restaurant)
+                              ->where('set_menu.branch_id',$branch)
+                              ->where('shift_setmenu.shift_id',$shift_id)
+                              ->select('set_menu.id','set_menu.set_menus_name','set_menu.image')
+                              ->get();
+      //dd('set menu',$setmenu);
       return $setmenu;
     }
 
@@ -82,12 +102,24 @@ class OrderdetailRepository implements OrderdetailRepositoryInterface
         return $items;
     }
 
-    public function getBackCategoryByID($id) {
+    public function getBackCategoryByID($id,$shift_id) {
         $status             = StatusConstance::CATEGORY_AVAILABLE_STATUS;
-        $category           = Category::where('parent_id',$id)
-                              ->where('status',$status)
-                              ->where('deleted_at',NULL)
+        $restaurant         = Utility::getCurrentRestaurant();
+        $branch             = Utility::getCurrentBranch();
+        // $category           = Category::where('parent_id',$id)
+        //                       ->where('status',$status)
+        //                       ->where('deleted_at',NULL)
+        //                       ->get();
+        $category         = Category::join('shift_category','shift_category.category_id','=','category.id')
+                              ->where('category.parent_id',$id)
+                              ->where('category.status',$status)
+                              ->whereNull('category.deleted_at')
+                              ->where('category.restaurant_id',$restaurant)
+                              ->where('category.branch_id',$branch)
+                              ->where('shift_category.shift_id',$shift_id)
+                              ->select('category.*')
                               ->get();
+        // dd("get back cat", $category );
         return $category;
     }
    public function getCategories(){

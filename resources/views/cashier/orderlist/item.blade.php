@@ -80,7 +80,7 @@
     <td>
         <label class="control">
           <input type="hidden" value="0" name="take_{{$itemRepo->uniqid}}" />
-          <input type="checkbox" value="1" name="take_{{$itemRepo->uniqid}}" {{ ($take == 0 ? "" : "checked")}} />
+          <input type="checkbox" value="1" name="take_{{$itemRepo->uniqid}}" {{ ($take == 0 ? "" : "checked disabled ")}} />
           <div class="check-mark"></div>
         </label>
     </td>

@@ -69,7 +69,7 @@
                                         </table>
 
                                     <input type="hidden" name="day_id" value="{{isset($order)? $order['day_id']:$day_id}}">
-                                    <input type="hidden" name="shift_id" value="{{isset($order)? $order['shift_id']:$shift_id}}">
+                                    <input type="hidden" name="shift_id" id="shift_id" value="{{isset($order)? $order['shift_id']:$shift_id}}">
                                     <input type="hidden" name="take_id" value="{{ isset($order)? $order['take_id']:$take_id }}" id="take-id"/>
 
                                     <input type="hidden" name="price_total" value="{{ isset($order)? $order['all_total_amount']:'' }}" id="price_total">

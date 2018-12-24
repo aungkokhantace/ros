@@ -69,4 +69,19 @@ class DayStartRepository implements DayStartRepositoryInterface
         $tempObj->save();
     }
 
+    public function getcurrent_dayStart(){
+        $restaurant     = Utility::getCurrentRestaurant();
+        $branch         = Utility::getCurrentBranch();
+        $day_status     = StatusConstance::DAY_STARTING_STATUS;
+        $shift_status   = StatusConstance::ORDER_SHIFT_START_STATUS;
+        $dayStart       = DayStart::leftjoin('order_shift','order_day.id','=','order_shift.day_id')
+                    ->select('order_day.id as day_id','order_shift.shift_id')
+                    ->where('order_day.status','=',$day_status)
+                    ->where('order_shift.status','=',$shift_status)
+                    ->where('order_day.branch_id',$branch)
+                    ->where('order_shift.branch_id',$branch)
+                    ->first();
+        return $dayStart;
+    }
+
 }
