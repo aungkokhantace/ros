@@ -206,7 +206,6 @@ class ItemController extends Controller
         $cooking_time   = Input::get('standard_cooking_time');
         $oldname        = $this->ItemRepository->find(Input::get('id'));
         $oldprice       = $oldname->price;
-
         $lower_old_name = strtolower($oldname->name); //to change old name from database to lower
         $flag = 1;
 
@@ -291,7 +290,9 @@ class ItemController extends Controller
 /* ------------------start contient is > itemid -------------------------------------*/
                 else {
                     // dd("update new");
-
+                    $photo='';
+                    $mobileImg='';
+                    if (isset($file[$key]) ?: false) {
                     $imagedata              = file_get_contents($file[$key]);
                     $photo  = uniqid().'.'.$file[$key]->getClientOriginalExtension();
                     $file[$key]->move('uploads', $photo);
@@ -299,6 +300,8 @@ class ItemController extends Controller
                     // resizing image
                     $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
                     $mobileImg = base64_encode($image->encoded);
+                    }
+
 
                     $paramObj               = new Item();
                     $paramObj->name         = $name;
@@ -307,7 +310,7 @@ class ItemController extends Controller
                     $paramObj->continent_id = $continent;
                     $paramObj->category_id  = $category;
                     $paramObj->standard_cooking_time = $cooking_time;
-                    $paramObj->image        = $photo;
+                    $paramObj->image        = $photo; 
                     $paramObj->mobile_image = $mobileImg;
                     $paramObj->group_id     = $group_id;
                     $paramObj->has_continent= 1;
