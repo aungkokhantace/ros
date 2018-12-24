@@ -2,7 +2,7 @@
 <div class="form-group continent">
     <label for="item-name" class="col-sm-3 control-label">Item Continent<span class="require">*</span></label>
     <div class="col-sm-7">
-        <input type="hidden" id="product_detail_count" name="product_detail_count" value="{{ count($continent_items) - 1 }}" />
+        <input type="hidden" id="product_detail_count" name="product_detail_count" value="{{ count($continent_items)}}" />
             <table class="table table-striped" id="product_detail_table">
                 <tbody class="table table-striped"> 
                     @if(count($continent_items) > 0)   
@@ -14,8 +14,8 @@
                                 <div class="col-md-10">
                                     <select class="form-control item-select" id="continent" name="continent[]" required>
                                         <option value="" selected>Select Continent</option>
-                                        @foreach($continent_arr as $continent)
-                                            <option value="{{ $continent['id'] }}" @if($item->continent_id == $continent['id']) {{ 'selected' }} @endif>{{ $continent['name'] }}</option>
+                                        @foreach($continent_arr as $key=>$continent)
+                                            <option class="rm-attr-{{$key}}" value="{{ $continent['id'] }}" @if($item->continent_id == $continent['id']) {{ 'selected' }} @endif>{{ $continent['name'] }}</option>
                                         @endforeach
                                     </select>
                                     <label class="select-error text-danger" style="display:none">Choose Continent</label>
@@ -54,16 +54,15 @@
                             </div><br />
                                                       
                         </td>
-                        @if ($key == count($continent_items) - 1)
+                       
                         <td>
-                            <button type="button" class="btn green btn-sm btn-add-product-detail" ><span class="glyphicon-plus">Add</span></button>
-                           <!--  <button type="button" class="btn green  btn-add-product-detail" onclick="addContinent()"><span class="glyphicon-plus">Add</span></button>
-                            
-                            <button type="button" class="btn red  btn-remove-product-detail" onclick="removeContinent(this)"><span class="glyphicon-minus">Remove</span></button> -->
+                            <!-- <button type="button" class="btn green btn-sm btn-add-product-detail" ><span class="glyphicon-plus">Add</span></button> -->
+                            <button type="button" class="btn green  btn-add-product-detail" onclick="addContinent()"><span class="glyphicon-plus">Add</span></button>
+                            @if(!$item->isdefault)
+                            <button type="button" class="btn red  btn-remove-product-detail" onclick="removeContinent(this)"><span class="glyphicon-minus">Remove</span></button>
+                            @endif
                         </td>
-                        @else
-                        <td>&nbsp;</td>
-                        @endif
+                        
                             
                     </tr>
                     @endforeach

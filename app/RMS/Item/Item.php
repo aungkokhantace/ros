@@ -57,9 +57,10 @@ class Item extends Model
     {
         return $this->created_at;
     }
-    public function NormalizeItem()
+    public function normalizeItem()
     {
-            $this->delete();
+            // $this->delete();
+            $this->forceDelete();
     }
 }
 
