@@ -64,7 +64,7 @@ function addContinent(){
 
 
 function removeContinent(x) {
-    if(productDetailCount==1){
+    if($('#product_detail_count').val() <=1){
         alert("There must be at least one item!");
         return false;
     }

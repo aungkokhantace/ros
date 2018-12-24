@@ -193,6 +193,7 @@ $(document).ready(function(){
     if ( $('input[id="item-continent"]').is(':checked') ) {
         $('.price-item').hide();
         $('.continent').show();
+
     } else {
         $('.price-item').show();
         $('.continent').hide();   
@@ -203,6 +204,7 @@ $(document).ready(function(){
         if ( $(this).is(':checked') ) {
             $('.price-item').hide();
             $('.continent').show();
+            $('#product_detail_count').val('1');
         } 
         else {
             $('.price-item').show();
