@@ -1,11 +1,11 @@
-@extends('Backend.layouts.kitchen.master')
+@extends('kitchen.kitchen_header')
 @section('title', 'Stock Requisition Form')
 @section('content')
     <div id="body">
         <div class="container stock">
             <div class="row">
                 <div class="col-lg-2"></div>
-                <div class="col-lg-10">
+                    <div class="col-lg-10">
                         <form action="{{ url('/Kitchen/stock-requisition') }}" method="post">
                             {{ csrf_field() }}
                             <h4><b>Stock Requisition Form</b></h4><br>
@@ -52,5 +52,4 @@
                 </div>
             </div>
         </div>
-    </div>
 @endsection
