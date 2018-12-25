@@ -37,7 +37,10 @@ use App\RMS\BookingRoom\BookingRoom;
 use App\RMS\DayStart\DayStart;
 use App\RMS\Shift\ShiftCategory;
 use App\RMS\Shift\ShiftUser;
+use App\RMS\OrderExtra\OrderExtraRepository;
 use App\RMS\Order_Detail_Remark\Order_Detail_Remark;
+use App\RMS\Order_Detail_Remark\Order_Detail_RemarkRepository;
+use App\RMS\OrderSetMenuDetail\OrderSetMenuDetailRepository;
 use Storage;
 use App\Log\LogCustom;
 use App\Status\StatusConstance;
@@ -83,6 +86,7 @@ class MakeAPIController extends ApiGuardController
                         $username   = $role->user_name;
 
                         $r = $role->roles->name;
+
                         if ($r == "Waiter") {
                             //Check User has Assign for day start
                             $day_status     = StatusConstance::DAY_STARTING_STATUS;
@@ -174,13 +178,20 @@ class MakeAPIController extends ApiGuardController
     }
 
     public function create_voucher()
-    {
+    {   
+        // try{
+        //     DB::beginTransaction();
+
         $temp       = Input::all();
         $ordersRaw  = $temp['orderID'];
-        $orders     = json_decode($ordersRaw);
+        $orders   = json_decode($ordersRaw);
+
         $dt         = Carbon::now();
+
         foreach($orders as $order) {
+
             $user_id                = $order->user_id;
+
             $take_id                = $order->take_id;
             $order_id               = $order->order_id;
             $total_extra_price      = $order->extra_price;
@@ -199,7 +210,6 @@ class MakeAPIController extends ApiGuardController
             $tablet_id              = $order->tablet_id;
             $stand_number           = $order->stand_number;
         }
-
         $order                          = new Order();
         $order->id                      = $order_id;
         $order->user_id                 = $user_id;
@@ -255,6 +265,8 @@ class MakeAPIController extends ApiGuardController
         foreach ($order_details as $order_detail) {
             $order_detail_status        = $order_detail->status;
             $temp = new Orderdetail();
+            $temp->id                   = $order_detail->order_detail_id;
+            $temp->order_id             = $order_id;
             $temp->order_id             = $order_id;
             $temp->item_id              = $order_detail->item_id;
             $temp->order_detail_id      = $order_detail->order_detail_id;
@@ -277,11 +289,10 @@ class MakeAPIController extends ApiGuardController
             $set_item = $order_detail->set_item;
             $quantity = $order_detail->quantity;
             
-
             foreach($set_item as $item){
                 $status_id = $temp->status_id;
                 $set = new OrderSetMenuDetail();
-                $set->order_detail_id = $temp->id;
+                $set->order_detail_id = $temp->order_detail_id;
                 $set->setmenu_id      = $item->set_menu_id;
                 $set->item_id         = $item->item_id;
                 $set->order_type_id   = $temp->order_type_id;
@@ -298,7 +309,7 @@ class MakeAPIController extends ApiGuardController
                  foreach($remarks as $remark){
                     if($remark->selected == "true"){
                         $OrderDetailObj = new Order_Detail_Remark();
-                        $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
+                        $OrderDetailObj->order_detail_id = $temp->order_detail_id;
                         $OrderDetailObj->remark_id       = $remark->remark_id;
                         $OrderDetailObj->order_id        = $order_id;
                         $OrderDetailObj->item_id         = $order_detail->item_id;
@@ -310,7 +321,7 @@ class MakeAPIController extends ApiGuardController
             $extra = $order_detail->extra;
             foreach ($extra as $e) {
                 $extra = new OrderExtra();
-                $extra->order_detail_id         = $temp->id;
+                $extra->order_detail_id         = $temp->order_detail_id;
                 $extra->extra_id                = $e->extra_id;
                 $extra->quantity                = $e->quantity;
                 $extra->amount                  = $e->amount;
@@ -318,12 +329,17 @@ class MakeAPIController extends ApiGuardController
                 // $extra->total_extra_amount      = $e->total_extra_amount;
                 $extra->save();
             }
-
-
         }
+        //     DB::commit();
+        //     $output = array("message" => "Success");
+        //     return Response::json($output); 
 
-        $output = array("message" => "Success");
-        return Response::json($output);
+        // }catch(\Exception $e){
+        //     DB::rollback();
+        //     $output = array("message" => "Please Upload Again");
+        //     return Response::json($output); 
+        // }   
+    
     }
 
     public function frontend_log() {
@@ -336,6 +352,10 @@ class MakeAPIController extends ApiGuardController
     }
 
     public function add_new_to_voucher(){
+
+        try{
+            
+        DB::beginTransaction();
         $temp       = Input::all();
         $ordersRaw  = $temp['orderID'];
         $orders     = json_decode($ordersRaw);
@@ -367,11 +387,15 @@ class MakeAPIController extends ApiGuardController
             $order->total_extra_price       = $extra_price;
             $order->stand_number            = $stand_number;
             $order->save();
-
+            $order_detail_ary = array();
             foreach ($order_details as $order_detail) {
                 $order_detail_id = $order_detail->order_detail_id;
                 $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
+
                 $order_detail_status        = $order_detail->status;
+
+                array_push($order_detail_ary,$order_detail->order_detail_id);
+
                    //check order_detail is already exist or not
                 if($detail == null){ //If new order_detail, create order_detail
                     $temp = new Orderdetail();
@@ -398,7 +422,7 @@ class MakeAPIController extends ApiGuardController
                     foreach($set_item as $item){
                         $order_setdetail_status        = $temp->status_id;
                         $set = new OrderSetMenuDetail();
-                        $set->order_detail_id = $temp->id;
+                        $set->order_detail_id = $order_detail->order_detail_id;
                         $set->setmenu_id      = $item->set_menu_id;
                         $set->item_id         = $item->item_id;
                         $set->order_type_id   = $temp->order_type_id;
@@ -427,7 +451,7 @@ class MakeAPIController extends ApiGuardController
                     $extra = $order_detail->extra;
                     foreach ($extra as $e) {
                         $extra = new OrderExtra();
-                        $extra->order_detail_id         = $temp->id;
+                        $extra->order_detail_id         = $order_detail->order_detail_id;
                         $extra->extra_id                = $e->extra_id;
                         $extra->quantity                = $e->quantity;
                         $extra->amount                  = $e->amount;
@@ -467,7 +491,7 @@ class MakeAPIController extends ApiGuardController
                                                         ->first();
                         if($set_detail == null){
                             $set = new OrderSetMenuDetail();
-                            $set->order_detail_id = $temp->id;
+                            $set->order_detail_id = $order_detail->order_detail_id;
                             $set->setmenu_id      = $item->set_menu_id;
                             $set->item_id         = $item->item_id;
                             $set->order_type_id   = $temp->order_type_id;
@@ -479,7 +503,7 @@ class MakeAPIController extends ApiGuardController
                         }
                         else{
                             $set                  = $set_detail;
-                            $set->order_detail_id = $temp->id;
+                            $set->order_detail_id = $order_detail->order_detail_id;
                             $set->setmenu_id      = $item->set_menu_id;
                             $set->item_id         = $item->item_id;
                             $set->order_type_id   = $temp->order_type_id;
@@ -519,7 +543,7 @@ class MakeAPIController extends ApiGuardController
                                                 ->first();
                         if($order_extra == null){
                             $extra                  = new OrderExtra();
-                            $extra->order_detail_id = $temp->id;
+                            $extra->order_detail_id = $order_detail->order_detail_id;
                             $extra->extra_id        = $e->extra_id;
                             $extra->quantity        = $e->quantity;
                             $extra->amount          = $e->amount;
@@ -549,9 +573,36 @@ class MakeAPIController extends ApiGuardController
 
             }
 
+            foreach($order_detail_ary as $order_cancel){
+                $cancel_order = Orderdetail::where('order_detail_id',$order_cancel)->first();
+
+                $order_detail_id    = $cancel_order->id;
+                $orderextraRepo     = new OrderExtraRepository();
+                $orderRemarkRpo     = new Order_Detail_RemarkRepository();
+                $orderSetRepo       = new OrderSetMenuDetailRepository();
+                $extraresult        = $orderextraRepo->delete($order_detail_id);
+                $orderRemarkresult  = $orderRemarkRpo->delete($order_detail_id);
+                $ordesetresult      = $orderSetRepo->delete($order_detail_id);
+
+
+
+            }
+            $order_cancels = Orderdetail::where('order_id',$order_id)->whereNotIn('order_detail_id',$order_detail_ary)->whereNull('deleted_at')->delete();
+
             $output = array("message" => "Success");
         }
-        return Response::json($output);
+
+            DB::commit();
+
+            return Response::json($output);
+
+        }
+            catch(\Exception $e){
+            DB::rollback();
+            $output = array("message" => "Please Upload Again");
+            return Response::json($output); 
+        }   
+
     }
 
 

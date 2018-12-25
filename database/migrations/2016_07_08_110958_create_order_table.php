@@ -9,7 +9,7 @@ class CreateOrderTable extends Migration
     public function up()
     {
         Schema::create('order', function (Blueprint $table) {
-            $table->string('id');
+            $table->integer('id');
             $table->integer('user_id');
             $table->integer('take_id')->nullable();
             $table->dateTime('order_time');
