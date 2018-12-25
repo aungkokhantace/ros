@@ -195,7 +195,6 @@ class ItemController extends Controller
         $category_id    = "";
         // $request->validate();
         $id             = $request->get('id');
-
         $name           = $request->get('name');
         $lower_name     = strtolower($name);//to change all letter which user edited in form to lower case
         $category       = $request->get('parent_category');
@@ -203,10 +202,10 @@ class ItemController extends Controller
         $price          = $request->get('price');
         $status         = $request->get('status');
         $remark         = $request->get('remark');
+        $is_ready_food  = $request->get('is_ready_food');
         $cooking_time   = Input::get('standard_cooking_time');
         $oldname        = $this->ItemRepository->find(Input::get('id'));
         $oldprice       = $oldname->price;
-
         $lower_old_name = strtolower($oldname->name); //to change old name from database to lower
         $flag = 1;
 
@@ -227,17 +226,17 @@ class ItemController extends Controller
                 }
             }
         }
-
 //       user is allowed to edit
-        if($flag == 1){
+        if($flag == 1){ // end 485
         $checkConti           = count($request->get('continent-price'));
-        if ($checkConti > 0) {
+        if ($checkConti > 0) { // end line 356
             $group_id_attr    = DB::table('items')->select('group_id')
                                 ->WHERE('id','=',$id)
                                 ->first();
             $group_id         =  $group_id_attr->group_id;
             $file             = $request->file('input-file-preview');
-            $itemID           = $request->get('item-id');
+            $item_request      = $request->get('item-id');
+            $itemID           = array_unique($item_request);
 
             $continents       = $request->get('continent');
             $continentPrice   = $request->get('continent-price');
@@ -257,7 +256,7 @@ class ItemController extends Controller
             foreach($continents as $key => $continent) {
                 $count                  = $count + 1;
 
-                if ($count <= $oldItemCount) {
+                if (isset($itemID[$key]) ?: false) {
                     $postID                 = $itemID[$key];
                     $paramObj               = Item::find($postID);
                     //Get Old Price for Price History
@@ -268,6 +267,7 @@ class ItemController extends Controller
                     $paramObj->continent_id = $continent;
                     $paramObj->category_id  = $category;
                     $paramObj->status       = $status;
+                    $paramObj->is_ready_food= $is_ready_food;
                     $paramObj->standard_cooking_time = $cooking_time;
 
                     //For File Upload
@@ -290,7 +290,9 @@ class ItemController extends Controller
 /* ------------------start contient is > itemid -------------------------------------*/
                 else {
                     // dd("update new");
-
+                    $photo='';
+                    $mobileImg='';
+                    if (isset($file[$key]) ?: false) {
                     $imagedata              = file_get_contents($file[$key]);
                     $photo  = uniqid().'.'.$file[$key]->getClientOriginalExtension();
                     $file[$key]->move('uploads', $photo);
@@ -298,6 +300,8 @@ class ItemController extends Controller
                     // resizing image
                     $image = InterventionImage::make(sprintf('uploads' .'/%s', $photo))->resize(200, 200)->save();
                     $mobileImg = base64_encode($image->encoded);
+                    }
+
 
                     $paramObj               = new Item();
                     $paramObj->name         = $name;
@@ -306,24 +310,16 @@ class ItemController extends Controller
                     $paramObj->continent_id = $continent;
                     $paramObj->category_id  = $category;
                     $paramObj->standard_cooking_time = $cooking_time;
-                    $paramObj->image        = $photo;
+                    $paramObj->image        = $photo; 
                     $paramObj->mobile_image = $mobileImg;
                     $paramObj->group_id     = $group_id;
                     $paramObj->has_continent= 1;
                     $paramObj->status       = $status;
+                    $paramObj->is_ready_food = $is_ready_food;
                     $result                 = $this->ItemRepository->updateNewContinent($paramObj);
                 }
 /* ------------------end  contient is > itemid -------------------------------------*/
             }
-/*----------------- start Normalize Item -----------------------------------------------------------*/
-                $specificItem = Item::select(DB::raw('name, max(updated_at) as date'))->groupBy('name')->where('name',$name)->first()->date;
-                Item::where('name',$name)->each(function ($x)use($specificItem)
-        {
-            if ($x->updated_at != $specificItem) {
-                $x->NormalizeItem();
-            }
-        });
-
 /*----------------- start item remark -----------------------------------------------------------*/
 
                     foreach ($itemID as $key => $value) {
@@ -344,8 +340,18 @@ class ItemController extends Controller
                         }
 
                     }
-                }//foreach
-              }//if
+                }
+                //foreach
+              }
+              //if
+/*----------------- start Normalize Item -----------------------------------------------------------*/
+            /* if Updated , selected item's updated_at column is not modifide delete it. */
+                $max_date = Item::where('name',$name)->get()->max('updated_at');
+                Item::where('name',$name)->each(function ($item)use($max_date){
+                    if ($item->updated_at < $max_date && $item->isdefault == 0) {
+                        $item->normalizeItem();
+                    }
+                });
 /*----------------- end item remark -----------------------------------------------------------*/
             if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                 return redirect()->action('Backend\Item\ItemController@index')
@@ -358,7 +364,7 @@ class ItemController extends Controller
 //Not Comtinent item
             $file = $request->file('fileupload');
 /*--------- if users want to upload new photo,"if" condition will work.and if users don't want to upload new photo,'else' function will work ----*/
-            if($file != null){
+            if($file != null){ // end 481
                     $imagedata              = file_get_contents($file);
                     $name                   = Input::get('name');
                     $photo  = uniqid().'.'.$file->getClientOriginalExtension();
@@ -377,6 +383,7 @@ class ItemController extends Controller
                     $paramObj->price                    = $price;
                     $paramObj->status                   = $status;
                     $paramObj->category_id              = $category;
+                    $paramObj->is_ready_food            = $is_ready_food;
                     $paramObj->standard_cooking_time    = $cooking_time;
                     $result = $this->ItemRepository->updateAllItem($paramObj,$oldprice);
 
@@ -400,8 +407,10 @@ class ItemController extends Controller
                         }
 
                     }
-                }//foreach
-              }//if
+                }
+                //foreach
+              }
+              //if
               /* end item remark */
 
                     if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
@@ -435,6 +444,7 @@ class ItemController extends Controller
                 $paramObj->status                = $status;
                 $paramObj->category_id           = $category;
                 $paramObj->standard_cooking_time = $cooking_time;
+                $paramObj->is_ready_food         = $is_ready_food;
 
                 $result                          = $this->ItemRepository->updateItem($paramObj,$oldprice);
                   /* start item remark */
@@ -457,8 +467,10 @@ class ItemController extends Controller
                     }
 
                 }
-            }//foreach
-          }//if
+            }
+            //foreach
+          }
+          //if
           /* end item remark */
 
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){

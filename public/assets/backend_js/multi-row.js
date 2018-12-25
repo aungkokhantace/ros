@@ -45,7 +45,12 @@ function addContinent(){
         console.log(count + 'counter is  ' + counter);
          $("#product_detail_count").val(++count);
             productDetailCount++;
-            var $tr = $("#product_detail_table tbody tr:first");
+            var $tr = $("#product_detail_table tbody tr:first").clone(true).find(".rm-attr-0").removeAttr("selected").end();
+            $button = $('<button type="button" class="btn red  btn-remove-product-detail" onclick="removeContinent(this)"><span class="glyphicon-minus">Remove</span></button>');
+            if ($('#is_update').val()) {
+            var $btn = $tr.find('.btn-add-product-detail');
+            $button.insertAfter($btn);
+            }
             var $clone = $tr.html();
             
             var $form="<tr>"+$clone+"</tr>";  
@@ -59,7 +64,7 @@ function addContinent(){
 
 
 function removeContinent(x) {
-    if(productDetailCount==1){
+    if($('#product_detail_count').val() <=1){
         alert("There must be at least one item!");
         return false;
     }

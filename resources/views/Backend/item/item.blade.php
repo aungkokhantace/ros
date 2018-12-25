@@ -32,6 +32,7 @@
 
         @if(isset($record))
         <input type="hidden" name="id" value={{$record->id}}>
+        <input type="hidden" id="is_update" value={{isset($record)?true:false}}>
         @endif
 
         <div class="form-group">
@@ -73,7 +74,7 @@
             <div class="col-sm-7">
                 <input name="is_ready_food" value="0" type="hidden">
                 @if(isset($record))
-                <input type="checkbox" name="is_ready_food" id="item-ready_food" value="1" @if($record->is_ready_food == 1) checked @endif disabled/>
+                <input type="checkbox" name="is_ready_food" id="item-ready_food" value="1" @if($record->is_ready_food == 1) checked @endif />
                 @else
                 <input type="checkbox" name="is_ready_food" id="item-ready_food" value="1" @if(Input::old('is_ready_food') == 1) checked @endif/>
                 @endif
@@ -94,8 +95,8 @@
         </div>
 
         @if(isset($record))
-            @include('Backend.item._multi_condiment_edit')   
-            {{--@include('Backend.item.continent_edit')--}}     
+            {{--@include('Backend.item._multi_condiment_edit')   --}}
+            @include('Backend.item.continent_edit')     
         @else
             @include('Backend.item.continent')
         @endif
@@ -192,6 +193,7 @@ $(document).ready(function(){
     if ( $('input[id="item-continent"]').is(':checked') ) {
         $('.price-item').hide();
         $('.continent').show();
+
     } else {
         $('.price-item').show();
         $('.continent').hide();   
@@ -202,6 +204,7 @@ $(document).ready(function(){
         if ( $(this).is(':checked') ) {
             $('.price-item').hide();
             $('.continent').show();
+            $('#product_detail_count').val('1');
         } 
         else {
             $('.price-item').show();
