@@ -10,7 +10,7 @@ class Shift extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $table= 'shift';
-    protected $fillable = ['id','name','description','status','created_by','updated_by','deleted_by','created_at','updated_at','deleted_at'];
+    protected $fillable = ['id','name','restaurant_id','branch_id','description','status','created_by','updated_by','deleted_by','created_at','updated_at','deleted_at'];
 
     public function Category()
     {
@@ -21,5 +21,14 @@ class Shift extends Model
     {
    		return $this->hasMany('App\RMS\Shift\ShiftUser');
 	}
+    public function Restaurant()
+    {
+
+        return $this->belongsTo('App\RMS\Restaurant\Restaurant', 'restaurant_id', 'id');
+    }
+    public function branch()
+    {
+        return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
+    }
 
 }

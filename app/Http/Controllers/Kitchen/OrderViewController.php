@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Kitchen;
 
+use App\RMS\Branch\BranchRepository;
 use App\RMS\Order\OrderRepositoryInterface;
 use App\RMS\Order\Order;
 use App\RMS\Orderdetail\Orderdetail;
+use App\RMS\Restaurant\RestaurantRepository;
 use App\RMS\Table\Table;
 use App\RMS\Addon\Addon;
 use App\RMS\SetMenu\SetMenu;
 use App\RMS\Kitchen\Kitchen;
-use App\RMS\OrderExtra\OrderExtra;
+use App\RMS\OrderExtra\Extra;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetail;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -31,14 +33,19 @@ class OrderViewController extends Controller
     public function __construct(OrderRepositoryInterface $orderRepository)
     {
         $this->OrderRepository = $orderRepository;
+        $this->branchrepo     = new BranchRepository();
+        $this->restaurantRepo = new  RestaurantRepository();
     }
     public function tableView()
     {
         $id                 = Auth::guard('Cashier')->user()->kitchen_id;
         $kitchen            = Kitchen::find($id);
+        $restaurant_id      = $kitchen->restaurant_id;
+        $branch_id          = $kitchen->branch_id;
         $tables             = $this->OrderRepository->orderTable();
         $rooms              = $this->OrderRepository->orderRoom();
         $extra              = $this->OrderRepository->orderExtra();
+
 
         //Status Lists
         $order_status                  = StatusConstance::ORDER_CREATE_STATUS;
@@ -57,15 +64,15 @@ class OrderViewController extends Controller
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
                                           WHERE order_details.status_id IN ($order_details_cooking_status,$order_details_cooked_status) ");
-        
+
         $set_menusRaw       = DB::select("SELECT order_setmenu_detail.*,items.name,items.category_id,items.image,items.has_continent,continent.name AS continent_name
                                           FROM `order_setmenu_detail`
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
                                           WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status) ");
-        
-        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
+
+        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id  AND restaurant_id = $restaurant_id AND branch_id = $branch_id  AND deleted_at is NULL");
         $categoryIdArr      = array();
         foreach($categoryRaw as $category){
             array_push($categoryIdArr,$category->id);
@@ -117,6 +124,7 @@ class OrderViewController extends Controller
             }
             $orders[$key]->items = $orderItemList;
         }
+
         return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
     }
     
@@ -128,6 +136,8 @@ class OrderViewController extends Controller
     {
         $id                 = Auth::guard('Cashier')->user()->kitchen_id;
         $kitchen            = Kitchen::find($id);
+        $restaurant_id      = $kitchen->restaurant_id;
+        $branch_id          = $kitchen->branch_id;
         $tables             = $this->OrderRepository->orderTable();
         $rooms              = $this->OrderRepository->orderRoom();
         $extra              = $this->OrderRepository->orderExtra();
@@ -158,7 +168,8 @@ class OrderViewController extends Controller
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
                                           WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status) ");
 
-        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
+        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND  restaurant_id = $restaurant_id AND branch_id = $branch_id  AND deleted_at is NULL");
+
         $categoryIdArr      = array();
         foreach($categoryRaw as $category){
             array_push($categoryIdArr,$category->id);
@@ -226,6 +237,8 @@ class OrderViewController extends Controller
     {
         $id                  = Auth::guard('Cashier')->user()->kitchen_id;
         $kitchen             = Kitchen::find($id);
+        $restaurant_id       = $kitchen->restaurant_id;
+        $branch_id           = $kitchen->branch_id;
         $tables              = $this->OrderRepository->orderTable();
         $rooms               = $this->OrderRepository->orderRoom();
         $extra               = $this->OrderRepository->orderExtra(); 
@@ -241,7 +254,7 @@ class OrderViewController extends Controller
         $order_setmenu_cooked_status   = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
 
         $ordersRaw           = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
-        
+
         $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent,continent.name AS continent_name
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
@@ -256,7 +269,7 @@ class OrderViewController extends Controller
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
                                           WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status) ");
         
-        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
+        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND restaurant_id = $restaurant_id AND branch_id = $branch_id  deleted_at is NULL");
         $categoryIdArr      = array();
         foreach($categoryRaw as $category){
             array_push($categoryIdArr,$category->id);

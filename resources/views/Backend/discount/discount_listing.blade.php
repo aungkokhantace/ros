@@ -60,7 +60,7 @@
                                 <td></td>
                                 <td><a href="/Backend/Discount/edit/{{$discount->id}}">{{ $discount->name}}</a></td>
                                 <td><a href="/Backend/Discount/edit/{{$discount->restaurant_id}}">{{ $discount->restaurant->name}}</a></td>
-                                <td><a href="/Backend/Discount/edit/{{$discount->branch_name}}">{{ $discount->branch->name}}</a></td>
+                                <td><a href="/Backend/Discount/edit/{{$discount->branch_id}}">{{ $discount->branch->name}}</a></td>
                                 <td>{{ \Carbon\Carbon::parse($discount->start_date)->format('d-m-Y')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($discount->end_date)->format('d-m-Y')}}</td>
                                 {{--start item id joining--}}

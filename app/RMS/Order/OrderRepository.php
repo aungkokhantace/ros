@@ -104,6 +104,21 @@ class OrderRepository implements OrderRepositoryInterface
         ->get();
         return $orders;
     }
-    
+    public function getAll(){
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+
+        $query         = order::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $order        = $query->get();
+        return $order;
+    }
+
     
 }

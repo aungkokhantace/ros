@@ -12,7 +12,7 @@ class Category extends Model
     protected $table = 'category';
 
     protected $fillable=['id','name','parent_id','kitchen_id','group_id','image','status','description','created_by','updated_by',
-    'deleted_by','created_at','updated_at','deleted_at'];
+    'deleted_by','created_at','updated_at','deleted_at','branch_id','restaurant_id'];
 
 
     public function item()
@@ -26,8 +26,11 @@ class Category extends Model
     }
      public function branch()
     {
-
-       return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
+        return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
+    }
+    public function Restaurant()
+    {
+        return $this->belongsTo('App\RMS\Branch\Branch', 'restaurant_id', 'id');
     }
 }
 

@@ -13,6 +13,20 @@
         {!! Form::open(array('url' => 'Backend/Shift/Permission/update', 'class'=> 'form-horizontal user-form-border', 'id'=>'staffTypeEntry')) !!}
         <input type="hidden" name="id" value="{{ $shift->id }}"/>
 
+            <div class="form-group">
+                <label for="shift-restaurant" class="col-sm-3 control-label">Restaurant Name<span class="require">*</span></label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="shift-name" name="name"
+                           value="{{isset($shift)? $shift->restaurant->name:Input::old('name')}}" disabled />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="shift-name" class="col-sm-3 control-label">Branch Name<span class="require">*</span></label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="shift-name" name="name"
+                           value="{{isset($shift)? $shift->branch->name:Input::old('name')}}" disabled />
+                </div>
+            </div>
         <div class="form-group">
             <label for="shift-name" class="col-sm-3 control-label">Shift Name<span class="require">*</span></label>
             <div class="col-sm-7">
@@ -30,12 +44,13 @@
                         <input type="checkbox" name="category[]" value="{{ $cat->id }}" @if(in_array($cat->id,$shift_category)) {{ 'checked' }} @endif >&nbsp;&nbsp;{{ $cat->name }}
                     </div>
                 @endforeach
-
-                @foreach($setmenu as $set)
-                    <div class="col-md-6"> 
-                        <input type="checkbox" name="setmenu[]" value="{{ $set->id }}" @if(in_array($set->id,$shift_setmenu)) {{ 'checked' }} @endif>&nbsp;&nbsp;{{ $set->set_menus_name }}
-                    </div>
-                @endforeach
+                    @if(count($shift_setmenu)>0)
+                        @foreach($setmenu as $set)
+                            <div class="col-md-6">
+                                <input type="checkbox" name="setmenu[]" value="{{ $set->id }}" @if(in_array($set->id,$shift_setmenu)) {{ 'checked' }} @endif>&nbsp;&nbsp;{{ $set->set_menus_name }}
+                            </div>
+                            @endforeach
+                    @endif
                 <div class="clear"></div>
                 </div>
             </div>
