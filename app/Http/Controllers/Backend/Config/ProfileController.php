@@ -15,12 +15,14 @@ use Illuminate\Support\Facades\Input;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use App\RMS\Utility;
+use App\RMS\Restaurant\RestaurantRepository;
 
 class ProfileController extends Controller
 {
     private $ProfileRepository;
     public function __construct(ProfileRepositoryInterface $ProfileRepository){
         $this->ProfileRepository = $ProfileRepository;
+         $this->restaurantRepo   = new RestaurantRepository();
     }
 
     public function index(){
@@ -64,6 +66,28 @@ class ProfileController extends Controller
             return view('Backend.profile.profile')->with('profile',$profile);
         }
     }
+
+
+    // public function profile($id)
+    // {
+        
+    //     $restaurant     = $this->restaurantRepo->getAllType();
+    //     $profile=Config::find($id);
+    //     // dd($profile);
+      
+    //     if($profile == null){
+    //         return view('Backend.profile.profile')->with('profile',$profile);
+            
+    //         // return view('cashier.profile.profile')->with('profile',$profile);
+    //     }
+    //     else if(($profile->tax != 0.0 || $profile->service != 0.0 || $profile->room_charge != 0 ||$profile->booking_warning_time != "00:00:00" || $profile->booking_waiting_time != "00:00:00" || $profile->booking_service_time != "00:00:00" || $profile->message != "" || $profile->remark != "") && ($profile->restaurant_name == "" && $profile->logo == "" && $profile->mobile_logo == "" && $profile->website == "" && $profile->phone == "" && $profile->address == "")){
+    //         return view('Backend.profile.profile')->with('profile',$profile)->with('restaurants',$restaurant);
+    //         // return view('cashier.profile.profile')->with('record',$profile);
+    //     }
+    //     else{
+    //         return view('Backend.profile.profile')->with('profile',$profile)->with('restaurants',$restaurant);
+    //     }
+    // }
 
     public function store(RestaurantProfilesRequest $request){
         $request->validate();
@@ -133,7 +157,7 @@ class ProfileController extends Controller
         $email                          = $request->get('email');
         $phone                          = $request->get('phone');
         $address                        = $request->get('address');
-        $restaurant_id                  = Utility::getCurrentRestaurant();
+        $restaurant_id                  = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant(): $request->get('restaurant');
         $paramObj                       = Config::find($id);
         $paramObj->restaurant_name      = $name;
         $paramObj->email                = $email;
@@ -155,7 +179,8 @@ class ProfileController extends Controller
             $paramObj->mobile_logo      = $mobile_imageName;
             $paramObj->mobile_image     = $mobile_image;
             $this->ProfileRepository->updateAll($paramObj);
-            return redirect()->action('Backend\Config\ProfileController@profile');
+            // return redirect()->action('Backend\Config\ProfileController@profile');
+             return redirect()->action('Backend\Config\ConfigController@index');
         }
         elseif(($logo != null) && ($mobile_logo == null)){
             $imageName                  = $logo->getClientOriginalName();
@@ -174,11 +199,13 @@ class ProfileController extends Controller
             $paramObj->mobile_logo      = $mobile_imageName;
             $paramObj->mobile_image     = $mobile_image;
             $this->ProfileRepository->updatemobilelogo($paramObj);
-            return redirect()->action('Backend\Config\ProfileController@profile');
+            // return redirect()->action('Backend\Config\ProfileController@profile');
+             return redirect()->action('Backend\Config\ConfigController@index');
         }
         else{
             $this->ProfileRepository->update($paramObj);
-            return redirect()->action('Backend\Config\ProfileController@profile');
+            // return redirect()->action('Backend\Config\ProfileController@profile');
+             return redirect()->action('Backend\Config\ConfigController@index');
         }
     }
 

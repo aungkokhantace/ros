@@ -683,6 +683,27 @@ $(document).ready(function() {
         }
     });
           $('#remark').multipleSelect();
+
+    //for restaurant
+      //for remark
+        $('#restaurantForm').validate({
+        rules: {
+            name        : "required",
+            image       : "required",
+            email       : "email",
+            website     : "url",
+
+            
+        },
+        messages: {
+            name        : "Name is required.",
+            image       :"Image is required.",
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+    });
 });
 
 

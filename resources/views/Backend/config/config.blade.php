@@ -7,7 +7,7 @@
     <div class="col-md-12 user-border-left">
         <ul class="nav nav-tabs">
             <li role="presentation" class="active"><a href="#">General Setting</a></li>
-            <li role="presentation"><a href="/Backend/Profile/company_profile">Restaurant Profile</a></li>
+            <!-- <li role="presentation"><a href="/Backend/Profile/company_profile">Restaurant Profile</a></li> -->
         </ul>
     </div>
 </div>
@@ -37,6 +37,34 @@
         @if(isset($config))
             <input type="hidden" name="id" value="{{$config->id}}">
         @endif
+        <!-- restaurant session !-->
+
+          @if (Auth::guard('Cashier')->user()->restaurant_id == null)
+         <div class="form-group">
+            <label for="member-type" class="col-sm-3 control-label left-align label-font">Restaurant <span class="require">*</span></label>
+            <div class="col-sm-7">                 
+                 @if(isset($config))
+                    @foreach($restaurants as $restaurant)
+                        @if($restaurant->id == $config->restaurant_id)
+                         <input type="text" class="form-control" value="{{ $restaurant->name }}" readonly />
+                         <input type="hidden" class="form-control" id="restaurant" name="restaurant" value="{{ $restaurant->id }}" />                         
+                       
+                        @endif
+                    @endforeach                 
+                @else
+                <select class="form-control" name="restaurant" id="restaurant">            
+                <option selected disabled>Select Restaurant </option>
+                    @foreach($restaurants as $restaurant)
+                      <option value="{{$restaurant->id}}">{{$restaurant->name}}</option>                
+                    @endforeach
+                @endif
+                </select>
+              
+            </div>
+        </div>
+        @endif
+        <!--end restaturant session -->
+
 
         <div class="form-group">
             <label for="tax" class="col-sm-3 control-label left-align label-font">Tax (%)</label>
@@ -68,42 +96,42 @@
                 @if(isset($config))
                 <select class="form-control" name="before" id="before">
                     <option value="0">Select Booking Warning Time</option>
-                    @if($warning_time == 900)
+                    @if(strtotime($config->booking_warning_time)-strtotime("00:00:00") == 900)
                         <option value="900" selected>15 minutes</option>
                     @else
                         <option value="900">15 minutes</option>
                     @endif
-                    @if($warning_time == 1800)
+                    @if(strtotime($config->booking_warning_time)-strtotime("00:00:00") == 1800)
                         <option value="1800" selected>30 minutes</option>
                     @else
                         <option value="1800">30 minutes</option>
                     @endif
-                    @if($warning_time == 2700)
+                    @if(strtotime($config->booking_warning_time)-strtotime("00:00:00") == 2700)
                         <option value="2700" selected>45 minutes</option>
                     @else
                         <option value="2700">45 minutes</option>
                     @endif
-                    @if($warning_time == 3600)
+                    @if(strtotime($config->booking_warning_time)-strtotime("00:00:00") == 3600)
                         <option value="3600" selected>1 hour</option>
                     @else
                         <option value="3600">1 hour</option>
                     @endif
-                    @if($warning_time == 5400)
+                    @if(strtotime($config->booking_warning_time)-strtotime("00:00:00") == 5400)
                         <option value="5400" selected>1 hour and 30 minutes</option>
                     @else
                         <option value="5400">1 hour and 30 minutes</option>
                     @endif
-                    @if($warning_time == 7200)
+                    @if(strtotime($config->booking_warning_time)-strtotime("00:00:00") == 7200)
                         <option value="7200" selected>2 hours</option>
                     @else
                         <option value="7200">2 hours</option>
                     @endif
-                    @if($warning_time == 9000)
+                    @if(strtotime($config->booking_warning_time)-strtotime("00:00:00") == 9000)
                         <option value="9000" selected>2 hours and 30 minutes</option>
                     @else
                         <option value="9000">2 hours and 30 minutes</option>
                     @endif
-                    @if($warning_time == 10800)
+                    @if(strtotime($config->booking_warning_time)-strtotime("00:00:00") == 10800)
                         <option value="10800" selected>3 hours</option>
                     @else
                         <option value="10800">3 hours</option>
@@ -132,42 +160,42 @@
                 @if(isset($config))
                     <select class="form-control" name="after" id="after">
                         <option value="0">Select Booking Waiting Time</option>
-                        @if($waiting_time == 900)
+                        @if(strtotime($config->booking_waiting_time)-strtotime("00:00:00") == 900)
                             <option value="900" selected>15 minutes</option>
                         @else
                             <option value="900">15 minutes</option>
                         @endif
-                        @if($waiting_time == 1800)
+                        @if(strtotime($config->booking_waiting_time)-strtotime("00:00:00") == 1800)
                             <option value="1800" selected>30 minutes</option>
                         @else
                             <option value="1800">30 minutes</option>
                         @endif
-                        @if($waiting_time == 2700)
+                        @if(strtotime($config->booking_waiting_time)-strtotime("00:00:00") == 2700)
                             <option value="2700" selected>45 minutes</option>
                         @else
                             <option value="2700">45 minutes</option>
                         @endif
-                        @if($waiting_time == 3600)
+                        @if(strtotime($config->booking_waiting_time)-strtotime("00:00:00") == 3600)
                             <option value="3600" selected>1 hour</option>
                         @else
                             <option value="3600">1 hour</option>
                         @endif
-                        @if($waiting_time == 5400)
+                        @if(strtotime($config->booking_waiting_time)-strtotime("00:00:00") == 5400)
                             <option value="5400" selected>1 hour and 30 minutes</option>
                         @else
                             <option value="5400">1 hour and 30 minutes</option>
                         @endif
-                        @if($waiting_time == 7200)
+                        @if(strtotime($config->booking_waiting_time)-strtotime("00:00:00") == 7200)
                             <option value="7200" selected>2 hours</option>
                         @else
                             <option value="7200">2 hours</option>
                         @endif
-                        @if($waiting_time == 9000)
+                        @if(strtotime($config->booking_waiting_time)-strtotime("00:00:00") == 9000)
                             <option value="9000" selected>2 hours and 30 minutes</option>
                         @else
                             <option value="9000">2 hours and 30 minutes</option>
                         @endif
-                        @if($waiting_time == 10800)
+                        @if(strtotime($config->booking_waiting_time)-strtotime("00:00:00") == 10800)
                             <option value="10800" selected>3 hours</option>
                         @else
                             <option value="10800">3 hours</option>
@@ -196,62 +224,63 @@
                 @if(isset($config))
                     <select class="form-control" name="service_time" id="service_time">
                         <option value="0">Select Booking Service Time</option>
-                        @if($service_time == 900)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 900)
                             <option value="900" selected>15 minutes</option>
                         @else
+
                             <option value="900">15 minutes</option>
                         @endif
-                        @if($service_time == 1800)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00")== 1800)
                             <option value="1800" selected>30 minutes</option>
                         @else
                             <option value="1800">30 minutes</option>
                         @endif
-                        @if($service_time == 2700)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 2700)
                             <option value="2700" selected>45 minutes</option>
                         @else
                             <option value="2700">45 minutes</option>
                         @endif
-                        @if($service_time == 3600)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 3600)
                             <option value="3600" selected>1 hour</option>
                         @else
                             <option value="3600">1 hour</option>
                         @endif
-                        @if($service_time == 5400)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 5400)
                             <option value="5400" selected>1 hour and 30 minutes</option>
                         @else
                             <option value="5400">1 hour and 30 minutes</option>
                         @endif
-                        @if($service_time == 7200)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 7200)
                             <option value="7200" selected>2 hours</option>
                         @else
                             <option value="7200">2 hours</option>
                         @endif
-                        @if($service_time == 9000)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 9000)
                             <option value="9000" selected>2 hours and 30 minutes</option>
                         @else
                             <option value="9000">2 hours and 30 minutes</option>
                         @endif
-                        @if($service_time == 10800)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 10800)
                             <option value="10800" selected>3 hours</option>
                         @else
                             <option value="10800">3 hours</option>
                         @endif
-                        @if($service_time == 12600)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 12600)
                             <option value="12600" selected>3 hours and 30 minutes</option>
                         @else
                             <option value="12600">3 hours and 30 minutes</option>
                         @endif
-                        @if($service_time == 14400)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 14400)
                             <option value="14400" selected>4 hours</option>
                         @else
                             <option value="14400">4 hours</option>
                         @endif
-                        @if($service_time == 16200)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 16200)
                             <option value="16200" selected>4 hours and 30 minutes</option>
                         @else
                             <option value="16200">4 hours and 30 minutes</option>
                         @endif
-                        @if($service_time == 18000)
+                        @if( strtotime($config->booking_service_time)-strtotime("00:00:00") == 18000)
                             <option value="18000" selected>5 hours</option>
                         @else
                             <option value="18000">5 hours</option>
@@ -289,7 +318,7 @@
         <div class="form-group">
             <label for="remark" class="col-sm-3 form-label left-align label-font">Remark</label>
             <div class="col-sm-7">
-                <textarea class="form-control" id="remark" name="remark" placeholder="Enter Remark" rows="7" cols="40">{{isset($config)? $config->remark:Input::old('remark')}}</textarea>
+                <textarea class="form-control" id="remarks" name="remarks" placeholder="Enter Remark" rows="7" cols="40">{{isset($config)? $config->remark:Input::old('remark')}}</textarea>
                 <p class="text-danger">{{$errors->first('remark')}}</p>
             </div>
         </div>

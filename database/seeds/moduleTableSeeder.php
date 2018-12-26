@@ -174,5 +174,18 @@ class moduleTableSeeder extends Seeder
             'view'=>'cashier',
             'created_by'=>'1',
         ]);
+
+           DB::table('modules')->insert([
+            'id'=>'28',
+            'module'=>'Restaurant',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
+           DB::table('modules')->insert([
+            'id'=>'29',
+            'module'=>'Branch',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
     }
 }

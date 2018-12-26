@@ -55,6 +55,15 @@ function location_create(){
 function permission_create(){
     window.location = '/Cashier/Permission/create';
 }
+function config_create(){
+    window.location = '/Backend/Config/create';
+}
+
+function restaurant_create(){
+    window.location ='/Backend/Restaurant/create';
+}
+
+
 //BestSelling
 function select_best_selling_item(value)
 {
@@ -433,6 +442,24 @@ function remark_edit() {
         window.location = "/Backend/Remark/edit/" + data;
 }
 
+
+//config
+function configEdit() {
+    var data = [];
+    $("input[name='remark_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You can select at least one remark to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select one remark to edit in one time!", "error");
+    }
+    else
+        window.location = "/Backend/Config/edit" + data;
+}
+
 function remark_enable() {
     var data = [];
     $("input[name='remark_check']:checked").each(function () {
@@ -447,6 +474,23 @@ function remark_enable() {
     }
     else
         window.location = "/Backend/Remark/active/" + data;
+}
+function restaurantEdit() {
+
+    var data = [];
+    $("input[name='restaurant-check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You must select at least one restaurant to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select only one restaurant to edit in one time!", "error");
+    }
+    else
+        window.location = "/Backend/Restaurant/edit/" + data;
 }
 
 function remark_disable() {
@@ -1178,6 +1222,76 @@ function shift_delete(){
 }
 //End kitchen delete
 
+//delete config
+function configDelete() {
+    var data = [];
+    $("input[name='config-check']:checked").each(function () {
+        data.push($(this).val());
+    });
+    if (data[0] == null) {
+        sweetAlert("Oops...", "Please select at least one item to delete !", "error");
+    }
+    else {
+        swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this record!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55  ",
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    window.location.href = "/Backend/Config/delete" + data;
+                    //route path to do deletion in controller
+                } else {
+                    window.location.href = "/Backend/Config/index";
+                    //index page which show list
+                }
+            });
+    }
+}
+
+//delete restaurant
+function restaurantDelete(){
+
+    var data = [];
+    $("input[name='restaurant-check']:checked").each(function() {
+        data.push($(this).val());
+    });
+    var d= typeof(data);
+
+    if(data[0] == null){
+        sweetAlert("Oops...", "Please select at least one restaurant to delete !", "error");
+    }
+    else{
+        swal({   title: "Are you sure?",
+                text: "You will not be able to recover this record!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55 ",
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function(isConfirm){
+                if (isConfirm) {
+
+                    window.location ="/Backend/Restaurant/delete/"+data;
+
+                } else {
+
+                    window.location ="/Backend/Restaurant/index/";
+                }
+            });
+
+    }
+}
+
 
 //Cancel
 
@@ -1241,7 +1355,7 @@ function sub_listing_form_back()
     window.location.href='/Backend/SetMenu/index';
 }
 function config_cancel(){
-    window.location.href='/Backend/Config/general_config';
+    window.location.href='/Backend/Config/index';
 }
 
 function profile_cancel(){
@@ -1258,6 +1372,10 @@ function location_cancel(){
 function permission_cancel(){
     window.location.href='/Cashier/Permission/index';
 }
+function RestaurantList() {
+    window.location = '/Backend/Restaurant/index';
+}
+
  function booking_cancel(id){
 
      swal({   title: "Are you sure?",

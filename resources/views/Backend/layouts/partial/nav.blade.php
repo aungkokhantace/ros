@@ -29,7 +29,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-           
+            <li><a href="/Backend/Restaurant/index"><i class="fa fa-circle-o text-aqua"></i>  Restaurant</a></li>           
             <li><a href="/Backend/Permission/index"><i class="fa fa-circle-o text-aqua"></i>  Permission</a></li>
             <li><a href="/Backend/StaffType/index"><i class="fa fa-circle-o text-aqua"></i>  Staff Type</a></li>
             <li><a href="/Backend/Staff/index"><i class="fa fa-circle-o text-aqua"></i>  Staff</a></li>

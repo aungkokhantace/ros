@@ -7,8 +7,16 @@ function HandleBrowseClick()
 function category_HandleBrowseClick()
 {
     var fileinput = document.getElementById("category_browse");
+    console.log("category");
     fileinput.click();
 }
+
+function MobileBrowseClick()
+{
+    var fileinput1 = document.getElementById("category_browse_mobile");
+    fileinput1.click();
+}
+
 
 function item_HandleBrowseClick()
 {
@@ -79,4 +87,17 @@ function mobile_test(){
     var mobile_fileinput = document.getElementById("mobile_browse");
     var mobile_textinput = document.getElementById("mobile_filename");
     mobile_textinput.value = mobile_fileinput.value;
+}
+function restaurant_mobile(){
+    var mobile_image = document.getElementById("category_browse_mobile");
+    var textinput1_mobile = document.getElementById("mobile_image");
+    console.log("aew");
+    textinput1_mobile.value = mobile_image.value;
+}
+function restaurant_upload(){
+    console.log("first");
+    var fileinput1 = document.getElementById("category_browse");
+    var textinput1 = document.getElementById("filename1");
+    console.log("first2");
+    textinput1.value = fileinput1.value;
 }

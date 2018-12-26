@@ -124,4 +124,8 @@ class StatusConstance
     //remark
     const REMARK_AVAILABLE_STATUS                 = 1; //ITEM AVAILABLE STATUS
     const REMARK_UNAVAILABLE_STATUS               = 0; //ITEM UNAVAILABLE STATUS
+
+    //restaurant
+    const  RESTAURANT_AVAILABLE_STATUS           = 1;
+    const  RESTAURANT_UNAVAILABLE_STATUS         = 0;
 }

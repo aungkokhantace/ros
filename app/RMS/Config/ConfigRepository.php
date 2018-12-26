@@ -27,12 +27,13 @@ class ConfigRepository implements ConfigRepositoryInterface {
 
     public function getAllConfig(){
         $restaurant  = Utility::getCurrentRestaurant();
+        // dd($restaurant);
         $query         = Config::query();
         $query         = $query->whereNull('deleted_at');
         if($restaurant != null){
             $query     = $query->where('restaurant_id',$restaurant);
         }
-        $config       = $query->first(); 
+        $config       = $query->get(); 
         // $config=DB::table('config')->first();
         return $config;
     }
@@ -65,4 +66,6 @@ class ConfigRepository implements ConfigRepositoryInterface {
 			return $returnedObj;
         }
     }
+
+
 }
