@@ -29,5 +29,10 @@ class Kitchen extends Model
 
        return $this->belongsTo('App\RMS\Branch\Branch', 'branch_id', 'id');
     }
+    public function restaurant()
+    {
+
+        return $this->belongsTo('App\RMS\Restaurant\Restaurant', 'restaurant_id', 'id');
+    }
 
 }

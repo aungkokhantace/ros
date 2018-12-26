@@ -49,6 +49,8 @@
                                 <th> <input type='checkbox' name='check' id='check_all'/></th>
                                 <th>No</th>
                                 <th>Shift Name</th>
+                                <th>Restaurant Name</th>
+                                <th>Branch Name</th>
                                 <th>Last Shift</th>
                                 <th>Shift Permission</th>
                                 <th>Make Last</th>
@@ -58,10 +60,11 @@
                         @foreach($shifts as $shift)
                                 <tr class="active">
                                     <td><input type="checkbox" name="shift-check" class="source" value="{{ $shift->id }}" id="all">
-
                                     </td>
                                     <td></td>
                                     <td>{{ $shift->name }}</td>
+                                    <td>{{ $shift->restaurant->name}}</td>
+                                    <td>{{ $shift->branch->name}}</td>
                                     <td>
                                         @if($shift->is_last_shift == 1)
                                             {{'Yes'}}
@@ -73,7 +76,6 @@
                                     <td>
                                         <button class="btn  btn-info" onclick="shift_permission_create({{ $shift->id }});">Permission</button>
                                     </td>
-
                                     <td>
                                         @if($shift->is_last_shift == 0)
                                         <button class="btn btn-success" onclick="shift_last_create({{ $shift->id }});">Make Last Shift</button>
@@ -90,4 +92,29 @@
             </div>
         </div>
         </div>
+    <script src="/assets/backend_js/branch/branch.js"></script>
+    <script type="text/javascript">
+        $("#branch").change(function(){
+            var branch     =$("#branch").val();
+            var restaurant = $("#restaurant").val();
+            $.ajax({
+                type: "GET",
+
+                url: "/Backend/get_addon/ajaxRequest/"+branch+"/"+restaurant,
+
+            }).done( function(data){
+                $('#product').empty();
+                $('#product').append("<option disabled selected>Select Category</option>");
+                $(data).each(function(){
+                    // console.log(this.id,this.name);
+                    $('#product').append($('<option>',{
+                        value : this.id,
+                        text: this.name,
+                    }));
+                })
+
+            })
+
+        });
+    </script>
 @endsection
