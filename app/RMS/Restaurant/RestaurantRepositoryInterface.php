@@ -15,7 +15,7 @@ interface RestaurantRepositoryInterface
     public function store($paramObj);
     public function extra_delete($id);
     public function extra_edit($id);
-    public function update($paramObj,$oldprice);
+    public function update($paramObj);
     public function updateall($paramObj,$oldprice);
     public function getOldName($id);
     public function getAllNames();

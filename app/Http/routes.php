@@ -398,7 +398,10 @@ Route::group(['middleware' => 'web'], function () {
 
         //Start config
         Route::group(['middleware'=>'generalSetting:Cashier'],function(){
-            Route::get('Config/general_config', 'Backend\Config\ConfigController@general_config');
+            Route::get('Config/index', 'Backend\Config\ConfigController@index');
+            Route::get('Config/create', 'Backend\Config\ConfigController@create');
+
+            // Route::get('Config/general_config', 'Backend\Config\ConfigController@general_config');
             Route::get('Config/edit/{id}', 'Backend\Config\ConfigController@edit');
             Route::post('Config/store', 'Backend\Config\ConfigController@store');
             Route::post('Config/update', 'Backend\Config\ConfigController@update');
@@ -597,13 +600,11 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('import','Backend\CSV\CSVImportController@import');
             Route::post('import/store','Backend\CSV\CSVImportController@store');
 
-           
-           
         });
         //end csv import
 
 
-        //Start Remark
+        //Start restaurant
         Route::group(['middleware'=>'remark:Cashier'],function(){
             Route::get('Remark/index', 'Backend\Remark\RemarkController@index');
             Route::get('Remark/create', 'Backend\Remark\RemarkController@create');
@@ -617,6 +618,27 @@ Route::group(['middleware' => 'web'], function () {
 
         });
         //End remark
+              
+        //Start Restaurant Setup
+        Route::group(['middleware'=>'kitchen:Cashier'],function(){
+            Route::get('Restaurant/index','Backend\Restaurant\RestaurantController@index');
+            Route::get('Restaurant/create','Backend\Restaurant\RestaurantController@create');
+            Route::post('Restaurant/store','Backend\Restaurant\RestaurantController@store');
+            Route::get('Restaurant/edit/{id}','Backend\Restaurant\RestaurantController@edit');
+            Route::post('Restaurant/update','Backend\Restaurant\RestaurantController@update');
+            Route::get('Restaurant/delete/{id}','Backend\Restaurant\RestaurantController@destroy');
+        });
+
+
+        // // branch
+        //  Route::group(['middleware'=>'kitchen:Cashier'],function(){
+        //     Route::get('Branch/index','Backend\Branch\KitchenController@index');
+        //     Route::get('Branch/create','Backend\Branch\KitchenController@create');
+        //     Route::post('Branch/store','Backend\Branch\KitchenController@store');
+        //     Route::get('Branch/edit/{id}','Backend\Branch\KitchenController@edit');
+        //     Route::post('Branch/update','Backend\Branch\KitchenController@update');
+        //     Route::get('Branch/delete/{id}','Backend\Branch\KitchenController@delete');
+        // });
        
 
             

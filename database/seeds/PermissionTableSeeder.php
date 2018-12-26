@@ -571,5 +571,21 @@ class PermissionTableSeeder extends Seeder
             'module_id' => '28',
             'created_by' => '1',
         ]);
+
+         //restaurant
+          DB::table('permissions')->insert([
+            'id' =>'90',
+            'role_id' => '1',
+            'module_id' => '28',
+            'created_by' => '1',
+        ]);
+
+           //branch
+           DB::table('permissions')->insert([
+            'id' =>'91',
+            'role_id' => '1',
+            'module_id' => '29',
+            'created_by' => '1',
+        ]);
     }
 }

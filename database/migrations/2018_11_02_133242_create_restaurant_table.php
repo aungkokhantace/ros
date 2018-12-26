@@ -16,10 +16,12 @@ class CreateRestaurantTable extends Migration
             $table->increments('id');
             $table->string('name');                     
             $table->string('logo');
+            $table->string('mobile_logo');
             $table->string('phone_no');
-            $table->string('email');
+            $table->string('email');           
             $table->string('address');
-            $table->string('description');          
+            $table->string('website');
+            $table->string('description');       
           
             $table->integer('status');
             $table->integer('created_by');
