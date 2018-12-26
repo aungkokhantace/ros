@@ -110,12 +110,13 @@ class Utility
                         ->select('code')
                         ->WHERE ('value','=',$product_type)
                         ->get();
+
         foreach($generate_codes as $generate_code) {
             $code = $generate_code->code;
         }
 
         $inserted_id_length =  strlen($inserted_id);
-        $limit_length = 6;
+        $limit_length = 4;
         $remain_length = $limit_length - $inserted_id_length;
         $remain_length_arr = array();
         for ($i = 1;$i <= $remain_length; $i++) {
@@ -124,7 +125,8 @@ class Utility
 
         $code_length = implode('',$remain_length_arr);
 
-        $stock_code = $code . "_" . $code_length . $inserted_id;
+        // $stock_code = $code . "_" . $code_length . $inserted_id;
+        $stock_code = $code . "" . $code_length . $inserted_id;
         return $stock_code;
     }
 

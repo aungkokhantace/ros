@@ -728,3 +728,10 @@ Route::post('api/v1/order_room','downloadApiController@order_room');
 Route::post('api/v1/download_order_table_with_order_id','downloadApiController@order_table_with_order_id');
 Route::post('api/v1/download_order_room_with_order_id','downloadApiController@order_room_with_order_id');
 Route::post('api/v1/download_order_table_status','downloadApiController@download_order_table_status');
+
+
+//Bi2 system integuration
+Route::get('/category/create','inventory\inventoryController@category');
+Route::get('/groupcode/create','inventory\inventoryController@group');
+Route::get('/classcode/create','inventory\inventoryController@class');
+Route::get('/stock/create','inventory\inventoryController@stock_item');

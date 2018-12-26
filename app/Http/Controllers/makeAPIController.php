@@ -37,7 +37,10 @@ use App\RMS\BookingRoom\BookingRoom;
 use App\RMS\DayStart\DayStart;
 use App\RMS\Shift\ShiftCategory;
 use App\RMS\Shift\ShiftUser;
+use App\RMS\OrderExtra\OrderExtraRepository;
 use App\RMS\Order_Detail_Remark\Order_Detail_Remark;
+use App\RMS\Order_Detail_Remark\Order_Detail_RemarkRepository;
+use App\RMS\OrderSetMenuDetail\OrderSetMenuDetailRepository;
 use Storage;
 use App\Log\LogCustom;
 use App\Status\StatusConstance;
@@ -367,11 +370,15 @@ class MakeAPIController extends ApiGuardController
             $order->total_extra_price       = $extra_price;
             $order->stand_number            = $stand_number;
             $order->save();
-
+            $order_detail_ary = array();
             foreach ($order_details as $order_detail) {
                 $order_detail_id = $order_detail->order_detail_id;
                 $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
+
                 $order_detail_status        = $order_detail->status;
+
+                array_push($order_detail_ary,$order_detail->order_detail_id);
+
                    //check order_detail is already exist or not
                 if($detail == null){ //If new order_detail, create order_detail
                     $temp = new Orderdetail();
@@ -549,6 +556,23 @@ class MakeAPIController extends ApiGuardController
 
             }
 
+            foreach($order_detail_ary as $order_cancel){
+                $cancel_order = Orderdetail::where('order_detail_id',$order_cancel)->first();
+
+                $order_detail_id    = $cancel_order->id;
+                $orderextraRepo     = new OrderExtraRepository();
+                $orderRemarkRpo     = new Order_Detail_RemarkRepository();
+                $orderSetRepo       = new OrderSetMenuDetailRepository();
+                $extraresult        = $orderextraRepo->delete($order_detail_id);
+                $orderRemarkresult  = $orderRemarkRpo->delete($order_detail_id);
+                $ordesetresult      = $orderSetRepo->delete($order_detail_id);
+
+
+
+            }
+            $order_cancels = Orderdetail::where('order_id',$order_id)->whereNotIn('order_detail_id',$order_detail_ary)->whereNull('deleted_at')->delete();
+
+            // dd($order_cancels);
             $output = array("message" => "Success");
         }
         return Response::json($output);
