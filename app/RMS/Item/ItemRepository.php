@@ -149,7 +149,7 @@ class ItemRepository implements ItemRepositoryInterface
 
     public function getAllItemName()
     {
-        $data=DB::table('items')->get();
+        $data=DB::table('items')->whereNull('deleted_at')->where('status',1)->get();
         return $data;
     }
 
@@ -301,6 +301,30 @@ class ItemRepository implements ItemRepositoryInterface
         // dd($tempObj);
         // $tempObj->deleted_at = date('Y-m-d H:m:i');
         // $tempObj->save();
+    }
+    public function getitem_forinvestory($id){
+        $datas = Item::where('status',1)->whereNull('deleted_at')->where('category_id',$id)->get();
+        return $datas;
+    }
+
+    public function get_category_id(){
+       $data = Item::whereNull('deleted_at')->where('status',1)->select('category_id')->get();
+       $item_ary = array();
+       foreach($data as $item){
+           array_push($item_ary,$item->category_id);
+       }
+       return $item_ary;
+    }
+
+    public function getparentCategory(){
+         $category = Category::where('parent_id',0)->select('id as parent_id')->get();
+         return $category;
+    }
+    public function getParent_Id($id){
+        dd($id);
+        $group = Category::where('parent_id',$id)->whereNull('deleted_at')->where('status',1)->get();
+        dd($group);
+        return $group;
     }
 
 }

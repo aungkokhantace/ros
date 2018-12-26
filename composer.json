@@ -14,7 +14,10 @@
         "intervention/image": "dev-master",
         "elibyy/tcpdf-laravel": "5.2.*",
         "spatie/laravel-paginateroute": "^2.6",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "symfony/http-foundation": "^2.0.5",
+        "symfony/psr-http-message-bridge": "0.2",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
