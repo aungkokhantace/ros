@@ -5,6 +5,7 @@ use PDF;
 use App\Http\Requests;
 use App\Session;
 use App\RMS\User\UserRepository;
+use App\User;
 use App\RMS\SyncsTable\SyncsTable;
 
 class Utility
@@ -146,5 +147,14 @@ class Utility
             ->get();
 
         return $rooms;
+    }
+    public static function generateStaffId()
+    {
+        $id_length = 5;
+        $maxID  = User::max('staff_id') ?: '00000';
+        $staff_id = intval($maxID);
+        $staff_id++;//Increment
+        $id     = str_pad($staff_id,$id_length,0,STR_PAD_LEFT);
+        return $id;
     }
 }
