@@ -9,7 +9,7 @@ class CreateOrderTable extends Migration
     public function up()
     {
         Schema::create('order', function (Blueprint $table) {
-            $table->integer('id');
+            $table->string('id');
             $table->integer('user_id');
             $table->integer('take_id')->nullable();
             $table->dateTime('order_time');
@@ -28,7 +28,7 @@ class CreateOrderTable extends Migration
             $table->double('payment_amount');   
             $table->double('refund');
             $table->integer('status')->nullable();
-            $table->double('overall_discount')->nullable();
+            $table->double('over_all_discount')->nullable();
             $table->double('sub_total')->nullable();
             $table->text('over_all_discount_remark')->nullable();
             $table->integer('created_by');
