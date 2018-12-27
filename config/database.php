@@ -54,7 +54,7 @@ return [
 
         'mysql' => [
             'driver'    => 'mysql',
-            'port'      =>'3307',
+            'port'      =>'3306',
             'host'      => env('DB_HOST', 'localhost'),
             'database'  => env('DB_DATABASE', 'rmsproject'),
             'username'  => env('DB_USERNAME', 'root'),
