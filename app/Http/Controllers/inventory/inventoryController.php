@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\inventory;
 
+use Carbon\Carbon;
+//use Chrisbjr\ApiGuard\Contracts\Providers\Auth;
 use Illuminate\Http\Request;
+use Auth;
 
 use App\Http\Requests;
 use App\RMS\Item\ItemRepository;
@@ -165,5 +168,62 @@ class inventoryController extends Controller
     	return json_decode($response);
     }
 
+
+    public function index()
+    {
+        $client = new Client([
+            'base_uri' => $this->resquestserverurl
+        ]);
+        $raw_group_url    = 'groupcode/get_rawgroup';
+        $raw_stock_url    = 'stock/get_raw_stock';
+        $measurement_unit = 'um/get_um';
+        $raw_group_responses  = json_decode($client->get($raw_group_url)->getBody());
+        $raw_stock_responses  = json_decode($client->get($raw_stock_url)->getBody());
+        $measurement_unit_responses  = json_decode($client->get($measurement_unit)->getBody());
+        return view('kitchen.stock_requisition', compact(['raw_group_responses',
+            'raw_stock_responses', 'measurement_unit_responses'
+        ]));
+    }
+
+
+    public function store(Request $request)
+    {
+        $url     = $this->resquestserverurl.'/purchaserequest/create';
+        $now     = Carbon::now();
+        $id      = Auth::guard('Cashier')->user()->kitchen_id;
+        $detail  = [];
+        $client  = new Client();
+        $date_string        = implode(explode('-' , $now->toDateString()));
+        $date_time          = $now->format('d/m/Y H:i:s A');
+        $requisition_no     = $date_string.'-'.$id.'-'.'0000';
+        $stock_requisitions = $request->stock;
+
+        $headers = [
+            'Content-Type' => 'application/json',
+        ];
+
+        foreach ($stock_requisitions as $stock_requisition) {
+            unset($stock_requisition['group'], $stock_requisition['unit']);
+            $detail[] = $stock_requisition;
+        }
+
+        $data = [
+            'RequisitionNo'       => $requisition_no,
+            'RequisitionDate'     => $date_time,
+            'LocationId'          => $id,
+            'PriorityId'          => 0,
+            'ReceivedDate'        => null,
+            'requisition_details' => $detail
+        ];
+
+        $result = json_encode($data);
+
+        $res = $client->post($url, [
+            'headers' => $headers,
+            'body' => $result
+        ]);
+
+        dd(json_decode($res->getBody()));
+    }
    
 }

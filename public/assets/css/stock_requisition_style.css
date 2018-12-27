@@ -1,18 +1,41 @@
-.stock form .col-sm-2 {
-    text-align: right;
-}
-.stock form {
-    margin-top: 40px;
-}
-.stock form .form-group {
-    margin-left:auto !important;
-    margin-right:auto !important;
+.col-lg-12 .form-div {
+    margin-left: 60px;
 }
 
-html, body {
-    height: 100%;
-    margin: 0px;
+.col-lg-12 .bg-div {
+    background: white;
+    border-radius: 10px;
+    width: auto;
 }
-.container {
-    height: 100%;
+
+.col-lg-12 .form-group {
+    margin: 0 0 0 35px;
+    padding: 15px 0 15px 0;
+}
+
+.col-lg-12 .first-div {
+    padding-top: 40px;
+}
+
+.form-group input {
+    border-radius: 5px;
+}
+
+.form-group .mr-2 button{
+    background: #6c757d;
+    color: white;
+}
+.bg-div {
+    margin-top: 10px;
+}
+
+.bg-div span {
+    display: none;
+}
+
+.bg-div span i {
+    float: right;
+    color: red;
+    padding: 10px 10px 0 0;
+    cursor: pointer;
 }
