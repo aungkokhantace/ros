@@ -1,6 +1,6 @@
 <?php
 
-namespace App\RMS;
+namespace App\Inventory;
 
 use Illuminate\Database\Eloquent\Model;
 

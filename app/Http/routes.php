@@ -735,3 +735,4 @@ Route::get('/category/create','inventory\inventoryController@category');
 Route::get('/groupcode/create','inventory\inventoryController@group');
 Route::get('/classcode/create','inventory\inventoryController@class');
 Route::get('/stock/create','inventory\inventoryController@stock_item');
+Route::get('sync_um','inventory\inventoryController@getSyncUm');

@@ -13,6 +13,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request as GuRequest;
+use App\Inventory\UM;
 
 class inventoryController extends Controller
 {
@@ -131,6 +132,37 @@ class inventoryController extends Controller
 		
 		
 
+    }
+    public function getSyncUm()
+    {
+    	$uri = 'um/get_um';
+    	$data = $this->guzzleClient($uri);
+
+    	foreach ($data as $um) {
+
+        if (UM::pluck('um_id')->contains($um->Id)) {
+                UM::find($um->Id)->first()->update([
+                    'um_id' =>$um->Id,
+                    'code' =>$um->Code ,
+                    'description' =>$um->Description,
+                    'updated_by' =>1,
+                ]);
+        }else{
+            UM::create([
+                    'um_id' =>$um->Id,
+                    'code' =>$um->Code,
+                    'description' =>$um->Description,
+                    'created_by' =>1,
+                ]);
+        }
+    }
+    }
+
+    public function guzzleClient($uri)
+    {
+	   	$client 		= new Client(['base_uri' => $this->resquestserverurl]);
+		$response 		= $client->get($uri)->getBody();
+    	return json_decode($response);
     }
 
    
