@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ecaad9b91fe29ca18f1fc0863e7b0422519b1e5
 @extends('Backend.layouts.kitchen.master')
 @section('title','Order View')
 @section('content')
@@ -433,3 +437,7 @@
         });
     </script>
 @endsection
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ecaad9b91fe29ca18f1fc0863e7b0422519b1e5

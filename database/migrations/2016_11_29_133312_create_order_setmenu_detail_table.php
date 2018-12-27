@@ -9,8 +9,7 @@ class CreateOrderSetmenuDetailTable extends Migration
     public function up()
     {
          Schema::create('order_setmenu_detail', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('order_detail_id');
+            $table->string('order_detail_id');
             $table->integer('setmenu_id');
             $table->integer('item_id');
             $table->integer('order_type_id');
