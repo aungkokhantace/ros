@@ -260,6 +260,9 @@ class MakeAPIController extends ApiGuardController
             if ($this->findItem($order_detail->item_id)->isReadyFood()) {
                 $order_detail_status        = 2;
             }
+
+            $investory_item = Item::find($order_detail->item_id);
+            
             $temp = new Orderdetail();
             $temp->order_id             = $order_id;
             $temp->item_id              = $order_detail->item_id;
