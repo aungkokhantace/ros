@@ -194,14 +194,15 @@ class ShiftController extends Controller
             ->with('users',$users);
     }
     public function shift_update(Request $request) {
-        $branch_id               = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');
-
-        $restaurant_id           = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant');
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant');
 
         $shift_id                       = $request->get('id');
+
         $categories                     = $request->get('category');
 
         $setmenu                        = $request->get('setmenu');
+
         $users                          = $request->get('user');
         //Delete Old Shift as unaviable
         $deleted_at                     = date('Y-m-d H:m:i');
@@ -224,8 +225,8 @@ class ShiftController extends Controller
                 $categoryObj                = new ShiftCategory();
                 $categoryObj->shift_id      = $shift_id;
                 $categoryObj->category_id   = $category;
-                $categoryObj->restaurant_id      = $restaurant_id;
-                $categoryObj->branch_id          = $branch_id;
+                $categoryObj->restaurant_id = $restaurant_id;
+                $categoryObj->branch_id     = $branch_id;
                 $categoryObj->status        = $cat_status;
 
                 $result                     = $this->shiftRepository->store($categoryObj);

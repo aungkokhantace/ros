@@ -172,7 +172,7 @@ class ShiftRepository implements ShiftRepositoryInterface
 
     public function getSetMenu($branch_id,$restaurant_id){
         $status             = StatusConstance::SETMENU_AVAILABLE_STATUS;
-        $query              = ShiftSetMenu::query();
+        $query              = SetMenu::query();
         $setmenu           = $query->where('status',$status)
             ->where('restaurant_id',$restaurant_id)
             ->where('branch_id',$branch_id)

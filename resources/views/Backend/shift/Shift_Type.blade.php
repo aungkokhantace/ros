@@ -44,13 +44,12 @@
                         <input type="checkbox" name="category[]" value="{{ $cat->id }}" @if(in_array($cat->id,$shift_category)) {{ 'checked' }} @endif >&nbsp;&nbsp;{{ $cat->name }}
                     </div>
                 @endforeach
-                    @if(count($shift_setmenu)>0)
-                        @foreach($setmenu as $set)
-                            <div class="col-md-6">
+                @foreach($setmenu as $set)
+                       <div class="col-md-6">
                                 <input type="checkbox" name="setmenu[]" value="{{ $set->id }}" @if(in_array($set->id,$shift_setmenu)) {{ 'checked' }} @endif>&nbsp;&nbsp;{{ $set->set_menus_name }}
-                            </div>
-                            @endforeach
-                    @endif
+                       </div>
+                 @endforeach
+
                 <div class="clear"></div>
                 </div>
             </div>

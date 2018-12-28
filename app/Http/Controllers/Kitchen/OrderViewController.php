@@ -269,7 +269,7 @@ class OrderViewController extends Controller
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
                                           WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status) ");
         
-        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND restaurant_id = $restaurant_id AND branch_id = $branch_id  deleted_at is NULL");
+        $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND restaurant_id = $restaurant_id AND branch_id = $branch_id AND deleted_at is NULL");
         $categoryIdArr      = array();
         foreach($categoryRaw as $category){
             array_push($categoryIdArr,$category->id);
