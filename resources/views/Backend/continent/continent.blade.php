@@ -32,7 +32,7 @@
              <div>
                 <select name="category[]" id="Category" multiple="multiple" class=col-md-12>
                         @foreach($categories as $category)
-                        <option value="{{$category['id']}}" @if($continent->category_continent->contains($category['id'])){{'selected'}}@endif>{{$category['name']}}</option>
+                        <option value="{{$category['id']}}" @if(isset($continent) && $continent->category_continent->contains($category['id'])){{'selected'}}@endif>{{$category['name']}}</option>
                         @endforeach
                 </select>
                 <p class="text-danger" id="items_err">{{ $errors->first("category[]") }}</p>
