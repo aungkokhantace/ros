@@ -17,11 +17,18 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request as GuRequest;
 use App\Inventory\UM;
+use App\RMS\Utility;
 
 class inventoryController extends Controller
 {
 
+    private $utility;
 	public $resquestserverurl  = 'http://gr8.acebi2.com.preview.my-hosting-panel.com';
+
+	public function __construct()
+    {
+        $this->utility = new Utility();
+    }
 
     public function category(){
 
@@ -184,46 +191,4 @@ class inventoryController extends Controller
             'raw_stock_responses', 'measurement_unit_responses'
         ]));
     }
-
-
-    public function store(Request $request)
-    {
-        $url     = $this->resquestserverurl.'/purchaserequest/create';
-        $now     = Carbon::now();
-        $id      = Auth::guard('Cashier')->user()->kitchen_id;
-        $detail  = [];
-        $client  = new Client();
-        $date_string        = implode(explode('-' , $now->toDateString()));
-        $date_time          = $now->format('d/m/Y H:i:s A');
-        $requisition_no     = $date_string.'-'.$id.'-'.'0000';
-        $stock_requisitions = $request->stock;
-
-        $headers = [
-            'Content-Type' => 'application/json',
-        ];
-
-        foreach ($stock_requisitions as $stock_requisition) {
-            unset($stock_requisition['group'], $stock_requisition['unit']);
-            $detail[] = $stock_requisition;
-        }
-
-        $data = [
-            'RequisitionNo'       => $requisition_no,
-            'RequisitionDate'     => $date_time,
-            'LocationId'          => $id,
-            'PriorityId'          => 0,
-            'ReceivedDate'        => null,
-            'requisition_details' => $detail
-        ];
-
-        $result = json_encode($data);
-
-        $res = $client->post($url, [
-            'headers' => $headers,
-            'body' => $result
-        ]);
-
-        dd(json_decode($res->getBody()));
-    }
-   
 }
