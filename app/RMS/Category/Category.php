@@ -10,6 +10,7 @@ class Category extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $table = 'category';
+    protected $hidden = ['pivot'];
 
     protected $fillable=['id','name','parent_id','kitchen_id','group_id','image','status','description','created_by','updated_by',
     'deleted_by','created_at','updated_at','deleted_at'];
@@ -23,6 +24,11 @@ class Category extends Model
     public function kitchen()
     {
         return $this->belongsTo('App\RMS\Kitchen\Kitchen', 'kitchen_id', 'id');
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 }
 

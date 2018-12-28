@@ -58,7 +58,7 @@ class MakeAPIController extends ApiGuardController
     {
         $temp     = Input::all();
 
-        $username = $temp['username'];
+        $staff_id = $temp['username'];
         $password = $temp['password'];
         $key      = $temp['site_activation_key'];
         $site_activation_key = Config::all();
@@ -70,7 +70,7 @@ class MakeAPIController extends ApiGuardController
 
         if($key == $activate_key){
             $validation = Auth::guard('Cashier')->attempt([
-                'user_name' => $username,
+                'staff_id' => $staff_id,
                 'password' => $password,
             ]);
             if ($validation) {

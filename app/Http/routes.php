@@ -361,6 +361,17 @@ Route::group(['middleware' => 'web'], function () {
             });
             //end set
 
+            //start Continent
+            Route::group(['middleware'=>'continent:Cashier'],function(){
+                Route::get('Continent/index', 'Backend\Continent\ContinentController@index');
+                Route::get('Continent/create', 'Backend\Continent\ContinentController@create');
+                Route::post('Continent/store', 'Backend\Continent\ContinentController@store');
+                Route::get('Continent/edit/{id}', 'Backend\Continent\ContinentController@edit');
+                Route::post('Continent/update', 'Backend\Continent\ContinentController@update');
+                Route::get('Continent/delete/{id}', 'Backend\Continent\ContinentController@delete');
+            });
+            //end Continent
+
             //start Table Route
             Route::group(['middleware'=>'table:Cashier'],function(){
                 Route::get('Table/create', 'Backend\Table\TableController@create');
