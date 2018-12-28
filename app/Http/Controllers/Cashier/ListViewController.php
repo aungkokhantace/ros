@@ -385,7 +385,7 @@ class ListViewController extends Controller
                               ->where('items.status',$status)
                               ->where('items.group_id',$itemRepo->group_id)
                               ->whereNull('items.deleted_at')
-                              ->where('continent.restaurant_id',$restaurant)
+                              //->where('continent.restaurant_id',$restaurant)
                               ->get()->toArray();
             // dd($continents);
             $itemRepo->continent = $continents;
@@ -411,6 +411,7 @@ class ListViewController extends Controller
     }
     
     public function continent($itemID,$continentID) {
+        //dd($itemID);
         $status     = StatusConstance::ITEM_AVAILABLE_STATUS;
         $today      = Carbon::now();
         $cur_date   = Carbon::parse($today)->format('Y-m-d');

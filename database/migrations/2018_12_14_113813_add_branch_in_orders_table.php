@@ -43,10 +43,7 @@ class AddBranchInOrdersTable extends Migration
              $table->integer('restaurant_id')->nullable()->after('table_id'); 
              $table->integer('branch_id')->nullable()->after('restaurant_id');            
         });
-        Schema::table('order', function (Blueprint $table) {
-             $table->integer('restaurant_id ')->nullable()->after('shift_id'); 
-             $table->integer('branch_id')->nullable()->after('restaurant_id');            
-        });
+       
     }
 
     /**
@@ -91,10 +88,6 @@ class AddBranchInOrdersTable extends Migration
            $table->dropColumn('branch_id');     
           
         });
-        Schema::table('order', function (Blueprint $table) {
-           $table->dropColumn('restaurant_id');    
-           $table->dropColumn('branch_id');     
-          
-        });
+       
     }
 }

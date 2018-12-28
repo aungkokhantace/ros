@@ -76,6 +76,7 @@ function orderSetMenu(setMenuID) {
 
 //Function For continent Choose
 function continentOK(itemID,uniqid) {
+    // console.log("continent");
     continentID     = $('#continent-select-' + uniqid).val();
     //Find Continent Price and discount
     textID      = "continent-" + uniqid;
@@ -86,7 +87,7 @@ function continentOK(itemID,uniqid) {
         type: 'GET',
         url: '/Cashier/MakeOrder/continent/' + itemID + '/' + continentID,
         success: function (Response) {
-            // console.log(Response);
+            //console.log(Response);
             price_with_discount     = parseInt(Response.price_with_discount);
             priceval    = parseInt(Response.price);
             // if (isNaN(price_with_discount)) {

@@ -167,9 +167,9 @@ class ItemRepository implements ItemRepositoryInterface
     {
         $restaurant          = Utility::getCurrentRestaurant();
         $query               = Continent::query();
-        if($restaurant != null || $restaurant != 0){
-            $query           = $query->where('restaurant_id',$restaurant);
-        }
+        // if($restaurant != null || $restaurant != 0){
+        //     $query           = $query->where('restaurant_id',$restaurant);
+        // }
         $continent           = $query->select('id','name','description')->whereNull('deleted_at')->get()->toArray();  
         return $continent;
     }

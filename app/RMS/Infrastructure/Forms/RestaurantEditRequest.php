@@ -3,6 +3,7 @@
 namespace App\RMS\Infrastructure\Forms;
 
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Input;
 
 class RestaurantEditRequest extends Request
 {
@@ -25,9 +26,9 @@ class RestaurantEditRequest extends Request
     {
        // dd("rule");
         return [
-            // 'name'=>'required|unique:restaurant,name,NULL,id,deleted_at,NULL',
+            'name'=>'required|unique:restaurant,name,'.$this->get("id").',id,deleted_at,NULL',           
             'name'      => 'required',
-            'email'     => "email|unique:restaurant",
+            'email'     => "email|unique:restaurant,email,".$this->get("id").",id,deleted_at,NULL",
             'website'   => 'url',
             // 'phone'     => 'required',
             // 'address'   => 'required',
@@ -38,7 +39,7 @@ class RestaurantEditRequest extends Request
     {
         return [
             'name.required'=>'Name is required.',
-            // 'name.unique'   => 'Name is already exists.',
+            'name.unique'   => 'Name is already exists.',
             // 'email.required'=>'Email is required.',
             'email.unique'  => 'Email is already exists.',
             // 'website.required'=>'URL is required.',

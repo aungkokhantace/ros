@@ -33,9 +33,9 @@ class ItemController extends Controller
     public function index()
     {
 
-       $items   = Item::all();
-       $cat     = $this->ItemRepository->allCat();
-       //$cat     = $this->CategoryRepository->getAllCategory();
+       $items   = $this->ItemRepository->getItem();
+       // $cat     = $this->ItemRepository->allCat();     
+       $cat     = $this->CategoryRepository->getAllCategory();
        
        // dd($items,$cat);
        return view('cashier.item.ItemListing')->with('items', $items)->with('cat', $cat);
