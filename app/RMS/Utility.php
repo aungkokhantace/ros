@@ -6,6 +6,8 @@ use App\Http\Requests;
 use App\Session;
 use App\RMS\User\UserRepository;
 use App\RMS\SyncsTable\SyncsTable;
+use DateTime;
+
 
 class Utility
 {
@@ -147,4 +149,6 @@ class Utility
 
         return $rooms;
     }
+
+    
 }

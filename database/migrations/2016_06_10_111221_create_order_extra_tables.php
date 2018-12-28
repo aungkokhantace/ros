@@ -9,7 +9,7 @@ class CreateOrderExtraTables extends Migration
     public function up()
     {
         Schema::create('order_extra', function (Blueprint $table) {
-            $table->integer('order_detail_id');
+            $table->string('order_detail_id');
             $table->integer('extra_id');
             $table->integer('quantity');
             $table->double('amount');

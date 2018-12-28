@@ -70,6 +70,7 @@ class ItemRepository implements ItemRepositoryInterface
                     $tempObj->isdefault                = $isDefault;
                     $tempObj->group_id                 = $groupID;
                     $tempObj->has_continent            = $check;
+                    $tempObj->is_ready_food            = $paramObj->is_ready_food;
                     $addCreatedBy                      = Utility::addCreatedBy($tempObj);
                     $addCreatedBy->save();
 
@@ -161,7 +162,7 @@ class ItemRepository implements ItemRepositoryInterface
 
     public function getContinentByGroupID($groupID)
     {
-        $continent_items    = Item::select('id','image','price','continent_id')
+        $continent_items    = Item::select('id','image','price','continent_id','isdefault')
         ->where('group_id','=',$groupID)->whereNull('deleted_at')->get();
         return $continent_items;
     }
@@ -228,7 +229,7 @@ class ItemRepository implements ItemRepositoryInterface
         $currentUser = Utility::getCurrentUserID();//get current user login
         try {
             $tempObj = Utility::addUpdatedBy($paramObj);
-            $tempObj->save();
+             $tempObj->touch();               
 
             if ($tempObj->price !== $oldprice) {
                 //Save item Price change history

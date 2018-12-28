@@ -12,6 +12,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Middleware;
+use App\RMS\Utility;
+use App\RMS\Order\OrderRepository;
 use App\RMS\Item\Item;
 use DB;
 use GuzzleHttp\Psr7\Request as GuRequest;
@@ -249,6 +251,16 @@ class inventoryController extends Controller
 		$response = Category::find($id);
 		$parent_id =  $response->parent_id;
 		return $parent_id;
+	}
+
+
+
+	public function saleStock($id){
+		 $orderRepo = new OrderRepository();
+		 $order     = $orderRepo->getOrderById($id);
+		 $orderAry = array();
+		 $orderAry['InvoiceNo']     = $order->id;
+		 $orderAry['InvoiceDate']   = Utility::ChangeDateFromat($order->order_time);
 	}
  
 }

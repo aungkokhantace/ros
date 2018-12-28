@@ -15,7 +15,7 @@ class CreateContimentNameTable extends Migration
         Schema::create('continent', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name',250)->nullable();
-            $table->string('description',500)->nullable();
+            $table->text('description')->nullable();
 
             //Common to all table ----------------------------------------------
             $table->string('created_by',100)->nullable();

@@ -28,4 +28,9 @@ class Orderdetail extends Model
     {
         return $this->belongsTo('App\RMS\Item\Item','item_id','id');
     }
+
+    public function OrderExtras()
+    {
+        return $this->hasMany('App\RMS\OrderExtra\OrderExtra','order_detail_id','id');        
+    }
 }

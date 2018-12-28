@@ -16,7 +16,7 @@ class CreatePOSTendersTable extends Migration
             $table->increments('id');
             $table->string('code',100);
             $table->string('name',100);
-            $table->string('description',500);
+            $table->text('description');
             $table->double('amount')->nullable();
             $table->tinyInteger('card_type');
             $table->tinyInteger('status');

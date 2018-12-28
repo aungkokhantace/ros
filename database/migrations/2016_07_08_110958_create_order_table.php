@@ -28,6 +28,9 @@ class CreateOrderTable extends Migration
             $table->double('payment_amount');   
             $table->double('refund');
             $table->integer('status')->nullable();
+            $table->double('over_all_discount')->nullable();
+            $table->double('sub_total')->nullable();
+            $table->text('over_all_discount_remark')->nullable();
             $table->integer('created_by');
             $table->integer('updated_by');
             $table->integer('deleted_by')->nullable();

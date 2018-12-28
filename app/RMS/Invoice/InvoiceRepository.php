@@ -203,7 +203,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 	public function getorder($id)
 	{
-		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge','status')->where('id',$id)->first();
+		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','over_all_discount','sub_total','over_all_discount_remark','total_price_foc','room_charge','status')->where('id',$id)->first();
 		
 		return $orders;
 	}
@@ -240,7 +240,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
     public function orderRoom($id){
         $rooms = OrderRoom::leftjoin('rooms','rooms.id','=','order_room.room_id')
-        ->select('order_room.room_id','order_room.order_id','rooms.room_name')->where('order_room.order_id','=',$id)->get();
+        ->select('order_room.room_id','order_room.order_id','rooms.room_name','rooms.price')->where('order_room.order_id','=',$id)->get();
       
         return $rooms;
     }

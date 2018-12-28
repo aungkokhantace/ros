@@ -104,6 +104,11 @@ class OrderRepository implements OrderRepositoryInterface
         ->get();
         return $orders;
     }
+
+    public function getOrderById($id){
+        $orders = DB::table('order')->where('id',$id)->first();
+        return $orders;
+    }
     
     
 }
