@@ -151,7 +151,7 @@ class Utility
         return $rooms;
     }
 
-    public static function dateCodeString()
+    public function dateCodeString()
     {
         $now = Carbon::now()->format('y-m-d');
         $dateCode = implode(explode('-' , $now));
@@ -162,8 +162,31 @@ class Utility
     public static function dateString()
     {
         $now = Carbon::now()->format('Y-m-d H:i:s');
-        $date_string = implode('T', explode(' ' , $now)).'Z';
+        $date_string = implode('T', explode(' ', $now)).'Z';
 
         return $date_string;
+    }
+
+    public function generateRequisitionNo()
+    {
+        $date = $this->dateCodeString();
+        $repository = new ConfigRepository();
+        $config = $repository->getAllConfig();
+        $int = 00000;
+        if (!empty($config->requisition_no)) {
+            $old_digit = substr($config->requisition_no, 8, 5);
+            $old_date  = substr($config->requisition_no, 2, 6);
+            if ($old_date == $date) {
+                $int = $old_digit;
+            }
+        }
+
+        $digit  = str_pad($int + 1, 5, 0, STR_PAD_LEFT);
+        $code   = 'RP'.$date.$digit;
+        $result = [
+            'code' => $code,
+            'id'   => $config->id
+        ];
+        return $result;
     }
 }

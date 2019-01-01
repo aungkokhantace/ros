@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\inventory;
 
+use App\RMS\Config\ConfigRepository;
 use Carbon\Carbon;
 //use Chrisbjr\ApiGuard\Contracts\Providers\Auth;
 use Illuminate\Http\Request;
@@ -18,15 +19,21 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request as GuRequest;
 use App\Inventory\UM;
 use App\RMS\Utility;
+use App\RMS\Config\ConfigRepositoryInterface;
+use Validator;
 
 class inventoryController extends Controller
 {
 
     private $utility;
+
+    private $configRepository;
+
 	public $resquestserverurl  = 'http://gr8.acebi2.com.preview.my-hosting-panel.com';
 
-	public function __construct()
+	public function __construct(ConfigRepositoryInterface $configRepository)
     {
+        $this->configRepository = $configRepository;
         $this->utility = new Utility();
     }
 
@@ -190,5 +197,65 @@ class inventoryController extends Controller
         return view('kitchen.stock_requisition', compact(['raw_group_responses',
             'raw_stock_responses', 'measurement_unit_responses'
         ]));
+    }
+
+    public function store(Request $request)
+    {
+        $post_url  = $this->resquestserverurl.'/purchaserequest/create';
+        $get_url   = '/purchaserequest/get_purchaserequisition';
+        $id        = Auth::guard('Cashier')->user()->kitchen_id;
+        $code      = ((object)$this->utility->generateRequisitionNo())->code;
+        $config_id = ((object)$this->utility->generateRequisitionNo())->id;
+        $detail    = [];
+        $stock_requisitions = $request->stock;
+
+        foreach ($stock_requisitions as $stock_requisition) {
+            $validator = Validator::make($stock_requisition, [
+                'Quantity' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                return redirect('Kitchen/stock-requisition')->with('fail', 'Required Please Insert All Fields.');
+            }
+
+            unset($stock_requisition['group'], $stock_requisition['unit']);
+            $detail[] = $stock_requisition;
+        }
+
+
+
+        $data = [
+            [
+                "RequisitionNo" => $code,
+                "RequisitionDate" => "2018-12-27T07:40:43Z",
+                "LocationId" => 1,
+                "PriorityId"=> 0,
+                "ReceivedDate" => null,
+                "requisition_details" => $detail
+            ]
+        ];
+
+        $body = json_encode($data);
+
+        $post_client = new Client([
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
+
+        $get_client  = new Client([
+           'base_uri' => $this->resquestserverurl
+        ]);
+
+        $post_client->post($post_url, ['body' => $body]);
+
+        $requisitions = json_decode($get_client->get($get_url)->getBody());
+
+        foreach ($requisitions as $requisition) {
+            if ($requisition->RequisitionNo == $code) {
+                $this->configRepository->updateRequisitionNo($config_id, $code);
+                return redirect('Kitchen/stock-requisition')->with('success', 'Successful To Request.');
+            }
+        }
+
+        return redirect('Kitchen/stock-requisition')->with('fail', 'Fail To Request, Please Try Again Later.');
     }
 }

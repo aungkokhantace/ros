@@ -39,3 +39,8 @@
     padding: 10px 10px 0 0;
     cursor: pointer;
 }
+.alert {
+    text-align: center;
+    color: white;
+    font-weight: bolder;
+}

@@ -12,6 +12,16 @@
                                 <form action="{{ url('/Kitchen/stock-requisition') }}" method="post">
                                     {{ csrf_field() }}
                                     <h4><b>Stock Requisition Form</b></h4><br>
+                                    @if (Session::has('success'))
+                                        <div class="alert alert-success">
+                                            {{ session('success') }}
+                                        </div>
+                                    @endif
+                                    @if (Session::has('fail'))
+                                        <div class="alert alert-danger">
+                                            {{ session('fail') }}
+                                        </div>
+                                    @endif
                                     <div class="clone-div">
                                         <div class="bg-div form-block" id="clone0">
                                             <span id="remove1" onclick="remove(this)"><i class="fa fa-times"></i></span>
