@@ -359,8 +359,70 @@ class MakeAPIController extends ApiGuardController
     public function add_new_to_voucher(){
 
     // try{
+/*
+<<<<<<< HEAD
+        $order                          = Order::find($order_id);
+        //Check Order is Already Paid
+        $order_status                   = $order->status;
+        if ($order_status == 2) {
+            $output = array("message" => "Paid");
+        } else {
+            $order->total_price             = $total_price;
+            $order->service_amount          = $service_amount;
+            $order->tax_amount              = $tax_amount;
+            $order->all_total_amount        = $net_price;
+            $order->total_discount_amount   = $discount_amount;
+            $order->total_extra_price       = $extra_price;
+            $order->stand_number            = $stand_number;
+            $order->save();
+            $order_detail_ary = array();
+            foreach ($order_details as $order_detail) {
+                $order_detail_id = $order_detail->order_detail_id;
+                $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
 
+                $order_detail_status        = $order_detail->status;
+
+                array_push($order_detail_ary,$order_detail->order_detail_id);
+
+                   //check order_detail is already exist or not
+                if($detail == null){ //If new order_detail, create order_detail
+                    $temp = new Orderdetail();
+                    $temp->order_id             = $order_id;
+                    $temp->item_id              = $order_detail->item_id;
+                    $temp->order_detail_id      = $order_detail->order_detail_id;
+                    $temp->setmenu_id           = $order_detail->set_id;
+                    $temp->quantity             = $order_detail->quantity;
+                    $temp->order_type_id        = $order_detail->order_type_id;
+                    $temp->discount_amount      = $order_detail->discount_amount;
+                    $temp->exception            = $order_detail->exception;
+                    $temp->promotion_id         = $order_detail->promotion_id;
+                    $temp->amount               = $order_detail->price;
+                    $temp->amount_with_discount = $order_detail->amount;
+                    $temp->order_time           = $dt->toDateTimeString();
+                    $temp->status_id            = $order_detail_status;
+                    $temp->take_item            = $order_detail->take_item;
+                    if($order_detail->remark_extra != ''){
+                     $temp->remark_extra   = $order_detail->remark_extra;
+                    }
+                    $temp->save();
+
+                    $set_item = $order_detail->set_item;
+                    foreach($set_item as $item){
+                        $order_setdetail_status        = $temp->status_id;
+                        $set = new OrderSetMenuDetail();
+                        $set->order_detail_id = $temp->id;
+                        $set->setmenu_id      = $item->set_menu_id;
+                        $set->item_id         = $item->item_id;
+                        $set->order_type_id   = $temp->order_type_id;
+                        $set->exception       = $temp->exception;
+                        $set->order_time      = $dt->toDateTimeString();
+                        $set->status_id       = $order_setdetail_status;
+                        $set->quantity        = "1";
+                        $set->save();
+                    }
+=======
     //     DB::beginTransaction();
+>>>>>>> 6ecaad9b91fe29ca18f1fc0863e7b0422519b1e5*/
 
             $temp       = Input::all();
             $ordersRaw  = $temp['orderID'];

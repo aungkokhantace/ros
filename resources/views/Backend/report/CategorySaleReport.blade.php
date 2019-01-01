@@ -86,6 +86,7 @@
                             <td>{{ $value->amount }}</td>
                         </tr>
                             <?php
+                                $sum = 0;
                                 $sum += $value->amount;
                             ?>
                         @endforeach

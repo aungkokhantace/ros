@@ -70,23 +70,25 @@ class SaleReportByTableController extends Controller
         $table_count  = [];
         $reports      = [];
         $total_amount = 0;
-
         foreach ($data as $table_sale_report) {
             $total_amount += $table_sale_report->amount;
             $table_id   = $table_sale_report->table_id;
             $tableIds[] = $table_id;
-            $duplicate[$table_sale_report->table_no] = $table_id;
+            $duplicate[$table_sale_report->table_no]   = $table_id;
+            $table_count[$table_sale_report->table_no] = 1;
+
             if (in_array($table_id, $tableIds)) {
                 $table_count[$table_sale_report->table_no] += 1;
             }
+
+            $table_sale_report->quantity = $table_count[$table_sale_report->table_no];
+            $reports[$table_sale_report->table_no] = $table_sale_report;
 
             if (in_array($table_id, $duplicate)) {
                 $table_sale_report->amount += $reports[$table_sale_report->table_no]->amount;
                 unset($reports[$table_id]);
                 unset($duplicate[$table_id]);
             }
-            $table_sale_report->quantity = $table_count[$table_sale_report->table_no];
-            $reports[$table_sale_report->table_no] = $table_sale_report;
         }
 
         $result = [

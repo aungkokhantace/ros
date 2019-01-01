@@ -671,7 +671,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('productView', 'Kitchen\OrderViewController@productView');
             Route::get('test', 'Kitchen\HomeController@pricesPage');
             Route::get('test-values', 'Kitchen\HomeController@pricesValues');
-            Route::resource('stock-requisition', 'Kitchen\OrderViewController', ['only' => ['index', 'store']]);
+            Route::resource('stock-requisition', 'inventory\inventoryController', ['only' => ['index', 'store']]);
         });
     });
 });
@@ -741,4 +741,5 @@ Route::get('/category/create','inventory\inventoryController@category');
 Route::get('/groupcode/create','inventory\inventoryController@group');
 Route::get('/classcode/create','inventory\inventoryController@class');
 Route::get('/stock/create','inventory\inventoryController@stock_item');
+Route::get('sync_um','inventory\inventoryController@getSyncUm');
 

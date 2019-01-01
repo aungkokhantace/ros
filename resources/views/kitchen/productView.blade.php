@@ -1,19 +1,6 @@
-@extends('Backend.layouts.kitchen.master')
+@extends('kitchen.kitchen_header')
 @section('title','Order View')
 @section('content')
-    {{--title--}}
-    <style>
-        body .tr_header {
-            font-weight: bolder;
-            font-family: 'Source Sans Pro', sans-serif;
-        }
-
-        body tbody {
-            font-size: 14px;
-            font-weight: bolder;
-            font-family: 'Source Sans Pro', sans-serif;
-        }
-    </style>
     <div id="body">
         <div class="container product">
             <div class="row" id="autoDiv">
@@ -39,11 +26,11 @@
                                     <td>Quantity</td>
                                     <!-- <td>Exception</td> -->
                                     <td>Remark</td>
-                                    <td>Add On</td>
+                                    <td class="min-width">Add On</td>
                                     <!-- <td>StartTime</td> -->
-                                    <td>Order Time</td>
+                                    <td class="order-min-width">Order Time</td>
                                     <!--  <td>Cooking Duration</td> -->
-                                    <td>Order Status</td>
+                                    <td class="order-min-width">Order Status</td>
                                     <td colspan="2">Action</td>
                                 </tr>
                                 </thead>
@@ -112,7 +99,7 @@
 
                                                     @endif
                                                     @if($item->status_id == '3')
-                                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Take" /><br><br>
+                                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Take" />
 
                                                     @endif
                                                 </td>
@@ -166,7 +153,6 @@
                                     @endforeach
                                 @endif
 
-
                                 <!-- For Set Menu -->
                                 @if(count($p['setmenu']) != 0)
                                     @foreach($p['setmenu'] as $setmenu)
@@ -174,12 +160,12 @@
                                             <tr class="tr-row"  data-ordertime = "{{$setmenu->order_time}}">
                                                 <td>
                                                     @if($setmenu->take_id == 1)
-                                                        <h4>Take Away</h4>
+                                                        Take Away
                                                     @endif
                                                     @if(isset($tables) && count($tables) >0 )
                                                         @foreach($tables as $table)
                                                             @if($table->order_id == $setmenu->order_id)
-                                                                <h4>{{$table->table_no}}</h4>
+                                                                {{$table->table_no}}
                                                             @endif
                                                         @endforeach
                                                     @endif
@@ -187,7 +173,7 @@
                                                     @if(isset($rooms) && count($rooms) > 0)
                                                         @foreach($rooms as $room)
                                                             @if($room->order_id == $setmenu->order_id)
-                                                                <h4>{{ $room->room_name }}</h4>
+                                                                {{ $room->room_name }}
                                                             @endif
                                                         @endforeach
                                                     @endif
@@ -235,8 +221,7 @@
 
                                                     @endif
                                                     @if($setmenu->status_id =='3')
-                                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="complete" value="Taken">
-
+                                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->order_detail_id}}" name="complete" value="Taken">
                                                     @endif
                                                 </td>
                                                 @if($setmenu->status_id == '1')
@@ -280,6 +265,8 @@
                                                         </div>
                                                         <!-- Modal -->
                                                     </td>
+                                                @else
+                                                    <td style="border-left: none !important;"></td>
                                                 @endif
                                             </tr>
                                         @endif
@@ -430,6 +417,37 @@
                 });
             });
 
+            $('#divAuto').on('click', '.taken', function(e){
+                var itemID      = $(this).attr('id');
+                $(document).ready(function  (){
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this item!",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "Confirm",
+                        closeOnConfirm: false
+                    }, function(isConfirm){
+
+                        if (isConfirm) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/taken/ajaxRequest/' + itemID,
+                                success: function (Response) {
+
+                                    console.log(Response);
+                                    //Socket Emit
+                                    var socketKey        = "taken_by";
+                                    var socketValue      = "taken_by";
+                                    socketEmit(socketKey,socketValue);
+                                    swal.close();
+                                }
+                            });
+                        };
+                    });
+                });
+            });
 
             $('#autoDiv').on('click','.complete_taken_setmenu', function (e) {
                 // window.location.href = "/Kitchen/productView/CookedItem/" + $(this).attr('id');

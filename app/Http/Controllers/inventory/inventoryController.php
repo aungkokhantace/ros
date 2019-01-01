@@ -261,6 +261,7 @@ class inventoryController extends Controller
 		 $orderAry = array();
 		 $orderAry['InvoiceNo']     = $order->id;
 		 $orderAry['InvoiceDate']   = Utility::ChangeDateFromat($order->order_time);
+		 
 	}
  
 }

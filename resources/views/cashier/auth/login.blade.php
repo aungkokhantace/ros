@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Log In</title>
+    <title>Log In To</title>
     <link rel="stylesheet" type="text/css" href="/assets/cashier/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/assets/cashier/bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/cashier/css/styles.css" /> 
@@ -110,6 +110,12 @@
             //Enter Button
             $('.enter-btn').click(function(){
                 $('.login-form').submit();
+            });
+            // Login with Enter key
+            $(document).bind('keypress', function(e) {
+            if(e.keyCode==13){
+                   $('.login-form').submit();
+             }
             });
         });
     </script>

@@ -1,4 +1,5 @@
 <?php namespace App\RMS;
+use App\RMS\Config\ConfigRepository;
 use Auth;
 use DB;
 use PDF;
@@ -6,7 +7,8 @@ use App\Http\Requests;
 use App\Session;
 use App\RMS\User\UserRepository;
 use App\RMS\SyncsTable\SyncsTable;
-use DateTime;
+use Carbon\Carbon;
+use App\RMS\Config\ConfigRepositoryInterface;
 
 
 class Utility
@@ -150,5 +152,20 @@ class Utility
         return $rooms;
     }
 
-    
+    public static function dateCodeString()
+    {
+        $now = Carbon::now()->format('y-m-d');
+        $dateCode = implode(explode('-' , $now));
+
+        return $dateCode;
+    }
+
+    public static function dateString()
+    {
+        $now = Carbon::now()->format('Y-m-d H:i:s');
+        $date_string = implode('T', explode(' ' , $now)).'Z';
+
+        return $date_string;
+    }
+
 }
