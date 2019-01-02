@@ -20,6 +20,7 @@ use GuzzleHttp\Psr7\Request as GuRequest;
 use App\Inventory\UM;
 use App\RMS\Utility;
 use App\RMS\Config\ConfigRepositoryInterface;
+use App\RMS\Kitchen\Kitchen;
 use Validator;
 
 class inventoryController extends Controller
@@ -257,5 +258,23 @@ class inventoryController extends Controller
         }
 
         return redirect('Kitchen/stock-requisition')->with('fail', 'Fail To Request, Please Try Again Later.');
+    }
+
+    public function getKitchen()
+    {
+        $kitchen =  Kitchen::all(['id','name','kitchen_code']);
+        // return $kitchen;
+        return response()->json($this->transform($kitchen), 200 );
+    }
+    public function transform($kitchen)
+    {
+        return array_map(function ($kitchen)
+        {
+            return [
+                'Id'            =>      $kitchen['id'],
+                'LocationName'  =>      $kitchen['name'],
+                'LocationCode'  =>      $kitchen['kitchen_code'],
+            ];
+        }, $kitchen->toArray());
     }
 }

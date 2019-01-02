@@ -747,3 +747,5 @@ Route::get('/groupcode/create','inventory\inventoryController@group');
 Route::get('/classcode/create','inventory\inventoryController@class');
 Route::get('/stock/create','inventory\inventoryController@stock_item');
 Route::get('sync_um','inventory\inventoryController@getSyncUm');
+Route::get('api/v1/get_kitchen','inventory\inventoryController@getKitchen');
+
