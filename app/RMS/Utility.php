@@ -13,6 +13,7 @@ use App\User;
 use App\RMS\SyncsTable\SyncsTable;
 use Carbon\Carbon;
 use App\RMS\Config\ConfigRepositoryInterface;
+use App\RMS\Kitchen\Kitchen;
 
 class Utility
 {
@@ -202,5 +203,16 @@ class Utility
             'id'   => $config->id
         ];
         return $result;
+    }
+
+    public static function generateKitchenCode()
+    {
+        $path_length     = 3;
+        $maxCode         = Kitchen::where('kitchen_code', 'like', 'loc%')->max('kitchen_code') ?: 'loc'.str_repeat('0',$path_length);
+        $code            =  substr($maxCode,3,6);
+        $kitchen_code    = intval($code);
+        $kitchen_code++;
+        $code             = str_pad($kitchen_code,$path_length,0,STR_PAD_LEFT);
+        return 'loc'.$code;
     }
 }
