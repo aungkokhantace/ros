@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use App\RMS\Utility;
 
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
@@ -40,6 +41,7 @@ class KitchenController extends Controller
         $name = $request->get('name');
         $paramObj = new Kitchen();
         $paramObj->name = $name;
+        $paramObj->kitchen_code = Utility::generateKitchenCode();
 
         $result = $this->KitchenRepository->store($paramObj);
 

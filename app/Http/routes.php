@@ -1,6 +1,6 @@
 <?php
 
-Route::get('logo', 'headerController@logo');
+// Route::get('logo', 'headerController@logo');
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', function () {
         if (Auth::guard('Cashier')->user())
