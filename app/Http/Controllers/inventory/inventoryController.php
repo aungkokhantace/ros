@@ -262,17 +262,15 @@ class inventoryController extends Controller
 
     public function getKitchen()
     {
-        $kitchen =  Kitchen::all(['id as Id ','name as LocationName','kitchen_code as LocationNo']);
-        $url  = $this->resquestserverurl.'/Location/create';
-        $kitchen = json_encode($kitchen);
-        $headers = [
-            'Content-Type' => 'application/json',
-        ];
+        $uri            = '/Location/create';
+        $kitchenData    =  Kitchen::all(['id as Id ','name as LocationName','kitchen_code as LocationNo'])->toJson();
+        $response       = $this->guzzleStore($uri, $kitchenData);
+    }
 
-        $client = new client();
-        $res = $client->post($url, [
-            'headers' => $headers, 
-            'body' => $kitchen,
-        ]);
+    public function guzzleStore($uri,$data)
+    {
+        $meta   = [ 'base_uri' => $this->resquestserverurl,'headers' => ['Content-Type' => 'application/json']];
+        $client = new \GuzzleHttp\Client($meta);
+        $client->post($uri,['body' => $data ]);
     }
 }
