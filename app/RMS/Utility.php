@@ -1,4 +1,7 @@
-<?php namespace App\RMS;
+<?php
+
+namespace App\RMS;
+
 use App\RMS\Config\ConfigRepository;
 use Auth;
 use DB;
