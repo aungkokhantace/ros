@@ -168,4 +168,12 @@ class Utility
         return $date_string;
     }
 
+
+    public static function saledate($date)
+    {
+        $date_string = implode('T', explode(' ' , $date)).'Z';
+
+        return $date_string;
+    }
+
 }

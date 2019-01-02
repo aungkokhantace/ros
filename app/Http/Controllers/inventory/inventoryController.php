@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\RMS\Item\ItemRepository;
+use App\Inventory\CategoryRepository;
 use App\Http\Controllers\Controller;
 use App\RMS\Category\Category;
 use GuzzleHttp\Exception\GuzzleException;
@@ -13,7 +14,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Middleware;
 use App\RMS\Utility;
-use App\RMS\Order\OrderRepository;
+use App\Inventory\OrderRepository;
 use App\RMS\Item\Item;
 use DB;
 use GuzzleHttp\Psr7\Request as GuRequest;
@@ -33,7 +34,9 @@ class inventoryController extends Controller
 
     public function category(){
 
-    	$categorys = Category::where('parent_id',0)->whereNull('deleted_at')->where('status',1)->select('id as Id','name as Description','stock_code as CategoryNo')->get();
+		$CateRepo = new CategoryRepository();
+
+    	$categorys = $CateRepo->getParentCate();
 		$categorys  = json_encode($categorys);
         // return $categorys;
     	$client = new Client();
@@ -52,12 +55,14 @@ class inventoryController extends Controller
     }
 
     public function group(){
-    	$categorys = Category::where('parent_id',0)->whereNull('deleted_at')->where('status',1)->select('id as Id','name as Description','stock_code as categoryNo')->get();
+    	$CateRepo = new CategoryRepository();
+
+    	$categorys = $CateRepo->getParentCate();
     	$groups = array();
     	foreach($categorys as $category){
     		array_push($groups,$category->Id);
     	}
-    	$groups  = Category::whereIn('parent_id',$groups)->whereNull('deleted_at')->where('status',1)->select('id as Id','name as Description','stock_code as GroupNo')->get();
+    	$groups  = $CateRepo->getGroup($groups);
     	$groups  = json_encode($groups);
         // return $groups;
     	$client = new Client();
@@ -76,20 +81,20 @@ class inventoryController extends Controller
     }
 
     public function class(){
-
-    	$categorys = Category::where('parent_id',0)->whereNull('deleted_at')->where('status',1)->select('id as Id','name as Description','stock_code as categoryNo')->get();
+		$CateRepo = new CategoryRepository();
+    	$categorys = $CateRepo->getParentCate();
     	$groups = array();
     	foreach($categorys as $category){
     		array_push($groups,$category->Id);
     	}
-    	$groups  = Category::whereIn('parent_id',$groups)->whereNull('deleted_at')->where('status',1)->select('id as Id','name as Description','stock_code as categoryNo')->get();
+    	$groups  = $CateRepo->getGroup($groups);
     	$classes = array();
 
     	foreach($groups as $group){
     		array_push($classes,$group->Id);
     	}
         
-    	$classes  = Category::whereIn('parent_id',$classes)->whereNull('deleted_at')->where('status',1)->select('id as Id','stock_code as ClassNo','name as Description')->get();
+    	$classes  = $CateRepo->getCalss($classes);
         $url  = $this->resquestserverurl.'/classcode/create';
         $classes = json_encode($classes);
         // return $classes;
@@ -107,20 +112,21 @@ class inventoryController extends Controller
 
 
     public function stock_item(){
-		$categorys = Category::where('parent_id',0)->whereNull('deleted_at')->where('status',1)->select('id as Id','name as Description','stock_code as categoryNo')->get();
+		$CateRepo = new CategoryRepository();
+		$categorys = $CateRepo->getParentCate();
     	$categoryary = array();
     	foreach($categorys as $category){
     		array_push($categoryary,$category->Id);
 		}
 		
-    	$groups  = Category::whereIn('parent_id',$categoryary)->whereNull('deleted_at')->where('status',1)->select('id as Id','name as Description','stock_code as categoryNo')->get();
+    	$groups  = 	$groups  = $CateRepo->getGroup($categoryary);
     	$groupary = array();
 	
     	foreach($groups as $group){
     		array_push($groupary,$group->Id);
     	}
         
-    	$classes  = Category::whereIn('parent_id',$groupary)->whereNull('deleted_at')->where('status',1)->select('id as Id','stock_code as ClassNo','name as Description')->get();
+    	$classes  =  $CateRepo->getClass($groupary);
 		$classarray = array();
 		
     	foreach($classes as $class){
@@ -209,7 +215,11 @@ class inventoryController extends Controller
 		$item_ary['ClassId'] 			= $classid;
 		$item_ary['SupplierId'] 		= $this->SupplierId;
 		$item_ary['UMId'] 				= 1;
-		$item_ary['ProductTypeId'] 		= $this->producttype;
+		if($item->is_ready_food == 1){
+		$item_ary['ProductTypeId'] 		= 3;
+		}else{
+		$item_ary['ProductTypeId'] 		= 1;
+		}
 		$item_ary['MarginPercent']  	= $this->marginpercence;
 		$item_ary['PurchasePrice']   	= $item->price;
 		$item_ary['SellingPrice']    	= $item->price;
@@ -221,6 +231,7 @@ class inventoryController extends Controller
 
 
 	public function checkcategory($id,$categoryary,$groupary,$classarray){
+		$CateRepo = new CategoryRepository();
         if(in_array($id,$categoryary)){
 		   $response = array();
 		   $response['message'] = 200;
@@ -241,7 +252,7 @@ class inventoryController extends Controller
 		}else{
 		   $response = array();
 		   $response['message'] = 404;
-		   $cate_id = DB::table('category')->where('id',$id)->select('parent_id')->first();
+		   $cate_id = $CateRepo->SelectParentId($id);
 		   $response['category_id'] = $cate_id->parent_id;
 		   return $response;
 		}
@@ -258,10 +269,60 @@ class inventoryController extends Controller
 	public function saleStock($id){
 		 $orderRepo = new OrderRepository();
 		 $order     = $orderRepo->getOrderById($id);
+		 
+		 $order_details = $orderRepo->getOrderDetail($order->id);
+
+		 foreach($order_details as $key=>$details){
+			 $details->PurchasePrice = $details->SellingPrice;
+			 $details->Amount      = $details->SellingPrice;
+		 }
+
+		
+		
 		 $orderAry = array();
 		 $orderAry['InvoiceNo']     = $order->id;
-		 $orderAry['InvoiceDate']   = Utility::ChangeDateFromat($order->order_time);
-		 
+		 $orderAry['InvoiceDate']   = Utility::saledate($order->order_time);
+		 $orderAry['CustomerId']    = $order->user_id;
+		 $orderAry['LocationId']    = 'loc001';
+		 $orderAry['CurrencyId']    = '1';
+		 $orderAry['Rate']          = '1.0000';
+		 $orderAry['CashierId']     = $order->user_id;
+		 $orderAry['ShiftId']       = $order->shift_id;
+		 $orderAry['TotalAmount']   = $order->all_total_amount;
+		 $orderAry['PaidAmount']    = $order->payment_amount;
+		 $orderAry['Refund']        = $order->refund;
+		 $orderAry['Expenses']      = '0.0000';
+		 $orderAry['TaxAmount']     = $order->tax_amount;
+		 $orderAry['PCAddress']     = $order->staff_id;
+		 $orderAry['DueDate']       = Utility::saledate($order->order_time);
+		 $orderAry['SaleStatus']    = 'W';
+		 $orderAry['InvoiceStatus'] = 'CR';
+		 $orderAry['CardCodeId']    = 0;
+		 $orderAry['sale_details']  = $order_details;
+
+
+		$url  = $this->resquestserverurl.'/sale/create';
+		$saleAry = array();
+		$saleAry[] = $orderAry;
+		$orderAry = json_encode($saleAry);
+
+		
+
+		$headers = [
+		    'Content-Type' => 'application/json',
+		];
+
+		$client = new client();
+		$res = $client->post($url, [
+		    'headers' => $headers, 
+		    'body' => $orderAry,
+		]);
+
+		
+		
 	}
+
+
+	
  
 }
