@@ -14,4 +14,5 @@ interface ConfigRepositoryInterface
     public function update_config($paramObj);
     public function getAllConfig();
     public function insert_config_log($tempObj);
+    public function updateRequisitionNo($id, $param);
 }

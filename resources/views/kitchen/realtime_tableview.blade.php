@@ -1,4 +1,3 @@
-
 <div id="body">
     <div class="row" id="autoDiv">
         @foreach($orders as $orderKey =>$orderValue)
@@ -47,11 +46,11 @@
                                 <td><span>&nbsp;Quantity&nbsp;</span></td>
                                 <!--  <td>Exception</td> -->
                                 <td><span>&nbsp;Remark&nbsp;</span></td>
-                                <td><span>&nbsp;Add On&nbsp;</span></td>
+                                <td class="min-width"><span>&nbsp;Add On&nbsp;</span></td>
                                 <!--  <td>StartTime</td> -->
-                                <td><span>&nbsp;OrderTime&nbsp;</span></td>
+                                <td class="order-min-width"><span>&nbsp;Order Time&nbsp;</span></td>
                                 <!-- <td>Cooking Duration</td> -->
-                                <td><span>&nbsp;Order Status&nbsp;</span></td>
+                                <td class="order-min-width"><span>&nbsp;Order Status&nbsp;</span></td>
                                 {{--@php--}}
                                 {{--if ($item->status_id == 2) {--}}
                                 {{--$colspan = 1;--}}
@@ -64,25 +63,33 @@
                             @foreach($orderValue->items as $key => $item)
                                 <tr>
                                     <td class="item-list">
-                                        @if($orderKey)
-                                            <span>Item Name :&nbsp;</span>
-                                            {{ $item->name }}
-                                            @if($item->has_continent == '1')
-                                                {{ "($item->continent_name)" }}
+                                        <table>
+                                            @if($orderKey)
+                                                <tr>
+                                                    <td class="td-min-width">Item Name</td>
+                                                    <td>&nbsp;:&nbsp;</td>
+                                                    <td class="td-item">{{$item->name}}&nbsp;
+                                                        @if($item->has_continent == '1')
+                                                            {{ "($item->continent_name)" }}&nbsp;
+                                                        @endif
+                                                        @if($item->setmenu_id != '0')
+                                                            {{ "(SetMenu)" }}
+                                                        @endif
+                                                    </td>
+                                                </tr>
                                             @endif
-                                            <br>
-                                            @if($item->setmenu_id != '0')
-                                                {{ "(SetMenu)" }}
-                                            @endif
-
-                                        @endif
-                                        <span> Order  type : &nbsp;</span>
-                                        @if($item->order_type_id == '1')
-                                            {{ " Dine in" }}
-                                        @else
-                                            {{ " Parcel"}}
-                                        @endif
-                                    </td>
+                                            <tr>
+                                                <td class="td-min-width">Order Type</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td class="td-item">
+                                                    @if($item->order_type_id == '1')
+                                                        {{ " Dine in" }}
+                                                    @else
+                                                        {{ " Parcel"}}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        </table>
                                     <td class="food-type">
                                     <span>
                                         {{ $item->quantity }}
@@ -236,6 +243,5 @@
             @endif
         @endforeach
     </div>
-</div>
 </div>
 

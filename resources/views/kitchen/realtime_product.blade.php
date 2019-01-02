@@ -20,11 +20,11 @@
                     <td>Quantity</td>
                     <!-- <td>Exception</td> -->
                     <td>Remark</td>
-                    <td>Add On</td>
+                    <td class="min-width">Add On</td>
                     <!-- <td>StartTime</td> -->
-                    <td>Order Time</td>
+                    <td class="order-min-width">Order Time</td>
                     <!--  <td>Cooking Duration</td> -->
-                    <td>Order Status</td>
+                    <td class="order-min-width">Order Status</td>
                     <td colspan="2">Action</td>
                 </tr>
                 </thead>
@@ -35,7 +35,7 @@
                             <tr class="tr-row" data-ordertime = "{{$item->order_time}}">
                                 <td class="tr_right">
                                     @if($item->take_id == 1)
-                                        <h4>Take Away</h4>
+                                        Take Away
                                     @endif
                                     @if(isset($tables) && count($tables) >0 )
                                         @foreach($tables as $table)
@@ -93,7 +93,7 @@
 
                                     @endif
                                     @if($item->status_id == '3')
-                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Take" /><br><br>
+                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Take" />
 
                                     @endif
                                 </td>
@@ -155,12 +155,12 @@
                             <tr class="tr-row"  data-ordertime = "{{$setmenu->order_time}}">
                                 <td>
                                     @if($setmenu->take_id == 1)
-                                        <h4>Take Away</h4>
+                                        Take Away
                                     @endif
                                     @if(isset($tables) && count($tables) >0 )
                                         @foreach($tables as $table)
                                             @if($table->order_id == $setmenu->order_id)
-                                                <h4>{{$table->table_no}}</h4>
+                                                {{$table->table_no}}
                                             @endif
                                         @endforeach
                                     @endif
@@ -168,7 +168,7 @@
                                     @if(isset($rooms) && count($rooms) > 0)
                                         @foreach($rooms as $room)
                                             @if($room->order_id == $setmenu->order_id)
-                                                <h4>{{ $room->room_name }}</h4>
+                                                {{ $room->room_name }}
                                             @endif
                                         @endforeach
                                     @endif
@@ -216,8 +216,7 @@
 
                                     @endif
                                     @if($setmenu->status_id =='3')
-                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="complete" value="Taken">
-
+                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Take"/>
                                     @endif
                                 </td>
                                 @if($setmenu->status_id == '1')
@@ -261,6 +260,8 @@
                                         </div>
                                         <!-- Modal -->
                                     </td>
+                                @else
+                                    <td style="border-left: none !important;"></td>
                                 @endif
                             </tr>
                         @endif
