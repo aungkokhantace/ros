@@ -8,11 +8,14 @@ use App\Session;
 use App\RMS\User\UserRepository;
 use App\RMS\SyncsTable\SyncsTable;
 use Carbon\Carbon;
+use App\RMS\Order\OrderRepository;
 use App\RMS\Config\ConfigRepositoryInterface;
 
 
 class Utility
 {
+
+
     public static function addCreatedBy($newObj)
     {
         if(Auth::guard('Cashier')->check()){
@@ -174,6 +177,14 @@ class Utility
         $date_string = implode('T', explode(' ' , $date)).'Z';
 
         return $date_string;
+    }
+
+
+
+    public static function getnoticount(){
+      $orderRepo = new OrderRepository();
+      $orders    = $orderRepo->getwillpayOrder();
+      return $orders;
     }
 
 }

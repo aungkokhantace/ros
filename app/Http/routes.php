@@ -4,7 +4,7 @@ if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
     // Ignores notices and reports all other kinds... and warnings
     error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
     // error_reporting(E_ALL ^ E_WARNING); // Maybe this is enough
-} 
+}
 
 Route::get('logo', 'headerController@logo');
 Route::group(['middleware' => 'web'], function () {
@@ -193,6 +193,7 @@ Route::group(['middleware' => 'web'], function () {
 
                 Route::get('/WillPayView','Cashier\ListViewController@willpayview');
                 Route::get('/willpay/ajaxRequest','Cashier\ListViewController@willpayajax');
+                Route::get('/willpay/noti/ajaxRequest','Cashier\ListViewController@willpaynoti');
 
             });
 
@@ -633,7 +634,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
             Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
             Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
-          
+
             Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
             Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
         });
@@ -748,4 +749,3 @@ Route::get('/groupcode/create','inventory\inventoryController@group');
 Route::get('/classcode/create','inventory\inventoryController@class');
 Route::get('/stock/create','inventory\inventoryController@stock_item');
 Route::get('sync_um','inventory\inventoryController@getSyncUm');
-
