@@ -364,6 +364,9 @@ Route::group(['middleware' => 'web'], function () {
                 Route::post('Continent/update', 'Backend\Continent\ContinentController@update');
                 Route::get('Continent/delete/{id}', 'Backend\Continent\ContinentController@delete');
             });
+            // Continent Ajax
+                Route::get('Continent/ajax/{Categoryid}', 'Backend\Continent\ContinentController@getContientByCategory');
+
             //end Continent
 
             //start Table Route

@@ -30,5 +30,10 @@ class Category extends Model
     {
         return $this->name;
     }
+
+    public function continent()
+    {
+        return $this->belongsToMany('App\RMS\Continent\Continent');
+    }
 }
 

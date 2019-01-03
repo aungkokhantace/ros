@@ -4,13 +4,13 @@
     <div class="col-sm-7">
         <input type="hidden" id="product_detail_count" name="product_detail_count" value="0" />
             <table class="table table-striped" id="product_detail_table">
-                <tbody class="table table-striped">                    
+                <tbody class="table table-striped" id="wrap_body">                     
                     <tr class="tr_product_detail_" id="tr_product_detail_">
                         <td>
 
                             <div class="form-group">
                                 <div class="col-md-10">
-                                    <select class="form-control item-select" id="continent" name="continent[]" required>
+                                    <select class="continent form-control item-select" id="continent" name="continent[]" required>
                                         <option value="" selected>Select Continent</option>
                                         @foreach($continent_arr as $continent)
                                             <option value="{{ $continent['id'] }}" >{{ $continent['name'] }}</option>

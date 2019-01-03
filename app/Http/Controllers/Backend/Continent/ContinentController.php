@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Input;
 use App\RMS\Infrastructure\Forms\ContinentEditRequest;
 use App\RMS\Infrastructure\Forms\ContinentEntryRequest;
 use App\RMS\Continent\Continent;
+use App\RMS\Category\Category;
 use App\Status\StatusConstance;
 use App\RMS\Continent\ContinentRepositoryInterface;
 use App\RMS\FormatGenerator As FormatGenerator;
@@ -117,6 +118,12 @@ class ContinentController extends Controller
             $this ->continentRepository->deleteContinent($id);
         }
         return redirect()->action('Backend\Continent\ContinentController@index')->withMessage(FormatGenerator::message('Success', 'Continent deleted ...'));
+    }
+
+    public function getContientByCategory($id)
+    {
+        $continent = Category::find($id)->continent()->get(['id','name']);
+        return \Response::json($continent);
     }
 
 }

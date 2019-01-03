@@ -47,7 +47,7 @@
         <div class="form-group">
             <label for="category" class="col-sm-3 control-label">Item Category<span class="require">*</span></label>
             <div class="col-sm-7">
-                <select name="parent_category" id="" class="form-control ">
+                <select name="parent_category" id="parent_category" class="form-control ">
                     @if(isset($record))
 
                         {!! generateItemCategoryListEdit($categories, $parentId=0, $indent=0,$parent_id_arr,$record->category_id) !!}
@@ -325,6 +325,32 @@ $(document).ready(function() {
             getFileName();      
         });
     });
+
+    $('#parent_category').change(function(e){
+        // console.log($(this).val());
+      load_continent($(this).val());
+    });
+
+    function load_continent(continentId) {
+    $.ajax({
+      type: "GET",
+      url: "/Backend/Continent/ajax/"+continentId
+    }).done(function (result) {
+
+      $("#continent").empty();
+      $(result).each(function(){
+        $("#continent").append($('<option>', {value: this.id,text: this.name}));
+      });
+
+        $('#tr_product_detail_').siblings().each(function () {
+            $(this).find('select').empty();
+            $(result).each((key,value)=>{
+            $(this).find('select').append($('<option>', {value:value.id,text: value.name}));
+            });
+        });
+    });
+  }
+
 });
 </script>
 @endsection
