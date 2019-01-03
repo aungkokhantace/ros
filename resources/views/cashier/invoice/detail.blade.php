@@ -110,7 +110,6 @@
                                 <tr style="border-bottom:1px dashed black;">
                                     <td colspan="4" style="height:5px;"></td>
                                 </tr>
-    
                                 <tr>
                                     <td colspan="3" style="height:25px;padding:5px 7px;">Net Amount</td>
                                     <td align="right">{{ number_format($order->total_price) }}</td>
