@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Cashier;
 use App\RMS\Infrastructure\Forms\InvoiceListEditRequest;
 use App\RMS\Infrastructure\Forms\InvoiceListEntryRequest;
 use App\RMS\Order\Order;
+use App\RMS\Order\OrderRepository;
 use App\RMS\Orderdetail\Orderdetail;
+use App\RMS\Invoice\InvoiceRepository;
 use App\RMS\Orderdetail\OrderdetailRepositoryInterface;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\OrderRoom\OrderRoom;
@@ -1132,5 +1134,110 @@ class ListViewController extends Controller
         
         
     // }
+
+    public function willpayview(){
+        $orderRepo = new OrderRepository();
+        $orders    = $orderRepo->getwillpayOrder();
+        
+        $invoiceRepo = new InvoiceRepository();
+        $today      = Carbon::now();
+        $cur_date   = Carbon::parse($today)->format('Y-m-d');
+       
+        foreach($orders as $key=>$order){
+           
+            $orderID        = $order->id;
+            $order_table    = $orderRepo->getOrderTable($orderID);
+            
+            $order_rooms    = $orderRepo->getOrderRoom($orderID);
+            
+            if(isset($order_table) && count($order_table)>0){
+                $order_table_str = '';
+                foreach($order_table as $key=>$or_table){
+                    $order_table_str  .= $or_table->table_no;
+                }
+
+                $order->order_table    = $order_table_str;
+               
+            }else{
+                $order->order_table    = false;
+            }
+
+           if(isset($order_rooms) && count($order_rooms)>0){
+                $order_rooms_str     = '';
+                foreach($order_rooms as $key=>$or_room){
+                   $order_rooms_str     .= $or_room->room_name;
+                }
+                $order->order_rooms           = $order_rooms_str;
+           }else{
+                 
+                $order->order_rooms           = false;
+                
+           }
+           
+
+           if(count($order_table) == 0 && count($order_rooms)==0 ){
+               $order->take_away        = true;
+           }else{
+               $order->take_away        = false;
+           }
+           
+        }
+     
+
+        return view('cashier.invoice.willpay',compact('orders'));
+    }
+
+    public function willpayajax(){
+        $orderRepo = new OrderRepository();
+        $orders    = $orderRepo->getwillpayOrder();
+        
+        $invoiceRepo = new InvoiceRepository();
+        $today      = Carbon::now();
+        $cur_date   = Carbon::parse($today)->format('Y-m-d');
+       
+        foreach($orders as $key=>$order){
+           
+            $orderID        = $order->id;
+            $order_table    = $orderRepo->getOrderTable($orderID);
+            
+            $order_rooms    = $orderRepo->getOrderRoom($orderID);
+            
+            if(isset($order_table) && count($order_table)>0){
+                $order_table_str = '';
+                foreach($order_table as $key=>$or_table){
+                    $order_table_str  .= $or_table->table_no;
+                }
+
+                $order->order_table    = $order_table_str;
+               
+            }else{
+                $order->order_table    = false;
+            }
+
+           if(isset($order_rooms) && count($order_rooms)>0){
+                $order_rooms_str     = '';
+                foreach($order_rooms as $key=>$or_room){
+                   $order_rooms_str     .= $or_room->room_name;
+                }
+                $order->order_rooms           = $order_rooms_str;
+           }else{
+                 
+                $order->order_rooms           = false;
+                
+           }
+           
+
+           if(count($order_table) == 0 && count($order_rooms)==0 ){
+               $order->take_away        = true;
+           }else{
+               $order->take_away        = false;
+           }
+           
+        }
+        return view('cashier.invoice.real_time_willpay',compact('orders'))->render();
+     
+    }
+
+   
 
 }

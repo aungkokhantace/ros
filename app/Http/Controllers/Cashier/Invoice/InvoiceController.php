@@ -1220,6 +1220,7 @@ class InvoiceController extends Controller
         
         $inventorysale   = new inventoryController();
         $invenorystatus =  $inventorysale->saleStock($id);
+        
        
         $order = Order::find($id);
         if(!$order->rooms->isEmpty()){

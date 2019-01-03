@@ -275,23 +275,27 @@ class inventoryController extends Controller
 		 foreach($order_details as $key=>$details){
 			 $details->PurchasePrice = $details->SellingPrice;
 			 $details->Amount      = $details->SellingPrice;
+			 if($details->Discount == ''){
+			  $details->Discount    = 0.0000;
+			 }
 		 }
 
 		
 		
 		 $orderAry = array();
+		 
 		 $orderAry['InvoiceNo']     = $order->id;
 		 $orderAry['InvoiceDate']   = Utility::saledate($order->order_time);
-		 $orderAry['CustomerId']    = $order->user_id;
-		 $orderAry['LocationId']    = 'loc001';
-		 $orderAry['CurrencyId']    = '1';
-		 $orderAry['Rate']          = '1.0000';
-		 $orderAry['CashierId']     = $order->user_id;
+		 $orderAry['CustomerId']    = 'ROS001';
+		 $orderAry['LocationId']    = 'LOC001';
+		 $orderAry['CurrencyId']    = 1;
+		 $orderAry['Rate']          = 1.0000;
+		 $orderAry['CashierId']     = 1;
 		 $orderAry['ShiftId']       = $order->shift_id;
 		 $orderAry['TotalAmount']   = $order->all_total_amount;
 		 $orderAry['PaidAmount']    = $order->payment_amount;
 		 $orderAry['Refund']        = $order->refund;
-		 $orderAry['Expenses']      = '0.0000';
+		 $orderAry['Expenses']      = 0.0000;
 		 $orderAry['TaxAmount']     = $order->tax_amount;
 		 $orderAry['PCAddress']     = $order->staff_id;
 		 $orderAry['DueDate']       = Utility::saledate($order->order_time);
@@ -304,6 +308,9 @@ class inventoryController extends Controller
 		$url  = $this->resquestserverurl.'/sale/create';
 		$saleAry = array();
 		$saleAry[] = $orderAry;
+		
+		
+		
 		$orderAry = json_encode($saleAry);
 
 		

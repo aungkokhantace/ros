@@ -10,6 +10,8 @@ use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetail;
 use App\RMS\Kitchen\Kitchen;
+use App\RMS\Utility;
+use App\RMS\ReturnMessage;
 use App\Status\StatusConstance;
 
 class OrderRepository implements OrderRepositoryInterface
@@ -109,6 +111,34 @@ class OrderRepository implements OrderRepositoryInterface
         $orders = DB::table('order')->where('id',$id)->first();
         return $orders;
     }
-    
+    public function save($Order){
+        $returnedObj = array();
+        $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
+
+        try {
+            $Order->save();
+            $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
+            return $returnedObj;
+        }
+        catch(Exception $e){
+            $returnedObj['aceplusStatusMessage'] = $e->getMessage();
+            return $returnedObj;
+        }
+    }
+
+    public function getwillpayOrder(){
+        $result  = DB::table('order')->where('will_pay',1)->where('status',1)->get();
+        return $result;
+    }
+
+    public function getOrderTable($order_id){
+        $result = DB::table('order_tables')->where('order_id',$order_id)->join('tables','order_tables.table_id','=','tables.id')->select('tables.table_no')->get();
+        return $result;
+    }
+
+    public function getOrderRoom($order_id){
+        $result = DB::table('order_room')->where('order_id',$order_id)->join('rooms','order_room.room_id','=','rooms.id')->select('rooms.room_name')->get();
+        return $result;
+    }
     
 }
