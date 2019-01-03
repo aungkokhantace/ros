@@ -1,3 +1,4 @@
+
 @extends('Backend.layouts.kitchen.master')
 @section('title','Order View')
 @section('content')
@@ -433,3 +434,4 @@
         });
     </script>
 @endsection
+

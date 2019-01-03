@@ -9,8 +9,11 @@
             <button class="btn btn-large dash-btn ml-2 mb-2 start" id="{{ $sessions->daystart->start_date}}/{{$sessions->daystart->status }}" style="background:rgb(75, 146, 221);">
                 Day Start
             </button>
+            
             @else
-            <button class="btn btn-large dash-btn ml-2 mb-2" onclick="dayEnd({{ $sessions->daystart->id }})" style="background:rgb(75, 146, 221);">Day End</button>
+            <button class="btn btn-large dash-btn ml-2 mb-2" onclick="dayEnd({{ $sessions->daystart->id }})" style="background:rgb(75, 146, 221);" >
+                Day End
+            </button>
             @endif
         @endsection
 
@@ -23,6 +26,8 @@
                     {{ ' End'}}
                 @endif
             </button>
+            @else
+            <a href="/Cashier/Report" class="btn btn-large dash-btn ml-2 mb-2"  style="background:#8EC449;">Report</a>            
             @endif
         @endsection
 
@@ -31,6 +36,9 @@
         @endforeach
 
        <button type="button" class="btn btn-outline-dark btn-lg mt-2 room_btn">Rooms</button>
+
+       <a href="/Cashier/takeaway/invoice" class="btn btn-outline-info btn-lg mt-2 ml-2">Take Away</a>
+
         <div class="row">
             <div class="col-md-6">
                 <p class="mt-3 float-right"><i class="fa fa-square"  style="color:#8EC449; font-size:30px; aria-hidden="true"></i>
@@ -209,6 +217,7 @@
 
         $(document).ready(function(){
             $('.start').click(function(){
+
                 id          = $(this).attr('id');
                 id_arr      = id.split('/');
                 start_date  = id_arr[0];
@@ -241,7 +250,6 @@
                             dataType: "json",
                             cache   : false,
                             success: function(data) {
-                                console.log(data);
                                 var success     = data.success;
                                 var error       = data.error;
                                 if (success == '1') {

@@ -15,7 +15,7 @@ class CreateCategoryTable extends Migration
             $table->string('image');
             $table->text('mobile_image');
             $table->tinyInteger('status');
-            $table->string('description');
+            $table->text('description');
             $table->integer('created_by');
             $table->integer('updated_by');
             $table->integer('deleted_by')->nullable();

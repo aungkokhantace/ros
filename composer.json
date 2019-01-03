@@ -7,6 +7,7 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
+        "doctrine/dbal": "~2.3",
         "laravelcollective/html": "~5.2",
         "uxweb/sweet-alert": "~1.1",
         "maatwebsite/excel": "~2.1.0",
@@ -18,6 +19,7 @@
         "symfony/http-foundation": "^2.0.5",
         "symfony/psr-http-message-bridge": "0.2",
         "guzzlehttp/guzzle": "^6.3"
+
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

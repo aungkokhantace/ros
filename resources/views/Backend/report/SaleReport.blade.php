@@ -138,7 +138,8 @@
             "order": [[ 1, "desc" ]],
             stateSave: false,
             "dom": '<"pull-right m-t-20"i>rt<"bottom"lp><"clear">',
-
+            "sDom": "lfrti",
+            "searching": false
         });
     </script>
     @endif

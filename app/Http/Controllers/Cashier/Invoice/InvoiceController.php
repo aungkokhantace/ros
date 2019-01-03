@@ -9,6 +9,8 @@ use Auth;
 use App\Http\Controllers\Controller;
 use App\RMS\Order\Order;
 use App\RMS\OrderTable\OrderTable;
+use App\RMS\Table\Table;
+use App\RMS\Room\Room;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\Item\Item;
@@ -23,6 +25,7 @@ use App\RMS\Utility;
 use Response;
 use Hash;
 use App\User;
+use App\RMS\DayStart\DayStart;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use Illuminate\Support\Facades\DB;
@@ -717,7 +720,8 @@ class InvoiceController extends Controller
     }
 
     public function invoicedetail($id){
-        $orders = $this->InvoiceRepository->getorder($id);
+       
+        $order = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
         $continent  = $this->InvoiceRepository->getContinent();
@@ -727,6 +731,7 @@ class InvoiceController extends Controller
                 $addon[] = $d;
             }
         }
+       
         $amount = array();
         foreach($total as $t){
             foreach($t as $tt){
@@ -737,9 +742,26 @@ class InvoiceController extends Controller
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier        = $this->InvoiceRepository->cashier($id);
-        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        $cards          = $this->InvoiceRepository->getCard();
         $payments        = $this->InvoiceRepository->getPayment($id);
-        return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','payments','continent'));
+        $tenders        = $this->InvoiceRepository->getTenders($id);
+        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->first();
+
+        $v ='';
+
+        $item = array();
+
+        $collection_array = $order_detail->toArray();
+
+        foreach($collection_array as $key => $value)
+        {
+            $item[$key] = $value['item_id'];
+        }
+        array_multisort($item, SORT_ASC, $collection_array);
+
+        $details = collect($collection_array);    
+        return view('cashier.invoice.detail',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
+
     }
 
     public function invoicePaid($id) {
@@ -779,9 +801,19 @@ class InvoiceController extends Controller
         {
             $item[$key] = $value['item_id'];
         }
-        array_multisort($item, SORT_DESC, $collection_array);
+        array_multisort($item, SORT_ASC, $collection_array);
 
-        $details = collect($collection_array);       
+        $details = collect($collection_array);    
+
+        $addOn = array();
+
+        foreach($addon as $key => $value)
+        {   
+            $addOn[$key] = $value['extra_id'];
+        }
+        array_multisort($addOn, SORT_ASC, $addon);
+
+        $addon = $addon;
         return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
     }
 
@@ -1035,12 +1067,17 @@ class InvoiceController extends Controller
 
     public function invoiceListByTableId($tableId)
     {
+        $rooms = NULL;
         $roomId = NULL ;
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoice($tableId,$roomId);
 
+        $order_detail   = $this->InvoiceRepository->getdetail($tableId);
         $continent  = $this->InvoiceRepository->getContinent();
+        $tables         = $this->InvoiceRepository->orderTable($tableId);
+        $payments        = $this->InvoiceRepository->getPayment($tableId);
+
         //Get Order with table and room
         $orders     = array();
 
@@ -1066,17 +1103,37 @@ class InvoiceController extends Controller
         }
         $roleArr['role'][]    = $role_id;
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','continent'));
+
+        $v ='';
+
+        $item = array();
+
+        $collection_array = $order_detail->toArray();
+
+        foreach($collection_array as $key => $value)
+        {
+            $item[$key] = $value['item_id'];
+        }
+        array_multisort($item, SORT_ASC, $collection_array);
+
+        $details = collect($collection_array);    
+
+        return view('cashier.invoice.index',compact('payments','details','tables','rooms','orders','config','orderRepo','continent'));
     }
 
     public function invoiceListByRoomId($roomId)
     {
-        $tableId=NULL;
+        $tables = NULL;
+        $tableId = NULL ;
         $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoice($tableId,$roomId);
 
+        $order_detail   = $this->InvoiceRepository->getdetail($roomId);
         $continent  = $this->InvoiceRepository->getContinent();
+        $rooms         = $this->InvoiceRepository->orderRoom($roomId);
+        $payments        = $this->InvoiceRepository->getPayment($roomId);
+
         //Get Order with table and room
         $orders     = array();
 
@@ -1102,17 +1159,88 @@ class InvoiceController extends Controller
         }
         $roleArr['role'][]    = $role_id;
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-        return view('cashier.invoice.index',compact('orders','config','orderRepo','continent'));
+
+        $v ='';
+
+        $item = array();
+
+        $collection_array = $order_detail->toArray();
+
+        foreach($collection_array as $key => $value)
+        {
+            $item[$key] = $value['item_id'];
+        }
+        array_multisort($item, SORT_ASC, $collection_array);
+
+        $details = collect($collection_array);    
+        return view('cashier.invoice.index',compact('payments','details','tables','rooms','orders','config','orderRepo','continent'));
     }   
+
+    public function invoiceListByTakeAway()
+    {
+        $order_status         = StatusConstance::ORDER_CREATE_STATUS;
+		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
+		$session_status       = StatusConstance::DAY_STARTING_STATUS;
+		$daystart             = DayStart::select('id')
+							->where('status',$session_status)
+							->whereNull('deleted_at')
+							->first();
+		$day_id 			  = '';
+
+		
+
+		if (count($daystart) > 0) {
+			$day_id 			  = $daystart->id;
+        }
+        
+        $orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
+                            ->where('take_id',1)
+					        ->orderBy('id', 'desc')
+					        ->where('day_id','=',$day_id)
+					        ->whereNull('deleted_at')
+					        ->get();
+
+        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        return view('cashier.invoice.index',compact('orders','config','tables','rooms'));
+    }
 
     public function addDiscount($id,Request $request)
     {
         $order = Order::findOrFail($id);
         $order->total_discount_amount =  $request->discount_input;
-        
         $order->save();
         return back();
     }
 
+    public function invoicePaidUpdate($id,Request $request)
+    {   
+        $order = Order::find($id);
+
+        if(!$order->rooms->isEmpty()){
+            $room = Room::where('id',$order->rooms[0]->id)->first();
+            $room->status = 0;
+            $room->update();
+        }
+
+        
+        if(!$order->table->isEmpty()){
+            $table = Table::where('id',$order->table[0]->id)->first();
+            $table->status = 0;
+            $table->update();
+        }
+
+        $order->over_all_discount_remark = $request->remark;
+        $order->all_total_amount = $request->total_amount;
+        $order->over_all_discount =  $request->discount_price;
+        $order->sub_total = $request->sub_total;
+        $order->service_amount = $request->service_tax;
+        $order->tax_amount = $request->gov_tax;
+        $order->payment_amount = $request->receive_price;
+        $order->refund = $request->change;
+        $order->status = 2;
+        $order->update();
+        
+        return back();
+    }
 }
 

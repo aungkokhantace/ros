@@ -1,0 +1,18 @@
+.stock form .col-sm-2 {
+    text-align: right;
+}
+.stock form {
+    margin-top: 40px;
+}
+.stock form .form-group {
+    margin-left:auto !important;
+    margin-right:auto !important;
+}
+
+html, body {
+    height: 100%;
+    margin: 0px;
+}
+.container {
+    height: 100%;
+}

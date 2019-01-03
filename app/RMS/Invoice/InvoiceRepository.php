@@ -203,7 +203,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 	public function getorder($id)
 	{
-		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge','status')->where('id',$id)->first();
+		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','over_all_discount','sub_total','over_all_discount_remark','total_price_foc','room_charge','status')->where('id',$id)->first();
 		
 		return $orders;
 	}
@@ -240,26 +240,27 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
     public function orderRoom($id){
         $rooms = OrderRoom::leftjoin('rooms','rooms.id','=','order_room.room_id')
-        ->select('order_room.room_id','order_room.order_id','rooms.room_name')->where('order_room.order_id','=',$id)->get();
+        ->select('order_room.room_id','order_room.order_id','rooms.room_name','rooms.price')->where('order_room.order_id','=',$id)->get();
       
         return $rooms;
     }
 
 	public function getaddon($id){
+		
 		$status 		= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
 		$order_details = Orderdetail::where('order_id','=', $id)->where('deleted_at','=',NULL)->get();
 		$addon = array();
 		foreach($order_details as $order){
+			
 			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')
 						->select('order_extra.*','add_on.food_name')
-						->where('order_extra.order_detail_id','=',$order->id)
+						->where('order_extra.order_detail_id','=',$order->order_detail_id)
 						->where('order_extra.status','=',$status)
 						->where('order_extra.deleted_at','=',NULL)
 						->get()->toArray();
 			array_push($addon, $tempAddon);
 			
 		}
-		
 		return $addon;
 	}
 

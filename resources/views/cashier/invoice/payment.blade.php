@@ -2,6 +2,7 @@
 @extends('cashier.layouts.master')
 @section('title','Payment')
 @section('content')
+@if($order->status == 1)
     <div class="wrapper"> 
         <div class="container-fluid receipt">  
           <div class="row cmn-ttl cmn-ttl2">
@@ -25,126 +26,135 @@
                         </h3>
                     </div>
                   <div class="col-lg-8 col-md-7 col-sm-6 col-6 receipt-btn">
-                        <button class="btn print-modal" onclick="printInvoice('{{$order->order_id}}')" data-toggle="modal" data-target="#printModal" data-id="{{$order->order_id}}" id="printInvoice" {{ $order->status == 2 ? "" : "style=display:none;" }}>
-                            <img src="/assets/cashier/images/payment/print_img.png" alt="Print Image" class="heightLine_06">
-                        </button>
-                    
                     <a href="{{ url()->previous() }}" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>
-
-                    {{-- <a class="btn" href="/Cashier/invoice">                
-                        <img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06">     
-                    </a> --}}
                   </div>
                 </div> 
               </div> 
           </div>
+          <form action="/Cashier/invoice/paid/{{$order->order_id}}" method="POST">
+            {{ csrf_field() }}
             <div class="row"> 
                 <div class="container"> 
                     <div class="row">
                         <div class="col-md-5 col-sm-5">
                             <div class="table-responsive">
                                 <table class="table receipt-table">
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Price</th>
-                                        <th>Qty</th>
-                                        <th>Amount</th>
+                                    <tr class="border">
+                                        <td><b>Item</b></td>
+                                        <td><b>Price</b></td>
+                                        <td><b>Quantity</b></td>
+                                        <td><b>Amount</b></td>
                                     </tr>
                                     @php $v = '' @endphp
                                     @foreach($details as $detail)
                                     <tr>
-                                            @php 
+    
+                                        @php 
+                                        $qty = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
+                                                                            ->where('item_id',$detail['item_id'])
+                                                                            ->count() ; 
 
-                                            $qty = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
-                                                                                ->where('item_id',$detail['item_id'])
-                                                                                ->count() ;                            
+                                        $qty2 = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
+                                        ->where('item_id',$detail['item_id'])
+                                        ->sum('quantity');                         
 
-                                            @endphp
-                                            @if($qty > 1)
-                                                @if($v != $detail['item_id'])
-                                                @php $v = $detail['item_id'] @endphp
-                                                    <td class="no-border">{{ $detail['item_name'] }}</td>
-                                                    <td class="no-border">{{ $detail['amount'] }}</td>
-                                                    <td class="no-border">{{ $qty }}</td>
-                                                    <td class="no-border">{{ $detail['amount']* $qty }} </td>
-                                                @endif
-                                            @else
-                                                <td class="no-border">{{ $detail['item_name'] }}</td>
+                                        @endphp
+                                        @if($qty > 1)
+                                            @if($v != $detail['item_id'])
+                                            @php $v = $detail['item_id'] @endphp
+                                                <td class="no-border" style="">{{ $detail['item_name'] }}</td>
                                                 <td class="no-border">{{ $detail['amount'] }}</td>
-                                                <td class="no-border">{{ $qty }}</td>
-                                                <td class="no-border">{{ $detail['amount']*$qty }} </td>
+                                                <td class="no-border">{{ $qty2 }}</td>
+                                                <td class="no-border">{{ $detail['amount']* $qty2 }} </td>
                                             @endif
+                                        @else
+    
+                                            <td class="no-border">{{ $detail['item_name'] }}</td>
+                                            <td class="no-border">{{ $detail['amount'] }}</td>
+                                            <td class="no-border">{{ $qty2 }}</td>
+                                            <td class="no-border">{{ $detail['amount']* $qty2 }} </td>
+                                        @endif                                                                                            
                                     </tr>
                                     @endforeach
 
+                                    @php $i = '' @endphp
+                                    
+                                    @foreach($addon as $add)
+                                        
+                                            <tr>
+                                                <td class="no-border">{{ $add['food_name']}} (add on)</td>
+                                                <td class="no-border">{{ $add['amount'] }}</td>
+                                                <td class="no-border">{{ $add['quantity'] }} </td>
+                                                <td class="no-border">{{ $add['amount'] * $add['quantity'] }}</td>
+                                            </tr>
+                                           
+                                    @endforeach
+
+                                   
                                     <tr class="big_row_font">
                                         <td colspan="3"><b>Net Amount</b></td>
-                                        <td><input type ="hidden" class="total_price" value="{{$order->total_price}}">{{ number_format($order->total_price) }}</td>
+                                        <td><input type ="number" class="total_price" value="{{$order->total_price}}" style="width:70px ; border:none;" dir="rtl"></td>
                                     </tr>
                                     
                                     <tr>
                                         <td colspan="3" class="no-border"><b>Discount</b></td>
-                                        <td class="no-border"><input type="number" name="discount_price" class="discount_price" value=""></td>
+                                        <td class="no-border"><input type="number" name="discount_price" class="discount_price" value="" style="width:70px ; border:none;" dir="rtl"/></td>
                                     </tr>
 
                                     <tr>
                                         <td colspan="3"><b>Sub-Total</b></td>
-                                        <td><b>{{ number_format($sub_total = $order->total_price - $order->total_discount_amount) }}</b></td>
+                                        <td><input type="number" name="sub_total" class="sub_total" value="" style="width:72px ; border:none;" dir="rtl"></td>
                                     </tr>
 
-                                    <tr>
-                                        <td colspan="3" class="no-border"><b>service charge ({{ $config->service}}%)</b></td>
-                                        <td class="no-border"><b>{{ number_format($service_tax = $order->service_amount) }}</b></td>
+                                    @if($config->service != 0)
+                                    <tr class="service_charge_row">
+                                        <td colspan="3" class="no-border"><b>service ({{ $config->service}}%)</b></td>
+                                        <td class="no-border"><input type="number" name="service_tax" class="service_tax" value="" style="width:72px ; border:none;" dir="rtl"></td>
                                     </tr>
+                                    @endif
 
-                                    <tr>
+                                    <tr class="gov_charge_row"> 
                                         <td colspan="3" class="no-border"><b>TAX({{ $config->tax}}%)</b></td>
-                                        <td class="no-border"><b>{{ number_format($gov_tax = $order->tax_amount) }}</b></td>
+                                        <td class="no-border"><input type="number" name="gov_tax" class="gov_tax" value="" style="width:72px ; border:none;" dir="rtl"></td>
+                                    </tr>
+
+                                    @if(count($rooms) > 0)
+                                    <tr style="border-bottom:1px dashed black;">
+                                        <td colspan="3" style="">Room Charge</td>
+                                        <td align="right"><input type="number" name="room_charge" class="room_charge" value="{{$order->room_charge}}" style="width:72px ; border:none;" dir="rtl"></td>
+                                    </tr>
+                                    @endif
+
+                                    <tr>
+                                        <td colspan="3" class=""><b class="">Total Amount</b></td>
+                                        <td class=""><input type="number" name="total_amount" class="total_amount" value="" style="width:72px ; border:none;" dir="rtl"></td>
                                     </tr>
 
                                     <tr>
-                                        <td colspan="3" class="no-border"><b>Total Amount</b></td>
-                                        <td class="no-border"><b>{{ number_format($sub_total + ($service_tax + $gov_tax) ) }}</b></td>
+                                        <td colspan="3" class=""><b>Cash Received</b></td>
+                                        <td class=""><input type="number" name="receive_price" class="receive_price" value="" style="width:72px ; border:none;" dir="rtl"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3" class="no-border"><b>Change</b></td>
+                                        <td class="no-border"><input type="number" name="change" class="receive_change" value="" style="width:72px ; border:none;" dir="rtl"></td>
                                     </tr>
                                 </table>
                             </div><!-- table-responsive -->
-
-                            <h3 class="receipt-ttl">TOTAL - {{ number_format($order->all_total_amount) }}</h3>
-                            <div class="table-responsive">
-                                <table class="table receipt-table" id="invoice-table">
-                                    <tr class="before-tr" style="height: 32px;">
-                                        <td colspan="2" class="bl-data"></td>
-                                    </tr>
-                                @foreach($tenders['pay'] as $tender)
-                                    <tr class="tender" id="transaction-{{ $tender['id'] }}">
-                                        <td>
-                                        @if ($tender['card'] == 1)
-                                            cash {{ $tender['total'] }} mmk
-                                        @else
-                                            {{ $tender['total'] . ' mmk - ' . $tender['description']}}
-                                        @endif
-                                        </td>
-                                        <td>{{ $tender['total'] }}</td>
-                                    </tr>
-                                @endforeach
-                            <tr>
-                                <td>BALANCE</td>
-                                <td class="balance">{{ $tenders['balance'] }}</td>
-                            </tr>
-                            <tr>
-                                <td>CHANGE</td>
-                                <td class="change">
-                                    {{ $tenders['change']}}
-                                </td>
-                            </tr>
-                            </table>
-                        </div><!-- table-responsive -->
-                        <div class="row receipt-btn02">
-                        <div class="col-md-6 col-sm-6 col-6"><button class="btn btn-primary item-modal" data-toggle="modal" data-target="#printModal" data-id="{{$order->order_id}}" onclick="itemModal('{{$order->order_id}}')">ITEM LISTS</button></div>
-                        <div class="col-md-6 col-sm-6 col-6"><button class="btn btn-primary">VIEW DETAILS</button></div>
+                        <div>
                     </div>
                 </div> 
                 <div class="col-md-7 col-sm-7">
+
+                    <div class="row mb-3">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-11">
+                                <label class="form-check-label ml-4">
+                                    <input type="checkbox" class="form-check-input print_check_box" value="" checked="checked">ေျပစာရယူလိုပါသလား
+                                </label>
+                            </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-1"></div>
                         <div class="col-md-11">
@@ -156,104 +166,475 @@
                     <div class="row mt-3">
                         <div class="col-md-1"></div>
                         <div class="col-md-11">
+                            <b>Remark</b>
+                            <input type="text" name="remark" class="form-control remark">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
                             <b>Cash Received</b>
-                            <input type="number" name="discount_input" class="form-control discount_input">
+                            <input type="number" name="cash_receive_input" class="form-control cash_receive_input">
                         </div>
                     </div>
-                </div>
-                    
-                   
-                    {{-- <div class="col-md-12 list-group" id="myList" role="tablist">
-                        <a class="list-group-item list-group-item-action heightLine_05 active" data-toggle="list" href="#home" role="tab" id="payment-cash">
-                          <span class="receipt-type cash-img"></span><span class="receipt-txt">Cash</span>
-                        </a>
-                        <a class="list-group-item list-group-item-action heightLine_05" data-toggle="list" href="#profile" role="tab" id="payment-card">
-                          <span class="receipt-type card-img"></span><span class="receipt-txt">Card</span>
-                        </a>
-                        <a class="list-group-item list-group-item-action heightLine_05" data-toggle="list" href="#messages" role="tab" id="payment-voucher">
-                          <span class="receipt-type voucher-img"></span><span class="receipt-txt">Voucher</span>
-                        </a>
-                        <a class="list-group-item list-group-item-action heightLine_05" data-toggle="list" href="#settings" role="tab" id="payment-nocollection">
-                          <span class="receipt-type collection-img"></span><span class="receipt-txt">No Collection</span>
-                        </a>
-                        <a class="list-group-item list-group-item-action heightLine_05" data-toggle="list" href="#settings" role="tab" id="payment-loyalty">
-                          <span class="receipt-type loyality-img"></span><span class="receipt-txt">Loyalty</span>
-                        </a>
-                    </div> <!-- list-group -->
-                    <div class="col-md-12">
-                    <div class="tab-content row">
-                      <div class="tab-pane active" id="home" role="tabpanel">
-                        <button class="btn heightLine_04 cash-payment" id="CASH"><span class="extra-cash"></span><span>Kyats</span></button>
-                        <button class="btn heightLine_04 cash-payment" id="CASH50"><span class="money">50</span> <span>Kyats</span></button>
-                        <button class="btn heightLine_04 cash-payment" id="CASH100"><span class="money">100</span><span>Kyats</span></button>
-                        <button class="btn heightLine_04 cash-payment" id="CASH200"><span class="money">200</span><span>Kyats</span></button>
-                        <button class="btn heightLine_04 cash-payment" id="CASH500"> <span class="money">500</span> <span>Kyats</span></button>
-                        <button class="btn heightLine_04 cash-payment" id="CASH1000"><span class="money">1000</span><span>Kyats</span></button>
-                        <button class="btn heightLine_04 cash-payment" id="CASH5000"><span class="money">5000</span><span>Kyats</span> </button>
-                        <button class="btn heightLine_04 cash-payment" id="CASH10000"> <span class="money">10000</span><span>Kyats</span></button>
-                      </div>
-                      <div class="tab-pane" id="profile" role="tabpanel">
-                            <button class="btn heightLine_05 mpu-type agd-mpu card-payment" id="MPU_AGD"><span class="receipt-type cash-img"></span><span class="receipt-txt">AGD</span></button>
-                            <button class="btn heightLine_05 mpu-type kbz-mpu card-payment" id="MPU_KBZ"><span class="receipt-type cash-img"></span><span class="receipt-txt">KBZ</span></button>
-                            <button class="btn heightLine_05 mpu-type uab-mpu card-payment" id="MPU_UAB"><span class="receipt-type cash-img"></span><span class="receipt-txt">UAB</span></button>
-                            <button class="btn heightLine_05 mpu-type mob-mpu card-payment" id="MPU_MOB"><span class="receipt-type cash-img"></span><span class="receipt-txt">MOB</span></button>
-                            <button class="btn heightLine_05 mpu-type chd-mpu card-payment" id="MPU_CHD"><span class="receipt-type cash-img"></span><span class="receipt-txt">CHD</span></button>
-
-                            <button class="btn heightLine_05 mpu-type kbz-visa card-payment" id="VISA_KBZ"><span class="receipt-type cash-img"></span><span class="receipt-txt">KBZ</span></button>
-                            <button class="btn heightLine_05 mpu-type cb-visa card-payment" id="VISA_CB"><span class="receipt-type cash-img"></span><span class="receipt-txt">CB</span></button>
-                      </div>
-                      <!-- <div class="tab-pane" id="messages" role="tabpanel">Messages</div>
-                      <div class="tab-pane" id="settings" role="tabpanel">Settings</div> -->
-                    </div> <!-- tab-content -->
+                    <div class="row mt-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
+                            <button type="submit" class="btn btn-primary save_btn" disabled>Save</button>
+                        </div>
                     </div>
-                    <div class="payment-cal col-md-12"> 
-                      <div class="row"> 
-                        <div class="col-md-12 payment-show">
-                          <p class="amount-quantity" style="min-height: 33px;"></p>
-                        </div>
-                        <div class="col-md-12 receipt-btn3"> 
-                          <button class="btn quantity" id="1">1</button>
-                          <button class="btn quantity" id="2">2</button>
-                          <button class="btn quantity" id="3">3</button>
-                          <button class="btn quantity" id="4">4</button>
-                          <button class="btn quantity" id="5">5</button>
-                          <button class="btn quantity" id="6">6</button>
-                          <button class="btn quantity" id="7">7</button>
-                          <button class="btn quantity" id="8">8</button>
-                          <button class="btn quantity" id="9">9</button>
-                          <button class="btn quantity" id="0">0</button>
-                        </div>
-                        <div class="col-md-12 receipt-btn4">                       
-                            <button class="btn btn-primary void-btn" id = 'void-item'>VOID <i class="fa fa-trash-alt"></i></button>
-                            <button class="btn clear-input-btn">CLEAR INPUT</button>
-                            <button class="btn btn-primary foc-btn">FREE CHARGE</button>
-                        </div>
-                      </div>
-
-                    </div> --}}
-
                   </div> <!-- row -->     
                 </div> <!-- col-md-8 -->
-
               </div>
+            </form>
             </div> 
           </div>
         </div><!-- container-fluid -->
-      </div><!-- wrapper -->
+    </div><!-- wrapper -->
+@endif
 
+@if($order->status == 2)
+        <div class="container-fluid receipt">  
+          <div class="row cmn-ttl cmn-ttl2">
+              <div class="container">
+                <div class="row">
+                    <input type="hidden" class="void-value" id="" />
+                    <input type="hidden" class="void-type" id="" />
+                    <div class="col-lg-4 col-md-5 col-sm-6 col-6">
+                        <h3>Order no : {{$order->order_id }} - 
+                        @if($tables->count() > 0)
+                            @foreach($tables as $table)
+                                {{ $table->table_no }}
+                            @endforeach
+                        @elseif($rooms->count() > 0)
+                            @foreach($rooms as $room)
+                                {{ $room->room_name }}
+                            @endforeach
+                        @else
+                            {{ "Take Away" }}
+                        @endif
+                        </h3>
+                    </div>
+                  <div class="col-lg-8 col-md-7 col-sm-6 col-6 receipt-btn">
+                
+
+                    <button class="btn print-modal" onclick="printInvoice('{{$order->order_id}}')">
+                        <img src="/assets/cashier/images/payment/print_img.png" alt="Print Image" class="heightLine_06">
+                    </button>
+                    
+                    <a href="/Cashier/Dashboard" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>
+                  </div>
+                </div> 
+              </div> 
+          </div>
+          <form action="/Cashier/invoice/paid/{{$order->order_id}}" method="POST">
+            {{ csrf_field() }}
+            <div class="row"> 
+                <div class="container"> 
+                    <div class="row">
+                        <div class="col-md-5 col-sm-5">
+                            <div class="table-responsive">
+                                <table class="table receipt-table">
+                                    <tr class="border">
+                                        <td><b>Item</b></td>
+                                        <td><b>Price</b></td>
+                                        <td><b>Qty</b></td>
+                                        <td><b>Amount</b></td>
+                                    </tr>
+                                    @php $v = '' @endphp
+                                    @foreach($details as $detail)
+                                    <tr>
+                                        @php 
+                                        $qty = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
+                                                                            ->where('item_id',$detail['item_id'])
+                                                                            ->count() ; 
+
+                                        $qty2 = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
+                                        ->where('item_id',$detail['item_id'])
+                                        ->sum('quantity');                         
+
+                                        @endphp
+                                        @if($qty > 1)
+                                            @if($v != $detail['item_id'])
+                                            @php $v = $detail['item_id'] @endphp
+                                                <td class="no-border" style="">{{ $detail['item_name'] }}</td>
+                                                <td class="no-border">{{ $detail['amount'] }}</td>
+                                                <td class="no-border">{{ $qty2 }}</td>
+                                                <td class="no-border">{{ $detail['amount']* $qty2 }} </td>
+                                            @endif
+                                        @else
+    
+                                            <td class="no-border">{{ $detail['item_name'] }}</td>
+                                            <td class="no-border">{{ $detail['amount'] }}</td>
+                                            <td class="no-border">{{ $qty2 }}</td>
+                                            <td class="no-border">{{ $detail['amount']* $qty2 }} </td>
+                                        @endif                                                                                            
+                                    </tr>
+                                    @endforeach
+
+                                    @php $i = '' @endphp
+
+                                    @php $i = '' @endphp
+                                    
+                                    @foreach($addon as $add)
+                                        
+                                            <tr>
+                                                <td class="no-border">{{ $add['food_name']}} (add on)</td>
+                                                <td class="no-border">{{ $add['amount'] }}</td>
+                                                <td class="no-border">{{ $add['quantity'] }} </td>
+                                                <td class="no-border">{{ $add['amount'] * $add['quantity'] }}</td>
+                                            </tr>
+                                           
+                                    @endforeach
+
+                                    <tr class="big_row_font">
+                                        <td colspan="3"><b>Net Amount</b></td>
+                                        <td class="">{{$order->total_price}}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="3" class="no-border"><b>Discount</b></td>
+                                        <td class="no-border">{{ $order->over_all_discount }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3"><b>Sub-Total</b></td>
+                                        <td>{{ $order->sub_total }}</td>
+                                    </tr>
+
+                                    @if($config->service != 0)
+                                    <tr class="service_charge_row">
+                                        <td colspan="3" class="no-border"><b>service ({{ $config->service}}%)</b></td>
+                                        <td class="no-border">{{ $order->service_amount }}</td>
+                                    </tr>
+                                    @endif
+
+                                    <tr class="gov_charge_row"> 
+                                        <td colspan="3" class="no-border"><b>TAX({{ $config->tax}}%)</b></td>
+                                        <td class="no-border">{{ $order->tax_amount }}</td>
+                                    </tr>
+
+                                    @if(count($rooms) > 0)
+                                    <tr style="border-bottom:1px dashed black;">
+                                        <td colspan="3" style="">Room Charge</td>
+                                        <td align="right">{{$order->room_charge}}</td>
+                                    </tr>
+                                    @endif
+
+                                    <tr>
+                                        <td colspan="3" class=""><b class="">Total Amount</b></td>
+                                        <td class="">{{ $order->all_total_amount }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3" class=""><b>Cash Received</b></td>
+                                        <td class="">{{ $order->payment_amount }} </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3" class="no-border"><b>Change</b></td>
+                                        <td class="no-border">{{ $order->refund }}</td>
+                                    </tr>
+                                </table>
+                            </div><!-- table-responsive -->
+                        <div>
+                    </div>
+                </div> 
+                <div class="col-md-7 col-sm-7">
+
+                    <div class="row mb-3">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-11">
+                                <label class="form-check-label ml-4">
+                                    <input type="checkbox" class="form-check-input print_check_box" value="" checked="checked" disabled>ေျပစာရယူလိုပါသလား
+                                </label>
+                            </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
+                            <b>Discount</b>
+                            <input type="number" name="discount_input" class="form-control discount_input" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
+                            <b>Remark</b>
+                            <input type="number" name="remark" class="form-control remark" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
+                            <b>Cash Received</b>
+                            <input type="number" name="cash_receive_input" class="form-control cash_receive_input" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-1"></div>
+                       
+                    </div>
+                  </div> <!-- row -->     
+                </div> <!-- col-md-8 -->
+              </div>
+            </form>
+            </div> 
+          </div>
+        </div><!-- container-fluid -->
+    </div><!-- wrapper -->
+@endif
         @include('cashier.invoice.payment_print')
         @include('cashier.invoice.items_list')
       <script type="text/javascript">
         $(document).ready(function(){
 
-          
+
+            $(".print_check_box").change(function() {
+                var ischecked= $(this).is(':checked');
+                if(!ischecked){
+                    $('.service_charge_row').hide(300);
+                    $('.gov_charge_row').hide(300);
+
+                    var total_price = $('.total_price').val();
+
+                    var discount_price = $('.discount_price').val();
+
+                    var sub_total = total_price - discount_price;
+
+                    $('input[name="sub_total"]').val(sub_total);       
+
+                    var sub_total_price = $('.sub_total').val();
+
+                    var service_tax_number = 0;
+
+                    var gov_tax_number = 0;
+
+                    $('input[name="gov_tax"]').val(gov_tax);       
+
+                    var total_amount = eval(sub_total_price);
+
+                    
+                    var receive_price = $('.receive_price').val();
+                    
+                    var room_charge = $('.room_charge').val();
+
+                    if (typeof room_charge === "undefined") {
+                        
+                        var room_charge = 0;
+
+                    }
+                    
+                    var total_amount = eval(total_amount) + eval(room_charge);
+                    
+                    
+                    $('input[name="total_amount"]').val(total_amount);  
+
+                    var receive_change = eval(receive_price) - eval(total_amount);
+                    
+                    $('input[name="change"]').val(receive_change);   
+
+                    if(receive_change >= 0){
+                        $( ".save_btn" ).prop( "disabled", false );
+                    }else{
+                        $( ".save_btn" ).prop( "disabled", true );                    
+                    }
+
+
+                }else{
+
+                    $('.service_charge_row').show(300);
+                    $('.gov_charge_row').show(300);
+
+                    var total_price = $('.total_price').val();
+  
+                    var discount_price = $('.discount_price').val();
+
+                    var sub_total = total_price - discount_price;
+
+                    $('input[name="sub_total"]').val(sub_total);       
+
+                    var sub_total_price = $('.sub_total').val();
+
+                    var service_tax_number = '<?= $config->service; ?>';
+
+                    if(service_tax_number == 0){
+
+                        var service_tax = 0;
+
+                    }else{
+                        var service_tax = (sub_total_price / 100) * service_tax_number;
+                    }
+
+                    var service_tax = Math.ceil(service_tax);
+
+                    $('input[name="service_tax"]').val(service_tax);       
+
+                    var gov_tax_number = '<?= $config->tax; ?>'
+                        
+                    var gov_tax = (sub_total_price / 100) * gov_tax_number;                    
+
+                    var gov_tax = Math.ceil(gov_tax);
+
+
+                    $('input[name="gov_tax"]').val(gov_tax);       
+                    
+                    var room_charge = $('.room_charge').val();
+                    
+                    if (typeof room_charge === "undefined") {
+
+                        var room_charge = 0;
+
+                    }
+
+                    var total_amount = eval(sub_total_price) + eval(service_tax) + eval(gov_tax)+eval(room_charge);
+                    
+
+                    $('input[name="total_amount"]').val(total_amount);  
+                    
+                    var receive_price = $('.receive_price').val();
+
+                    var receive_change = eval(receive_price) - eval(total_amount);
+
+                    $('input[name="change"]').val(receive_change);     
+
+                    if(receive_change >= 0){
+                        $( ".save_btn" ).prop( "disabled", false );
+                    }else{
+                        $( ".save_btn" ).prop( "disabled", true );                    
+                    }
+
+                }
+            }); 
+
+                var total_price = $('.total_price').val();
+
+                $('input[name="discount_price"]').val($(this).val());        
+
+                var discount_price = $('.discount_price').val();
+
+                var sub_total = total_price - discount_price;
+
+                $('input[name="sub_total"]').val(sub_total);       
+
+                var sub_total_price = $('.sub_total').val();
+
+                var service_tax_number = '<?= $config->service; ?>';
+                
+                if(service_tax_number == 0){
+
+                var service_tax = 0;
+
+                }else{
+                    var service_tax = (sub_total_price / 100) * service_tax_number;
+                }
+
+                var service_tax = Math.ceil(service_tax);
+
+                $('input[name="service_tax"]').val(service_tax);       
+
+
+                var gov_tax_number = '<?= $config->tax; ?>'
+                    
+                var gov_tax = (sub_total_price / 100) * gov_tax_number;
+
+                var gov_tax = Math.ceil(gov_tax);
+
+
+                $('input[name="gov_tax"]').val(gov_tax);       
+
+                var room_charge = $('.room_charge').val();
+
+                if (typeof room_charge === "undefined") {
+                    var room_charge = 0;
+                }
+
+                var total_amount = eval(sub_total_price) + eval(service_tax) + eval(gov_tax)+eval(room_charge);
+
+                $('input[name="total_amount"]').val(total_amount);  
+
+            
+
             $('input[name="discount_input"]').on('input', function() {
 
-                var foo = $('input[name="discount_price"]').val($(this).val());        
-                console.log(foo);
+                $('.receive_price').val('');
+
+                $('.total_amount').val();
+                
+                $('.cash_receive_input').val('');
+                
+                $('.receive_change').val('');
+
+                var total_price = $('.total_price').val();
+
+                $('input[name="discount_price"]').val($(this).val());        
+
+                var discount_price = $('.discount_price').val();
+                
+                var sub_total = total_price - discount_price;
+                
+                $('input[name="sub_total"]').val(sub_total);       
+
+                var sub_total_price = $('.sub_total').val();
+                
+                var service_tax_number = '<?= $config->service; ?>';
+
+                if(service_tax_number == 0){
+
+                var service_tax = 0;
+
+                }else{
+                    var service_tax = (sub_total_price / 100) * service_tax_number;
+                }
+
+                var service_tax = Math.ceil(service_tax);
+
+                $('input[name="service_tax"]').val(service_tax);       
+
+                var gov_tax_number = '<?= $config->tax; ?>'
+                
+                var gov_tax = (sub_total_price / 100) * gov_tax_number;                
+
+                var gov_tax = Math.ceil(gov_tax);
+                
+
+                $('input[name="gov_tax"]').val(gov_tax);       
+                
+                var room_charge = $('.room_charge').val();
+                
+                if (typeof room_charge === "undefined") {
+                    var room_charge = 0;
+                }
+
+                var total_amount = eval(sub_total_price) + eval(service_tax) + eval(gov_tax)+eval(room_charge);
+
+                $('input[name="total_amount"]').val(total_amount); 
                 
 
             });    
+
+            $('input[name="cash_receive_input"]').on('input', function() {
+                $('input[name="receive_price"]').val($(this).val());       
+
+                var receive_price = $('.receive_price').val();
+
+                 var total_amount = $('.total_amount').val();
+
+                 var receive_change = eval(receive_price) - eval(total_amount);
+
+                $('input[name="change"]').val(receive_change);    
+                
+                if(receive_change >= 0){
+                    $( ".save_btn" ).prop( "disabled", false );
+                }else{
+                    $( ".save_btn" ).prop( "disabled", true );                    
+                }
+
+            });
 
             var socket = socketConnect();
             //If Clear button 

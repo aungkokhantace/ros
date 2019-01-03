@@ -16,7 +16,7 @@ class CreateShiftTable extends Migration
             $table->increments('id');
             $table->tinyInteger('status')->default(1);
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->integer('created_by');
             $table->integer('updated_by');
             $table->integer('deleted_by')->nullable();
