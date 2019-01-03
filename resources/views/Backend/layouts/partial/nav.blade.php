@@ -29,7 +29,10 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/Backend/Restaurant/index"><i class="fa fa-circle-o text-aqua"></i>  Restaurant</a></li>           
+            @if (Auth::guard('Cashier')->user()->restaurant_id == null)
+            <li><a href="/Backend/Restaurant/index"><i class="fa fa-circle-o text-aqua"></i>  Restaurant</a></li> 
+            @endif
+            <li><a href="/Backend/Branch/index"><i class="fa fa-circle-o text-aqua"></i>  Branch</a></li>           
             <li><a href="/Backend/Permission/index"><i class="fa fa-circle-o text-aqua"></i>  Permission</a></li>
             <li><a href="/Backend/StaffType/index"><i class="fa fa-circle-o text-aqua"></i>  Staff Type</a></li>
             <li><a href="/Backend/Staff/index"><i class="fa fa-circle-o text-aqua"></i>  Staff</a></li>

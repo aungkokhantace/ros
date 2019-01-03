@@ -10,7 +10,7 @@
   <b>Version</b> {!! gitVersion() !!}
 </div>
 <div class="col-md-5">
-<strong> <p class="footer-status ">&copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/">AcePlus Solutions.,Co Ltd</a></p></strong>
+<strong> <p class="footer-status ">&copy;Copyright <?php echo date('Y'); ?>.All rights reserved by <a href="http://www.aceplussolutions.com/">AcePlus Solutions.,Co Ltd</a></p></strong>
 </div>
 </footer>
 <a href="#" class="scrollToTop btn btn-icon btn-circle "><i class="fa fa-angle-double-up"></i></a>

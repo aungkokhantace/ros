@@ -22,6 +22,7 @@ class TenderRepository  implements  TenderRepositoryInterface
 {
     public function getTenderByCode($code) {
         $get_tender        = Postender::where('code','=',$code)->first();
+            
         return $get_tender;
     }
     public function store($paramObj){

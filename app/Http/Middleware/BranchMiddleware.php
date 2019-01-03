@@ -19,7 +19,7 @@ class BranchMiddleware
      */
     public function handle($request, Closure $next)
     {
-        r$role_id = Auth::guard($guard)->user()->role_id;
+        $role_id = Auth::guard($guard)->user()->role_id;
         $role    = Permission::select('module_id')->where('role_id','=',$role_id)->get();
         foreach($role as $r){
             $array[] = $r->module_id;

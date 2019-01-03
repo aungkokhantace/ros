@@ -216,11 +216,13 @@
             $('.cash-payment').click(function(){
                 cash_id         = $(this).attr("id");
                 quantity        = $('.amount-quantity').text();
+                console.log(cash_id + ' ' + quantity + "here");
                 if (quantity == '' || quantity == '0') {
                     qty        = 1;
                 } else {
                     qty        = parseInt(quantity);
                 }
+                console.log(qty);
                 var dataString = { 
                       cash_id       : cash_id,
                       _token        : '{{ csrf_token() }}',
@@ -234,6 +236,7 @@
                     dataType: "json",
                     cache   : false,
                     success: function(data) {
+                        
                         $('.amount-quantity').text('');
                         var msg         = data.message;
                         var foc         = data.foc;

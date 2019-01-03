@@ -37,13 +37,13 @@ class KitchenController extends Controller
     }
 
     //To show kitchen entry form
-    public function create(){
+   
+ public function create(){
         $branch     = $this->branchRepo->getAllType();
         $restaurant = $this->restaurantRepo->getAllType();
 
         return view('Backend.kitchen.kitchen_form')->with('branchs',$branch)->with('restaurants',$restaurant);
     }
-
     public function store(KitchenEntryRequest $request){
         $request->validate();
         $name           = $request->get('name');

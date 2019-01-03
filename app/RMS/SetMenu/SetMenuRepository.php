@@ -330,9 +330,9 @@ class SetMenuRepository implements SetMenuRepositoryInterface
 
         $query               = Continent::query();
 
-        if($restaurant_id != null || $restaurant_id != 0){
-            $query           = $query->where('restaurant_id',$restaurant_id);
-        }
+        // if($restaurant_id != null || $restaurant_id != 0){
+        //     $query           = $query->where('restaurant_id',$restaurant_id);
+        // }
         $continent           = $query->select('id','name','description')->whereNull('deleted_at')->get()->toArray();         
         return $continent;
     }

@@ -119,7 +119,7 @@
                         {!! generateItemCategoryListEdit($categories, $parentId=0, $indent=0,$parent_id_arr,$record->category_id) !!}
                     @else
 
-                         <option value="0" selected disabled>Select Item Category123ff</option>
+                         <option value="0" selected disabled>Select Item Category</option>
                         {!! generateItemCategoryList($categories, $parentId=0, $indent=0,$parent_id_arr) !!} 
                     @endif
                 </select>

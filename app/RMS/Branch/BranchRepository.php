@@ -41,12 +41,7 @@ class BranchRepository  implements  BranchRepositoryInterface
             $tempObj        = Utility::addCreatedBy($paramObj);
             $tempObj->save();
 
-            $inserted_id = $tempObj->id;
-            $product_type = 3; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
-            $stock_code = Utility::generateStockCode($inserted_id,$product_type);
-            $paramObj = Branch::find($inserted_id);
-            $paramObj->stock_code = $stock_code;
-            $paramObj->save();
+            
 
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
             return $returnedObj;
