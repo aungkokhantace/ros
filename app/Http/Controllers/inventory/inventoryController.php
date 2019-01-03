@@ -50,10 +50,10 @@ class inventoryController extends Controller
 
 		$client = new client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body' => $categorys,
 		]);
-    	
+
 
     }
 
@@ -74,7 +74,7 @@ class inventoryController extends Controller
 
 		$client = new client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body'    => $groups,
 		]);
 
@@ -94,7 +94,7 @@ class inventoryController extends Controller
     	foreach($groups as $group){
     		array_push($classes,$group->Id);
     	}
-        
+
     	$classes  = Category::whereIn('parent_id',$classes)->whereNull('deleted_at')->where('status',1)->select('id as Id','stock_code as ClassNo','name as Description')->get();
         $url  = $this->resquestserverurl.'/classcode/create';
         $classes = json_encode($classes);
@@ -105,7 +105,7 @@ class inventoryController extends Controller
 
 		$client = new client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body' => $classes,
 		]);
 
@@ -113,7 +113,7 @@ class inventoryController extends Controller
 
 
     public function stock_item(){
-	
+
 		$itemRepo = new ItemRepository();
 		$Cate_ary = array();
 		$Group_ary  = array();
@@ -125,7 +125,7 @@ class inventoryController extends Controller
 				$item = $itemRepo->getitem_forinvestory($parent->parent_id);
 				array_push($Cate_ary,$item);
 			}else{
-				$groups = $itemRepo->getParent_Id($parent->parent_id);		
+				$groups = $itemRepo->getParent_Id($parent->parent_id);
 				foreach($groups as $group){
 					if(in_array($group->parent_id,$category_id_ary)){
 						$item = $itemRepo->getitem_forinvestory($parent->parent_id);
@@ -138,16 +138,16 @@ class inventoryController extends Controller
 								array_push($class_ary,$item);
 							}else{
 								continue;
-								
+
 							}
 						}
 					}
 				}
 			}
 		}
-		
-		
-		
+
+
+
 
     }
     public function getSyncUm()

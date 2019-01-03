@@ -1,4 +1,7 @@
-<?php namespace App\RMS;
+<?php
+
+namespace App\RMS;
+
 use App\RMS\Config\ConfigRepository;
 use Auth;
 use DB;
@@ -6,9 +9,11 @@ use PDF;
 use App\Http\Requests;
 use App\Session;
 use App\RMS\User\UserRepository;
+use App\User;
 use App\RMS\SyncsTable\SyncsTable;
 use Carbon\Carbon;
 use App\RMS\Config\ConfigRepositoryInterface;
+use App\RMS\Kitchen\Kitchen;
 
 class Utility
 {
@@ -151,6 +156,16 @@ class Utility
         return $rooms;
     }
 
+    public static function generateStaffId()
+    {
+        $pad_length = 5;
+        $maxID      = User::max('staff_id') ?: str_repeat('0',$pad_length);
+        $staff_id   = intval($maxID);
+        $staff_id++;
+        $id         = str_pad($staff_id,$pad_length,0,STR_PAD_LEFT);
+        return $id;
+    }
+
     public function dateCodeString()
     {
         $now = Carbon::now()->format('y-m-d');
@@ -169,7 +184,7 @@ class Utility
 
     public function generateRequisitionNo()
     {
-        $date = $this->dateCodeString();
+        $date = $this::dateCodeString();
         $repository = new ConfigRepository();
         $config = $repository->getAllConfig();
         $int = 00000;
@@ -188,5 +203,17 @@ class Utility
             'id'   => $config->id
         ];
         return $result;
+    }
+
+    public static function generateKitchenCode()
+    {
+        $path_length     = 3;
+        $prefix          = 'loc';
+        $maxCode         = Kitchen::where('kitchen_code', 'like', $prefix.'%')->max('kitchen_code') ?: $prefix.str_repeat('0',$path_length);
+        $code            =  substr($maxCode,3,6);
+        $kitchen_code    = intval($code);
+        $kitchen_code++;
+        $code             = str_pad($kitchen_code,$path_length,0,STR_PAD_LEFT);
+        return $prefix . $code;
     }
 }
