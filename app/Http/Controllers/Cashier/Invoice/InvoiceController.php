@@ -99,6 +99,7 @@ class InvoiceController extends Controller
         $config->website            = $restaurantObj->website;
         $config->address            = $restaurantObj->address;
         $config->phone              = $restaurantObj->phone_no;
+
         return view('cashier.invoice.index',compact('orders','config','orderRepo','continent'));
 
     } 
@@ -734,6 +735,8 @@ class InvoiceController extends Controller
     }
 
     public function invoicedetail($id){
+        $restaurant = Utility::getCurrentRestaurant();
+        $branch     = Utility::getCurrentBranch();
         $orders = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
@@ -753,15 +756,30 @@ class InvoiceController extends Controller
         $order_detail   = $this->InvoiceRepository->getdetail($id);
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
-        $cashier        = $this->InvoiceRepository->cashier($id);
-        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-        $payments        = $this->InvoiceRepository->getPayment($id);
+        $cashier        = $this->InvoiceRepository->cashier($id);     
+       
+       
+        $payments       = $this->InvoiceRepository->getPayment($id);
+
+         $restaurantObj = Restaurant::select('name','email','logo','website','address','phone_no')->where('id',$restaurant)->first();
+       
+        // $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        $config                     = Config::select('tax','service')->where('restaurant_id',$restaurant)->first();
+        
+        $config->restaurant_name    = $restaurantObj->name;
+        $config->email              = $restaurantObj->email;
+        $config->logo               = $restaurantObj->logo;
+        $config->website            = $restaurantObj->website;
+        $config->address            = $restaurantObj->address;
+        $config->phone              = $restaurantObj->phone_no;
         return view('cashier.invoice.detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','payments','continent'));
     }
 
     public function invoicePaid($id) {
         // dd($id);
-        $restaurant     = Utility::getCurrentRestaurant();
+        $restaurant             = Utility::getCurrentRestaurant();
+        $branch                 = Utility::getCurrentBranch();      
+      
         $order          = $this->InvoiceRepository->getorder($id);
         $add            = $this->InvoiceRepository->getaddon($id);
         $total          = $this->InvoiceRepository->getaddonAmount($id);
@@ -785,9 +803,19 @@ class InvoiceController extends Controller
         $cards          = $this->InvoiceRepository->getCard();
         $payments       = $this->InvoiceRepository->getPayment($id);
         $tenders        = $this->InvoiceRepository->getTenders($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->where('restaurant_id',$restaurant)->first();
 
-        // dd($order_detail);
+        $restaurantObj  = Restaurant::select('name','email','logo','website','address','phone_no')->where('id',$restaurant)->first();
+
+        // $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->where('restaurant_id',$restaurant)->first();
+
+    
+        $config                     = Config::select('tax','service','room_charge')->where('restaurant_id',$restaurant)->first();
+        $config->restaurant_name    = $restaurantObj->name;
+        $config->email              = $restaurantObj->email;
+        $config->logo               = $restaurantObj->logo;
+        $config->website            = $restaurantObj->website;
+        $config->address            = $restaurantObj->address;
+        $config->phone              = $restaurantObj->phone_no;
     
         return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
     }
