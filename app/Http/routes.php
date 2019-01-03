@@ -124,6 +124,7 @@ Route::group(['middleware' => 'web'], function () {
 
                 // Start Tender Transaction
                 Route::post('transaction_tenders/storeCash','Cashier\TransactionTenders\TransactionTendersController@storeCash');
+                // Route::get('transaction_tenders/storeCash/{cash}/{order}/{qty}','Cashier\TransactionTenders\TransactionTendersController@storeCash');
                 Route::post('transaction_tenders/storeCard','Cashier\TransactionTenders\TransactionTendersController@storeCard');
                 Route::post('transaction_tenders/delete','Cashier\TransactionTenders\TransactionTendersController@delete');
                 Route::post('transaction_tenders/updateFoc','Cashier\TransactionTenders\TransactionTendersController@updateFoc');
@@ -630,15 +631,15 @@ Route::group(['middleware' => 'web'], function () {
         });
 
 
-        // // branch
-        //  Route::group(['middleware'=>'kitchen:Cashier'],function(){
-        //     Route::get('Branch/index','Backend\Branch\KitchenController@index');
-        //     Route::get('Branch/create','Backend\Branch\KitchenController@create');
-        //     Route::post('Branch/store','Backend\Branch\KitchenController@store');
-        //     Route::get('Branch/edit/{id}','Backend\Branch\KitchenController@edit');
-        //     Route::post('Branch/update','Backend\Branch\KitchenController@update');
-        //     Route::get('Branch/delete/{id}','Backend\Branch\KitchenController@delete');
-        // });
+        // branch
+         Route::group(['middleware'=>'kitchen:Cashier'],function(){
+            Route::get('Branch/index','Backend\Branch\BranchController@index');
+            Route::get('Branch/create','Backend\Branch\BranchController@create');
+            Route::post('Branch/store','Backend\Branch\BranchController@store');
+            Route::get('Branch/edit/{id}','Backend\Branch\BranchController@edit');
+            Route::post('Branch/update','Backend\Branch\BranchController@update');
+            Route::get('Branch/delete/{id}','Backend\Branch\BranchController@delete');
+        });
        
 
             

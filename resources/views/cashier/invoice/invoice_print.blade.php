@@ -17,7 +17,7 @@
                                     Website: {{ $config->website}}<br/>
                                     Email: {{ $config->email }}<br/>
                                     Tel: {{ $config->phone}}<br/>
-                                    Addr: {{ $config->address}}<br /><br/>
+                                    Addr: {{ $config->address}}<br/><br/>
                                     <span style="float:left">Invoice No: {{ $order->id}}</span><br/>
                                     <span style="float:left">Invoice Date:{{$order->created_at}}</span><br/>
                                     @if(isset($order->table))

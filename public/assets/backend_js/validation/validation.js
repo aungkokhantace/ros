@@ -274,7 +274,9 @@ $(document).ready(function() {
             amount      : {
                 required : true,
                 number   :true
-            }
+            },
+             restaurant  : "required",
+             branch      : "required",
         },
         messages: {
             name        : "Discount Name is required.",
@@ -289,7 +291,9 @@ $(document).ready(function() {
             amount      : {
                 required : "Discount Amount is required.",
                 number   :"Discount Amount must be numeric."
-            }
+            },
+              restaurant  : "Restauranat is required.",
+              branch      : "Branch is required.",
         },
         submitHandler: function(form) {
             $('input[type="submit"]').attr('disabled','disabled');
@@ -307,6 +311,7 @@ $(document).ready(function() {
                 number   :true
             },
             image            : "required",
+            restaurant       : "required",
         },
         messages: {
             sub_menus_name  : "Set Menu Name is required.",
@@ -316,6 +321,7 @@ $(document).ready(function() {
                 number   : "Set Menu Price must be numeric."
             },
             image           : "Set Menu Image is required.",
+            restaurant      : "Restauranat is required.",
         },
         ignore: ':hidden:not("#Category")', // Tells the validator to check the hidden select
         errorPlacement: function (error, element) { //Positioning Jquery Validation Errors after checkbox value
@@ -377,11 +383,15 @@ $(document).ready(function() {
             table_no: "required",
             capacity: "required",
             location: "required",
+            restaurant  : "required",
+            branch      : "required",
         },
         messages: {
             table_no: "Table No is required.",
             capacity: "Capacity is required.",
             location: "Location is required.",
+            restaurant  : "Restauranat is required.",
+            branch      : "Branch is required.",
         },
         errorPlacement: function (error, element) { //Positioning Jquery Validation Errors after checkbox value
             if (element.attr("type") == "checkbox") {
@@ -400,6 +410,8 @@ $(document).ready(function() {
         rules: {
             room_name   : "required",
             capacity    : "required",
+             restaurant  : "required",
+            branch      : "required",
         },
         messages: {
             room_name   : "Room Name is required.",
@@ -698,6 +710,25 @@ $(document).ready(function() {
         messages: {
             name        : "Name is required.",
             image       :"Image is required.",
+        },
+        submitHandler: function(form) {
+            $('input[type="submit"]').attr('disabled','disabled');
+            form.submit();
+        }
+    });
+
+        //for remark
+        $('#branch').validate({
+        rules: {
+            restaurant  : "required",
+            name        : "required",
+         
+            
+        },
+        messages: {
+            restaurant  : "Restauranat is required.",   
+            name        : "Name is required.",
+          
         },
         submitHandler: function(form) {
             $('input[type="submit"]').attr('disabled','disabled');

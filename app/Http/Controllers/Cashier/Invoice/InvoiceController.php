@@ -27,6 +27,7 @@ use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection as Collection;
+use App\RMS\Restaurant\Restaurant;
 
 
 class InvoiceController extends Controller
@@ -40,24 +41,32 @@ class InvoiceController extends Controller
     
     public function invoiceList()
     {
-    	$today      = Carbon::now();
+    	$restaurant = Utility::getCurrentRestaurant();
+        $branch     = Utility::getCurrentBranch();
+        $today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
         $orderRepo 	= $this->InvoiceRepository->getinvoice();
         $continent  = $this->InvoiceRepository->getContinent();
         //Get Order with table and room
+
         $orders     = array();
         foreach($orderRepo as $key => $order) {
             $orderID        = $order->id;
             $orderTable     = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
                                 ->select('tables.table_no as table_name')
                                 ->where('order_tables.order_id','=',$orderID)
+                                ->where('tables.branch_id',$branch)
+                                ->where('tables.restaurant_id',$restaurant)
                                 ->get();
             $orderRoom      = OrderRoom::leftjoin('rooms','order_room.room_id','=','rooms.id')
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
+                                ->where('rooms.branch_id',$branch)
+                                ->where('rooms.restaurant_id',$restaurant)
                                 ->get();
             //Get Order Detail 
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
+
             $order->order_detail        = $order_detail;
             //Get Add On 
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
@@ -79,7 +88,17 @@ class InvoiceController extends Controller
             $role_id      = Auth::guard('Cashier')->user()->role_id;
         }
         $roleArr['role'][]    = $role_id;
-        $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
+        // $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->where('restaurant_id',$restaurant)->first();
+
+        $restaurantObj         = Restaurant::select('name','email','logo','website','address','phone_no')->where('id',$restaurant)->first();
+        // dd($restaurantObj);
+        $config             = Config::select('tax','service')->where('restaurant_id',$restaurant)->first();
+        $config->restaurant_name    = $restaurantObj->name;
+        $config->email              = $restaurantObj->email;
+        $config->logo               = $restaurantObj->logo;
+        $config->website            = $restaurantObj->website;
+        $config->address            = $restaurantObj->address;
+        $config->phone              = $restaurantObj->phone_no;
         return view('cashier.invoice.index',compact('orders','config','orderRepo','continent'));
 
     } 
@@ -741,11 +760,13 @@ class InvoiceController extends Controller
     }
 
     public function invoicePaid($id) {
-        $order = $this->InvoiceRepository->getorder($id);
-        $add    = $this->InvoiceRepository->getaddon($id);
-        $total  = $this->InvoiceRepository->getaddonAmount($id);
-        $continent  = $this->InvoiceRepository->getContinent();
-        $addon  = array();
+        // dd($id);
+        $restaurant     = Utility::getCurrentRestaurant();
+        $order          = $this->InvoiceRepository->getorder($id);
+        $add            = $this->InvoiceRepository->getaddon($id);
+        $total          = $this->InvoiceRepository->getaddonAmount($id);
+        $continent      = $this->InvoiceRepository->getContinent();
+        $addon          = array();
         foreach($add as $dd){
             foreach($dd as $d){
                 $addon[] = $d;
@@ -762,9 +783,11 @@ class InvoiceController extends Controller
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier        = $this->InvoiceRepository->cashier($id);
         $cards          = $this->InvoiceRepository->getCard();
-        $payments        = $this->InvoiceRepository->getPayment($id);
+        $payments       = $this->InvoiceRepository->getPayment($id);
         $tenders        = $this->InvoiceRepository->getTenders($id);
-        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->first();
+        $config         = Config::select('restaurant_name','logo','website','address','phone','tax','service','room_charge','email')->where('restaurant_id',$restaurant)->first();
+
+        // dd($order_detail);
     
         return view('cashier.invoice.payment',compact('order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
     }

@@ -29,29 +29,39 @@ class TransactionTendersController extends Controller
     }
 
     public function storeCash(Request $request)
+    // public function storeCash($code,$order_id,$quantity)
     {
+        // dd("a;;");
         $code                   = Input::get('cash_id');
         $order_id               = Input::get('order_id');
         $quantity               = Input::get('quantity');
         $get_tender             = $this->tender_repository->getTenderByCode($code);
+        // dd($get_tender->id);
         $tender_id              = $get_tender->id;
+        // dd($tender_id);
         $paid_amount            = $get_tender->amount;
         $status                 = StatusConstance::TRANCTION_PAID_STATUS;
         //Flage 0 = ORDER, 1 = PAIDED Before Tender Insert
         $order                  = Order::find($order_id);
+
+        $restaurant             = $order->restaurant_id;
+        $branch                 = $order->branch_id;
+        // dd($order);
         $order_foc              = $order->foc_amount;
         $order_total            = $order->all_total_amount;
         $order_payment          = $order_total - $order_foc;
 
         $flag                   = $this->tender_repository->getOrderStatus($order_id);
+        // dd($flag);
 
         if ($flag == StatusConstance::ORDER_CREATE_STATUS) {
             try {
                 DB::beginTransaction();
+                // dd($tender_id);
                 //Check Exactly Payment
                 if ($tender_id == 1) {
                     $before_tender_payment  = $this->tender_repository->getTenderPayment($order_id);
-                    $paid_amount = $order_payment - $before_tender_payment;
+                    $paid_amount            = $order_payment - $before_tender_payment;
                 }
                 $paramObj                 = new Transactiontender();
                 $paramObj->order_id       = $order_id;
@@ -59,14 +69,19 @@ class TransactionTendersController extends Controller
                 $paramObj->qty            = $quantity;
                 $paramObj->paid_amount    = $paid_amount;
                 $paramObj->status         = $status;
+                $paramObj->restaurant_id  = $restaurant;
+                $paramObj->branch_id      = $branch;
+                //must add restaurant id and branch id in here for transaction tenders
                 $result                   = $this->tender_repository->store($paramObj);
 
                 $insert_id              = $paramObj->id;
+                // dd($result,$insert_id);
                 //After Tender Insert
-                $after_tender_payment   = $this->tender_repository->getTenderPayment($order_id);
+                $after_tender_payment      = $this->tender_repository->getTenderPayment($order_id); /* calcualte this order id pay how much value */
+                // dd($after_tender_payment, $order_payment);
                 if ($after_tender_payment >= $order_payment) {
                     //Updat Tender
-                    $change_amount      = $after_tender_payment - $order_payment;
+                    $change_amount              = $after_tender_payment - $order_payment;
                     $tenderObj                  = Transactiontender::find($insert_id);
                     $tenderObj->changed_amount  = $change_amount;
                     $tenderObj->save();
@@ -109,6 +124,7 @@ class TransactionTendersController extends Controller
                                         );
                 return \Response::json(($response));
             } catch (\Exception $e){
+                // dd($e);
                 DB::rollback();
                 $response               = array('message'=>'fail');
                 return \Response::json(($response));

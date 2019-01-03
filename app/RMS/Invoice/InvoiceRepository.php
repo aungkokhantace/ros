@@ -20,18 +20,27 @@ use App\RMS\Payment\Payment;
 use App\RMS\Item\Continent;
 use App\RMS\DayStart\DayStart;
 use App\RMS\ReturnMessage;
+
+
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
 
 	public function getinvoice( )
 	{
+		// dd("GetInvoice");
+		$restaurant 		  = Utility::getCurrentRestaurant();
+        $branch     		  = Utility::getCurrentBranch();
+
 		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$session_status       = StatusConstance::DAY_STARTING_STATUS;
         $daystart             = DayStart::select('id')
                               ->where('status',$session_status)
                               ->whereNull('deleted_at')
+                              ->where('restaurant_id',$restaurant)
+                              ->where('branch_id',$branch)                              
                               ->first();
+        // dd($daystart,"aew");
         $day_id 			  = '';
         if (count($daystart) > 0) {
         	$day_id 			  = $daystart->id;
@@ -42,6 +51,8 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 					->orderBy('id', 'desc')
 					->where('day_id','=',$day_id)
 					->whereNull('deleted_at')
+					->where('restaurant_id',$restaurant)
+                    ->where('branch_id',$branch)  
 					->get();
 		return $orders;
 	}
@@ -173,7 +184,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 	public function getorder($id)
 	{
-		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge','status')->where('id',$id)->first();
+		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','total_price_foc','room_charge','status','restaurant_id','branch_id')->where('id',$id)->first();
 		
 		return $orders;
 	}
@@ -217,7 +228,8 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 	public function getaddon($id){
 		$status 		= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
-		$order_details = Orderdetail::where('order_id','=', $id)->where('deleted_at','=',NULL)->get();
+		$order_details 	= Orderdetail::where('order_id','=', $id)->where('deleted_at','=',NULL)->get();
+		// dd($order_details);
 		$addon = array();
 		foreach($order_details as $order){
 			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')
@@ -420,6 +432,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	}
 	
 	public function getContinent() {
+		$restaurant = Utility::getCurrentRestaurant();
 		$continent  = Continent::select('id','name')->get();
 		return $continent;
 	}

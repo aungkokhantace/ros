@@ -4,7 +4,7 @@
   <b>Version</b> {!! gitVersion() !!}
 </div>
 <div class="col-md-7">
-<strong> <p class="footer-status "> &copy;Copyright 2017.All rights reserved by <a href="http://www.aceplussolutions.com/"> &nbsp AcePlus Solutions.,Co Ltd</a></p></strong>
+<strong> <p class="footer-status "> &copy;Copyright <?php echo date('Y'); ?>.All rights reserved by <a href="http://www.aceplussolutions.com/"> &nbsp AcePlus Solutions.,Co Ltd</a></p></strong>
 </div>
 </footer>
 <!-- End Footer -->

@@ -95,6 +95,10 @@ function shift_permission_create(id){
 function remark_create(){
     window.location = '/Backend/Remark/create';
 }
+
+function branch_create(){
+    window.location = '/Backend/Branch/create';
+}
 //For Edit 
 
 /**
@@ -491,6 +495,24 @@ function restaurantEdit() {
     }
     else
         window.location = "/Backend/Restaurant/edit/" + data;
+}
+
+function branch_edit() {
+
+    var data = [];
+    $("input[name='branch_check']:checked").each(function () {
+        data.push($(this).val());
+    });
+
+
+    if (data[0] == null) {
+        sweetAlert("Oops...", "You must select at least one branch to edit !", "error");
+    }
+    else if (data[1] != null) {
+        sweetAlert("Oops...", "You can select only one branch to edit in one time!", "error");
+    }
+    else
+        window.location = "/Backend/Branch/edit/" + data;
 }
 
 function remark_disable() {
@@ -1374,6 +1396,9 @@ function permission_cancel(){
 }
 function RestaurantList() {
     window.location = '/Backend/Restaurant/index';
+}
+function branch_cancel() {
+    window.location = '/Backend/Branch/index';
 }
 
  function booking_cancel(id){
