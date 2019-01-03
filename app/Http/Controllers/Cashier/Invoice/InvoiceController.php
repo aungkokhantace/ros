@@ -724,7 +724,7 @@ class InvoiceController extends Controller
     }
 
     public function invoicedetail($id){
-
+       
         $order = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
@@ -735,6 +735,7 @@ class InvoiceController extends Controller
                 $addon[] = $d;
             }
         }
+       
         $amount = array();
         foreach($total as $t){
             foreach($t as $tt){
@@ -760,7 +761,7 @@ class InvoiceController extends Controller
         {
             $item[$key] = $value['item_id'];
         }
-        array_multisort($item, SORT_DESC, $collection_array);
+        array_multisort($item, SORT_ASC, $collection_array);
 
         $details = collect($collection_array);    
         return view('cashier.invoice.detail',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
@@ -804,7 +805,7 @@ class InvoiceController extends Controller
         {
             $item[$key] = $value['item_id'];
         }
-        array_multisort($item, SORT_DESC, $collection_array);
+        array_multisort($item, SORT_ASC, $collection_array);
 
         $details = collect($collection_array);    
 
@@ -814,7 +815,7 @@ class InvoiceController extends Controller
         {   
             $addOn[$key] = $value['extra_id'];
         }
-        array_multisort($addOn, SORT_DESC, $addon);
+        array_multisort($addOn, SORT_ASC, $addon);
 
         $addon = $addon;
         return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
@@ -1117,7 +1118,7 @@ class InvoiceController extends Controller
         {
             $item[$key] = $value['item_id'];
         }
-        array_multisort($item, SORT_DESC, $collection_array);
+        array_multisort($item, SORT_ASC, $collection_array);
 
         $details = collect($collection_array);    
 
@@ -1173,7 +1174,7 @@ class InvoiceController extends Controller
         {
             $item[$key] = $value['item_id'];
         }
-        array_multisort($item, SORT_DESC, $collection_array);
+        array_multisort($item, SORT_ASC, $collection_array);
 
         $details = collect($collection_array);    
         return view('cashier.invoice.index',compact('payments','details','tables','rooms','orders','config','orderRepo','continent'));

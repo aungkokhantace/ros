@@ -33,4 +33,5 @@ class Orderdetail extends Model
     {
         return $this->hasMany('App\RMS\OrderExtra\OrderExtra','order_detail_id','id');        
     }
+
 }

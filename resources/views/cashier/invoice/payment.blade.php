@@ -275,24 +275,17 @@
 
                                     @php $i = '' @endphp
 
-                                    @php
-                                    $counts = array_count_values(
-                                        array_column($addon, 'extra_id')
-                                    );
-                                    @endphp
-
+                                    @php $i = '' @endphp
+                                    
                                     @foreach($addon as $add)
-                                        @foreach($counts as $count)
-                                            @if ($i != $add['extra_id'])     
-                                            @php $i = $add['extra_id'] @endphp    
+                                        
                                             <tr>
                                                 <td class="no-border">{{ $add['food_name']}} (add on)</td>
                                                 <td class="no-border">{{ $add['amount'] }}</td>
-                                                <td class="no-border">{{ $count }} </td>
-                                                <td class="no-border">{{ $add['amount'] * $count }}</td>
+                                                <td class="no-border">{{ $add['quantity'] }} </td>
+                                                <td class="no-border">{{ $add['amount'] * $add['quantity'] }}</td>
                                             </tr>
-                                            @endif
-                                        @endforeach
+                                           
                                     @endforeach
 
                                     <tr class="big_row_font">

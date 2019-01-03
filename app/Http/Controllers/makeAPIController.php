@@ -183,6 +183,7 @@ class MakeAPIController extends ApiGuardController
 
     public function create_voucher()
     {   
+    
         try{
             DB::beginTransaction();
 
@@ -239,6 +240,7 @@ class MakeAPIController extends ApiGuardController
         if(isset($order_tables)){
             foreach($order_tables as $table){
                 $temp           = new OrderTable();
+                $temp->id = $order_id;
                 $temp->order_id = $order_id;
                 $temp->table_id = $table->table_id;
                 $temp->save();
@@ -342,6 +344,7 @@ class MakeAPIController extends ApiGuardController
             return Response::json($output); 
 
         }catch(\Exception $e){
+          
             DB::rollback();
             $output = array("message" => "Please Upload Again");
             return Response::json($output); 
@@ -359,6 +362,12 @@ class MakeAPIController extends ApiGuardController
     }
 
     public function add_new_to_voucher(){
+
+
+    try{
+
+        DB::beginTransaction();
+
             $temp       = Input::all();
             $ordersRaw  = $temp['orderID'];
             $orders     = json_decode($ordersRaw);
@@ -384,11 +393,13 @@ class MakeAPIController extends ApiGuardController
 
                 $get_order_detail = Orderdetail::where('order_id',$order->id)->get();         
             }
-            
+          
             foreach($get_order_detail as $get_order_de){
-            
-                $order_extra = OrderExtra::where('order_detail_id',$get_order_de->order_detail_id); 
                 
+                $order_extra = OrderExtra::where('order_detail_id',$get_order_de->order_detail_id); 
+
+              
+
                 if($order_extra){
                     $order_extra->forceDelete();
                 }
@@ -605,34 +616,20 @@ class MakeAPIController extends ApiGuardController
                     }
 
                 }
-
-                foreach($order_detail_ary as $order_cancel){
-                    $cancel_order = Orderdetail::where('order_detail_id',$order_cancel)->first();
-
-                    $order_detail_id    = $cancel_order->id;
-                    $orderextraRepo     = new OrderExtraRepository();
-                    $orderRemarkRpo     = new Order_Detail_RemarkRepository();
-                    $orderSetRepo       = new OrderSetMenuDetailRepository();
-                    $extraresult        = $orderextraRepo->delete($order_detail_id);
-                    $orderRemarkresult  = $orderRemarkRpo->delete($order_detail_id);
-                    $ordesetresult      = $orderSetRepo->delete($order_detail_id);
-
-
-
-                }
-                $order_cancels = Orderdetail::where('order_id',$order_id)->whereNotIn('order_detail_id',$order_detail_ary)->whereNull('deleted_at')->delete();
+                
             }
+          
 
-            // DB::commit();
+            DB::commit();
             $output = array("message" => "Success");
             return Response::json($output);  
 
-        // }catch(\Exception $e){
+        }catch(\Exception $e){
             
-        //     DB::rollback();
-        //     $output = array("message" => "Please Upload Again");
-        //     return Response::json($output); 
-        // }   
+            DB::rollback();
+            $output = array("message" => "Please Upload Again");
+            return Response::json($output); 
+        }   
     }
 
 
@@ -1238,6 +1235,9 @@ class MakeAPIController extends ApiGuardController
         $orderObj           = Orderdetail::where('order_detail_id','=',$order_detail_id)
             ->where('order_id','=',$id)->first();
 
+        $delOrderObj           = Orderdetail::where('order_detail_id','=',$order_detail_id)
+        ->where('order_id','=',$id);
+
             if($orderObj->status_id == 2){
                 $output = array("message" => "Fail To Cancel");
             }
@@ -1250,10 +1250,11 @@ class MakeAPIController extends ApiGuardController
                 $Obj->total_discount_amount = $discount;
                 $Obj->save();
 
-                $orderObj->status_id    = 7;
-                $orderObj->remark       = "Cancel By Custmer";
-                $orderObj->save();
-
+                // $orderObj->status_id    = 7;
+                // $orderObj->remark       = "Cancel By Custmer";
+                // $orderObj->save();
+                $delOrderObj->forceDelete();
+                
                 $output = array("message"=>"Success");
             }
 
