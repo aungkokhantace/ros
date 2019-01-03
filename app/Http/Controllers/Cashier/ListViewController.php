@@ -460,6 +460,7 @@ class ListViewController extends Controller
 
                     $detailObj                  = new Orderdetail();
                     $order_detail_status        = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
+                    $detailObj->id              = $order_detail_id;
                     $detailObj->order_id        = $order_id;
                     $detailObj->order_detail_id = $order_detail_id;
                     $detailObj->item_id         = $itemID;
@@ -477,7 +478,7 @@ class ListViewController extends Controller
                     $detailObj->save();
 
                     //Get Insert Order Detail ID
-                    $detailID                   = $detailObj->id;
+                    $detailID                   = $detailObj->order_detail_id;
                     // $this->detailRepository->store($detailObj);
                     $addon_detail               = $addon[$itemCount];
                     $addon_array                = explode(",", $addon_detail);

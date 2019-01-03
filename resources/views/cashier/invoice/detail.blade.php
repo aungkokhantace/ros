@@ -97,7 +97,6 @@
                                 @endforeach
     
                                 @foreach($addon as $add)
-                                            
                                 <tr>
                                     <td class="no-border">{{ $add['food_name']}} (addon)</td>
                                     <td class="no-border">{{ $add['amount'] }}</td>

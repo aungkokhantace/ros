@@ -34,6 +34,4 @@ class Order extends Model
     {
         return $this->belongsToMany('App\RMS\Table\Table','order_tables');
     }
-
-
 }

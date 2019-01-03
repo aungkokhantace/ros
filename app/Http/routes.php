@@ -31,6 +31,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Dashboard','Cashier\DashboardController@dashboard');
                 Route::get('/Tables/{location_id}','Cashier\DashboardController@getTable'); // ajax route
                 Route::get('/Rooms','Cashier\DashboardController@getRoom'); // ajax route
+                Route::get('/Report','Cashier\DashboardController@getReport');
                 Route::get('/table/{table_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByTableId');
                 Route::get('/room/{room_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByRoomId');
                 Route::get('/takeaway/invoice','Cashier\Invoice\InvoiceController@invoiceListByTakeAway');

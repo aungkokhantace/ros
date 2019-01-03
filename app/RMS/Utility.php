@@ -184,7 +184,7 @@ class Utility
 
     public function generateRequisitionNo()
     {
-        $date = $this->dateCodeString();
+        $date = $this::dateCodeString();
         $repository = new ConfigRepository();
         $config = $repository->getAllConfig();
         $int = 00000;
