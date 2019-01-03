@@ -1299,9 +1299,15 @@ class MakeAPIController extends ApiGuardController
         $Order              =  Order::find($order_id);
         $Order->will_pay    = 1;
         $result = $OrderRepo->save($Order);
+        $returnAry = [];
         if($result['aceplusStatusCode'] != ReturnMessage::OK){
-            dd('ERROR');
+           $returnAry['message'] = 'ERROR';
+        }else{
+           $returnAry['message'] = 'Success';
         }
+
+        return Response::json($returnAry);
+
         
     }
 
