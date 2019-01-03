@@ -100,8 +100,8 @@ class MakeAPIController extends ApiGuardController
                                         ->where('shift_user.user_id','=',$id)
                                         ->where('shift_user.status','=',$user_status)
                                         ->first();
-                            
-                           
+
+
                             if (count($dayStart) > 0) {
                                 $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"day_id"=>$dayStart->day_id,"shift_id"=>$dayStart->shift_id);
                                 return Response::json($output);
@@ -180,17 +180,17 @@ class MakeAPIController extends ApiGuardController
     }
 
     public function create_voucher()
-    {   
-    
+    {
+
         try{
             DB::beginTransaction();
 
         $temp       = Input::all();
-       
+
         $ordersRaw  = $temp['orderID'];
-       
+
         $orders   = json_decode($ordersRaw);
-    
+
         $dt         = Carbon::now();
 
         foreach($orders as $order) {
@@ -294,7 +294,7 @@ class MakeAPIController extends ApiGuardController
 
             $set_item = $order_detail->set_item;
             $quantity = $order_detail->quantity;
-            
+
             foreach($set_item as $item){
                 $status_id = $temp->status_id;
                 $set = new OrderSetMenuDetail();
@@ -308,7 +308,7 @@ class MakeAPIController extends ApiGuardController
                 $set->quantity        = $quantity;
                 $set->save();
             }
-            
+
 
             $remarks  = $order_detail->remark;
 
@@ -339,15 +339,15 @@ class MakeAPIController extends ApiGuardController
         }
             DB::commit();
             $output = array("message" => "Success");
-            return Response::json($output); 
+            return Response::json($output);
 
         }catch(\Exception $e){
-          
+
             DB::rollback();
             $output = array("message" => "Please Upload Again");
-            return Response::json($output); 
-        }   
-    
+            return Response::json($output);
+        }
+
     }
 
     public function frontend_log() {
@@ -361,14 +361,14 @@ class MakeAPIController extends ApiGuardController
 
     public function add_new_to_voucher(){
 
-    try{
+   try{
 
-        DB::beginTransaction();
+         DB::beginTransaction();
 
             $temp       = Input::all();
             $ordersRaw  = $temp['orderID'];
             $orders     = json_decode($ordersRaw);
-        
+
             $dt         = Carbon::now();
             foreach($orders as $order) {
                 $order_id           = $order->order_id;
@@ -381,21 +381,21 @@ class MakeAPIController extends ApiGuardController
                 $extra_price        = $order->extra_price;
                 $stand_number       = $order->stand_number;
             }
-            
+
             $order = Order::find($order_id);
-        
+
             if($order){
 
-                $order_detail = Orderdetail::where('order_id',$order->id);      
+                $order_detail = Orderdetail::where('order_id',$order->id);
 
-                $get_order_detail = Orderdetail::where('order_id',$order->id)->get();         
+                $get_order_detail = Orderdetail::where('order_id',$order->id)->get();
             }
-          
-            foreach($get_order_detail as $get_order_de){
-                
-                $order_extra = OrderExtra::where('order_detail_id',$get_order_de->order_detail_id); 
 
-              
+            foreach($get_order_detail as $get_order_de){
+
+                $order_extra = OrderExtra::where('order_detail_id',$get_order_de->order_detail_id);
+
+
 
                 if($order_extra){
                     $order_extra->forceDelete();
@@ -421,7 +421,7 @@ class MakeAPIController extends ApiGuardController
             }
 
             if($order_detail){
-                $order_detail->forceDelete();        
+                $order_detail->forceDelete();
             }
 
 
@@ -445,7 +445,7 @@ class MakeAPIController extends ApiGuardController
 
                     array_push($order_detail_ary,$order_detail->order_detail_id);
 
-                    if($detail == null){ 
+                    if($detail == null){
                         $temp = new Orderdetail();
                         $temp->id                   = $order_detail->order_detail_id;
                         $temp->order_id             = $order_id;
@@ -564,7 +564,7 @@ class MakeAPIController extends ApiGuardController
 
 
                         $remarks  = $order_detail->remark;
-                    
+
                         if(count($remarks) > 0){
                             foreach($remarks as $remark){
                                 if($remark->selected == "true"){
@@ -597,7 +597,7 @@ class MakeAPIController extends ApiGuardController
                                 $extra->save();
                             }
                             else{
-                                
+
                                 $extra_update   = DB::table('order_extra')
                                                 ->where('order_detail_id', $detail_id)
                                                 ->where('extra_id',$e->extra_id)
@@ -613,20 +613,20 @@ class MakeAPIController extends ApiGuardController
                     }
 
                 }
-                
+
             }
-          
+
 
             DB::commit();
             $output = array("message" => "Success");
-            return Response::json($output);  
+            return Response::json($output);
 
         }catch(\Exception $e){
-            
+
             DB::rollback();
             $output = array("message" => "Please Upload Again");
-            return Response::json($output); 
-        }   
+            return Response::json($output);
+        }
     }
 
 
@@ -981,18 +981,18 @@ class MakeAPIController extends ApiGuardController
                 $table_name = $table->table_name;
                 $table_id   = $table->table_id;
                 array_push($table_id_array,$table->order_id);
-                
+
             }
 
 
             $orders   = DB::table('order')->whereIn('id',$table_id_array)->select('order.id as voucher_id','order.order_time as date','order.sub_total as total_amount','order.all_total_amount as net_amount','order.stand_number as stand_number')->where('status',1)->get();
-            
+
             foreach($orders as $order){
                 $order->voucher_info = $table_name;
                 $order->table_id     = $table_id;
 
             }
-            
+
              if(count($orders)>0){
                 $output = array();
                 $output['billsplit_list'] = $orders;
@@ -1002,8 +1002,8 @@ class MakeAPIController extends ApiGuardController
                 $output['billsplit_list'] = [];
                 return Response::json($output);
              }
-              
-            
+
+
 
         }else {
             $output     = array("message" => "Wrong Activation Key");
@@ -1082,7 +1082,7 @@ class MakeAPIController extends ApiGuardController
                             as ot ON ot.id = od.order_type_id WHERE od.status_id = 3 OR od.status_id = 6
                             OR osd.status_id = 3 OR osd.status_id = 6 AND od.cancel_status = NULL
                             OR od.waiter_status = NULL OR osd.cancel_status = NULL OR osd.waiter_status = NULL  ");
-        
+
 
         $orderDetails = array();
         foreach($getOrderDetails as $order){
@@ -1251,7 +1251,7 @@ class MakeAPIController extends ApiGuardController
                 // $orderObj->remark       = "Cancel By Custmer";
                 // $orderObj->save();
                 $delOrderObj->forceDelete();
-                
+
                 $output = array("message"=>"Success");
             }
 
