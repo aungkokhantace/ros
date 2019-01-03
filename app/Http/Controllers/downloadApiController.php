@@ -33,6 +33,7 @@ use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\BookingTable\BookingTable;
 use App\RMS\BookingRoom\BookingRoom;
+
 use App\Status\StatusConstance;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
@@ -164,6 +165,7 @@ class downloadAPIController extends ApiGuardController
 	}
 
 	public function download_voucher_detail(){
+		
 		$temp	= Input::all();
 		$key                    = $temp['site_activation_key'];
 		$order_id				= $temp['order_id'];
@@ -177,13 +179,14 @@ class downloadAPIController extends ApiGuardController
 
 		if($key == $activate_key){
 			$order_raw			= DB::select("SELECT os.*,u.user_name FROM `order` os,`users` u WHERE os.id = '$order_id' AND os.user_id = u.id AND os.deleted_at IS NULL");
-
 			$order_detail_raw 	= DB::select("SELECT * FROM `order_details` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$order_setmenu_raw	= DB::select("SELECT * FROM `order_setmenu_detail` WHERE deleted_at IS NULL");
-			$order_extra_raw	= DB::select("SELECT extra_id,order_detail_id,quantity,amount FROM `order_extra` WHERE status = '$extra_status' AND deleted_at IS NULL");
+			// $order_extra_raw	= DB::select("SELECT extra_id,order_detail_id,quantity,amount FROM `order_extra` WHERE status = '$extra_status' AND deleted_at IS NULL");
+			
+			$order_extra_raw    = OrderExtra::select('extra_id','order_detail_id','quantity','amount','status')->get();
+			
 			$order_table_raw	= DB::select("SELECT order_id,table_id FROM `order_tables` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$order_room_raw		= DB::select("SELECT order_id,room_id FROM `order_room` WHERE order_id = '$order_id' AND deleted_at IS NULL");
-
 			
 			
 			$set_menu_arr		= array();
@@ -206,24 +209,31 @@ class downloadAPIController extends ApiGuardController
 					if($order_detail->remark_extra == null){
 						$order_detail->remark_extra = "";
 					}
-
+					
 					
 					$order_detail->order_setmenu = $set_menu_arr;
+					
 					unset($set_menu_arr);
 					$set_menu_arr = array();
 
 					//merge order_extra to order_detail
 					if(isset($order_extra_raw) && count($order_extra_raw) > 0) {
 						foreach ($order_extra_raw as $order_extra) {
+
 							if ($order_detail->id == $order_extra->order_detail_id) {
+
+								
 								array_push($extra_arr, $order_extra);
+								
 							}
 						}
 					}
+					
 					$order_detail->order_extra = $extra_arr;
+					
 					unset($extra_arr);
 					$extra_arr = array();
-
+					
 					//merge order_table to order_detail
 					if(isset($order_table_raw) && count($order_table_raw) > 0){
 						foreach($order_table_raw as $order_table){
@@ -286,7 +296,7 @@ class downloadAPIController extends ApiGuardController
 					$order->order_detail = $detail_arr;
 				}
 			}
-
+		
 			$output = array("Data" => $order_raw);
 			return Response::json($output);
 		}

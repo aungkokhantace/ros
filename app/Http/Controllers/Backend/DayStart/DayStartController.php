@@ -182,6 +182,7 @@ class DayStartController extends Controller
 
     public function dayend($id) {
         $status             = StatusConstance::DAY_END_STATUS;
+       
         //Check All payment have done
 
         $paramObj           = DayStart::find($id);

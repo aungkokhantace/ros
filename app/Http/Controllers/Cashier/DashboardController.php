@@ -17,6 +17,9 @@ use App\RMS\Shift\Shift;
 use App\RMS\Location\Location;
 use App\RMS\Room\Room;
 use App\RMS\Table\Table;
+use App\RMS\OrderTable\OrderTable;
+use App\RMS\OrderRoom\OrderRoom;
+use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\Shift\OrderShift;
 use App\Status\StatusConstance;
 use Carbon\Carbon;
@@ -113,6 +116,29 @@ class DashboardController extends Controller
     {   
         $rooms = Room::all();
         return json_encode($rooms);
+    }
+
+    public function getReport()
+    {
+        $now = Carbon::now();
+        
+        $start_date = $now->toDateString(); 
+        
+        $orderDay = DB::table('order_day')->where('start_date' , '=', $start_date)->first();
+        
+        $orders = Order::where('day_id',$orderDay->id)->get();
+
+        $order_pluck = Order::where('day_id',$orderDay->id)->pluck('id');
+
+        $order_detail_id = Orderdetail::whereIn('order_id',$order_pluck)
+                                                    ->orderBy('item_id','asc')
+                                                    ->pluck('order_detail_id');
+
+        $order_extra_sum = OrderExtra::whereIn('order_detail_id', $order_detail_id)->sum(\DB::raw('amount * quantity')); 
+        
+        $order_extra_quantity = OrderExtra::whereIn('order_detail_id', $order_detail_id)->sum('quantity'); 
+
+        return view('cashier.invoice.report',compact('orders','order_pluck','order_extra_sum','order_extra_quantity'));
     }
 
     public function authorized(){

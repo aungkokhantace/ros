@@ -9,8 +9,11 @@
             <button class="btn btn-large dash-btn ml-2 mb-2 start" id="{{ $sessions->daystart->start_date}}/{{$sessions->daystart->status }}" style="background:rgb(75, 146, 221);">
                 Day Start
             </button>
+            
             @else
-            <button class="btn btn-large dash-btn ml-2 mb-2" onclick="dayEnd({{ $sessions->daystart->id }})" style="background:rgb(75, 146, 221);">Day End</button>
+            <button class="btn btn-large dash-btn ml-2 mb-2" onclick="dayEnd({{ $sessions->daystart->id }})" style="background:rgb(75, 146, 221);" >
+                Day End
+            </button>
             @endif
         @endsection
 
@@ -23,6 +26,8 @@
                     {{ ' End'}}
                 @endif
             </button>
+            @else
+            <a href="/Cashier/Report" class="btn btn-large dash-btn ml-2 mb-2"  style="background:#8EC449;">Report</a>            
             @endif
         @endsection
 
