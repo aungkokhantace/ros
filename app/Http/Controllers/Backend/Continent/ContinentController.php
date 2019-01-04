@@ -122,7 +122,7 @@ class ContinentController extends Controller
 
     public function getContientByCategory($id)
     {
-        $continent = Category::find($id)->continent()->get(['id','name']);
+        $continent = Category::findOrFail($id)->continent()->get(['id','name']);
         return \Response::json($continent);
     }
 

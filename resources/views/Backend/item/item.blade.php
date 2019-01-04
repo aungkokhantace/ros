@@ -335,10 +335,10 @@ $(document).ready(function() {
     $.ajax({
       type: "GET",
       url: "/Backend/Continent/ajax/"+continentId
-    }).done(function (result) {
+    }).done(function (data) {
         $('#wrap_contient').siblings().each(function () {
             $(this).find('select').empty();
-            $(result).each((index,continent)=>{
+            $(data).each((index,continent)=>{
             $(this).find('select').append($('<option>', {value:continent.id, text: continent.name}));
             });
         });
