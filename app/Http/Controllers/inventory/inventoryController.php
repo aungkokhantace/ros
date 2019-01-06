@@ -22,6 +22,7 @@ use App\RMS\Utility;
 use App\RMS\Config\ConfigRepositoryInterface;
 use App\RMS\Kitchen\Kitchen;
 use Validator;
+use App\RMS\Kitchen\KitchenRepositoryInterface;
 
 class inventoryController extends Controller
 {
@@ -30,11 +31,17 @@ class inventoryController extends Controller
 
     private $configRepository;
 
-	public $resquestserverurl  = 'http://gr8.acebi2.com.preview.my-hosting-panel.com';
+    private $kitchenRepository;
 
-	public function __construct(ConfigRepositoryInterface $configRepository)
+	  public $resquestserverurl  = 'http://gr8.acebi2.com.preview.my-hosting-panel.com';
+
+	  public function __construct(
+      ConfigRepositoryInterface $configRepository,
+      KitchenRepositoryInterface $kitchenRepository
+    )
     {
-        $this->configRepository = $configRepository;
+        $this->configRepository  = $configRepository;
+        $this->KitchenRepository = $kitchenRepository;
         $this->utility = new Utility();
     }
 
@@ -207,7 +214,9 @@ class inventoryController extends Controller
         $id        = Auth::guard('Cashier')->user()->kitchen_id;
         $code      = ((object)$this->utility->generateRequisitionNo())->code;
         $config_id = ((object)$this->utility->generateRequisitionNo())->id;
+        $date_string = $this->utility->dateString();
         $detail    = [];
+        $kitchen_code = $this->KitchenRepository->getKitchenCode($id)->kitchen_code;
         $stock_requisitions = $request->stock;
 
         foreach ($stock_requisitions as $stock_requisition) {
@@ -220,18 +229,22 @@ class inventoryController extends Controller
             }
 
             unset($stock_requisition['group'], $stock_requisition['unit']);
+            $stock = explode(',', $stock_requisition['StockId']);
+            $stock_requisition['StockId'] = $stock[0];
+            if (!empty($stock[1])) {
+              $stock_requisition['PurchasePrice'] = (int)$stock[1];
+              $stock_requisition['Amount'] = $stock_requisition['Quantity'] * $stock[1];
+            }
             $detail[] = $stock_requisition;
         }
-
-
 
         $data = [
             [
                 "RequisitionNo" => $code,
-                "RequisitionDate" => "2018-12-27T07:40:43Z",
-                "LocationId" => 1,
+                "RequisitionDate" => $date_string,
+                "LocationId" => $kitchen_code,
                 "PriorityId"=> 0,
-                "ReceivedDate" => null,
+                "ReceivedDate" => $date_string,
                 "requisition_details" => $detail
             ]
         ];
