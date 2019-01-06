@@ -210,7 +210,6 @@ class inventoryController extends Controller
     public function store(Request $request)
     {
         $post_url  = $this->resquestserverurl.'/purchaserequest/create';
-        $get_url   = '/purchaserequest/get_purchaserequisition';
         $id        = Auth::guard('Cashier')->user()->kitchen_id;
         $code      = ((object)$this->utility->generateRequisitionNo())->code;
         $config_id = ((object)$this->utility->generateRequisitionNo())->id;
@@ -259,15 +258,10 @@ class inventoryController extends Controller
            'base_uri' => $this->resquestserverurl
         ]);
 
-        $post_client->post($post_url, ['body' => $body]);
-
-        $requisitions = json_decode($get_client->get($get_url)->getBody());
-
-        foreach ($requisitions as $requisition) {
-            if ($requisition->RequisitionNo == $code) {
-                $this->configRepository->updateRequisitionNo($config_id, $code);
-                return redirect('Kitchen/stock-requisition')->with('success', 'Successful To Request.');
-            }
+        $response = $post_client->post($post_url, ['body' => $body]);
+        if ($response->getStatusCode() == 200) {
+            $this->configRepository->updateRequisitionNo($config_id, $code);
+            return redirect('Kitchen/stock-requisition')->with('success', 'Successful To Request.');
         }
 
         return redirect('Kitchen/stock-requisition')->with('fail', 'Fail To Request, Please Try Again Later.');
