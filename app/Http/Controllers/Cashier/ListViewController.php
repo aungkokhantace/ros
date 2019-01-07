@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Cashier;
 use App\RMS\Infrastructure\Forms\InvoiceListEditRequest;
 use App\RMS\Infrastructure\Forms\InvoiceListEntryRequest;
 use App\RMS\Order\Order;
+use App\RMS\Order\OrderRepository;
 use App\RMS\Orderdetail\Orderdetail;
+use App\RMS\Invoice\InvoiceRepository;
 use App\RMS\Orderdetail\OrderdetailRepositoryInterface;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\OrderRoom\OrderRoom;
@@ -57,7 +59,7 @@ class ListViewController extends Controller
                     ->where('order_shift.status','=',$shift_status)
                     ->first();
         $config             = Config::select('tax','service','room_charge')->first();
-        $take_id            = 1;//1 For 
+        $take_id            = 1;//1 For
         $tables             = '';
         $rooms              = '';
         if (count($dayStart) > 0) {
@@ -124,7 +126,7 @@ class ListViewController extends Controller
                     ->where('order_shift.status','=',$shift_status)
                     ->first();
         $config             = Config::select('tax','service','room_charge')->first();
-        $take_id            = 0;//1 For 
+        $take_id            = 0;//1 For
         $tables             = $id;
         $rooms              = '';
         if (count($dayStart) > 0) {
@@ -140,7 +142,7 @@ class ListViewController extends Controller
         } else {
             return redirect()->back()
                 ->withMessage(FormatGenerator::message('Fail', 'Day and shift does not start ...'));
-        }   
+        }
     }
 
     public function orderRoom($id) {
@@ -152,7 +154,7 @@ class ListViewController extends Controller
                     ->where('order_shift.status','=',$shift_status)
                     ->first();
         $config             = Config::select('tax','service','room_charge')->first();
-        $take_id            = 0;//1 For 
+        $take_id            = 0;//1 For
         $tables             = '';
         $rooms              = $id;
         if (count($dayStart) > 0) {
@@ -168,7 +170,7 @@ class ListViewController extends Controller
         } else {
             return redirect()->back()
                 ->withMessage(FormatGenerator::message('Fail', 'Day and shift does not start ...'));
-        }   
+        }
     }
 
     public function transfer() {
@@ -315,7 +317,7 @@ class ListViewController extends Controller
         $setmenuRepo->uniqid   = $uniqid;
         return view('cashier.orderlist.set')->with('setmenuRepo',$setmenuRepo)->with('take',$take);
     }
-    
+
     public function continent($itemID,$continentID) {
         $status     = StatusConstance::ITEM_AVAILABLE_STATUS;
         $today      = Carbon::now();
@@ -368,7 +370,7 @@ class ListViewController extends Controller
     public function backCategory($id) {
         $categories       = $this->detailRepository->getBackCategoryByID($id);
         return view('cashier.orderlist.category')
-                ->with('categories',$categories);        
+                ->with('categories',$categories);
     }
 
     public function store() {
@@ -501,7 +503,7 @@ class ListViewController extends Controller
                     if ($itemID == 0) {
                         $set_items          = $this->detailRepository->getSetItemBySetID($setID);
                         foreach ($set_items as $key => $set) {
-                            $orderSetObj                    = new OrderSetMenuDetail();  
+                            $orderSetObj                    = new OrderSetMenuDetail();
                             $orderSetObj->order_detail_id   = $detailID;
                             $orderSetObj->setmenu_id        = $setID;
                             $orderSetObj->item_id           = $set->item_id;
@@ -553,7 +555,7 @@ class ListViewController extends Controller
                     $tempRoomObj->save();
                 }
                 DB::commit();
-                
+
                 return redirect('/Cashier/MakeOrder')
                 ->withMessage(FormatGenerator::message('Success', 'Order created ...'))
                 ->with('Sockect','Socket Order Send');
@@ -584,7 +586,7 @@ class ListViewController extends Controller
             } else {
                 $continents         = array();
             }
-            
+
             //Addon From Categories
             if ($categoryID !== NULL) {
                 $categories         = $this->getCategoriesListArray($categoryID);
@@ -617,7 +619,7 @@ class ListViewController extends Controller
             $detail['continents'] = $continents;
             $detail['category_addon']  = $category_addon;
             $detail['addon']           = $addon_id;
-            /*** Unset Array ***/ 
+            /*** Unset Array ***/
             unset($addon_id);
             /*** Unset Array ***/
 
@@ -637,7 +639,7 @@ class ListViewController extends Controller
                     // ->with('continents',$continents)
                     ->with('tables',$tables)
                     ->with('rooms',$rooms);
-        
+
     }
 
     public function delete(Request $request) {
@@ -724,7 +726,7 @@ class ListViewController extends Controller
             }
         } else {
             $success_msg            = array("success"=>"success");
-            return \Response::json($success_msg);   
+            return \Response::json($success_msg);
         }
     }
 
@@ -871,7 +873,7 @@ class ListViewController extends Controller
                     }
                 } else {
                     $od_id                      = $this->generateOrderDetailID();
-                    //Not to change status_id 7 
+                    //Not to change status_id 7
                     $new_order_detail[]         = $od_id;
                     $detailObj                  = new Orderdetail();
                     $detailObj->order_id        = $order_id;
@@ -889,7 +891,7 @@ class ListViewController extends Controller
                     $detailObj->updated_by      = $user_id;
                     $detailObj->updated_at      = $cur_date;
                     $detailObj->save();
-                          
+
                     //Get Insert Order Detail ID
                     $detailID                   = $detailObj->id;
 
@@ -915,7 +917,7 @@ class ListViewController extends Controller
                 }
             }
             DB::commit();
-            
+
             return redirect('/Cashier/MakeOrder')
             ->withMessage(FormatGenerator::message('Success', 'Order created ...'))
             ->with('Sockect','Socket Order Send');
@@ -946,8 +948,8 @@ class ListViewController extends Controller
             $increase_count     = $key_count + 1;
             $length             = strlen($increase_count);
             $substring_count    = "-" . $length;
-            $zero_count         = substr($zero_fill,0,$substring_count);  
-            $order_key2         = $zero_count . $increase_count; 
+            $zero_count         = substr($zero_fill,0,$substring_count);
+            $order_key2         = $zero_count . $increase_count;
         }
         $key        = $order_key . $order_key2;
         return $key;
@@ -964,8 +966,8 @@ class ListViewController extends Controller
             $increase_count     = $key_count + 1;
             $length             = strlen($increase_count);
             $substring_count    = "-" . $length;
-            $zero_count         = substr($zero_fill,0,$substring_count);  
-            $order_key2         = $zero_count . $increase_count;   
+            $zero_count         = substr($zero_fill,0,$substring_count);
+            $order_key2         = $zero_count . $increase_count;
         }
         $key        = $order_key . $order_key2;
         return $key;
@@ -1023,7 +1025,7 @@ class ListViewController extends Controller
     // }
     // public function categoryDetail($id){
     // 	$items = $this->detailRepository->categoryDetail($id);
-        
+
     //     $table      = $items[0];
     //     $t          = $table['table'];
     //     //dd($t);
@@ -1032,11 +1034,11 @@ class ListViewController extends Controller
     //     }else{
     //         return view('cashier.orderlist.item')->with('items',$items)->with('table',$t);
     //     }
-    	
+
     // }
     // public function searchItem($id){
     // 	$items = $this->detailRepository->searchItem($id);
-    	
+
     // 	return view('cashier.orderList.item')->with('items',$items);
     // }
 
@@ -1056,21 +1058,21 @@ class ListViewController extends Controller
     //             $item['quantity']       = 1;
     //             $item['set_amount']     = ($setmenu->set_menus_price) - 0;
     //             $item['type']           = 'setmenu'; //use to distinguish between setmenu or item
-              
+
     //             $chosen_item = array();
 
     //             if (session('chosen_item')) {
-                   
+
     //                 $chosen_item = session('chosen_item');
     //             }
 
     //             $chosen_item[]= $item;
     //             session(['chosen_item'=>$chosen_item]);
-                
-    //             return view('cashier.orderlist.setmenu')            
+
+    //             return view('cashier.orderlist.setmenu')
     //                 ->with('setmenus',$setmenus);
     //             break;
-            
+
     //         case 'item':
     //             //do item things
     //             $items    = $this->detailRepository->getitem($id);
@@ -1111,7 +1113,7 @@ class ListViewController extends Controller
     //             $chosen_item = array();
 
     //             if (session('chosen_item')) {
-                   
+
     //                 $chosen_item = session('chosen_item');
     //             }
 
@@ -1119,7 +1121,7 @@ class ListViewController extends Controller
 
     //             session(['chosen_item'=>$chosen_item]);
     //             //dd(session('chosen_item'));
-    //             return view('cashier.orderlist.item')            
+    //             return view('cashier.orderlist.item')
     //                 ->with('items',$items);
     //             //return your view here
     //             break;
@@ -1130,8 +1132,119 @@ class ListViewController extends Controller
     //     }
 
 
-        
-        
+
+
     // }
+
+    public function willpayview(){
+        $orderRepo = new OrderRepository();
+        $orders    = $orderRepo->getwillpayOrder();
+
+        $invoiceRepo = new InvoiceRepository();
+        $today      = Carbon::now();
+        $cur_date   = Carbon::parse($today)->format('Y-m-d');
+
+        foreach($orders as $key=>$order){
+
+            $orderID        = $order->id;
+            $order_table    = $orderRepo->getOrderTable($orderID);
+
+            $order_rooms    = $orderRepo->getOrderRoom($orderID);
+
+            if(isset($order_table) && count($order_table)>0){
+                $order_table_str = '';
+                foreach($order_table as $key=>$or_table){
+                    $order_table_str  .= $or_table->table_no;
+                }
+
+                $order->order_table    = $order_table_str;
+
+            }else{
+                $order->order_table    = false;
+            }
+
+           if(isset($order_rooms) && count($order_rooms)>0){
+                $order_rooms_str     = '';
+                foreach($order_rooms as $key=>$or_room){
+                   $order_rooms_str     .= $or_room->room_name;
+                }
+                $order->order_rooms           = $order_rooms_str;
+           }else{
+
+                $order->order_rooms           = false;
+
+           }
+
+
+           if(count($order_table) == 0 && count($order_rooms)==0 ){
+               $order->take_away        = true;
+           }else{
+               $order->take_away        = false;
+           }
+
+        }
+
+
+        return view('cashier.invoice.willpay',compact('orders'));
+    }
+
+    public function willpayajax(){
+        $orderRepo = new OrderRepository();
+        $orders    = $orderRepo->getwillpayOrder();
+
+        $invoiceRepo = new InvoiceRepository();
+        $today      = Carbon::now();
+        $cur_date   = Carbon::parse($today)->format('Y-m-d');
+
+        foreach($orders as $key=>$order){
+
+            $orderID        = $order->id;
+            $order_table    = $orderRepo->getOrderTable($orderID);
+
+            $order_rooms    = $orderRepo->getOrderRoom($orderID);
+
+            if(isset($order_table) && count($order_table)>0){
+                $order_table_str = '';
+                foreach($order_table as $key=>$or_table){
+                    $order_table_str  .= $or_table->table_no;
+                }
+
+                $order->order_table    = $order_table_str;
+
+            }else{
+                $order->order_table    = false;
+            }
+
+           if(isset($order_rooms) && count($order_rooms)>0){
+                $order_rooms_str     = '';
+                foreach($order_rooms as $key=>$or_room){
+                   $order_rooms_str     .= $or_room->room_name;
+                }
+                $order->order_rooms           = $order_rooms_str;
+           }else{
+
+                $order->order_rooms           = false;
+
+           }
+
+
+           if(count($order_table) == 0 && count($order_rooms)==0 ){
+               $order->take_away        = true;
+           }else{
+               $order->take_away        = false;
+           }
+
+        }
+        return view('cashier.invoice.real_time_willpay',compact('orders'))->render();
+
+    }
+    public function willpaynoti(){
+      $orderRepo = new OrderRepository();
+      $orders    = $orderRepo->getwillpayOrder();
+
+      return view('cashier.layouts.partial.notiheader',compact('orders'))->render();
+    }
+
+
 
 }

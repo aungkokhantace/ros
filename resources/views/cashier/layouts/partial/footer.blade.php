@@ -37,7 +37,39 @@
     });
 </script>
 
-<div class="footer text-center">  
+<script>
+        $(document).ready(function(){
+
+          if($('#will').val() != '1'){
+
+            var url = "/Cashier/willpay/noti/ajaxRequest";
+
+            var div     = "headernoti";//Put div id inside html response
+
+            //Order Cancel Socket
+            var wilpay      = "pay";
+            socketOn(wilpay,url,div);
+
+
+
+            noti();
+            function noti(){
+                var socket  = io.connect( 'http://'+window.location.hostname  +':' + 3334);
+                socket.on( invoice_update, function( data ) {
+                    console.log('socket connected');
+                });
+            }
+          }else{
+
+              console.log('here');
+              $('#notipay').hide();
+            }
+
+
+        });
+</script>
+
+<div class="footer text-center">
             <img src="/assets/cashier/images/aceplus_logo.png" alt="Aceplus logo">
         </div><!-- footer -->
     </div><!-- wrapper -->

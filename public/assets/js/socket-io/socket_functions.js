@@ -29,6 +29,7 @@ function socketOn(name,url,divID) {
         });
     });
 }
+
 function formSubmit(variable) {
     var port    = getSocketPort();
     var socket  = io.connect( 'http://'+window.location.hostname  +':' + port);

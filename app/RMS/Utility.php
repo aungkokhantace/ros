@@ -12,11 +12,15 @@ use App\RMS\User\UserRepository;
 use App\User;
 use App\RMS\SyncsTable\SyncsTable;
 use Carbon\Carbon;
+use App\RMS\Order\OrderRepository;
 use App\RMS\Config\ConfigRepositoryInterface;
 use App\RMS\Kitchen\Kitchen;
 
+
 class Utility
 {
+
+
     public static function addCreatedBy($newObj)
     {
         if(Auth::guard('Cashier')->check()){
@@ -216,4 +220,22 @@ class Utility
         $code             = str_pad($kitchen_code,$path_length,0,STR_PAD_LEFT);
         return $prefix . $code;
     }
+
+
+    public static function saledate($date)
+    {
+        $date_string = implode('T', explode(' ' , $date)).'Z';
+
+        return $date_string;
+    }
+
+
+
+    public static function getnoticount(){
+      $orderRepo = new OrderRepository();
+      $orders    = $orderRepo->getwillpayOrder();
+      return $orders;
+    }
+
+
 }

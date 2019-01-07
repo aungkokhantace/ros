@@ -2,28 +2,28 @@
 @extends('cashier.layouts.master')
 @section('title','Invoice Listing')
 @section('content')
-    <div class="container">  
+    <div class="container">
         <div class="row cmn-ttl cmn-ttl1">
-            <div class="container"> 
+            <div class="container">
                 <h3>Invoice Listing</h3>
-            </div> 
+            </div>
         </div>
-        <div class="row">   
-            <table class="table invoice-table table-hover" id="table-pagination"> 
+        <div class="row">
+            <table class="table invoice-table table-hover" id="table-pagination">
                 <thead>
-                    <tr>    
+                    <tr>
                         <th>Order No.</th>
                         <th>Total Amount</th>
                         <th>Date</th>
                         <th>Detail</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <!-- <th>Action</th> -->
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 @foreach($orders as $order)
-                    <tr class="tr-{{$order->id}}">    
+                    <tr class="tr-{{$order->id}}">
                         <td id="ordere-id"> {{$order->id}} </td>
                         <td> {{$order->all_total_amount}} </td>
                         <td > {{$order->created_at }} </td>
@@ -35,11 +35,11 @@
                                 <a href="/Cashier/invoice/paid/{{$order->id}}" class="btn btn-primary status-btn">To Pay</a>
                             @endif
                         </td>
-                        @if($order->status == 2)
+                        <!-- @if($order->status == 2)
                             <td><i class="fa fa-lock ml-4" style="font-size:20px;"></i></td>
-                            @else 
+                            @else
                             <td><a class="btn btn-info status-btn" href="/Cashier/MakeOrder/edit/{{$order->id}}">Edit</a></td>
-                        @endif
+                        @endif -->
                         {{-- <td>
                             @if($order->status == 2)
                             <button class="btn print-btn" id = '{{$order->order_id}}' data-toggle="modal" data-target="#printModal" data-id="{{$order->id}}" onclick="printInvoice('{{$order->order_id}}')"></button>
@@ -108,11 +108,11 @@
     @endif
 
     @if (Auth::guard('Cashier')->user()->role_id == 1 || Auth::guard('Cashier')->user()->role_id == 2 || Auth::guard('Cashier')->user()->role_id == 3)
-        @php 
+        @php
             $roleCheck    = "Admin";
         @endphp
     @elseif (Auth::guard('Cashier')->user()->role_id == 4)
-        @php 
+        @php
             $roleCheck    = "Cashier";
         @endphp
     @endif

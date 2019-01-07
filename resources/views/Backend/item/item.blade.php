@@ -335,17 +335,11 @@ $(document).ready(function() {
     $.ajax({
       type: "GET",
       url: "/Backend/Continent/ajax/"+continentId
-    }).done(function (result) {
-
-      $("#continent").empty();
-      $(result).each(function(){
-        $("#continent").append($('<option>', {value: this.id,text: this.name}));
-      });
-
-        $('#tr_product_detail_').siblings().each(function () {
+    }).done(function (data) {
+        $('#wrap_contient').siblings().each(function () {
             $(this).find('select').empty();
-            $(result).each((key,value)=>{
-            $(this).find('select').append($('<option>', {value:value.id,text: value.name}));
+            $(data).each((index,continent)=>{
+            $(this).find('select').append($('<option>', {value:continent.id, text: continent.name}));
             });
         });
     });
