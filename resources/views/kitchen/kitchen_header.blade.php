@@ -314,6 +314,10 @@
             <i class="fa fa-wpforms"></i>
             &nbsp;<b>Stock Requisition Form</b></span>
         </a>
+        <a href="/Kitchen/stock-review" @if(Request::path() == 'Kitchen/stock-review') class="item-list active" @else class="item-list" @endif>
+          <i class="fa fa-cutlery"></i>
+          &nbsp;<b>Finished Good Stock Review</b>
+        </a>
         <a href="javascript:void(0);" class="icon" onclick="myFunction()">
             <i class="fa fa-bars"></i>
         </a>
