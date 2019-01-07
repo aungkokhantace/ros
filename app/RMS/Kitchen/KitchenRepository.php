@@ -76,4 +76,10 @@ class KitchenRepository implements KitchenRepositoryInterface
         $tempObj->save();
     }
 
+    public function getKitchenCode($id)
+    {
+        $table = new Kitchen();
+        return $table->where('id', '=', $id)->first();
+    }
+
 }

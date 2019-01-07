@@ -70,7 +70,6 @@
     <script src="/assets/js/datatables/dataTables.bootstrap.js"></script>
     <script src="/assets/js/checkall.js"></script>
     <script src="/assets/js/enabled-disabled.js"></script>
-    <link href="/assets/css/AdminLTE.css" rel="stylesheet">
     <link href="/assets/css/sweetalert.css" rel="stylesheet">
     <link href="/assets/css/multiple-select.css" rel="stylesheet">
     <link media="all" type="text/css" rel="stylesheet" href="/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css">

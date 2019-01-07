@@ -29,16 +29,28 @@
     margin-top: 10px;
 }
 
-.bg-div span {
+.form-control {
+  border-radius: 5px !important;
+}
+
+.bg-div .close {
     display: none;
 }
 
-.bg-div span i {
+.bg-div .close i {
     float: right;
     color: red;
     padding: 10px 10px 0 0;
     cursor: pointer;
 }
+
+.bg-div .error {
+    color: red;
+    display: none;
+    font-size: 12px;
+    padding-top: 10px;
+}
+
 .alert {
     text-align: center;
     color: white;
