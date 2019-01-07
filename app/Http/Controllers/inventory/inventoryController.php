@@ -103,7 +103,7 @@ class inventoryController extends Controller
 
     }
 
-    public function class(){
+    public function classes(){
 		$CateRepo = new CategoryRepository();
     	$categorys = $CateRepo->getParentCate();
     	$groups = array();
