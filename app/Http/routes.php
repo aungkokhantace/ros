@@ -693,6 +693,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('test', 'Kitchen\HomeController@pricesPage');
             Route::get('test-values', 'Kitchen\HomeController@pricesValues');
             Route::resource('stock-requisition', 'inventory\inventoryController', ['only' => ['index', 'store']]);
+            Route::resource('stock-review', 'Kitchen\StockReviewController', ['only' => ['index']]);
         });
     });
 });
@@ -766,4 +767,3 @@ Route::get('/classcode/create','inventory\inventoryController@class');
 Route::get('/stock/create','inventory\inventoryController@stock_item');
 Route::get('sync_um','inventory\inventoryController@getSyncUm');
 Route::get('api/v1/get_kitchen','inventory\inventoryController@getKitchen');
-
