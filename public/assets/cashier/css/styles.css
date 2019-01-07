@@ -69,7 +69,8 @@ img {
     outline: none;
 }
 .user-btn img {
-	width: 30px;
+	width: 23px !important;
+	height: 18px!important;
 }
 .dash-btn {
 	width: 150px;

@@ -93,6 +93,11 @@ io.on('connection', function (socket) {
     io.sockets.emit( 'take','take');
   });
 
+  socket.on('paybill', function( data ) {
+    console.log('pay bill currently');
+    io.sockets.emit( 'pay','pay');
+  });
+
   //Socket Fire From Cancel Known
   socket.on('cancel_known_by', function( data ) {
     console.log('Cancel Known By Waiter');
