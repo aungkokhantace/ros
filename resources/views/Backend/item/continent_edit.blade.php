@@ -67,6 +67,7 @@
                     </tr>
                     @endforeach
                     @endif
+                    <tr id="wrap_contient"></tr>
                 </tbody> 
             </table>
         </div>

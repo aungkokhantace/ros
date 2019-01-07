@@ -43,5 +43,12 @@ class CoreSettingsTableSeeder extends Seeder
             'value'         => '5',
             'description'   => 'Remark code will generate Whent get value 4'
         ]);
+
+        DB::table('core_settings')->insert([
+            'code'          => 'Continent',
+            'type'          => 'Continent_TYPE',
+            'value'         => '6',
+            'description'   => 'Continent code will generate Whent get value 4'
+        ]);
     }
 }

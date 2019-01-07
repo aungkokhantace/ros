@@ -40,7 +40,7 @@ var  productDetailRunningNo = 0;
 function addContinent(){
     // let productDetailCount = 0; 
     var count       = $("#product_detail_count").val() ;   
-    var counter     = 2;
+    var counter     = 999;
         if(count <= counter){
         console.log(count + 'counter is  ' + counter);
          $("#product_detail_count").val(++count);

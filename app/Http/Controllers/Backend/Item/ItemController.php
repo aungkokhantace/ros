@@ -27,12 +27,16 @@ use App\RMS\Item_Remark\Item_Remark;
 class ItemController extends Controller
 {
     private $ItemRepository;
+
+    private $Item_RemarkRepo;
+
     public function __construct(ItemRepositoryInterface $ItemRepository)
     {
        $this->ItemRepository = $ItemRepository;
        $this->RemarkRepo     = new RemarkRepository();
        $this->Item_RemarkRepo= new Item_RemarkRepository();
     }
+
     //Item Listing Page
     public function index()
     {
@@ -40,6 +44,7 @@ class ItemController extends Controller
        $cat     = $this->ItemRepository->allCat();
        return view('Backend.item.ItemListing')->with('items', $items)->with('cat', $cat);
     }
+
     public function itemenabled($id)
     {
         $new_string = explode(',', $id);
@@ -48,6 +53,7 @@ class ItemController extends Controller
         }
         return redirect()->action('Backend\Item\ItemController@index');
     }
+
     public function itemdisabled($id)
     {
         $new_string = explode(',', $id);
@@ -71,6 +77,7 @@ class ItemController extends Controller
 
         return view('Backend.item.item')->with(array('categories'=>$result, 'parent_id_arr'=>$parent_id_arr,'continent_arr'=>$continent_arr,'remarks'=>$remark));
     }
+
     //ItemEntryRequest
     public function store(Request $request)
     {
@@ -501,32 +508,30 @@ class ItemController extends Controller
     }
 
 //  To multi-delete items
-    public function delete($id){
-        $group_id_arr       = [];
-        $id_arr             = array();
-        $id_arr_val         =[];
-        $new_string         = explode(',', $id);
-        $groups             = DB::table('items')
-                    ->whereIn('id', $new_string)
-                    ->select('group_id')
-                    ->get();
+    public function delete($id)
+    {
+        $new_string   = explode(',', $id);
 
-        foreach ($groups as $key => $value) {
-            $group_id_arr[]= $value->group_id;
-        }
+        foreach ($new_string as $item_id) {
+            $group = DB::table('items')
+                ->where('id', '=', $item_id)
+                ->select('group_id')
+                ->first();
 
-         $id_arr     = DB::table('items')
-                    ->whereIn('group_id', $group_id_arr)
+            if ($group->group_id !== "" && !empty($group)) {
+                $items = DB::table('items')
+                    ->where('group_id', '=', $group->group_id)
                     ->select('id')
                     ->get();
-
-       foreach ($id_arr as $id_key =>$id_value) {
-        $aa         = (array)$id_value;
-
-             $this->ItemRepository->delete($aa);
-             $this->Item_RemarkRepo->delete($aa);
+                foreach ($items as $item) {
+                    $this->ItemRepository->delete($item->id);
+                    $this->Item_RemarkRepo->delete($item->id);
+                }
+            } else {
+                $this->ItemRepository->delete($item_id);
+                $this->Item_RemarkRepo->delete($item_id);
+            }
         }
-
 
         return redirect()->action('Backend\Item\ItemController@index')->withMessage(FormatGenerator::message('Success', 'Item Deleted ...')); //to redirect listing page
     }

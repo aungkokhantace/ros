@@ -46,15 +46,15 @@
                         @endif
                         <meta name="csrf-token" content="{{ csrf_token() }}" />
                         <div class="form-group row">
-                            <label for="inputUsername" class="col-lg-3 col-md-5 col-form-label">User Name</label>
+                            <label for="inputUsername" class="col-lg-3 col-md-5 col-form-label">ID</label>
                             <div class="col-lg-8 col-md-7">
-                              <input type="text" class="form-control" id="inputUsername" name="user_name" value="{{ Request::old('user_name') }}">
+                              <input type="number" class="form-control" id="inputUsername" name="staff_id" value="{{ Request::old('staff_id') }}" required="required">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputPassword" class="col-lg-3 col-md-5 col-form-label">Password</label>
                             <div class="col-lg-8 col-md-7">
-                                <input type="password" class="form-control" id="inputPassword" name="password">
+                                <input type="password" class="form-control" id="inputPassword" name="password" required="required">
                             </div>
                         </div>
                     {!! Form::close() !!}
@@ -110,6 +110,12 @@
             //Enter Button
             $('.enter-btn').click(function(){
                 $('.login-form').submit();
+            });
+            // Login with Enter key
+            $(document).bind('keypress', function(e) {
+            if(e.keyCode==13){
+                   $('.login-form').submit();
+             }
             });
         });
     </script>

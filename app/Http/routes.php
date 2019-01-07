@@ -1,12 +1,6 @@
 <?php
 
-if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
-    // Ignores notices and reports all other kinds... and warnings
-    error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
-    // error_reporting(E_ALL ^ E_WARNING); // Maybe this is enough
-} 
-
-Route::get('logo', 'headerController@logo');
+// Route::get('logo', 'headerController@logo');
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', function () {
         if (Auth::guard('Cashier')->user())
@@ -362,6 +356,20 @@ Route::group(['middleware' => 'web'], function () {
             });
             //end set
 
+            //start Continent
+            Route::group(['middleware'=>'continent:Cashier'],function(){
+                Route::get('Continent/index', 'Backend\Continent\ContinentController@index');
+                Route::get('Continent/create', 'Backend\Continent\ContinentController@create');
+                Route::post('Continent/store', 'Backend\Continent\ContinentController@store');
+                Route::get('Continent/edit/{id}', 'Backend\Continent\ContinentController@edit');
+                Route::post('Continent/update', 'Backend\Continent\ContinentController@update');
+                Route::get('Continent/delete/{id}', 'Backend\Continent\ContinentController@delete');
+            });
+            // Continent Ajax
+                Route::get('Continent/ajax/{Categoryid}', 'Backend\Continent\ContinentController@getContientByCategory');
+
+            //end Continent
+
             //start Table Route
             Route::group(['middleware'=>'table:Cashier'],function(){
                 Route::get('Table/create', 'Backend\Table\TableController@create');
@@ -630,7 +638,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
             Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
             Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
-          
+
             Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
             Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
         });
@@ -672,7 +680,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('productView', 'Kitchen\OrderViewController@productView');
             Route::get('test', 'Kitchen\HomeController@pricesPage');
             Route::get('test-values', 'Kitchen\HomeController@pricesValues');
-            Route::resource('stock-requisition', 'Kitchen\OrderViewController', ['only' => ['index', 'store']]);
+            Route::resource('stock-requisition', 'inventory\inventoryController', ['only' => ['index', 'store']]);
         });
     });
 });
@@ -735,3 +743,13 @@ Route::post('api/v1/order_room','downloadApiController@order_room');
 Route::post('api/v1/download_order_table_with_order_id','downloadApiController@order_table_with_order_id');
 Route::post('api/v1/download_order_room_with_order_id','downloadApiController@order_room_with_order_id');
 Route::post('api/v1/download_order_table_status','downloadApiController@download_order_table_status');
+
+
+//Bi2 system integuration
+Route::get('/category/create','inventory\inventoryController@category');
+Route::get('/groupcode/create','inventory\inventoryController@group');
+Route::get('/classcode/create','inventory\inventoryController@class');
+Route::get('/stock/create','inventory\inventoryController@stock_item');
+Route::get('sync_um','inventory\inventoryController@getSyncUm');
+Route::get('api/v1/get_kitchen','inventory\inventoryController@getKitchen');
+

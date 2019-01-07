@@ -74,5 +74,6 @@ class Kernel extends HttpKernel
         'shift'=>\App\Http\Middleware\ShiftMiddleware::class,
         'order'=>\App\Http\Middleware\OrderMiddleware::class,
         'remark'=>\App\Http\Middleware\RemarkMiddleware::class,
+        'continent'=>\App\Http\Middleware\ContinentMiddleware::class,
     ];
 }

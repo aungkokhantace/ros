@@ -1,11 +1,19 @@
-<?php namespace App\RMS;
+<?php
+
+namespace App\RMS;
+
+use App\RMS\Config\ConfigRepository;
 use Auth;
 use DB;
 use PDF;
 use App\Http\Requests;
 use App\Session;
 use App\RMS\User\UserRepository;
+use App\User;
 use App\RMS\SyncsTable\SyncsTable;
+use Carbon\Carbon;
+use App\RMS\Config\ConfigRepositoryInterface;
+use App\RMS\Kitchen\Kitchen;
 
 class Utility
 {
@@ -110,12 +118,13 @@ class Utility
                         ->select('code')
                         ->WHERE ('value','=',$product_type)
                         ->get();
+
         foreach($generate_codes as $generate_code) {
             $code = $generate_code->code;
         }
 
         $inserted_id_length =  strlen($inserted_id);
-        $limit_length = 6;
+        $limit_length = 4;
         $remain_length = $limit_length - $inserted_id_length;
         $remain_length_arr = array();
         for ($i = 1;$i <= $remain_length; $i++) {
@@ -124,7 +133,8 @@ class Utility
 
         $code_length = implode('',$remain_length_arr);
 
-        $stock_code = $code . "_" . $code_length . $inserted_id;
+        // $stock_code = $code . "_" . $code_length . $inserted_id;
+        $stock_code = $code . "" . $code_length . $inserted_id;
         return $stock_code;
     }
 
@@ -144,5 +154,66 @@ class Utility
             ->get();
 
         return $rooms;
+    }
+
+    public static function generateStaffId()
+    {
+        $pad_length = 5;
+        $maxID      = User::max('staff_id') ?: str_repeat('0',$pad_length);
+        $staff_id   = intval($maxID);
+        $staff_id++;
+        $id         = str_pad($staff_id,$pad_length,0,STR_PAD_LEFT);
+        return $id;
+    }
+
+    public function dateCodeString()
+    {
+        $now = Carbon::now()->format('y-m-d');
+        $dateCode = implode(explode('-' , $now));
+
+        return $dateCode;
+    }
+
+    public static function dateString()
+    {
+        $now = Carbon::now()->format('Y-m-d H:i:s');
+        $date_string = implode('T', explode(' ', $now)).'Z';
+
+        return $date_string;
+    }
+
+    public function generateRequisitionNo()
+    {
+        $date = $this::dateCodeString();
+        $repository = new ConfigRepository();
+        $config = $repository->getAllConfig();
+        $int = 00000;
+        if (!empty($config->requisition_no)) {
+            $old_digit = substr($config->requisition_no, 8, 5);
+            $old_date  = substr($config->requisition_no, 2, 6);
+            if ($old_date == $date) {
+                $int = $old_digit;
+            }
+        }
+
+        $digit  = str_pad($int + 1, 5, 0, STR_PAD_LEFT);
+        $code   = 'RP'.$date.$digit;
+        $result = [
+            'code' => $code,
+            'id'   => $config->id
+        ];
+        return $result;
+    }
+
+    public static function generateKitchenCode()
+    {
+        $path_length     = 3;
+        $prefix          = 'loc';
+        $maxCode         = Kitchen::where('kitchen_code', 'like', $prefix.'%')->max('kitchen_code') ?: $prefix.str_repeat('0',$path_length);
+        $code            =  substr($maxCode,3,6);
+        $kitchen_code    = intval($code);
+        $kitchen_code++;
+        $code             = str_pad($kitchen_code,$path_length,0,STR_PAD_LEFT);
+        return $prefix . $code;
     }
 }

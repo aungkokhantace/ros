@@ -52,7 +52,7 @@ tfoot {
                             <th>Set menu Name</th>
                             <th>Items</th>
                             <th>Price</th>
-                            <th>Image</th>
+                            <!-- <th>Image</th> -->
                             <th>Status</th>
                         </tr>
                         </thead>
@@ -63,7 +63,7 @@ tfoot {
                             <th class="search-col" con-id="set_menu_name">Set Menu Name</th>
                             <th class="search-col" con-id="item">Items</th>
                             <th class="search-col" con-id="price">Price</th>
-                            <th></th>
+                            <!-- <th></th> -->
                             <th></th>
                         </tr>
                     </tfoot>
@@ -87,7 +87,7 @@ tfoot {
                                     @endforeach
                                 </td>
                                 <td>{{ $set->set_menus_price}}</td>
-                                <td>{{ $set->image }}</td>
+                                {{--<td>{{ $set->image }}</td>--}}
                                 <td>
                                     @if( $set->status==0)
                                         {{"Not Available"}}

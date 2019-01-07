@@ -8,7 +8,6 @@ $(document).ready(function() {
 
             name        : {
                 required: true,
-                number  : true
             },
             staff_id            : "required",
             login_password      : {
@@ -78,7 +77,6 @@ $(document).ready(function() {
         rules: {
             name        : {
                 required: true,
-                number  : true
             },
             staff_id    : "required",
             userType    : "required"

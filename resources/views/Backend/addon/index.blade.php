@@ -57,7 +57,7 @@ tfoot {
                             <th>Add-on Name</th>
                             <th>Category</th>
                             <th>Description</th>
-                            <th>image</th>
+                            <!-- <th>image</th> -->
                             <th>Price</th>
                             <th>Status</th>
                         </tr>
@@ -69,7 +69,7 @@ tfoot {
                             <th class="search-col" con-id="module_name">Module Name</th>
                             <th class="search-col" con-id="add-on_name">Add On Name</th>
                             <th class="search-col" con-id="category">Category</th>
-                            <th></th>
+                            <!-- <th></th> -->
                             <th class="search-col" con-id="price">Price</th>
                             <th></th>
                         </tr>
@@ -95,7 +95,7 @@ tfoot {
                                 @endforeach
                             </td>
                             <td>{{ $extras->description }}</td>
-                            <td>{{ $extras->image }}</td>
+                            {{--<td>{{ $extras->image }}</td>--}}
                             <td>{{ $extras->price }}</td>
                             <td>
                             @if( $extras->status==0)
