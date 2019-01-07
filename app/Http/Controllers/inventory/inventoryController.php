@@ -395,8 +395,8 @@ class inventoryController extends Controller
         $post_url  = $this->resquestserverurl.'/purchaserequest/create';
         $get_url   = '/purchaserequest/get_purchaserequisition';
         $id        = Auth::guard('Cashier')->user()->kitchen_id;
-        $code      = ((object)$this->utility->generateRequisitionNo())->code;
-        $config_id = ((object)$this->utility->generateRequisitionNo())->id;
+        $code      = $this->utility->generateRequisitionNo()['code'];
+        $config_id = $this->utility->generateRequisitionNo()['id'];
         $detail    = [];
         $stock_requisitions = $request->stock;
 
