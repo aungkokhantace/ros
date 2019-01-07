@@ -1219,8 +1219,8 @@ class InvoiceController extends Controller
     public function invoicePaidUpdate($id,Request $request)
     {   
         
-        $inventorysale   = new inventoryController();
-        $invenorystatus =  $inventorysale->saleStock($id);
+        // $inventorysale   = new inventoryController();
+        // $invenorystatus =  $inventorysale->saleStock($id);
         
        
         $order = Order::find($id);
