@@ -186,7 +186,7 @@ class Utility
         return $date_string;
     }
 
-    public function generateRequisitionNo()
+    public static function generateRequisitionNo()
     {
         $date = $this::dateCodeString();
         $repository = new ConfigRepository();
