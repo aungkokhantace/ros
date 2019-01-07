@@ -1,3 +1,9 @@
+<?php
+
+$noticount = \App\RMS\Utility::getnoticount();
+
+ ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,7 +34,7 @@
     <script src="/assets/js/datatables/dataTables.bootstrap.js"></script>
     <script type="text/javascript" src="/assets/cashier/js/paginathing.js"></script>
     <script type="text/javascript" src="/assets/js/crud.js"></script>
-    
+
 
     <script>
         function addNotification(title, text){
@@ -67,37 +73,49 @@
 
 </head>
 <body>
-    <div class="wrapper">   
+    <div class="wrapper">
         @if(count(Session::get('message')) != 0)
             <div ></div>
         @endif
-        <div class="header-sec">   
-            <div class="container">   
-                <div class="row"> 
+        <div class="header-sec">
+            <div class="container">
+                <div class="row">
                     <div class="col-md-4 col-4 heightLine_01 head-lbox">
-                        <div>  
+                        <div>
                             <a class="btn btn-large dash-btn mb-2" href="/Cashier/Dashboard">Dashboard</a>
                             @yield('dayEnd')
                         </div>
-                    </div>  
+                    </div>
                     <div class="col-md-4 col-4 heightLine_01">
                         <img src="/assets/cashier/images/ros_logo.png" alt="ROS logo" class="ros-logo">
-                    </div>  
+                    </div>
                     <div class="col-md-4 col-4 heightLine_01 head-rbox">
-                        <div>   
+                        <div>
                             @yield('nightEnd')
-                            <div class="dropdown show pull-right">
+                            <div class="dropdown show pull-right" id="headernoti">
+
+                              <a href="/Cashier/WillPayView">
+                              <button role="button"  class="btn btn-primary user-btn">
+
+                                <img src="/assets/cashier/images/noti.png" alt="login image" style="height:15px !important">
+                                <span class="badge" id="notipay">@if(isset($noticount) && count($noticount)>0)
+                                                         {{count($noticount)}}
+                                                    @else
+                                                         {{0}}
+                                                    @endif
+
+                                  </span>
+                              </button>
+                              </a>
                               <button role="button" id="dropdownMenuLink" class="btn btn-primary user-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="/assets/cashier/images/login_img.png" alt="login image">
+                                <img src="/assets/cashier/images/login_img.png" alt="login image" style="height:15px !important">
                               </button>
                               <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item" href="/Cashier/logout">Logout</a>
                               </div>
-                            </div> 
+                            </div>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div><!-- header-sec -->
-
-        

@@ -304,7 +304,7 @@ class ItemRepository implements ItemRepositoryInterface
         // $tempObj->save();
     }
     public function getitem_forinvestory($id){
-        $datas = Item::where('status',1)->whereNull('deleted_at')->where('category_id',$id)->get();
+        $datas = Item::where('status',1)->whereNull('deleted_at')->where('category_id',$id)->select('id','name')->get();
         return $datas;
     }
 
@@ -322,10 +322,9 @@ class ItemRepository implements ItemRepositoryInterface
          return $category;
     }
     public function getParent_Id($id){
-        dd($id);
-        $group = Category::where('parent_id',$id)->whereNull('deleted_at')->where('status',1)->get();
-        dd($group);
+        $group = Category::where('parent_id',$id)->whereNull('deleted_at')->where('status',1)->select('id as parent_id')->get();
         return $group;
     }
 
+    
 }

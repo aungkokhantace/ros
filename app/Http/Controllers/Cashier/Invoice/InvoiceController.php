@@ -17,6 +17,7 @@ use App\RMS\Item\Item;
 use App\RMS\Config\Config;
 use App\Status\StatusConstance;
 use Carbon\Carbon;
+use App\Http\Controllers\inventory\inventoryController;
 use Illuminate\Support\Facades\Input;
 use PDF;
 use Excel;
@@ -25,6 +26,7 @@ use App\RMS\Utility;
 use Response;
 use Hash;
 use App\User;
+use App\RMS\Invoice\InvoiceRepository;
 use App\RMS\DayStart\DayStart;
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
@@ -35,10 +37,12 @@ use Illuminate\Support\Collection as Collection;
 class InvoiceController extends Controller
 {
     private $InvoiceRepository;
+   
 
     public function __construct(InvoiceRepositoryInterface $InvoiceRepository)
     {
         $this->InvoiceRepository = $InvoiceRepository;
+        
     }
     
     public function invoiceList()
@@ -1214,8 +1218,12 @@ class InvoiceController extends Controller
 
     public function invoicePaidUpdate($id,Request $request)
     {   
+        
+        $inventorysale   = new inventoryController();
+        $invenorystatus =  $inventorysale->saleStock($id);
+        
+       
         $order = Order::find($id);
-
         if(!$order->rooms->isEmpty()){
             $room = Room::where('id',$order->rooms[0]->id)->first();
             $room->status = 0;

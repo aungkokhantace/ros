@@ -1,6 +1,14 @@
 <?php
 
+
 // Route::get('logo', 'headerController@logo');
+
+if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
+    // Ignores notices and reports all other kinds... and warnings
+    error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
+    // error_reporting(E_ALL ^ E_WARNING); // Maybe this is enough
+}
+
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', function () {
         if (Auth::guard('Cashier')->user())
@@ -184,6 +192,10 @@ Route::group(['middleware' => 'web'], function () {
                 // Route::get('MakeOrder/categorydetail/{id}','Cashier\ListViewController@categoryDetail');
                 // Route::get('MakeOrder/SearchItem/{id}','Cashier\ListViewController@searchItem');
                 // Route::get('MakeOrder/add/{id}/{type}','Cashier\ListViewController@add');
+
+                Route::get('/WillPayView','Cashier\ListViewController@willpayview');
+                Route::get('/willpay/ajaxRequest','Cashier\ListViewController@willpayajax');
+                Route::get('/willpay/noti/ajaxRequest','Cashier\ListViewController@willpaynoti');
 
             });
 
@@ -734,6 +746,7 @@ Route::post('api/v1/customer_cancel','makeAPIController@customer_cancel');
 Route::post('api/v1/post_kitchen_cancel','makeAPIController@post_kitchen_cancel');
 Route::post('api/v1/order_status','makeAPIController@order_status');
 Route::post('api/v1/frontend_log','makeAPIController@frontend_log');
+Route::post('api/v1/will_pay','makeAPIController@willpay');
 
 Route::post('api/v1/download_voucher','downloadApiController@download_voucher');
 Route::post('api/v1/download_voucher_detail','downloadApiController@download_voucher_detail');
@@ -743,6 +756,7 @@ Route::post('api/v1/order_room','downloadApiController@order_room');
 Route::post('api/v1/download_order_table_with_order_id','downloadApiController@order_table_with_order_id');
 Route::post('api/v1/download_order_room_with_order_id','downloadApiController@order_room_with_order_id');
 Route::post('api/v1/download_order_table_status','downloadApiController@download_order_table_status');
+
 
 
 //Bi2 system integuration

@@ -27,6 +27,7 @@ use App\RMS\SyncsTable\SyncsTable;
 use App\RMS\Promotion\Promotion;
 use App\RMS\PromotionItem\PromotionItem;
 use App\RMS\Order\Order;
+use App\RMS\Order\OrderRepository;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetail;
@@ -48,6 +49,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Carbon\Carbon;
+use App\RMS\ReturnMessage;
 use App\RMS\User\UserRepository;
 use App\RMS\Utility;
 
@@ -190,7 +192,8 @@ class MakeAPIController extends ApiGuardController
         $ordersRaw  = $temp['orderID'];
         
         $orders   = json_decode($ordersRaw);
-     
+
+
         $dt         = Carbon::now();
         
         foreach($orders as $order) {
@@ -339,7 +342,6 @@ class MakeAPIController extends ApiGuardController
             return Response::json($output);
 
         }catch(\Exception $e){
-
             DB::rollback();
             $output = array("message" => "Please Upload Again");
             return Response::json($output);
@@ -361,6 +363,7 @@ class MakeAPIController extends ApiGuardController
    try{
 
          DB::beginTransaction();
+
 
             $temp       = Input::all();
             $ordersRaw  = $temp['orderID'];
@@ -392,6 +395,7 @@ class MakeAPIController extends ApiGuardController
                 
                 $order_extra = OrderExtra::where('order_detail_id',$get_order_de->order_detail_id); 
                 
+
                 if($order_extra){
                     $order_extra->forceDelete();
                 }
@@ -1285,6 +1289,26 @@ class MakeAPIController extends ApiGuardController
     {
         $item = Item::find($id);
         return $item ? $item : new Item;
+    }
+
+
+    public function willpay(){
+        $tempObj            = Input::all();
+        $OrderRepo          = new OrderRepository();
+        $order_id           = $tempObj['order_id'];
+        $Order              =  Order::find($order_id);
+        $Order->will_pay    = 1;
+        $result = $OrderRepo->save($Order);
+        $returnAry = [];
+        if($result['aceplusStatusCode'] != ReturnMessage::OK){
+           $returnAry['message'] = 'ERROR';
+        }else{
+           $returnAry['message'] = 'Success';
+        }
+
+        return Response::json($returnAry);
+
+
     }
 
 }
