@@ -429,6 +429,7 @@ class MakeAPIController extends ApiGuardController
                 $order->total_discount_amount   = $discount_amount;
                 $order->total_extra_price       = $extra_price;
                 $order->stand_number            = $stand_number;
+                $order->save();
                 $order_detail_ary = array();
                 foreach ($order_details as $order_detail) {
                     $order_detail_id = $order_detail->order_detail_id;
