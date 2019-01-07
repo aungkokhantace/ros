@@ -91,7 +91,6 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body'    => $groups,
@@ -242,7 +241,7 @@ class inventoryController extends Controller
         }
     }
     
-
+    }
     public function guzzleClient($uri)
     {
 	   	$client 		= new Client(['base_uri' => $this->resquestserverurl]);
