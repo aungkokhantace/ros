@@ -28,8 +28,6 @@ use GuzzleHttp\Psr7\Request as GuRequest;
 
 class inventoryController extends Controller
 {
-
-
     private $utility;
 
     private $configRepository;
@@ -333,9 +331,18 @@ class inventoryController extends Controller
 		
 		
 		$orderAry = json_encode($saleAry);
+		$headers = [
+		    'Content-Type' => 'application/json',
+		];
 
+		$client = new client();
+		$res = $client->post($url, [
+		    'headers' => $headers, 
+		    'body' => $orderAry,
+		]);
+
+		
 	}
-
 
     public function index()
     {
@@ -375,6 +382,8 @@ class inventoryController extends Controller
             unset($stock_requisition['group'], $stock_requisition['unit']);
             $detail[] = $stock_requisition;
         }
+
+
 
         $data = [
             [
@@ -424,5 +433,13 @@ class inventoryController extends Controller
         $client = new \GuzzleHttp\Client($meta);
         $client->post($uri,['body' => $data ]);
     }
+
+		
+
+
+
+
+	
+ 
 
 }
