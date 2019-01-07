@@ -95,7 +95,6 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new Client();
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body'    => $groups,
