@@ -456,6 +456,7 @@ Route::group(['middleware' => 'web'], function () {
 
             //Sale Summary Report & Excel Download
             Route::get('saleSummaryReport','Backend\Report\SaleSummaryReportController@saleSummary');
+            
             Route::get('SaleSummaryExport', 'Backend\Report\SaleSummaryReportController@saleSummaryExport');
             Route::get('dailysale/{day}/{month}','Backend\Report\SaleSummaryReportController@dailySale');
             Route::get('dailySaleExport/{day}/{month}','Backend\Report\SaleSummaryReportController@dailySaleExport');
@@ -474,7 +475,15 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('searchYearlySummary','Backend\Report\SaleSummaryReportController@searchYearlySummary');
             Route::get('searchYearlySummaryExport/{from_year}','Backend\Report\SaleSummaryReportController@searchYearSummaryExport');
             Route::get('yearlySale/{year}','Backend\Report\SaleSummaryReportController@yearlySale');
-            Route::get('yearlySaleExport/{year}','Backend\Report\SaleSummaryReportController@yearlySaleExport');
+            Route::get('yearlySaleExport/{year}','Backend\Report\SaleSummaryReportController@yearlySaleExport'); 
+
+            //update sale summary report
+
+            Route::get('sale_SummaryReport','Backend\Reports\SaleSummaryReportController@saleSummary');
+
+            Route::get('sale_SummaryReport/search/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@search_query');
+            Route::get('sale_SummaryReport/exportexcel/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@exportExcel');
+
 
 
         });

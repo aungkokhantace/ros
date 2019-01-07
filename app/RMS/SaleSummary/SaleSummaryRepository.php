@@ -301,5 +301,58 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
 
         return $orders;
     }
+
+    public function sale_summary($type = null, $from = null, $to = null)
+    {
+        $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+
+        $query                  = Order::query();
+        $query                  = $query->select(DB::raw('SUM(total_discount_amount) as DiscountAmount,
+                                                        SUM(tax_amount) as TaxAmount,
+                                                        SUM(service_amount) as ServiceAmount,
+                                                        SUM(foc_amount) as FocAmount,
+                                                        SUM(room_charge) as RoomAmount,
+                                                        SUM(total_extra_price) as ExtraAmount,
+                                                        SUM(total_price) as PriceAmount,
+                                                        SUM(all_total_amount) as Amount,
+                                                        Date(order_time) as Day' ));
+                                // ->groupBy(DB::raw('Year(order_time)'))       
+                                // ->where(DB::raw('Year(order_time)'),'2018')                         
+                                // ->get();
+                                // dd($order);
+        
+                                       
+      
+        if($type == "yearly"){
+           
+            $query      = $query ->groupBy(DB::raw('Year(order_time)'))       
+                                ->where(DB::raw('Year(order_time)'),$from) ;                        
+                                
+            // dd($query);
+
+        }
+        else if($type == "monthly"){
+             $query      = $query
+             // ->select(DB::raw('Month(order_time) as Month'))
+                                 ->groupBy(DB::raw('Month(order_time)'))
+                                 ->where(DB::raw('Month(order_time)'),'>=',$from)
+                                 ->where(DB::raw('Month(order_time)'),'<=',$to);
+
+        }
+        else if($type == "daily"){
+             $query      = $query
+             // ->select(DB::raw('Date(order_time) as Day'))
+                                -> groupBy(DB::raw('DAY(order_time)'))
+                                 ->where(DB::raw('DAY(order_time)'),'>=',$from)
+                                 ->where(DB::raw('DAY(order_time)'),'<=',$to);
+            // dd($query , "daily");
+
+        }
+        $orders          = $query->where('status',$order_paid_status)->get();
+        // dd($orders);
+          // date('d M Y',strtotime($pay->start_date)).' - '.date('d M Y',strtotime($pay->end_date))
+        return $orders;
+
+    }
 }	
 
