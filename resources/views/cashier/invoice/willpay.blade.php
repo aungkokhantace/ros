@@ -209,7 +209,8 @@
     </script>
 <script>
         $(document).ready(function(){
-            var url     = "/Cashier/willpay/ajaxRequest";//Json Callback Url
+            $('#notipay').hide();
+            var url    = "/Cashier/willpay/ajaxRequest";//Json Callback Url
             var div     = "willpay";//Put div id inside html response
 
             //Order Cancel Socket
