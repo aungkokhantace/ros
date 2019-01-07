@@ -245,7 +245,7 @@ class inventoryController extends Controller
                 ]);
         }
     }
-    }
+    
 
     public function guzzleClient($uri)
     {
