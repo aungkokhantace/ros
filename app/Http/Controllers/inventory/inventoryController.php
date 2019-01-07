@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\RMS\Category\Category;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+use App\Inventory\UM;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Middleware;
 use App\RMS\Utility;
@@ -217,7 +218,37 @@ class inventoryController extends Controller
 	}
 
 
+	public function getSyncUm()
+    {
+    	$uri = 'um/get_um';
+    	$data = $this->guzzleClient($uri);
 
+    	foreach ($data as $um) {
+
+        if (UM::pluck('um_id')->contains($um->Id)) {
+                UM::find($um->Id)->first()->update([
+                    'um_id' =>$um->Id,
+                    'code' =>$um->Code ,
+                    'description' =>$um->Description,
+                    'updated_by' =>1,
+                ]);
+        }else{
+            UM::create([
+                    'um_id' =>$um->Id,
+                    'code' =>$um->Code,
+                    'description' =>$um->Description,
+                    'created_by' =>1,
+                ]);
+        }
+    }
+    }
+
+    public function guzzleClient($uri)
+    {
+	   	$client 		= new Client(['base_uri' => $this->resquestserverurl]);
+		$response 		= $client->get($uri)->getBody();
+    	return json_decode($response);
+    }
 
 	
    public function getItem($item,$groupid,$classid,$categoryid){
