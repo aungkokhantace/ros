@@ -10,4 +10,10 @@
 
     </span>
 </button>
+<button role="button" id="dropdownMenuLink" class="btn btn-primary user-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+     <img src="/assets/cashier/images/login_img.png" alt="login image" style="height:15px !important">
+</button>
+<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+     <a class="dropdown-item" href="/Cashier/logout">Logout</a>
+</div>
 </a>
