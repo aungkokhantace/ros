@@ -43,15 +43,7 @@ class inventoryController extends Controller
 	public $mininum 		   = 0;
 	public $marginpercence     = 0;
 
-
-	public function __construct(ConfigRepositoryInterface $configRepository)
-    {
-        $this->configRepository = $configRepository;
-        $this->utility = new Utility();
-    }
-
 	
-
     public function category(){
 
 		$CateRepo = new CategoryRepository();
@@ -359,7 +351,6 @@ class inventoryController extends Controller
 		$saleAry[] = $orderAry;
 		
 		
-		
 		$orderAry = json_encode($saleAry);
 		$headers = [
 		    'Content-Type' => 'application/json',
@@ -391,12 +382,13 @@ class inventoryController extends Controller
     }
 
     public function store(Request $request)
-    {
+    { 
+		$configRepo 	= new ConfigRepository();
         $post_url  = $this->resquestserverurl.'/purchaserequest/create';
         $get_url   = '/purchaserequest/get_purchaserequisition';
         $id        = Auth::guard('Cashier')->user()->kitchen_id;
-        $code      = $this->utility->generateRequisitionNo()['code'];
-        $config_id = $this->utility->generateRequisitionNo()['id'];
+        $code      = Utility::generateRequisitionNo()['code'];
+        $config_id = Utility::generateRequisitionNo()['id'];
         $detail    = [];
         $stock_requisitions = $request->stock;
 
@@ -442,7 +434,7 @@ class inventoryController extends Controller
 
         foreach ($requisitions as $requisition) {
             if ($requisition->RequisitionNo == $code) {
-                $this->configRepository->updateRequisitionNo($config_id, $code);
+                $configRepo->updateRequisitionNo($config_id, $code);
                 return redirect('Kitchen/stock-requisition')->with('success', 'Successful To Request.');
             }
         }
