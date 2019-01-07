@@ -57,7 +57,7 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
+		
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body' => $categorys,
@@ -114,7 +114,7 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
+		$client = new Client();
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body' => $classes,
@@ -200,7 +200,7 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
+		$client = new Client();
 		$res = $client->post($url, [
 		    'headers' => $headers, 
 		    'body' => $ItemAry,
