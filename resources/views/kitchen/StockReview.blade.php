@@ -26,7 +26,7 @@
         if (!empty($remain_stocks)) {
           foreach ($remain_stocks as $remain_stock) {
               $data[] = $remain_stock->CurrentBalance;
-              $labels[] = "$remain_stock->Name";
+              $labels[] = str_replace('"', '', $remain_stock->StockName);
           }
         }
     @endphp

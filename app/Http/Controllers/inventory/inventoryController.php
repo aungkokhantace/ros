@@ -25,23 +25,14 @@ use App\Inventory\OrderRepository;
 use App\RMS\Item\Item;
 use DB;
 use GuzzleHttp\Psr7\Request as GuRequest;
-use App\RMS\Kitchen\KitchenRepositoryInterface;
+use App\RMS\Kitchen\KitchenRepository;
+
 
 class inventoryController extends Controller
 {
     private $utility;
 
     private $configRepository;
-
-    public function __construct(
-      ConfigRepositoryInterface $configRepository,
-      KitchenRepositoryInterface $kitchenRepository
-    )
-    {
-        $this->configRepository  = $configRepository;
-        $this->KitchenRepository = $kitchenRepository;
-        $this->utility = new Utility();
-    }
 
 	public $resquestserverurl  = 'http://gr8.acebi2.com.preview.my-hosting-panel.com';
 	public $SupplierId 	       = 1;
@@ -393,62 +384,69 @@ class inventoryController extends Controller
 
     public function store(Request $request)
     {
-          $post_url  = $this->resquestserverurl.'/purchaserequest/create';
-          $id        = Auth::guard('Cashier')->user()->kitchen_id;
-          $code      = ((object)$this->utility->generateRequisitionNo())->code;
-          $config_id = ((object)$this->utility->generateRequisitionNo())->id;
-          $date_string = $this->utility->dateString();
-          $detail    = [];
-          $kitchen_code = $this->KitchenRepository->getKitchenCode($id)->kitchen_code;
-          $stock_requisitions = $request->stock;
+		    $configRepo  = new ConfigRepository();
+        $kitchenRepo = new KitchenRepository();
+        $post_url  = $this->resquestserverurl.'/purchaserequest/create';
+        $get_url   = '/purchaserequest/get_purchaserequisition';
+        $id        = Auth::guard('Cashier')->user()->kitchen_id;
+        $code      = Utility::generateRequisitionNo()['code'];
+        $config_id = Utility::generateRequisitionNo()['id'];
+        $detail    = [];
+        $date_string = Utility::dateString();
+        $kitchen_code = $kitchenRepo->getKitchenCode($id)->kitchen_code;
+        $stock_requisitions = $request->stock;
 
-          foreach ($stock_requisitions as $stock_requisition) {
-              $validator = Validator::make($stock_requisition, [
-                  'Quantity' => 'required'
-              ]);
+        foreach ($stock_requisitions as $stock_requisition) {
+            $validator = Validator::make($stock_requisition, [
+                'Quantity' => 'required'
+            ]);
 
-              if ($validator->fails()) {
-                  return redirect('Kitchen/stock-requisition')->with('fail', 'Required Please Insert All Fields.');
-              }
+            if ($validator->fails()) {
+                return redirect('Kitchen/stock-requisition')->with('fail', 'Required Please Insert All Fields.');
+            }
 
-              unset($stock_requisition['group'], $stock_requisition['unit']);
-              $stock = explode(',', $stock_requisition['StockId']);
-              $stock_requisition['StockId'] = $stock[0];
-              if (!empty($stock[1])) {
-                $stock_requisition['PurchasePrice'] = (int)$stock[1];
-                $stock_requisition['Amount'] = $stock_requisition['Quantity'] * $stock[1];
-              }
-              $detail[] = $stock_requisition;
-          }
+            $stock = explode(',', $stock_requisition['StockId']);
+            $stock_requisition['StockId'] = $stock[0];
+            if (!empty($stock[1])) {
+              $stock_requisition['PurchasePrice'] = (int)$stock[1];
+              $stock_requisition['Amount'] = $stock_requisition['Quantity'] * $stock[1];
+            }
+            $detail[] = $stock_requisition;
+        }
 
-          $data = [
-              [
-                  "RequisitionNo" => $code,
-                  "RequisitionDate" => $date_string,
-                  "LocationId" => $kitchen_code,
-                  "PriorityId"=> 0,
-                  "ReceivedDate" => $date_string,
-                  "requisition_details" => $detail
-              ]
-          ];
+        $data = [
+            [
+                "RequisitionNo" => $code,
+                "RequisitionDate" => $date_string,
+                "LocationId" => $kitchen_code,
+                "PriorityId"=> 0,
+                "ReceivedDate" => $date_string,
+                "requisition_details" => $detail
+            ]
+        ];
 
-          $body = json_encode($data);
+        $body = json_encode($data);
 
-          $post_client = new Client([
-              'headers' => ['Content-Type' => 'application/json']
-          ]);
+        $post_client = new Client([
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
 
-          $get_client  = new Client([
-             'base_uri' => $this->resquestserverurl
-          ]);
+        $get_client  = new Client([
+           'base_uri' => $this->resquestserverurl
+        ]);
 
-          $response = $post_client->post($post_url, ['body' => $body]);
-          if ($response->getStatusCode() == 200) {
-              $this->configRepository->updateRequisitionNo($config_id, $code);
-              return redirect('Kitchen/stock-requisition')->with('success', 'Successful To Request.');
-          }
+        $post_client->post($post_url, ['body' => $body]);
 
-          return redirect('Kitchen/stock-requisition')->with('fail', 'Fail To Request, Please Try Again Later.');
+        $requisitions = json_decode($get_client->get($get_url)->getBody());
+
+        foreach ($requisitions as $requisition) {
+            if ($requisition->RequisitionNo == $code) {
+                $configRepo->updateRequisitionNo($config_id, $code);
+                return redirect('Kitchen/stock-requisition')->with('success', 'Successful To Request.');
+            }
+        }
+
+        return redirect('Kitchen/stock-requisition')->with('fail', 'Fail To Request, Please Try Again Later.');
     }
 
     public function getKitchen()
