@@ -969,7 +969,7 @@ class InvoiceController extends Controller
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier         = $this->InvoiceRepository->cashier($id);
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-
+        
         $html ='<h1>Invoice Detail</h1>
                 <table >
                 <tr>
