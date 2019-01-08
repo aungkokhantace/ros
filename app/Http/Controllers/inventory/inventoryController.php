@@ -6,7 +6,7 @@ use App\RMS\Config\ConfigRepository;
 use Carbon\Carbon;
 //use Chrisbjr\ApiGuard\Contracts\Providers\Auth;
 use Illuminate\Http\Request;
-
+use Auth;
 use App\Http\Requests;
 use App\RMS\Item\ItemRepository;
 use App\Inventory\CategoryRepository;
@@ -25,6 +25,7 @@ use App\Inventory\OrderRepository;
 use App\RMS\Item\Item;
 use DB;
 use GuzzleHttp\Psr7\Request as GuRequest;
+use App\RMS\Kitchen\KitchenRepository;
 
 
 class inventoryController extends Controller
@@ -43,7 +44,7 @@ class inventoryController extends Controller
 	public $mininum 		   = 0;
 	public $marginpercence     = 0;
 
-	
+
     public function category(){
 
 		$CateRepo = new CategoryRepository();
@@ -57,7 +58,7 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		
+
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body' => $categorys,
@@ -105,7 +106,7 @@ class inventoryController extends Controller
     		array_push($classes,$group->Id);
     	}
 
-        
+
     	$classes  = $CateRepo->getCalss($classes);
         $url  = $this->resquestserverurl.'/classcode/create';
         $classes = json_encode($classes);
@@ -131,23 +132,23 @@ class inventoryController extends Controller
     	foreach($categorys as $category){
     		array_push($categoryary,$category->Id);
 		}
-		
+
     	$groups  = 	$groups  = $CateRepo->getGroup($categoryary);
     	$groupary = array();
-	
+
     	foreach($groups as $group){
     		array_push($groupary,$group->Id);
     	}
-        
+
     	$classes  =  $CateRepo->getClass($groupary);
 		$classarray = array();
-		
+
     	foreach($classes as $class){
     		array_push($classarray,$class->Id);
 		}
 
 		$ItemAry = array();
-		
+
 		$items = Item::where('status',1)->whereNull('deleted_at')->get();
 		foreach($items as $item){
 			if(in_array($item->category_id,$categoryary)){
@@ -172,16 +173,16 @@ class inventoryController extends Controller
 			   $item_ary   = $this->getItem($item,$groupid,$classid,$categoryid);
 			   array_push($ItemAry,$item_ary);
 			}else{
-				
+
 				$response = $this->checkcategory($item->category_id,$categoryary,$groupary,$classarray);
-				
+
 				while($response['message'] == 404){
 					$response = $this->checkcategory($response['category_id'],$categoryary,$groupary,$classarray);
 					if($response['message'] == 200){
 						break;
 					}
 				}
-				
+
 			   $groupid    = $this->getparentId($response['category_id']);
 			   $categoryid = $this->getparentId($groupid);
 			   $classid    = $response['category_id'];
@@ -193,7 +194,7 @@ class inventoryController extends Controller
 		}
 
 		$url  = $this->resquestserverurl.'/stock/create';
-		
+
 		$ItemAry = json_encode($ItemAry);
 
 		$headers = [
@@ -202,7 +203,7 @@ class inventoryController extends Controller
 
 		$client = new Client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body' => $ItemAry,
 		]);
 
@@ -232,7 +233,7 @@ class inventoryController extends Controller
                 ]);
         }
     }
-    
+
     }
     public function guzzleClient($uri)
     {
@@ -241,7 +242,7 @@ class inventoryController extends Controller
     	return json_decode($response);
     }
 
-	
+
    public function getItem($item,$groupid,$classid,$categoryid){
 	    $item_ary = array();
 		$item_ary['Id'] 				= $item->id;
@@ -310,7 +311,7 @@ class inventoryController extends Controller
 	public function saleStock($id){
 		 $orderRepo = new OrderRepository();
 		 $order     = $orderRepo->getOrderById($id);
-		 
+
 		 $order_details = $orderRepo->getOrderDetail($order->id);
 
 		 foreach($order_details as $key=>$details){
@@ -321,10 +322,10 @@ class inventoryController extends Controller
 			 }
 		 }
 
-		
-		
+
+
 		 $orderAry = array();
-		 
+
 		 $orderAry['InvoiceNo']     = $order->id;
 		 $orderAry['InvoiceDate']   = Utility::saledate($order->order_time);
 		 $orderAry['CustomerId']    = 'ROS001';
@@ -349,8 +350,8 @@ class inventoryController extends Controller
 		$url  = $this->resquestserverurl.'/sale/create';
 		$saleAry = array();
 		$saleAry[] = $orderAry;
-		
-		
+
+
 		$orderAry = json_encode($saleAry);
 		$headers = [
 		    'Content-Type' => 'application/json',
@@ -358,11 +359,11 @@ class inventoryController extends Controller
 
 		$client = new Client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body' => $orderAry,
 		]);
 
-		
+
 	}
 
     public function index()
@@ -382,14 +383,17 @@ class inventoryController extends Controller
     }
 
     public function store(Request $request)
-    { 
-		$configRepo 	= new ConfigRepository();
+    {
+		    $configRepo  = new ConfigRepository();
+        $kitchenRepo = new KitchenRepository();
         $post_url  = $this->resquestserverurl.'/purchaserequest/create';
         $get_url   = '/purchaserequest/get_purchaserequisition';
         $id        = Auth::guard('Cashier')->user()->kitchen_id;
         $code      = Utility::generateRequisitionNo()['code'];
         $config_id = Utility::generateRequisitionNo()['id'];
         $detail    = [];
+        $date_string = Utility::dateString();
+        $kitchen_code = $kitchenRepo->getKitchenCode($id)->kitchen_code;
         $stock_requisitions = $request->stock;
 
         foreach ($stock_requisitions as $stock_requisition) {
@@ -401,19 +405,22 @@ class inventoryController extends Controller
                 return redirect('Kitchen/stock-requisition')->with('fail', 'Required Please Insert All Fields.');
             }
 
-            unset($stock_requisition['group'], $stock_requisition['unit']);
+            $stock = explode(',', $stock_requisition['StockId']);
+            $stock_requisition['StockId'] = $stock[0];
+            if (!empty($stock[1])) {
+              $stock_requisition['PurchasePrice'] = (int)$stock[1];
+              $stock_requisition['Amount'] = $stock_requisition['Quantity'] * $stock[1];
+            }
             $detail[] = $stock_requisition;
         }
-
-
 
         $data = [
             [
                 "RequisitionNo" => $code,
-                "RequisitionDate" => "2018-12-27T07:40:43Z",
-                "LocationId" => 1,
+                "RequisitionDate" => $date_string,
+                "LocationId" => $kitchen_code,
                 "PriorityId"=> 0,
-                "ReceivedDate" => null,
+                "ReceivedDate" => $date_string,
                 "requisition_details" => $detail
             ]
         ];
@@ -455,13 +462,4 @@ class inventoryController extends Controller
         $client = new \GuzzleHttp\Client($meta);
         $client->post($uri,['body' => $data ]);
     }
-
-		
-
-
-
-
-	
- 
-
 }
