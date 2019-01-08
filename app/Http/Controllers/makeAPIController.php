@@ -181,7 +181,6 @@ class MakeAPIController extends ApiGuardController
 
     public function create_voucher()
     {   
-    
         try{
             DB::beginTransaction();
 
@@ -737,10 +736,7 @@ class MakeAPIController extends ApiGuardController
 
     public function table_transfer(){
         $temp               = Input::all();
-        // $tempRaw            = $temp['table_transfer'];
-        // $order_id           = $temp['order_id'];
-        // $tableObj           = json_decode($tempRaw);
-
+      
         $order_id                           = $temp['order_id'];
         $transfer_from_table_id             = $temp['transfer_from_table_id'];
         $transfer_to_table_id               = $temp['transfer_to_table_id'];
@@ -762,6 +758,40 @@ class MakeAPIController extends ApiGuardController
 
             $output             = array("message" => "Success");
         }
+        return Response::json($output);
+    }
+
+    public function table_transfer_v2(){
+
+        $temp               = Input::all();
+      
+        $order_id                           = $temp['order_id'];
+
+        $transfer_to_table_id               = $temp['transfer_to_table_id'];
+
+        $transfer_from_table_id  = OrderTable::where('order_id','=',$order_id)->value('table_id');
+
+        $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();
+
+        if($order_count == 1){
+
+           $from_table = Table::find($transfer_from_table_id);
+           $from_table->status = 0;
+           $from_table->save();
+
+        }
+
+        $to_table           = Table::find($transfer_to_table_id);
+
+        $to_table->status   = 1;
+
+        $to_table->save();
+
+        OrderTable::where('order_id','=',$order_id)
+                    ->update(['table_id'=> $transfer_to_table_id]);
+
+        $output             = array("message" => "Success");
+
         return Response::json($output);
     }
 

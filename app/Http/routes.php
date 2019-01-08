@@ -718,6 +718,8 @@ Route::post('api/v1/cancel','makeAPIController@cancel');
 Route::post('api/v1/table_status','makeAPIController@table_status');
 Route::post('api/v1/room_status','makeAPIController@room_status');
 Route::post('api/v1/table_transfer','makeAPIController@table_transfer');
+Route::post('api/v2/table_transfer_v2','makeAPIController@table_transfer2');
+
 Route::post('api/v1/room_transfer','makeAPIController@room_transfer');
 Route::post('api/v1/take','makeAPIController@take');
 Route::post('api/v1/check_cancel_status','makeAPIController@check_cancel_status');

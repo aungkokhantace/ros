@@ -28,8 +28,6 @@
     <script src="/assets/js/datatables/dataTables.bootstrap.js"></script>
     <script type="text/javascript" src="/assets/cashier/js/paginathing.js"></script>
     <script type="text/javascript" src="/assets/js/crud.js"></script>
-    
-
     <script>
         function addNotification(title, text){
             $.gritter.add({
