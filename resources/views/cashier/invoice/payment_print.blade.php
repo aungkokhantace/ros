@@ -65,14 +65,14 @@
                                         @if($qty > 1)
                                             @if($v != $detail['item_id'])
                                             @php $v = $detail['item_id'] @endphp
-                                                <td class="no-border zawgyi" style="">{{ $detail['item_name'] }}</td>
+                                                <td class="no-border" style="">{{ $detail['item_name'] }}</td>
                                                 <td class="no-border">{{ number_format($detail['amount']) }}</td>
                                                 <td class="no-border" align="right">{{ $qty2 }}</td>
                                                 <td class="no-border" align="right">{{ number_format($detail['amount']* $qty2) }} </td>
                                             @endif
                                         @else
     
-                                            <td class="no-border zawgyi">{{ $detail['item_name'] }}</td>
+                                            <td class="no-border">{{ $detail['item_name'] }}</td>
                                             <td class="no-border">{{ number_format($detail['amount']) }}</td>
                                             <td class="no-border" align="right">{{ $qty2 }}</td>
                                             <td class="no-border" align="right">{{ number_format($detail['amount']* $qty2) }} </td>
