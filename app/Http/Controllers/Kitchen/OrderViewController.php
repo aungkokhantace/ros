@@ -55,7 +55,7 @@ class OrderViewController extends Controller
 
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
 
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name 
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
@@ -110,6 +110,9 @@ class OrderViewController extends Controller
                         foreach ($remarks as $remark) {
                             $array[] = $remark->name;
                         }
+                    }
+                    if (!empty($order_detail->remark_extra) && $order_detail->remark_extra != "") {
+                          array_push($array, $order_detail->remark_extra);
                     }
 
                     $remark_name = implode(',', $array);
@@ -271,7 +274,7 @@ class OrderViewController extends Controller
 
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
 
-        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name 
+        $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
