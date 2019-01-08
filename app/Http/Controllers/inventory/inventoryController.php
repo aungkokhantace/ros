@@ -458,7 +458,17 @@ class inventoryController extends Controller
 
 		
 
+	public function getremainbalance()
+    {
+        $client = new Client([
+          'base_uri' => $this->resquestserverurl
+        ]);
 
+        $review_url = 'dailybalance/get_dailybalance';
+        $remain_stocks   = json_decode($client->get($review_url)->getBody());
+
+        return $remain_stocks;
+    }
 
 
 	
