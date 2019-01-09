@@ -141,15 +141,19 @@ class syncAPIController extends ApiGuardController
               
               $item->remark = $remarks;
               $item->remark_extra = '';
-
-              foreach($remainitems as $remain){
-                if($item->stock_code == $remain->StockNo){
-                   $item->remaining_quantity = $remain->CurrentBalance;
-                   break;
+                if(isset($remainitems) && count($remainitems)>0){
+                    foreach($remainitems as $remain){
+                        if($item->stock_code == $remain->StockNo){
+                        $item->remaining_quantity = $remain->CurrentBalance;
+                        break;
+                        }else{
+                        $item->remaining_quantity = '0';
+                        }
+                   }
                 }else{
-                   $item->remaining_quantity = '0';
+                    $item->remaining_quantity = '0';
                 }
-           }
+                    
               if($item->is_ready_food == '1'){
                 $item->is_ready_food  = true;
               }else{
@@ -722,14 +726,17 @@ class syncAPIController extends ApiGuardController
                           $item->remark = $remarks;
                           $item->remark_extra = '';
                           
-                        foreach($remainitems as $remain){
-                           
-                             if($remain->StockNo == $item->stock_code){
+                        if(isset($remainitems) && count($remainitems)>0){
+                            foreach($remainitems as $remain){
+                                if($item->stock_code == $remain->StockNo){
                                 $item->remaining_quantity = $remain->CurrentBalance;
                                 break;
-                             }else{
-                                $item->remaining_quantity = 0;
-                             }
+                                }else{
+                                $item->remaining_quantity = '0';
+                                }
+                           }
+                        }else{
+                            $item->remaining_quantity = '0';
                         }
                           
                           if($item->is_ready_food == '1'){
