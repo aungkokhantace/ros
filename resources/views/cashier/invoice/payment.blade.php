@@ -397,7 +397,6 @@
             $(".print_check_box").change(function() {
                 var ischecked= $(this).is(':checked');
                 if(!ischecked){
-                    $('.service_charge_row').hide(300);
                     $('.gov_charge_row').hide(300);
 
                     var total_price = $('.total_price').val();
@@ -410,7 +409,19 @@
 
                     var sub_total_price = $('.sub_total').val();
 
-                    var service_tax_number = 0;
+                    var service_tax_number = '<?= $config->service; ?>';
+
+                    if(service_tax_number == 0){
+
+                        var service_tax = 0;
+
+                    }else{
+                        var service_tax = (sub_total_price / 100) * service_tax_number;
+                    }
+
+                    var service_tax = Math.ceil(service_tax);
+
+                    $('input[name="service_tax"]').val(service_tax);
 
                     var gov_tax_number = 0;
 
@@ -418,7 +429,6 @@
 
                     var total_amount = eval(sub_total_price);
 
-                    
                     var receive_price = $('.receive_price').val();
                     
                     var room_charge = $('.room_charge').val();
@@ -429,7 +439,7 @@
 
                     }
                     
-                    var total_amount = eval(total_amount) + eval(room_charge);
+                    var total_amount = eval(total_amount) + eval(room_charge) + eval(service_tax);
                     
                     
                     $('input[name="total_amount"]').val(total_amount);  
