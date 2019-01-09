@@ -1218,25 +1218,31 @@ class InvoiceController extends Controller
 
     public function invoicePaidUpdate($id,Request $request)
     {   
-        
-        // $inventorysale   = new inventoryController();
-        // $invenorystatus =  $inventorysale->saleStock($id);
-        
-       
+    
         $order = Order::find($id);
+
+        $table_id = $order->table[0]->id;
+
+        $order_count = OrderTable::where('table_id',$table_id)->pluck('order_id');
+
+        $check_status = Order::whereIn('id',$order_count)->pluck('status')->toArray();
+        
+        $check = array_count_values($check_status);
+
         if(!$order->rooms->isEmpty()){
             $room = Room::where('id',$order->rooms[0]->id)->first();
             $room->status = 0;
             $room->update();
         }
-
         
         if(!$order->table->isEmpty()){
+            if($check['1'] == 1){
             $table = Table::where('id',$order->table[0]->id)->first();
             $table->status = 0;
             $table->update();
+            }
         }
-
+        
         $order->over_all_discount_remark = $request->remark;
         $order->all_total_amount = $request->total_amount;
         $order->over_all_discount =  $request->discount_price;
@@ -1246,6 +1252,8 @@ class InvoiceController extends Controller
         $order->payment_amount = $request->receive_price;
         $order->refund = $request->change;
         $order->status = 2;
+       
+
         $order->update();
         
         return back();
