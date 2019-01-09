@@ -224,12 +224,10 @@ class downloadAPIController extends ApiGuardController
 					unset($set_menu_arr);
 					$set_menu_arr = array();
 
-					$item_id = $order_detail->item_id;
-
-					$category_id = Addon::where('id',$item_id)->value('category_id');
-
-					$add_ons = DB::table('add_on')->where('category_id',$category_id)->whereNull('deleted_at')->get();
-			
+					$category_id = Item::where('id',$order_detail->item_id)->value('category_id');
+					
+					$add_ons = Addon::where('category_id',$category_id)->get();
+					
 					// if(isset($order_extra_raw) && count($order_extra_raw) > 0) {
 
 						$ex_ary = array();
