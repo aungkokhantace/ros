@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         '\App\Console\Commands\BookingReservation',
+        '\App\Console\Commands\BackupDB',
     ];
 
     /**
@@ -26,5 +27,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('BookingReservation:reserve')
                  ->everyMinute();
+
+        $schedule->command('db:backup')
+              ->everyMinute();
     }
 }
