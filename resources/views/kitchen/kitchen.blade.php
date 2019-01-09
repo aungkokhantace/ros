@@ -1,3 +1,6 @@
+<?php
+ini_set('memory_limit', '-1');
+?>
 @extends('kitchen.kitchen_header')
 @section('title','Order View')
 @section('content')
@@ -500,3 +503,6 @@
         }
     </script>
 @endsection
+<?php
+ini_set('memory_limit', '-1');
+?>

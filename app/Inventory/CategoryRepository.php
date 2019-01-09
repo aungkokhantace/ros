@@ -29,7 +29,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     return $groups;
     }
 
-    public function getCalss($classes){
+    public function getClass($classes){
       $class =   Category::whereIn('parent_id',$classes)->whereNull('deleted_at')->where('status',1)->select('id as Id','stock_code as ClassNo','name as Description')->get();
       return $class;
     }

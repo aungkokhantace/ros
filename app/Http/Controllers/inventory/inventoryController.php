@@ -57,7 +57,7 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		
+	
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body' => $categorys,
@@ -106,7 +106,7 @@ class inventoryController extends Controller
     	}
 
         
-    	$classes  = $CateRepo->getCalss($classes);
+    	$classes  = $CateRepo->getClass($classes);
         $url  = $this->resquestserverurl.'/classcode/create';
         $classes = json_encode($classes);
         // return $classes;
@@ -191,7 +191,7 @@ class inventoryController extends Controller
 
 			}
 		}
-
+        return $ItemAry;
 		$url  = $this->resquestserverurl.'/stock/create';
 		
 		$ItemAry = json_encode($ItemAry);

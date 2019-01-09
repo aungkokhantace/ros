@@ -15,7 +15,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Status\StatusConstance;
 use App\RMS\Config\Config;
-
+use App\RMS\FormatGenerator As FormatGenerator;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Illuminate\Support\Collection as Collection;
 use phpDocumentor\Reflection\Types\Null_;
+use App\Http\Controllers\inventory\inventoryController;
 
 class OrderViewController extends Controller
 
@@ -838,6 +839,16 @@ class OrderViewController extends Controller
 
         $output     = array('message'=>'success','order_id'=> $order_id);
         return \Response::json($output);
+    }
+
+    public function SyncInventory(){
+        $syncRepo = new inventoryController();
+        $syncRepo->category();
+        $syncRepo->group();
+        $syncRepo->classes();
+        // $syncRepo->stock_item();
+        $syncRepo->getSyncUm();
+        return back()->withMessage(FormatGenerator::message('Success', 'Finished syncs inventory ...'));
     }
 
     public function CancelUpdateFromProductView()

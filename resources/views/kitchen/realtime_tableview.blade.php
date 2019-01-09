@@ -1,3 +1,6 @@
+<?php
+ini_set('memory_limit', '-1');
+?>
 <div id="body">
     <div class="row" id="autoDiv">
         @foreach($orders as $orderKey =>$orderValue)
@@ -244,4 +247,6 @@
         @endforeach
     </div>
 </div>
-
+<?php
+ini_set('memory_limit', '-1');
+?>

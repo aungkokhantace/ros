@@ -670,6 +670,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('getCompleteID','Kitchen\OrderViewController@tableView');
             Route::get('getStartID','Kitchen\OrderViewController@tableView');
 
+
             Route::get('kitchen/ajaxRequestProduct','Kitchen\OrderViewController@ajaxRequestProduct');
             Route::get('getCompleteID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@update');
             Route::get('getStartID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@start');
@@ -694,6 +695,8 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('test-values', 'Kitchen\HomeController@pricesValues');
             Route::resource('stock-requisition', 'inventory\inventoryController', ['only' => ['index', 'store']]);
             Route::resource('stock-review', 'Kitchen\StockReviewController', ['only' => ['index']]);
+            //Bi2 inventory sync
+            Route::get('/syncinventory','Kitchen\OrderViewController@SyncInventory');
         });
     });
 });
