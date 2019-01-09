@@ -18,6 +18,7 @@ use App\Inventory\UM;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Middleware;
 use App\RMS\Utility;
+use App\Inventory\OrderRepositoryInterface;
 use App\RMS\Config\ConfigRepositoryInterface;
 use App\RMS\Kitchen\Kitchen;
 use Validator;
@@ -46,7 +47,7 @@ class inventoryController extends Controller
 
 
     public function category(){
-
+     
 		$CateRepo = new CategoryRepository();
 
     	$categorys = $CateRepo->getParentCate();
@@ -63,8 +64,13 @@ class inventoryController extends Controller
 		    'headers' => $headers,
 		    'body' => $categorys,
 		]);
-
-
+         
+        if($res->getStatusCode() != 200){
+			return 400;
+		}else{
+			return $res->getStatusCode();
+		}
+       
     }
 
     public function group(){
@@ -88,6 +94,8 @@ class inventoryController extends Controller
 		    'headers' => $headers,
 		    'body'    => $groups,
 		]);
+
+		return  $res->getStatusCode();
 
 
     }
@@ -122,6 +130,7 @@ class inventoryController extends Controller
 		    'headers' => $headers,
 		    'body' => $classes,
 		]);
+		return  $res->getStatusCode();
 
     }
 
@@ -208,6 +217,8 @@ class inventoryController extends Controller
 		    'headers' => $headers,
 		    'body' => $ItemAry,
 		]);
+
+		return  $res->getStatusCode();
 
 	}
 
@@ -365,7 +376,7 @@ class inventoryController extends Controller
 		    'body' => $orderAry,
 		]);
 
-
+		return  $res->getStatusCode();
 	}
 
     public function index()

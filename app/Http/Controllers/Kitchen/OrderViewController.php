@@ -845,12 +845,15 @@ class OrderViewController extends Controller
     }
 
     public function SyncInventory(){
-        $syncRepo = new inventoryController();
-        $syncRepo->category();
-        $syncRepo->group();
-        $syncRepo->classes();
-        // $syncRepo->stock_item();
-        $syncRepo->getSyncUm();
+        $syncRepo       = new inventoryController();
+        $cateresult     = $syncRepo->category();
+        $groupresult    = $syncRepo->group();
+        $classesresult  = $syncRepo->classes();
+        $stockresult    = $syncRepo->stock_item();
+        $umresult       = $syncRepo->getSyncUm();
+        if($cateresult != 200 && $groupresult !=200 && $classesresult != 200 && $stockresult != 200 && $umresult != 200){
+         return back()->withMessage(FormatGenerator::message('fail', 'Not success  syncs inventory ...'));
+        }
         return back()->withMessage(FormatGenerator::message('Success', 'Finished syncs inventory ...'));
     }
 
