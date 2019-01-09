@@ -231,6 +231,7 @@ class downloadAPIController extends ApiGuardController
 					// if(isset($order_extra_raw) && count($order_extra_raw) > 0) {
 
 						$ex_ary = array();
+						
 						foreach($add_ons as $addon){
 							$extra_mq = DB::table('order_extra')->where('extra_id',$addon->id)->where('order_detail_id',$order_detail->order_detail_id)->first();
 
@@ -243,8 +244,8 @@ class downloadAPIController extends ApiGuardController
 							}else{
 								$ex_de['extra_id'] = $addon->id;
 								$ex_de['order_detail_id'] = $order_detail->order_detail_id;
-								$ex_de['quantity'] = $extra_mq->quantity;
-								$ex_de['amount'] = $extra_mq->amount;
+								$ex_de['quantity'] = '0';
+								$ex_de['amount'] = $addon->amount;
 								$ex_de['status'] = 0;
 							}
 							array_push($ex_ary,$ex_de);
