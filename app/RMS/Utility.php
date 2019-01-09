@@ -170,7 +170,7 @@ class Utility
         return $id;
     }
 
-    public function dateCodeString()
+    public static function dateCodeString()
     {
         $now = Carbon::now()->format('y-m-d');
         $dateCode = implode(explode('-' , $now));
@@ -188,7 +188,7 @@ class Utility
 
     public static function generateRequisitionNo()
     {
-        $date = $this::dateCodeString();
+        $date = self::dateCodeString();
         $repository = new ConfigRepository();
         $config = $repository->getAllConfig();
         $int = 00000;

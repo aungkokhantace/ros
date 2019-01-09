@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'logging'              => true,
+    'logging'              => false,
 
     'models'               => [
 

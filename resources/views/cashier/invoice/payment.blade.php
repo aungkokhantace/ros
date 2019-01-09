@@ -93,51 +93,51 @@
                                    
                                     <tr class="big_row_font">
                                         <td colspan="3"><b>Net Amount</b></td>
-                                        <td><input type ="number" class="total_price" value="{{$order->total_price}}" style="width:70px ; border:none;" dir="rtl"></td>
+                                        <td><input type ="number" class="total_price" value="{{$order->total_price}}" style="width:70px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
                                     
                                     <tr>
                                         <td colspan="3" class="no-border"><b>Discount</b></td>
-                                        <td class="no-border"><input type="number" name="discount_price" class="discount_price" value="" style="width:70px ; border:none;" dir="rtl"/></td>
+                                        <td class="no-border"><input type="number" name="discount_price" class="discount_price" value="" style="width:70px ; border:none;" dir="rtl" readonly/></td>
                                     </tr>
 
                                     <tr>
                                         <td colspan="3"><b>Sub-Total</b></td>
-                                        <td><input type="number" name="sub_total" class="sub_total" value="" style="width:72px ; border:none;" dir="rtl"></td>
+                                        <td><input type="number" name="sub_total" class="sub_total" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
 
                                     @if($config->service != 0)
                                     <tr class="service_charge_row">
                                         <td colspan="3" class="no-border"><b>service ({{ $config->service}}%)</b></td>
-                                        <td class="no-border"><input type="number" name="service_tax" class="service_tax" value="" style="width:72px ; border:none;" dir="rtl"></td>
+                                        <td class="no-border"><input type="number" name="service_tax" class="service_tax" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
                                     @endif
 
                                     <tr class="gov_charge_row"> 
                                         <td colspan="3" class="no-border"><b>TAX({{ $config->tax}}%)</b></td>
-                                        <td class="no-border"><input type="number" name="gov_tax" class="gov_tax" value="" style="width:72px ; border:none;" dir="rtl"></td>
+                                        <td class="no-border"><input type="number" name="gov_tax" class="gov_tax" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
 
                                     @if(count($rooms) > 0)
                                     <tr style="border-bottom:1px dashed black;">
                                         <td colspan="3" style="">Room Charge</td>
-                                        <td align="right"><input type="number" name="room_charge" class="room_charge" value="{{$order->room_charge}}" style="width:72px ; border:none;" dir="rtl"></td>
+                                        <td align="right"><input type="number" name="room_charge" class="room_charge" value="{{$order->room_charge}}" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
                                     @endif
 
                                     <tr>
                                         <td colspan="3" class=""><b class="">Total Amount</b></td>
-                                        <td class=""><input type="number" name="total_amount" class="total_amount" value="" style="width:72px ; border:none;" dir="rtl"></td>
+                                        <td class=""><input type="number" name="total_amount" class="total_amount" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
 
                                     <tr>
                                         <td colspan="3" class=""><b>Cash Received</b></td>
-                                        <td class=""><input type="number" name="receive_price" class="receive_price" value="" style="width:72px ; border:none;" dir="rtl"></td>
+                                        <td class=""><input type="number" name="receive_price" class="receive_price" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
 
                                     <tr>
                                         <td colspan="3" class="no-border"><b>Change</b></td>
-                                        <td class="no-border"><input type="number" name="change" class="receive_change" value="" style="width:72px ; border:none;" dir="rtl"></td>
+                                        <td class="no-border"><input type="number" name="change" class="receive_change" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
                                 </table>
                             </div><!-- table-responsive -->
@@ -397,7 +397,6 @@
             $(".print_check_box").change(function() {
                 var ischecked= $(this).is(':checked');
                 if(!ischecked){
-                    $('.service_charge_row').hide(300);
                     $('.gov_charge_row').hide(300);
 
                     var total_price = $('.total_price').val();
@@ -410,7 +409,19 @@
 
                     var sub_total_price = $('.sub_total').val();
 
-                    var service_tax_number = 0;
+                    var service_tax_number = '<?= $config->service; ?>';
+
+                    if(service_tax_number == 0){
+
+                        var service_tax = 0;
+
+                    }else{
+                        var service_tax = (sub_total_price / 100) * service_tax_number;
+                    }
+
+                    var service_tax = Math.ceil(service_tax);
+
+                    $('input[name="service_tax"]').val(service_tax);
 
                     var gov_tax_number = 0;
 
@@ -418,7 +429,6 @@
 
                     var total_amount = eval(sub_total_price);
 
-                    
                     var receive_price = $('.receive_price').val();
                     
                     var room_charge = $('.room_charge').val();
@@ -429,7 +439,7 @@
 
                     }
                     
-                    var total_amount = eval(total_amount) + eval(room_charge);
+                    var total_amount = eval(total_amount) + eval(room_charge) + eval(service_tax);
                     
                     
                     $('input[name="total_amount"]').val(total_amount);  
