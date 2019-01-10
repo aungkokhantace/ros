@@ -484,6 +484,15 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('sale_SummaryReport/search/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@search_query');
             Route::get('sale_SummaryReport/exportexcel/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@exportExcel');
 
+            /* sale summary report detial */
+              Route::get('sale_SummaryReport/detail/{date}/{type}','Backend\Reports\SaleSummaryReportController@summary_detail');
+            /* sale summary reprt detail sort */
+              Route::get('sale_SummaryReport/detail/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
+              Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
+
+              Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}','Backend\Reports\SaleSummaryReportController@invoice_detail');
+
+
 
 
         });

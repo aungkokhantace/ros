@@ -100,6 +100,22 @@
           </ul>
         </li>
 
+         <li class="treeview">
+          <a href="#">
+           <i class="fa fa-file-excel-o"></i> <span>Reports</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">            
+            <li><a href="/Backend/sale_SummaryReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Summary Report</a></li>
+            <li><a href="/Backend/saleReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Report</a></li>
+            <li><a href="/Backend/itemReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Item Report</a></li>
+            <li><a href="/Backend/favourite_set_menus"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Set Report</a></li>
+
+          </ul>
+        </li>
+
 
         <li class="treeview">
           <a href="#">

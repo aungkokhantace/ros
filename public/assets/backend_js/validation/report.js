@@ -46,7 +46,7 @@ function report_search_with_type(module){
     var type        =  $('input[name="sale"]:checked', '#sale_summary').val();   
     var form_action = "";
 
-    if(type == "yearly"){           //type is yearly
+    if(type == "Yearly"){           //type is yearly
         var from_year = $("#from_year").val();
         var to_year = '';
 
@@ -65,7 +65,8 @@ function report_search_with_type(module){
             }
         }
     }
-    else if(type == "monthly"){         //type is monthly
+    else if(type == "Monthly"){      
+    console.log("month " + type);   //type is monthly
         var from_month = $("#from_month").val();
         var to_month = $("#to_month").val();
 
@@ -129,7 +130,7 @@ function report_export_with_type(module){
     var type        =  $('input[name="sale"]:checked', '#sale_summary').val();   
     var form_action = "";
 
-    if(type == "yearly"){           //type is yearly
+    if(type == "Yearly"){           //type is yearly
         var from_year = $("#from_year").val();
         var to_year = '';
 
@@ -148,7 +149,7 @@ function report_export_with_type(module){
             }
         }
     }
-    else if(type == "monthly"){         //type is monthly
+    else if(type == "Monthly"){         //type is monthly
         var from_month = $("#from_month").val();
         var to_month = $("#to_month").val();
 
@@ -193,7 +194,6 @@ function report_export_with_type(module){
         }
         else{
             var dateComparison = check_date(from_date, to_date);
-
             if(dateComparison){
                 form_action = "/Backend/"+module+"/exportexcel/" + type + "/" + from_date + "/" + to_date;
                
@@ -205,5 +205,30 @@ function report_export_with_type(module){
         }
     }
 
+    window.location = form_action;
+}
+
+function report_search_with_sort(module){
+ 
+    // var type        =  $('select[name="sort"]:selected', '#invoice-form').val(); 
+    var sort        = $("#invoice-form option:selected").val();   
+    console.log("sort",sort); 
+    var date        = $("#date").val();
+    var type        = $("#type").val();
+    var form_action = "";       
+    form_action     = "/Backend/"+module+"/detail/" + date + "/" + type + "/" + sort;
+    
+    window.location = form_action;
+    // sale_SummaryReport/detail/2018-11/monthly
+}
+
+function report_export_with_sort(module){
+    var sort        = $("#invoice-form option:selected").val();   
+    console.log("sort",sort); 
+    var date        = $("#date").val();
+    var type        = $("#type").val();
+    var form_action = "";       
+    form_action     = "/Backend/"+module+"/detail_exprot/" + date + "/" + type + "/" + sort;
+    
     window.location = form_action;
 }

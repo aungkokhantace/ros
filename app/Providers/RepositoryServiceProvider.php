@@ -59,6 +59,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind('App\RMS\Remark\RemarkRepositoryInterface','App\RMS\Remark\RemarkRepository');
 
         $this->app->bind('App\RMS\Item_Remark\RemarkRepositoryInterface','App\RMS\Item_Remark\Item_RemarkRepository');
+
+        $this->app->bind('App\RMS\Reports_update\Invoice\InvoiceRepositoryInterface','App\RMS\Reports_update\Invoice\InvoiceRepository');
         //End
     }
 }

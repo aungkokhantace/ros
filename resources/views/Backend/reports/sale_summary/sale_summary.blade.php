@@ -13,31 +13,31 @@
                     <div class="col-md-12">
                         <h3 class="h3 report_heading"><strong>Sale Summary Report</strong></h3>
                     </div>
-     </div>
-    </div>
+                </div>
+            </div>
                     <div class="container">
                     <div class="col-md-12" style="margin-bottom:25px">
                         <form id="sale_summary">
                             <div class="col-md-2 radio_view">
-                                  @if(isset($type) && $type == "daily")
-                                    <input type="radio" name="sale" value="daily" id="type" checked> Daily
+                                  @if(isset($type) && $type == "Daily")
+                                    <input type="radio" name="sale" value="Daily" id="type" checked> Daily
                                   @else
-                                   <input type="radio" name="sale" value="daily" id="type" > Daily
+                                   <input type="radio" name="sale" value="Daily" id="type" > Daily
                                   @endif
 
                             </div>
                             <div class="col-md-2 radio_view">
-                                  @if(isset($type) && $type == "monthly")
-                                    <input type="radio" name="sale" value="monthly" id="type" checked > Monthly
+                                  @if(isset($type) && $type == "Monthly")
+                                    <input type="radio" name="sale" value="Monthly" id="type" checked > Monthly
                                   @else
-                                    <input type="radio" name="sale" value="monthly" id="type"> Monthly
+                                    <input type="radio" name="sale" value="Monthly" id="type"> Monthly
                                   @endif
                             </div>
                             <div class="col-md-2 radio_view">
-                                @if(isset($type) && $type == "yearly")
-                                    <input type="radio" name="sale" value="yearly" id="type" checked> Yearly
+                                @if(isset($type) && $type == "Yearly")
+                                    <input type="radio" name="sale" value="Yearly" id="type" checked> Yearly
                                   @else
-                                <input type="radio" name="sale" value="yearly" id="type"> Yearly
+                                <input type="radio" name="sale" value="Yearly" id="type"> Yearly
                                   @endif
                             </div>
                         
@@ -53,7 +53,7 @@
 
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
             <div class="input-group date dateTimePicker" data-provide="datepicker" id="datepicker_from">
-                <input type="text" class="form-control" id="from_date" name="from_date" value="{{isset($from_date)?$from_date:''}}">
+                <input type="text" class="form-control" id="from_date" name="from_date" value="{{isset($from_date)?date('d-m-Y',strtotime($from_date)):''}}" readonly="">
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </div>
@@ -67,7 +67,7 @@
 
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
             <div class="input-group date dateTimePicker" data-provide="datepicker"  id="datepicker_to">
-                <input type="text" class="form-control" id="to_date" name="to_date" value="{{isset($to_date)?$to_date:''}}">
+                <input type="text" class="form-control" id="to_date" name="to_date" value="{{isset($to_date)?date('d-m-Y',strtotime($to_date)):''}}" readonly="">
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </div>
@@ -85,7 +85,7 @@
 
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
             <div class="input-group date dateTimePicker" data-provide="datepicker" id="monthpicker_from">
-                <input type="text" class="form-control" id="from_month"  name="from_month" value="{{isset($from_month) && $from_month != null ?$from_month:''}}"   >
+                <input type="text" class="form-control" id="from_month"  name="from_month" value="{{isset($from_month) && $from_month != null ?$from_month:''}}"  readonly="" >
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </div>
@@ -99,7 +99,7 @@
 
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
             <div class="input-group date dateTimePicker" data-provide="datepicker"  id="monthpicker_to">
-                <input type="text" class="form-control" id="to_month" name="to_month" value="{{isset($to_month)?$to_month:''}}" >
+                <input type="text" class="form-control" id="to_month" name="to_month" value="{{isset($to_month)?$to_month:''}}" readonly="" >
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </div>
@@ -117,7 +117,7 @@
 
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
             <div class="input-group date dateTimePicker" data-provide="datepicker" id="yearpicker_from">
-                <input type="text" class="form-control" id="from_year" name="from_year" value="{{isset($from_year)?$from_year:''}}">
+                <input type="text" class="form-control" id="from_year" name="from_year" value="{{isset($from_year)?$from_year:''}}" readonly>
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </div>
@@ -169,87 +169,79 @@
                 <div class="col-md-12">
                     <div class="table-responsive table-hover">
                         <table class="table table-bordered dailytable" style ="padding: 15px;margin-left: 13px;">
-                            <thead class="thead_report">
+                            <thead class="thead_report">                        
                             <tr class="report-th">
-                                 @if(isset($type) )
-                                    @if($type == "yearly")
-                                      <th>Year</th>
-                                     @elseif($type == "monthly")
-                                      <th>Month</th>
-                                     @else
-                                      <th>Day</th>
-                                    @endif
-                                @else
-                                <th>Day</th>
-                                @endif
+                                <th>Shift Date</th>                                
+                                <th>Order Time</th>                            
                               
                                 <th>Total Discount Amount</th>
                                 <th>Total Tax Amount</th>
-                                <th>Total Service Amount</th>
-                                <th>Total FOC Amount</th>
+                                <th>Total Service Amount</th>                              
                                 <th>Total Room Charge</th>
                                 <th>Total Extra Price</th>
-                                <th>Total Price</th>
+                                <th>Sub Total</th>
+                                <th>Total Net Amountt</th>
                                 <th>Total All Amount</th>
                                 <th>View Detail</th>
                             </tr>
                             </thead>
                             <?php 
-                            $sum_amount=0;
-                            $sum_extra=0;
-                            $sum_price=0;
-                            $sum_room=0;
-                            $sum_payment=0;
-                            $sum_service=0;
-                            $sum_tax=0;
-                            $sum_discount=0;
-                            $sum_foc=0;
-                            $date = date_create('2000-01-01');
+                            $sum_discount   = 0;
+                            $sum_tax        = 0;
+                            $sum_service    = 0;
+                            $sum_room       = 0;
+                            $sum_extra      = 0;
+                            $sum_subtotal   = 0;
+                            $sum_net        = 0;
+                            $sum_amount     = 0;
+                            // $date = date_create('2000-01-01');
                           
                             ?>
                               @if(isset($orders))
                                 @foreach($orders as $order)
-                                <tr class="tr-row active">                                   
-                                      @if($type == "yearly")
-                                      <td width="10%">{{date('Y',strtotime($order->Day))}}</td>
+                                <tr class="tr-row active">
+                                @if($type == "Yearly")
+                                      <td width="10%">{{date('Y',strtotime($order->ShiftDate))}}</td>
                                       @endif
-                                      @if($type == "monthly")
-                                      <td width="10%">{{date('m-Y',strtotime($order->Day))}}</td>
+                                      @if($type == "Monthly")
+                                      <td width="10%">{{date('m-Y',strtotime($order->ShiftDate))}}</td>
                                       @endif
-                                      @if($type == "daily")
-                                      <td width="10%">{{date('d-m-Y',strtotime($order->Day))}}</td>
-                                      @endif
+                                      @if($type == "Daily")
+                                      <td width="10%">{{date('d-m-Y',strtotime($order->ShiftDate))}}</td>
+                                @endif
+                               
+                                    <td width="10%">{{date('d-m-Y',strtotime($order->Day))}}</td>                             
+                                  
                                     <td class="money-align">{{ number_format($order->DiscountAmount) }}</td>
                                     <td class="money-align">{{ number_format($order->TaxAmount) }}</td>
-                                    <td class="money-align">{{ number_format($order->ServiceAmount) }}</td>
-                                    <td class="money-align">{{ number_format($order->FocAmount) }}</td>
+                                    <td class="money-align">{{ number_format($order->ServiceAmount) }}</td>                                  
                                     <td class="money-align">{{ number_format($order->RoomAmount) }}</td>
                                     <td class="money-align">{{ number_format($order->ExtraAmount) }}</td>
-                                    <td class="money-align">{{ number_format($order->PriceAmount) }}</td>
-                                    <td class="money-align">{{ number_format($order->Amount) }}</td>
+                                    <td class="money-align">{{ number_format($order->SubTotal) }}</td>
+                                    <td class="money-align">{{ number_format($order->NetAmount) }}</td>
+                                    <td class="money-align">{{ number_format($order->TotalAmount) }}</td>
                                  
-                                    @if($type == "yearly")
-                                     <td> <a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y',strtotime($order->Day))}}">View Detail</a></td>
+                                    @if($type == "Yearly")
+                                     <td> <a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y',strtotime($order->ShiftDate)).'/'.$type}}">View Detail</a></td>
                                     @endif
 
-                                    @if($type == "monthly")
-                                       <td><a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y-m',strtotime($order->Day))}}">View Detail</a></td>
+                                    @if($type == "Monthly")
+                                       <td><a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y-m',strtotime($order->ShiftDate)).'/'.$type}}">View Detail</a></td>
                                     @endif
                                       
-                                    @if($type == "daily")
-                                      <td><a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y-m-d',strtotime($order->Day))}}">View Detail</a></td>
+                                    @if($type == "Daily")
+                                      <td><a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y-m-d',strtotime($order->ShiftDate)).'/'.$type}}">View Detail</a></td>
                                     @endif
                                     
                                     <?php 
-                                    $sum_amount     += $order->Amount;
-                                    $sum_extra      += $order->ExtraAmount;
-                                    $sum_price      += $order->PriceAmount;
-                                    $sum_room       += $order->RoomAmount;
-                                    $sum_payment    += $order->PayAmount;
-                                    $sum_service    += $order->ServiceAmount;
-                                    $sum_tax        += $order->TaxAmount;
                                     $sum_discount   += $order->DiscountAmount;
-                                    $sum_foc        += $order->FocAmount;
+                                    $sum_tax        += $order->TaxAmount;
+                                    $sum_service    += $order->ServiceAmount;
+                                    $sum_room       += $order->RoomAmount;
+                                    $sum_extra      += $order->ExtraAmount;
+                                    $sum_subtotal   += $order->SubTotal;
+                                    $sum_net        += $order->NetAmount;
+                                    $sum_amount     += $order->TotalAmount;                                   
                                     ?>
                                 </tr>
                             @endforeach
@@ -257,16 +249,18 @@
                           
                            
                             <tr class="active">
-                                <td class="money-align">
+
+                                <td colspan='2' class="money-align">
                                     Total Amount
                                 </td>
                                <td class="money-align">{{number_format($sum_discount)}}</td>
                                 <td class="money-align">{{number_format($sum_tax)}}</td>
                                 <td class="money-align">{{number_format($sum_service)}}</td>
-                                <td class="money-align">{{number_format($sum_foc)}}</td>
+
                                 <td class="money-align">{{number_format($sum_room)}}</td>
                                 <td class="money-align">{{number_format($sum_extra)}}</td>
-                                <td class="money-align">{{number_format($sum_price)}}</td>
+                                <td class="money-align">{{number_format($sum_subtotal)}}</td>
+                                <td class="money-align">{{number_format($sum_net)}}</td>
                                 <td class="money-align">{{number_format($sum_amount)}}</td>
                                 <td></td>
                             </tr>
@@ -345,13 +339,13 @@
             //End Yearpickers
             $('#sale_summary input[type=radio][name="sale"]').on('change', function() {
                 console.log("onchnage");           
-           if($('input[name="sale"]:checked', '#sale_summary').val()=="yearly"){
-                console.log("yearly");
+           if($('input[name="sale"]:checked', '#sale_summary').val()=="Yearly"){
+                console.log("Yearly");
                 $('.days').hide();
                 $('.months').hide();
                 $('.years').show();
             }
-            else if($('input[name="sale"]:checked', '#sale_summary').val()=="monthly"){
+            else if($('input[name="sale"]:checked', '#sale_summary').val()=="Monthly"){
                 console.log("monthly")
                 $('.days').hide();
                 $('.months').show();
@@ -368,12 +362,12 @@
 
             var currentType = $('input[name="sale"]:checked', '#sale_summary').val();
             console.log(currentType + 'editiweofk');
-            if(currentType == "yearly"){
+            if(currentType == "Yearly"){
                 $('.days').hide();
                 $('.months').hide();
                 $('.years').show();
             }
-            else if(currentType == "monthly"){
+            else if(currentType == "Monthly"){
                 $('.days').hide();
                 $('.months').show();
                 $('.years').hide();
