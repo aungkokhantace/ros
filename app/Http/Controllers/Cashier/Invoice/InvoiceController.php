@@ -816,9 +816,10 @@ class InvoiceController extends Controller
             $addOn[$key] = $value['extra_id'];
         }
         array_multisort($addOn, SORT_ASC, $addon);
-
         $addon = $addon;
-        return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
+
+        $take_id = $order->take_id;
+        return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders','take_id'));
     }
 
     public function ajaxPaymentRequest($id) {
@@ -1217,18 +1218,24 @@ class InvoiceController extends Controller
     }
 
     public function invoicePaidUpdate($id,Request $request)
-    {   
-    
+    { 
+        if($request->take_voucher == NULL){
+            $request->take_voucher = 0;
+        }
+
         $order = Order::find($id);
-
-        $table_id = $order->table[0]->id;
+      
+        if(!$order->table->isEmpty()){
+            $table_id = $order->table[0]->id;
         
-        $order_count = OrderTable::where('table_id',$table_id)->pluck('order_id');
+            $order_count = OrderTable::where('table_id',$table_id)->pluck('order_id');
+            
+            $check_status = Order::whereIn('id',$order_count)->pluck('status')->toArray();
+           
+            $check = array_count_values($check_status);
+        }
 
-        $check_status = Order::whereIn('id',$order_count)->pluck('status')->toArray();
-        
-        $check = array_count_values($check_status);
-
+       
         if(!$order->rooms->isEmpty()){
             $room = Room::where('id',$order->rooms[0]->id)->first();
             $room->status = 0;
@@ -1251,6 +1258,7 @@ class InvoiceController extends Controller
         $order->tax_amount = $request->gov_tax;
         $order->payment_amount = $request->receive_price;
         $order->refund = $request->change;
+        $order->take_id = $request->take_voucher;
         $order->status = 2;
        
 

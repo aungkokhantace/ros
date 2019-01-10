@@ -203,7 +203,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 	public function getorder($id)
 	{
-		$orders = Order::select('id as order_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','over_all_discount','sub_total','over_all_discount_remark','total_price_foc','room_charge','status')->where('id',$id)->first();
+		$orders = Order::select('id as order_id','take_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','over_all_discount','sub_total','over_all_discount_remark','total_price_foc','room_charge','status')->where('id',$id)->first();
 		
 		return $orders;
 	}
