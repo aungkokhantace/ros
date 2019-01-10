@@ -355,13 +355,15 @@ class MakeAPIController extends ApiGuardController
             }
 
             $extra = $order_detail->extra;
+            
             foreach ($extra as $e) {
                 $extra = new OrderExtra();
                 $extra->order_detail_id         = $temp->order_detail_id;
                 $extra->extra_id                = $e->extra_id;
                 $extra->quantity                = $e->quantity;
                 $extra->amount                  = $e->amount;
-                $id                             = $extra->create()->order_detail_id;
+                $extra->save();
+                $id                             = $extra->order_detail_id;
                 // Custom Log
                 $message = "[  $date ] info:  create an OrderExtra [ order_detail_id =  $id ]" . PHP_EOL;
                 RmsLog::create($message);
