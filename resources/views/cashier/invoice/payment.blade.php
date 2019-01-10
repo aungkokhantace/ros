@@ -105,12 +105,14 @@
                                         <td colspan="3"><b>Sub-Total</b></td>
                                         <td><input type="number" name="sub_total" class="sub_total" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
-
+ 
+                                    @if($take_id != 1)
                                     @if($config->service != 0)
                                     <tr class="service_charge_row">
                                         <td colspan="3" class="no-border"><b>service ({{ $config->service}}%)</b></td>
                                         <td class="no-border"><input type="number" name="service_tax" class="service_tax" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
+                                    @endif
                                     @endif
 
                                     <tr class="gov_charge_row"> 
@@ -303,11 +305,13 @@
                                         <td>{{ $order->sub_total }}</td>
                                     </tr>
 
+                                    @if($take_id != 1)
                                     @if($config->service != 0)
                                     <tr class="service_charge_row">
                                         <td colspan="3" class="no-border"><b>service ({{ $config->service}}%)</b></td>
                                         <td class="no-border">{{ $order->service_amount }}</td>
                                     </tr>
+                                    @endif
                                     @endif
 
                                     <tr class="gov_charge_row"> 
@@ -392,7 +396,11 @@
         @include('cashier.invoice.items_list')
       <script type="text/javascript">
         $(document).ready(function(){
-
+            
+            @php 
+            $takeId = $take_id;
+            echo "var takeId = '{$takeId}';";
+            @endphp
 
             $(".print_check_box").change(function() {
                 var ischecked= $(this).is(':checked');
@@ -411,12 +419,18 @@
 
                     var service_tax_number = '<?= $config->service; ?>';
 
-                    if(service_tax_number == 0){
-
+                    if(takeId == 1){
                         var service_tax = 0;
-
-                    }else{
-                        var service_tax = (sub_total_price / 100) * service_tax_number;
+                    }
+                    else{
+                        if(service_tax_number == 0){
+    
+                            var service_tax = 0;
+        
+                        }
+                        else{
+                            var service_tax = (sub_total_price / 100) * service_tax_number;
+                        }
                     }
 
                     var service_tax = Math.ceil(service_tax);
@@ -472,12 +486,18 @@
 
                     var service_tax_number = '<?= $config->service; ?>';
 
-                    if(service_tax_number == 0){
-
+                    if(takeId == 1){
                         var service_tax = 0;
-
-                    }else{
-                        var service_tax = (sub_total_price / 100) * service_tax_number;
+                    }
+                    else{
+                        if(service_tax_number == 0){
+    
+                            var service_tax = 0;
+        
+                        }
+                        else{
+                            var service_tax = (sub_total_price / 100) * service_tax_number;
+                        }
                     }
 
                     var service_tax = Math.ceil(service_tax);
@@ -535,18 +555,23 @@
 
                 var service_tax_number = '<?= $config->service; ?>';
                 
-                if(service_tax_number == 0){
-
-                var service_tax = 0;
-
-                }else{
-                    var service_tax = (sub_total_price / 100) * service_tax_number;
+                if(takeId == 1){
+                    var service_tax = 0;
                 }
+                else{
+                    if(service_tax_number == 0){
 
+                        var service_tax = 0;
+    
+                    }
+                    else{
+                        var service_tax = (sub_total_price / 100) * service_tax_number;
+                    }
+                }
+                
                 var service_tax = Math.ceil(service_tax);
 
                 $('input[name="service_tax"]').val(service_tax);       
-
 
                 var gov_tax_number = '<?= $config->tax; ?>'
                     
@@ -593,24 +618,35 @@
                 
                 var service_tax_number = '<?= $config->service; ?>';
 
-                if(service_tax_number == 0){
-
-                var service_tax = 0;
-
-                }else{
-                    var service_tax = (sub_total_price / 100) * service_tax_number;
+                if(takeId == 1){
+                    var service_tax = 0;
                 }
+                else{
+                    if(service_tax_number == 0){
+
+                        var service_tax = 0;
+    
+                    }
+                    else{
+                        var service_tax = (sub_total_price / 100) * service_tax_number;
+                    }
+                }
+                
 
                 var service_tax = Math.ceil(service_tax);
 
                 $('input[name="service_tax"]').val(service_tax);       
-
-                var gov_tax_number = '<?= $config->tax; ?>'
                 
-                var gov_tax = (sub_total_price / 100) * gov_tax_number;                
+                if (!$(".print_check_box").is(":checked")) {
+                    var gov_tax = 0;
+                }
+                else{
+                    var gov_tax_number = '<?= $config->tax; ?>'
+                    
+                    var gov_tax = (sub_total_price / 100) * gov_tax_number;
+                }
 
                 var gov_tax = Math.ceil(gov_tax);
-                
 
                 $('input[name="gov_tax"]').val(gov_tax);       
                 
