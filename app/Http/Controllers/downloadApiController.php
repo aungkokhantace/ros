@@ -245,7 +245,7 @@ class downloadAPIController extends ApiGuardController
 								$ex_de['extra_id'] = $addon->id;
 								$ex_de['order_detail_id'] = $order_detail->order_detail_id;
 								$ex_de['quantity'] = '0';
-								$ex_de['amount'] = $addon->amount;
+								$ex_de['amount'] = $addon->price;
 								$ex_de['status'] = 0;
 							}
 							array_push($ex_ary,$ex_de);
