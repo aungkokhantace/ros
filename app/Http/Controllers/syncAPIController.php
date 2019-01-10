@@ -862,7 +862,7 @@ class syncAPIController extends ApiGuardController
 
                 if ($sync->table_name == "tables") {
                     if ($sync->version > $temp['tables']) {
-                        $table = DB::select("SELECT id,table_no,status FROM tables WHERE deleted_at IS NULL");
+                        $table = DB::select("SELECT id,table_no,location_id,status FROM tables WHERE deleted_at IS NULL");
                         $table_count     = count($table);
                         if ($table_count > 0) {
                              $returnArr['table'] = $table;
