@@ -1214,9 +1214,13 @@ class InvoiceController extends Controller
     }
 
     public function invoicePaidUpdate($id,Request $request)
-    {   
+    { 
+        if($request->take_voucher == NULL){
+            $request->take_voucher = 0;
+        }
+
         $order = Order::find($id);
-        
+      
         if(!$order->table->isEmpty()){
             $table_id = $order->table[0]->id;
         
@@ -1242,7 +1246,6 @@ class InvoiceController extends Controller
             }
         }
         
-        
         $order->over_all_discount_remark = $request->remark;
         $order->all_total_amount = $request->total_amount;
         $order->over_all_discount =  $request->discount_price;
@@ -1251,6 +1254,7 @@ class InvoiceController extends Controller
         $order->tax_amount = $request->gov_tax;
         $order->payment_amount = $request->receive_price;
         $order->refund = $request->change;
+        $order->take_id = $request->take_voucher;
         $order->status = 2;
        
 

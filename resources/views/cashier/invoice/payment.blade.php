@@ -152,7 +152,7 @@
                             <div class="col-md-1"></div>
                             <div class="col-md-11">
                                 <label class="form-check-label ml-4">
-                                    <input type="checkbox" class="form-check-input print_check_box" value="" checked="checked">ေျပစာရယူလိုပါသလား
+                                    <input type="checkbox" class="form-check-input print_check_box" value="1" name="take_voucher" checked="checked">ေျပစာရယူလိုပါသလား
                                 </label>
                             </div>
                     </div>
@@ -351,7 +351,8 @@
                             <div class="col-md-1"></div>
                             <div class="col-md-11">
                                 <label class="form-check-label ml-4">
-                                    <input type="checkbox" class="form-check-input print_check_box" value="" checked="checked" disabled>ေျပစာရယူလိုပါသလား
+                                    <input type="checkbox" class="form-check-input print_check_box" value="{{$order->take_id}}" disabled @if($order->take_id==1)checked @endif>
+                                    ေျပစာရယူလိုပါသလား
                                 </label>
                             </div>
                     </div>
