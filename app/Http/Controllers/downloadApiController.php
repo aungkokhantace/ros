@@ -48,7 +48,6 @@ class downloadAPIController extends ApiGuardController
 	public function download_voucher(){
 		$returnArr              = array();
         $temp                   = Input::all();
-
         $key                    = $temp['site_activation_key'];
         $waiter_id    			= $temp['waiter_id'];
         $filter 				= $temp['filter'];
@@ -245,7 +244,7 @@ class downloadAPIController extends ApiGuardController
 								$ex_de['extra_id'] = $addon->id;
 								$ex_de['order_detail_id'] = $order_detail->order_detail_id;
 								$ex_de['quantity'] = '0';
-								$ex_de['amount'] = $addon->price;
+								$ex_de['amount'] = 0.0;
 								$ex_de['status'] = 0;
 							}
 							array_push($ex_ary,$ex_de);
