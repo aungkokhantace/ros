@@ -240,7 +240,7 @@ class MakeAPIController extends ApiGuardController
         $order->stand_number            = $stand_number;
         $order->save();
         // Custom Log
-        $message = "[ $date ]  info:   create an Order  [ id = $order_id ] " . PHP_EOL;
+        $message = "[ $date ]  info:  create an Order  [ id = $order_id ] " . PHP_EOL;
         RmsLog::create($message);
 
 
@@ -250,9 +250,9 @@ class MakeAPIController extends ApiGuardController
                 $temp->id       = $order_id;
                 $temp->order_id = $order_id;
                 $temp->table_id = $table->table_id;
-                $id             = $temp->create()->id;
-                // Custom Log
-                $message = " [ $date ]  info: create an OrderTable [ id = $id ] " . PHP_EOL;
+                $id             = $temp->save();
+                // create log file
+                $message = "[ $date ]  info:  create an OrderTable [ id = $order_id ] " . PHP_EOL;
                 RmsLog::create($message);
 
                 //Update Table Status
@@ -261,7 +261,8 @@ class MakeAPIController extends ApiGuardController
                 $tblObj         = Table::find($table_id);
                 $tblObj->status = $status;
                 $tblObj->save();
-                $message = " [ $date ]  info:  Create an Table [ id = $table_id] " . PHP_EOL;
+                // create log
+                $message = "[ $date ]  info:  Create an Table [ id = $tblObj->id] " . PHP_EOL;
                 RmsLog::create($message);
             }
         }
@@ -271,9 +272,9 @@ class MakeAPIController extends ApiGuardController
                 $temp           = new OrderRoom();
                 $temp->order_id = $order_id;
                 $temp->room_id  = $room->room_id;
-                $id             = $temp->create()->id;
+                $temp->save();
                 // Custom Log
-                $message = " [ $date ]  info: create an  OrderRoom [ id = $id ] " . PHP_EOL;
+                $message = "[ $date ]  info:  create an  OrderRoom [ roomID = $temp->room_id ] " . PHP_EOL;
                 RmsLog::create($message);
 
                 //Update Room Table
@@ -283,7 +284,7 @@ class MakeAPIController extends ApiGuardController
                 $tblObj->status = $status;
                 $tblObj->save();
                 // Custom Log
-                $message = " [ $date ]  info: create an Room [ id = $room_id ] " . PHP_EOL;
+                $message = "[ $date ]  info:  create an Room [ roomID = $room_id ] " . PHP_EOL;
                 RmsLog::create($message);
             }
         }
@@ -329,9 +330,9 @@ class MakeAPIController extends ApiGuardController
                 $set->order_time      = $dt->toDateTimeString();
                 $set->status_id       = $status_id;
                 $set->quantity        = $quantity;
-                $id                   = $set->create()->id;
+                $set->save();
                 // Custom Log
-                $message = " [  $date  ]  info:  create an OrderSetMenuDetail [ id = $id ] " . PHP_EOL;
+                $message = " [ $date ]  info:  create an OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
                 RmsLog::create($message);
             }
 
@@ -346,9 +347,9 @@ class MakeAPIController extends ApiGuardController
                         $OrderDetailObj->remark_id       = $remark->remark_id;
                         $OrderDetailObj->order_id        = $order_id;
                         $OrderDetailObj->item_id         = $order_detail->item_id;
-                        $id                              = $OrderDetailObj->create()->order_id;
+                        $OrderDetailObj->save();
                         // Custom Log
-                        $message = "[ $date  ]  info:  create Order_Detail_Remark [ orderID = $id ]" . PHP_EOL;
+                        $message = "[ $date ]  info:  create Order_Detail_Remark [ orderID = $OrderDetailObj->order_id ]" . PHP_EOL;
                         RmsLog::create($message);
                     }
                  }
@@ -363,9 +364,11 @@ class MakeAPIController extends ApiGuardController
                 $extra->quantity                = $e->quantity;
                 $extra->amount                  = $e->amount;
                 $extra->save();
+
                 $id                             = $extra->order_detail_id;
+
                 // Custom Log
-                $message = "[  $date ] info:  create an OrderExtra [ order_detail_id =  $id ]" . PHP_EOL;
+                $message = "[ $date ]  info:  create an OrderExtra [ ExtraID =  $extra->extra_id ]" . PHP_EOL;
                 RmsLog::create($message);
             }
         }
@@ -378,7 +381,7 @@ class MakeAPIController extends ApiGuardController
             $date       = date("Y-m-d H:i:s");
             $data       = json_decode(request('orderID'));
             $id   = $data[0]->order_id ;
-            $message    = "[  $date ]  error:  created an Order [ id =  $id ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+            $message    = "[ $date ]  error:  created an Order [ id =  $id ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
             RmsLog::create($message);
             $output = array("message" => "Please Upload Again");
             return Response::json($output);
@@ -537,9 +540,9 @@ class MakeAPIController extends ApiGuardController
                                     $OrderDetailObj->remark_id       = $remark->remark_id;
                                     $OrderDetailObj->order_id        = $order_id;
                                     $OrderDetailObj->item_id         = $order_detail->item_id;
-                                    $id = $OrderDetailObj->create()->order_id;
+                                    $OrderDetailObj->save();
                                     // Custom Log
-                                    $message = "[ $date  ]  info:  update Order_Detail_Remark [ orderID = $id ]" . PHP_EOL;
+                                    $message = "[ $date ]  info:   update Order_Detail_Remark [ orderID = $OrderDetailObj->order_id ]" . PHP_EOL;
                                     RmsLog::create($message);
                                 }
                             }
@@ -554,9 +557,9 @@ class MakeAPIController extends ApiGuardController
                                 $extra->quantity                = $e->quantity;
                                 $extra->amount                  = $e->amount;
                                 $extra->status                  = 1;
-                                $id = $extra->create()->order_detail_id;
+                                $extra->save();
                                 // Custom Log
-                                $message = "[  $date ] info:  update an OrderExtra [ order_detail_id =  $id ]" . PHP_EOL;
+                                $message = "[ $date ]  info:   update an OrderExtra [ ExtraID =  $extra->extra_id ]" . PHP_EOL;
                                 RmsLog::create($message);
 
                             }
@@ -586,7 +589,7 @@ class MakeAPIController extends ApiGuardController
                         }
                         $temp->save();
                         // Custom Log
-                        $message = "[ $date ]  info:  Update Order Detail [ id = $order_detail->order_detail_id ] " . PHP_EOL;
+                        $message = "[ $date ]  info:  Update Order Detail [ id = $temp->order_detail_id ] " . PHP_EOL;
                         RmsLog::create($message);
 
 
@@ -606,9 +609,9 @@ class MakeAPIController extends ApiGuardController
                                 $set->order_time      = $dt->toDateTimeString();
                                 $set->status_id       = $temp->status_id;
                                 $set->quantity        = $quantity;
-                                $id = $set->create()->id;
+                                $set->save();
                                 // Custom Log
-                                $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $id ] " . PHP_EOL;
+                                $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
                                 RmsLog::create($message);
                             }
                             else{
@@ -664,7 +667,8 @@ class MakeAPIController extends ApiGuardController
                                 $extra->quantity        = $e->quantity;
                                 $extra->amount          = $e->amount;
                                 $extra->save();
-                                $message = "[  $date ] info:  update  OrderExtra [ order_detail_id = $order_detail_id ]" . PHP_EOL;
+                                // Custom log
+                                $message = "[  $date ] info:  update  OrderExtra [ ExtraID = $extra->extra_id ]" . PHP_EOL;
                                 RmsLog::create($message);
                             }
                             else{
@@ -678,7 +682,7 @@ class MakeAPIController extends ApiGuardController
                                                     'status' => $e->status
                                                     ]);
                                 // Custom Log
-                                $message = "[ $date ]  info:  Update OrderExtra [ order_detail_id = $detail_id ] " . PHP_EOL;
+                                $message = "[ $date ]  info:  Update OrderExtra [ ExtraID = $extra_update->extra_id ] " . PHP_EOL;
                                 RmsLog::create($message);
                             }
 
@@ -701,7 +705,7 @@ class MakeAPIController extends ApiGuardController
             $date       = date("Y-m-d H:i:s");
             $data       = json_decode(request('orderID'));
             $tabletID   = $data[0]->order_id;
-            $message    = "[  $date ]  error:  updated  Order [ id = $tabletID ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+            $message    = "[ $date ]  error:  updated  Order [ id = $tabletID ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
             RmsLog::create($message);
             $output = array("message" => "Please Upload Again");
             return Response::json($output);
