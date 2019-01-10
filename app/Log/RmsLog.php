@@ -8,13 +8,13 @@ class RmsLog
 		$today_date       = Carbon::now();
 		$date             = date("Y-m-d",strtotime($today_date));
 		$message          = $logMessage;
-        $fileName         = "custom-laravel-frondend-" . $date . '.log';
+        $fileName         = "custom-laravel-" . $date . '.log';
         $dir              = storage_path('logs');
         $fileNameWithPath = $dir . '/' . $fileName;
         $rawFiles         = scandir($dir);
         $files            = array();
         foreach($rawFiles as $rawFile){
-            if (0 === strpos($rawFile, 'custom-laravel-frondend')) {
+            if (0 === strpos($rawFile, 'custom-laravel-')) {
                 array_push($files,$rawFile);
             }
         }
