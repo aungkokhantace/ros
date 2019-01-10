@@ -1222,7 +1222,7 @@ class InvoiceController extends Controller
         $order = Order::find($id);
 
         $table_id = $order->table[0]->id;
-
+        
         $order_count = OrderTable::where('table_id',$table_id)->pluck('order_id');
 
         $check_status = Order::whereIn('id',$order_count)->pluck('status')->toArray();
