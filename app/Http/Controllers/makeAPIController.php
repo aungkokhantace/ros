@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -44,6 +45,7 @@ use App\RMS\Order_Detail_Remark\Order_Detail_RemarkRepository;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetailRepository;
 use Storage;
 use App\Log\LogCustom;
+use App\Log\RmsLog;
 use App\Status\StatusConstance;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
@@ -183,9 +185,9 @@ class MakeAPIController extends ApiGuardController
 
     public function create_voucher()
     {
-
         try{
-            DB::beginTransaction();
+
+        DB::beginTransaction();
 
         $temp       = Input::all();
 
@@ -195,6 +197,7 @@ class MakeAPIController extends ApiGuardController
 
 
         $dt         = Carbon::now();
+        $date       = date("Y-m-d H:i:s");
         
         foreach($orders as $order) {
 
@@ -217,6 +220,7 @@ class MakeAPIController extends ApiGuardController
             $tablet_id              = $order->tablet_id;
             $stand_number           = $order->stand_number;
         }
+        
         $order                          = new Order();
         $order->id                      = $order_id;
         $order->user_id                 = $user_id;
@@ -234,16 +238,22 @@ class MakeAPIController extends ApiGuardController
         $order->shift_id                = $shift_id;
         $order->status                  = $order_status;
         $order->stand_number            = $stand_number;
-
         $order->save();
+        // Custom Log
+        $message = "[ $date ]  info:   create an Order  [ id = $order_id ] " . PHP_EOL;
+        RmsLog::create($message);
+
 
         if(isset($order_tables)){
             foreach($order_tables as $table){
                 $temp           = new OrderTable();
-                $temp->id = $order_id;
+                $temp->id       = $order_id;
                 $temp->order_id = $order_id;
                 $temp->table_id = $table->table_id;
-                $temp->save();
+                $id             = $temp->create()->id;
+                // Custom Log
+                $message = " [ $date ]  info: create an OrderTable [ id = $id ] " . PHP_EOL;
+                RmsLog::create($message);
 
                 //Update Table Status
                 $table_id       = $table->table_id;
@@ -251,6 +261,8 @@ class MakeAPIController extends ApiGuardController
                 $tblObj         = Table::find($table_id);
                 $tblObj->status = $status;
                 $tblObj->save();
+                $message = " [ $date ]  info:  Create an Table [ id = $table_id] " . PHP_EOL;
+                RmsLog::create($message);
             }
         }
 
@@ -259,7 +271,10 @@ class MakeAPIController extends ApiGuardController
                 $temp           = new OrderRoom();
                 $temp->order_id = $order_id;
                 $temp->room_id  = $room->room_id;
-                $temp->save();
+                $id             = $temp->create()->id;
+                // Custom Log
+                $message = " [ $date ]  info: create an  OrderRoom [ id = $id ] " . PHP_EOL;
+                RmsLog::create($message);
 
                 //Update Room Table
                 $room_id        = $room->room_id;
@@ -267,6 +282,9 @@ class MakeAPIController extends ApiGuardController
                 $tblObj         = Room::find($room_id);
                 $tblObj->status = $status;
                 $tblObj->save();
+                // Custom Log
+                $message = " [ $date ]  info: create an Room [ id = $room_id ] " . PHP_EOL;
+                RmsLog::create($message);
             }
         }
 
@@ -293,6 +311,9 @@ class MakeAPIController extends ApiGuardController
               $temp->remark_extra   = $order_detail->remark_extra;
             }
             $temp->save();
+            // Custom Log
+            $message = "[ $date ]  info:   create an OrderDetails [ id = $order_detail->order_detail_id ] " . PHP_EOL;
+            RmsLog::create($message);
 
             $set_item = $order_detail->set_item;
             $quantity = $order_detail->quantity;
@@ -308,7 +329,10 @@ class MakeAPIController extends ApiGuardController
                 $set->order_time      = $dt->toDateTimeString();
                 $set->status_id       = $status_id;
                 $set->quantity        = $quantity;
-                $set->save();
+                $id                   = $set->create()->id;
+                // Custom Log
+                $message = " [  $date  ]  info:  create an OrderSetMenuDetail [ id = $id ] " . PHP_EOL;
+                RmsLog::create($message);
             }
 
 
@@ -322,7 +346,10 @@ class MakeAPIController extends ApiGuardController
                         $OrderDetailObj->remark_id       = $remark->remark_id;
                         $OrderDetailObj->order_id        = $order_id;
                         $OrderDetailObj->item_id         = $order_detail->item_id;
-                        $OrderDetailObj->save();
+                        $id                              = $OrderDetailObj->create()->order_id;
+                        // Custom Log
+                        $message = "[ $date  ]  info:  create Order_Detail_Remark [ orderID = $id ]" . PHP_EOL;
+                        RmsLog::create($message);
                     }
                  }
             }
@@ -334,7 +361,10 @@ class MakeAPIController extends ApiGuardController
                 $extra->extra_id                = $e->extra_id;
                 $extra->quantity                = $e->quantity;
                 $extra->amount                  = $e->amount;
-                $extra->save();
+                $id                             = $extra->create()->order_detail_id;
+                // Custom Log
+                $message = "[  $date ] info:  create an OrderExtra [ order_detail_id =  $id ]" . PHP_EOL;
+                RmsLog::create($message);
             }
         }
             DB::commit();
@@ -343,6 +373,11 @@ class MakeAPIController extends ApiGuardController
 
         }catch(\Exception $e){
             DB::rollback();
+            $date       = date("Y-m-d H:i:s");
+            $data       = json_decode(request('orderID'));
+            $id   = $data[0]->order_id ;
+            $message    = "[  $date ]  error:  created an Order [ id =  $id ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+            RmsLog::create($message);
             $output = array("message" => "Please Upload Again");
             return Response::json($output);
         }
@@ -370,6 +405,7 @@ class MakeAPIController extends ApiGuardController
             $orders     = json_decode($ordersRaw);
 
             $dt         = Carbon::now();
+            $date       = date("Y-m-d H:i:s");
             foreach($orders as $order) {
                 $order_id           = $order->order_id;
                 $total_price        = $order->total_price;
@@ -435,6 +471,9 @@ class MakeAPIController extends ApiGuardController
                 $order->total_extra_price       = $extra_price;
                 $order->stand_number            = $stand_number;
                 $order->save();
+                // Custom Log
+                $message = "[ $date ]  info:   Update an Order  [ id = $order->id ] " . PHP_EOL;
+                RmsLog::create($message);
                 $order_detail_ary = array();
                 foreach ($order_details as $order_detail) {
                     $order_detail_id = $order_detail->order_detail_id;
@@ -465,6 +504,9 @@ class MakeAPIController extends ApiGuardController
                         $temp->remark_extra   = $order_detail->remark_extra;
                         }
                         $temp->save();
+                        // Custom Log
+                        $message = "[ $date ]  info:   update an OrderDetails [ id = $order_detail->order_detail_id ] " . PHP_EOL;
+                        RmsLog::create($message);
 
                         $set_item = $order_detail->set_item;
                         foreach($set_item as $item){
@@ -478,7 +520,10 @@ class MakeAPIController extends ApiGuardController
                             $set->order_time      = $dt->toDateTimeString();
                             $set->status_id       = $order_setdetail_status;
                             $set->quantity        = "1";
-                            $set->save();
+                            $id = $set->create()->id;
+                            // Custom Log
+                            $message = " [  $date  ]  info:  update an OrderSetMenuDetail [ id = $id ] " . PHP_EOL;
+                            RmsLog::create($message);
                         }
 
                         $remarks  = $order_detail->remark;
@@ -490,7 +535,10 @@ class MakeAPIController extends ApiGuardController
                                     $OrderDetailObj->remark_id       = $remark->remark_id;
                                     $OrderDetailObj->order_id        = $order_id;
                                     $OrderDetailObj->item_id         = $order_detail->item_id;
-                                    $OrderDetailObj->save();
+                                    $id = $OrderDetailObj->create()->order_id;
+                                    // Custom Log
+                                    $message = "[ $date  ]  info:  update Order_Detail_Remark [ orderID = $id ]" . PHP_EOL;
+                                    RmsLog::create($message);
                                 }
                             }
                         }
@@ -504,7 +552,11 @@ class MakeAPIController extends ApiGuardController
                                 $extra->quantity                = $e->quantity;
                                 $extra->amount                  = $e->amount;
                                 $extra->status                  = 1;
-                                $extra->save();
+                                $id = $extra->create()->order_detail_id;
+                                // Custom Log
+                                $message = "[  $date ] info:  update an OrderExtra [ order_detail_id =  $id ]" . PHP_EOL;
+                                RmsLog::create($message);
+
                             }
                         }
                     }
@@ -531,6 +583,10 @@ class MakeAPIController extends ApiGuardController
                         $temp->remark_extra   = $order_detail->remark_extra;
                         }
                         $temp->save();
+                        // Custom Log
+                        $message = "[ $date ]  info:  Update Order Detail [ id = $order_detail->order_detail_id ] " . PHP_EOL;
+                        RmsLog::create($message);
+
 
                         //OrderSetMenuDetail
                         $set_item                   = $order_detail->set_item;
@@ -548,7 +604,10 @@ class MakeAPIController extends ApiGuardController
                                 $set->order_time      = $dt->toDateTimeString();
                                 $set->status_id       = $temp->status_id;
                                 $set->quantity        = $quantity;
-                                $set->save();
+                                $id = $set->create()->id;
+                                // Custom Log
+                                $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $id ] " . PHP_EOL;
+                                RmsLog::create($message);
                             }
                             else{
                                 $set                  = $set_detail;
@@ -561,6 +620,9 @@ class MakeAPIController extends ApiGuardController
                                 $set->status_id       = $temp->status_id;
                                 $set->quantity        = $quantity;
                                 $set->save();
+                                // Custom Log
+                                $message = "[ $date ]  info:   Update OrderSetMenuDetail [ id = $set_detail->id ] " . PHP_EOL;
+                                RmsLog::create($message);
                             }
                         }
 
@@ -576,7 +638,10 @@ class MakeAPIController extends ApiGuardController
                                         $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
                                         $OrderDetailObj->remark_id       = $remark->remark_id;
                                         $OrderDetailObj->order_id        = $order_id;
-                                        $OrderDetailObj->save();
+                                        $id     = $OrderDetailObj->create()->id;
+                                        // Custom Log
+                                        $message = "[ $date ]  info:    Update  OrderSetMenuDetail [ orderID = $order_id ] " . PHP_EOL;
+                                        RmsLog::create($message);
                                     }
                                 }else{
                                     $remark_detail = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$remark->remark_id)->delete();
@@ -597,6 +662,8 @@ class MakeAPIController extends ApiGuardController
                                 $extra->quantity        = $e->quantity;
                                 $extra->amount          = $e->amount;
                                 $extra->save();
+                                $message = "[  $date ] info:  update  OrderExtra [ order_detail_id = $order_detail_id ]" . PHP_EOL;
+                                RmsLog::create($message);
                             }
                             else{
 
@@ -608,6 +675,9 @@ class MakeAPIController extends ApiGuardController
                                                     'amount' => $e->amount,
                                                     'status' => $e->status
                                                     ]);
+                                // Custom Log
+                                $message = "[ $date ]  info:  Update OrderExtra [ order_detail_id = $detail_id ] " . PHP_EOL;
+                                RmsLog::create($message);
                             }
 
                         }
@@ -626,6 +696,11 @@ class MakeAPIController extends ApiGuardController
         }catch(\Exception $e){
 
             DB::rollback();
+            $date       = date("Y-m-d H:i:s");
+            $data       = json_decode(request('orderID'));
+            $tabletID   = $data[0]->order_id;
+            $message    = "[  $date ]  error:  updated  Order [ id = $tabletID ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+            RmsLog::create($message);
             $output = array("message" => "Please Upload Again");
             return Response::json($output);
         }
