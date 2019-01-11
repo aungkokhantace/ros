@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('BookingReservation:reserve')
                  ->everyMinute();
 
-        $schedule->command('db:backup')
-              ->everyMinute();
+        // $schedule->command('db:backup')
+        //       ->everyMinute();
     }
 }
