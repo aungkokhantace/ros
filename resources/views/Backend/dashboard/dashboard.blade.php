@@ -1,4 +1,3 @@
-
 @extends('Backend.layouts.master')
 @section('title','Dashboard')
 @section('content')
