@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         if($config->backup_frequency == 1){
             $schedule->command('db:backup')->everyMinute(); // every hour
         }
-        
+
         if($config->backup_frequency == 2){
             $schedule->command('db:backup')->cron('0 */2 * * *'); //every two hour
         }
@@ -43,8 +43,7 @@ class Kernel extends ConsoleKernel
             $schedule->command('db:backup')->cron('0 */12 * * *'); // every twelve hour
         }
 
-        if($config->backup_frequency == 24){
-            $schedule->command('db:backup')->cron('0 */24 * * *'); // every twenty-four hour
-        }
+        // $schedule->command('db:backup')
+        //       ->everyMinute();
     }
 }
