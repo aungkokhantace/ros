@@ -814,6 +814,7 @@ class OrderViewController extends Controller
             $order_detail->message   = $message;
 
             $order_detail->save();
+            $this->normalizeSetMenuDetail($order);
 
         }else{
             $order_detail   = Orderdetail::find($id);
@@ -837,9 +838,10 @@ class OrderViewController extends Controller
             $order_detail->message   = $message;
 
             $order_detail->save();
-        }
+            // Change Order Status
+            $this->normalizeOrderDetail($order);
         // return redirect()->action('Kitchen\OrderViewController@tableView');
-
+        }
         $output     = array('message'=>'success','order_id'=> $order_id);
         return \Response::json($output);
     }
@@ -900,6 +902,7 @@ class OrderViewController extends Controller
             $order_detail->message   = $message;
 
             $order_detail->save();
+            $this->normalizeSetMenuDetail($order);
         }else{
             $order_detail   = Orderdetail::find($id);
 
@@ -922,9 +925,34 @@ class OrderViewController extends Controller
             $order_detail->message   = $message;
 
             $order_detail->save();
+            // Normalize Iitem
+            $this->normalizeOrderDetail($order);
         }
         $output     = array('message'=>'success','order_id'=> $order_id);
         return \Response::json($output);
         // return redirect()->action('Kitchen\OrderViewController@productView');
     }
+
+    private function normalizeOrderDetail(Order $order)
+    {
+        $order->fresh()->orderDetail->sortByDesc('status_id')->each(function ($query){ 
+            if ($query->status_id == 6) {
+                $query->Order->zeroStatus();
+                return;
+            }
+            $query->Order->oneStatus();
+        });
+    }
+
+    private function normalizeSetMenuDetail(Order $order)
+    {
+        $order->fresh()->setMenuDetail->sortByDesc('status_id')->each(function ($query){ 
+            if ($query->status_id == 6) {
+                $query->Order->zeroStatus();
+                return ;
+            }
+                $query->Order->oneStatus();
+        });
+    }
+
 }

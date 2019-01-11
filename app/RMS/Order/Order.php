@@ -34,4 +34,27 @@ class Order extends Model
     {
         return $this->belongsToMany('App\RMS\Table\Table','order_tables');
     }
+
+    public function orderDetail()
+    {
+        return $this->hasMany('App\RMS\Orderdetail\Orderdetail');        
+    }    
+
+    public function setMenuDetail()
+    {
+        return $this->hasMany('App\App\RMS\OrderSetMenuDetail');        
+    }
+
+    public function zeroStatus()
+    {
+         $this->status = 0 ;
+         $this->save();
+    }
+
+    public function oneStatus()
+    {
+         $this->status = 1 ;
+         $this->save();
+    }
+
 }
