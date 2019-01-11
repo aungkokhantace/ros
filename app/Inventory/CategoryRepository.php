@@ -1,5 +1,5 @@
 <?php
-namespace App\inventory;
+namespace App\Inventory;
 use App\RMS\Order\Order;
 use App\RMS\Orderdetail\Orderdetail;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +11,7 @@ use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetail;
 use App\RMS\Kitchen\Kitchen;
 use App\Status\StatusConstance;
+use App\Inventory\CategoryRepositoryInterface;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
