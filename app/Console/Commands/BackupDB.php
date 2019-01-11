@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Carbon\Carbon;
+use App\RMS\Config\Config;
 
 class BackupDB extends Command
 {
@@ -44,7 +45,10 @@ class BackupDB extends Command
     {
       $current_timestamp     = date('Y-m-d-H-i-s');
 
-      $process = new Process('mysqldump -u root ros_db >/home/aps_070/ros_db_backup/ros_db_backup_'.$current_timestamp.'.sql');
+      $config = Config::first();
+
+      $process = new Process('mysqldump -u root '.$config->db_name.' >'.$config->backup_url.$current_timestamp.'.sql');
+     
   		$process->run();
   		if (!$process->isSuccessful()) {
   		    throw new ProcessFailedException($process);
