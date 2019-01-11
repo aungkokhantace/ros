@@ -643,7 +643,7 @@ class MakeAPIController extends ApiGuardController
                                         $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
                                         $OrderDetailObj->remark_id       = $remark->remark_id;
                                         $OrderDetailObj->order_id        = $order_id;
-                                        $id     = $OrderDetailObj->create()->id;
+                                        $OrderDetailObj->save();
                                         // Custom Log
                                         $message = "[ $date ]  info:    Update  OrderSetMenuDetail [ orderID = $order_id ] " . PHP_EOL;
                                         RmsLog::create($message);
