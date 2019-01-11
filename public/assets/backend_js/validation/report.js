@@ -182,7 +182,8 @@ function report_export_with_type(module){
         var to_date = $("#to_date").val();
 
         if(from_date == "" && to_date == ""){
-            var form_action = "/Backend/"+module+"/exportexcel";
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
         }
         else if(from_date == "" && to_date != "") {
             sweetAlert("Oops...", "Please Choose the date !");
@@ -230,5 +231,82 @@ function report_export_with_sort(module){
     var form_action = "";       
     form_action     = "/Backend/"+module+"/detail_exprot/" + date + "/" + type + "/" + sort;
     
+    window.location = form_action;
+}
+
+function best_item_search(module){   
+    var form_action = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+    var number              = $("#number").val();
+    var from_amount         = $("#from_amount").val();
+    var to_amount           = $("#to_amount").val();   
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else{
+            var dateComparison = check_date(from_date, to_date);
+            if(dateComparison){
+                form_action = "/Backend/"+module+"/search/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
+               
+            }
+            else{
+                sweetAlert("Oops...", "Please Choose the valid date !");
+                return;
+            }       
+    } 
+    window.location = form_action;
+}
+
+function best_item_search(module){   
+    var form_action = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+    var number              = $("#number").val();
+    var from_amount         = $("#from_amount").val();
+    var to_amount           = $("#to_amount").val();   
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else{
+            var dateComparison = check_date(from_date, to_date);
+            if(dateComparison){
+                form_action = "/Backend/"+module+"/search/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
+               
+            }
+            else{
+                sweetAlert("Oops...", "Please Choose the valid date !");
+                return;
+            }       
+    } 
+    window.location = form_action;
+}
+
+function best_item_excel(module){   
+    console.log("wfewf");
+    var form_action = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+    var number              = $("#number").val();
+    var from_amount         = $("#from_amount").val();
+    var to_amount           = $("#to_amount").val();   
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else{
+            var dateComparison = check_date(from_date, to_date);
+            if(dateComparison){
+                console.log("aa");
+                form_action = "/Backend/"+module+"/export/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
+               
+            }
+            else{
+                sweetAlert("Oops...", "Please Choose the valid date !");
+                return;
+            }       
+    } 
     window.location = form_action;
 }

@@ -85,16 +85,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
         ->whereNotIn('status_id',[$order_kitchen_cancel_status,$order_customer_cancel_status])->get();
         return $order_details;
         
-    }
-
-                                        // 'order.over_all_discount as Discount',
-                                        // 'order.tax_amount as Tax',
-                                        // 'order.service_amount as Service',
-                                        // 'order.room_charge as Room',                                                   
-                                        // 'order.total_extra_price as Extra',
-                                        // 'order.sub_total as SubTotal', 
-                                        // 'order.total_price as NetAmount',                                        
-                                        // 'order.all_total_amount as Amount'
+    }                                     
 
      public function orderTable($id){
         $tables = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')

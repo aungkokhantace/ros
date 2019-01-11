@@ -98,8 +98,8 @@ class SaleSummaryReportController extends Controller
     	 	}/* guard */
 
     	}
-    	catch(\Exception $e){   
-    	dd($e); 		
+    	catch(\Exception $e){ 
+    		
     		  return redirect('/');       
       	}  	 
       }
@@ -210,13 +210,10 @@ class SaleSummaryReportController extends Controller
 	           	return redirect()->action('Backend\Reports\SaleSummaryReportController@saleSummary')
                 ->withMessage(FormatGenerator::message('Oops..', 'There is no data on this day ...'));
 	           }
-
-
-
     	 	}/* guard */
 
     	}
-    	catch(\Exception $e){  	
+    	catch(\Exception $e){	
     		
     		  return redirect('/');
     	} 	 

@@ -480,7 +480,6 @@ Route::group(['middleware' => 'web'], function () {
             //update sale summary report
 
             Route::get('sale_SummaryReport','Backend\Reports\SaleSummaryReportController@saleSummary');
-
             Route::get('sale_SummaryReport/search/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@search_query');
             Route::get('sale_SummaryReport/exportexcel/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@exportExcel');
 
@@ -489,7 +488,6 @@ Route::group(['middleware' => 'web'], function () {
             /* sale summary reprt detail sort */
               Route::get('sale_SummaryReport/detail/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
               Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
-
               Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}','Backend\Reports\SaleSummaryReportController@invoice_detail');
 
 
@@ -551,6 +549,14 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}', 'Backend\Report\ReportController@downloadItemReportWithDateAndNumber');
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithDateAndAmount');
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithAll');
+
+            /* item report update */            
+            Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+            Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+            Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+            
+            // Route::get('Best_itemReport\excel', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+             // Route::get('Best_itemReport/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}',array('as' => 'Backend/Best_itemReport','uses'=>'Backend\Reports\BestSellingItemReportController@itemReport'));
 
 
 
