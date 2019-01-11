@@ -1,5 +1,5 @@
 <?php
-namespace App\inventory;
+namespace App\Inventory;
 use App\RMS\Order\Order;
 use App\RMS\Orderdetail\Orderdetail;
 use Illuminate\Support\Facades\DB;
