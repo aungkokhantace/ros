@@ -216,7 +216,7 @@
 
                                     @endif
                                     @if($setmenu->status_id =='3')
-                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Take"/>
+                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" value="Take"/>
                                     @endif
                                 </td>
                                 @if($setmenu->status_id == '1')

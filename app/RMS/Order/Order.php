@@ -40,20 +40,9 @@ class Order extends Model
         return $this->hasMany('App\RMS\Orderdetail\Orderdetail');        
     }    
 
-    public function setMenuDetail()
+    public function setStatus($status)
     {
-        return $this->hasMany('App\App\RMS\OrderSetMenuDetail');        
-    }
-
-    public function zeroStatus()
-    {
-         $this->status = 0 ;
-         $this->save();
-    }
-
-    public function oneStatus()
-    {
-         $this->status = 1 ;
+         $this->status = $status ;
          $this->save();
     }
 

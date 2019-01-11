@@ -226,10 +226,10 @@ ini_set('memory_limit', '-1');
                                                 </td>
                                                 <td style="border-left: none !important;">
                                                     @php
-                                                        if (isset($tables)) {
+                                                        if (isset($table)) {
                                                             $id = $table->table_id;
                                                         } elseif (isset($room)) {
-                                                            $id = $room->rome_id;
+                                                            $id = $room->room_id;
                                                         }
                                                     @endphp
                                                     @if (empty($item->is_ready_food))

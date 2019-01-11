@@ -15,6 +15,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Status\StatusConstance;
 use App\RMS\Config\Config;
+use App\Log\RmsLog;
 use App\RMS\FormatGenerator As FormatGenerator;
 use Auth;
 use Illuminate\Http\Request;
@@ -772,78 +773,95 @@ class OrderViewController extends Controller
 
     public function CancelUpdateFromTableView()
     {
-
-        $id             = Input::get('order_details_id');
-        $setmenu_id     = Input::get('setmenu_id');
-        $date           = date('Y-m-d H:m:i');
-        $message        = Input::get('message');
-        $order_detail   = Orderdetail::find($id);
-        $order_id       = $order_detail->order_id;
-        $price          = $order_detail->amount_with_discount;
-        $config         = Config::select('tax','service')->first();
-        $tax            = $config->tax;
-        $service        = $config->service;
-
-        //Order Detail Status
-        $order_details_cancel_status   = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
-        //Setmenu Status
-        $order_setmenu_cancel_status   = StatusConstance::ORDER_SETMENU_KITCHEN_CANCEL_STATUS;
-
-        if($setmenu_id != 0){
-            $setObj = OrderSetMenuDetail::where('order_detail_id',$id)->where('setmenu_id','=',$setmenu_id)->get();
-            foreach($setObj as $set){
-                $set            = OrderSetMenuDetail::where('id','=',$set->id)->first();
-                $set->status_id = $order_setmenu_cancel_status;
-                $set->message   = $message;
-                $set->save();
-            }
-
-            $order                      = Order::where('id','=',$order_id)->first();
-            $total                      = (($order->total_price) - ($price));
-            $room_charge                = $order->room_charge;
-            $service_amount             = ($total * $service)/(100);
-            $tax_amount                 = ($total * $tax)/(100);
-            $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
-            $order->total_price         = $total;
-            $order->service_amount      = $service_amount;
-            $order->tax_amount          = $tax_amount;
-            $order->all_total_amount    = $all_total_amount;
-            $order->save();
-
-            $order_detail->status_id = $order_details_cancel_status;
-            $order_detail->message   = $message;
-
-            $order_detail->save();
-            $this->normalizeSetMenuDetail($order);
-
-        }else{
+        try {
+            
+            DB::beginTransaction();
+            $id             = Input::get('order_details_id');
+            $setmenu_id     = Input::get('setmenu_id');
+            $date           = date('Y-m-d H:m:i');
+            $message        = Input::get('message');
             $order_detail   = Orderdetail::find($id);
+            $order_id       = $order_detail->order_id;
+            $price          = $order_detail->amount_with_discount;
+            $config         = Config::select('tax','service')->first();
+            $tax            = $config->tax;
+            $service        = $config->service;
 
-            $order_id = $order_detail->order_id;
-            $price    = $order_detail->amount_with_discount;
+            //Order Detail Status
+            $order_details_cancel_status   = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+            //Setmenu Status
+            $order_setmenu_cancel_status   = StatusConstance::ORDER_SETMENU_KITCHEN_CANCEL_STATUS;
 
-            $order                      = Order::where('id','=',$order_id)->first();
-            $total                      = (($order->total_price) - ($price));
-            $room_charge                = $order->room_charge;
-            $service_amount             = ($total * $service)/(100);
-            $tax_amount                 = ($total * $tax)/(100);
-            $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
-            $order->total_price         = $total;
-            $order->service_amount      = $service_amount;
-            $order->tax_amount          = $tax_amount;
-            $order->all_total_amount    = $all_total_amount;
-            $order->save();
+            if($setmenu_id != 0){
+                $setObj = OrderSetMenuDetail::where('order_detail_id',$id)->where('setmenu_id','=',$setmenu_id)->get();
+                foreach($setObj as $set){
+                    $set            = OrderSetMenuDetail::where('id','=',$set->id)->first();
+                    $set->status_id = $order_setmenu_cancel_status;
+                    $set->message   = $message;
+                    $set->save();
+                }
 
-            $order_detail->status_id = $order_details_cancel_status;
-            $order_detail->message   = $message;
+                $order                      = Order::where('id','=',$order_id)->first();
+                $total                      = (($order->total_price) - ($price));
+                $room_charge                = $order->room_charge;
+                $service_amount             = ($total * $service)/(100);
+                $tax_amount                 = ($total * $tax)/(100);
+                $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
+                $order->total_price         = $total;
+                $order->service_amount      = $service_amount;
+                $order->tax_amount          = $tax_amount;
+                $order->all_total_amount    = $all_total_amount;
+                $order->save();
 
-            $order_detail->save();
-            // Change Order Status
-            $this->normalizeOrderDetail($order);
-        // return redirect()->action('Kitchen\OrderViewController@tableView');
+                $order_detail->status_id = $order_details_cancel_status;
+                $order_detail->message   = $message;
+
+                $order_detail->save();
+                // Change Order Status
+                $this->normalizeOrderStatus($order);
+
+            }else{
+                $order_detail   = Orderdetail::find($id);
+
+                $order_id = $order_detail->order_id;
+                $price    = $order_detail->amount_with_discount;
+
+                $order                      = Order::where('id','=',$order_id)->first();
+                $total                      = (($order->total_price) - ($price));
+                $room_charge                = $order->room_charge;
+                $service_amount             = ($total * $service)/(100);
+                $tax_amount                 = ($total * $tax)/(100);
+                $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
+                $order->total_price         = $total;
+                $order->service_amount      = $service_amount;
+                $order->tax_amount          = $tax_amount;
+                $order->all_total_amount    = $all_total_amount;
+                $order->save();
+
+                $order_detail->status_id = $order_details_cancel_status;
+                $order_detail->message   = $message;
+
+                $order_detail->save();
+                // Change Order Status
+                $this->normalizeOrderStatus($order);
+            // return redirect()->action('Kitchen\OrderViewController@tableView');
+            }
+            DB::commit();
+            // Custom Log
+            $date       = date("Y-m-d H:i:s");
+            $message = "[ $date ]  info:  Success Cancel an item from [ Kitchen  ]   [ OrderID = $order_id ] " . PHP_EOL;
+            RmsLog::create($message);
+            $output     = array('message'=>'success','order_id'=> $order_id);
+            return \Response::json($output);
+        } catch (\Exception $e) {
+            DB::rollback();
+            $id         = Input::get('order_details_id');
+            $date       = date("Y-m-d H:i:s");
+            $message    = "[ $date ]  error:  fails to cancel an item from [ Kitchen ] [ OrderdetailID =  $id ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+            RmsLog::create($message);
+            $output = array("message" => "Fail To Cancel an item.");
+            return Response::json($output);
         }
-        $output     = array('message'=>'success','order_id'=> $order_id);
-        return \Response::json($output);
     }
 
     public function SyncInventory(){
@@ -861,97 +879,108 @@ class OrderViewController extends Controller
 
     public function CancelUpdateFromProductView()
     {
-        $id             = Input::get('order_details_id');
-        $setmenu_id     = Input::get('setmenu_id');
-        $date           = date('Y-m-d H:m:i');
-        $message        = Input::get('message');
-        $order_detail   = Orderdetail::find($id);
-        $order_id       = $order_detail->order_id;
-        $price          = $order_detail->amount_with_discount;
-        $config         = Config::select('tax','service')->first();
-        $tax            = $config->tax;
-        $service        = $config->service;
+        try {
 
-        //Order Detail Status
-        $order_details_cancel_status   = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
-        //Setmenu Status
-        $order_setmenu_cancel_status   = StatusConstance::ORDER_SETMENU_KITCHEN_CANCEL_STATUS;//
-
-        if($setmenu_id != 0){
-            $setObj = OrderSetMenuDetail::where('order_detail_id',$id)->where('setmenu_id','=',$setmenu_id)->get();
-            foreach($setObj as $set){
-                $set            = OrderSetMenuDetail::where('id','=',$set->id)->first();
-                $set->status_id = $order_setmenu_cancel_status;
-                $set->message   = $message;
-                $set->save();
-            }
-
-            $order                      = Order::where('id','=',$order_id)->first();
-            $total                      = (($order->total_price) - ($price));
-            $room_charge                = $order->room_charge;
-            $service_amount             = ($total * $service)/(100);
-            $tax_amount                 = ($total * $tax)/(100);
-            $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
-            $order->total_price         = $total;
-            $order->service_amount      = $service_amount;
-            $order->tax_amount          = $tax_amount;
-            $order->all_total_amount    = $all_total_amount;
-            $order->save();
-
-            $order_detail->status_id = 6;
-            $order_detail->message   = $message;
-
-            $order_detail->save();
-            $this->normalizeSetMenuDetail($order);
-        }else{
+            DB::beginTransaction();
+            $id             = Input::get('order_details_id');
+            $setmenu_id     = Input::get('setmenu_id');
+            $date           = date('Y-m-d H:m:i');
+            $message        = Input::get('message');
             $order_detail   = Orderdetail::find($id);
+            $order_id       = $order_detail->order_id;
+            $price          = $order_detail->amount_with_discount;
+            $config         = Config::select('tax','service')->first();
+            $tax            = $config->tax;
+            $service        = $config->service;
 
-            $order_id = $order_detail->order_id;
-            $price    = $order_detail->amount_with_discount;
+            //Order Detail Status
+            $order_details_cancel_status   = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+            //Setmenu Status
+            $order_setmenu_cancel_status   = StatusConstance::ORDER_SETMENU_KITCHEN_CANCEL_STATUS;//
 
-            $order                      = Order::where('id','=',$order_id)->first();
-            $total                      = (($order->total_price) - ($price));
-            $room_charge                = $order->room_charge;
-            $service_amount             = ($total * $service)/(100);
-            $tax_amount                 = ($total * $tax)/(100);
-            $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
-            $order->total_price         = $total;
-            $order->service_amount      = $service_amount;
-            $order->tax_amount          = $tax_amount;
-            $order->all_total_amount    = $all_total_amount;
-            $order->save();
+            if($setmenu_id != 0){
+                $setObj = OrderSetMenuDetail::where('order_detail_id',$id)->where('setmenu_id','=',$setmenu_id)->get();
+                foreach($setObj as $set){
+                    $set            = OrderSetMenuDetail::where('id','=',$set->id)->first();
+                    $set->status_id = $order_setmenu_cancel_status;
+                    $set->message   = $message;
+                    $set->save();
+                }
 
-            $order_detail->status_id = $order_details_cancel_status;
-            $order_detail->message   = $message;
+                $order                      = Order::where('id','=',$order_id)->first();
+                $total                      = (($order->total_price) - ($price));
+                $room_charge                = $order->room_charge;
+                $service_amount             = ($total * $service)/(100);
+                $tax_amount                 = ($total * $tax)/(100);
+                $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
+                $order->total_price         = $total;
+                $order->service_amount      = $service_amount;
+                $order->tax_amount          = $tax_amount;
+                $order->all_total_amount    = $all_total_amount;
+                $order->save();
 
-            $order_detail->save();
-            // Normalize Iitem
-            $this->normalizeOrderDetail($order);
+                $order_detail->status_id = 6;
+                $order_detail->message   = $message;
+
+                $order_detail->save();
+                // Change Order Status
+                $this->normalizeOrderStatus($order);
+            }else{
+                $order_detail   = Orderdetail::find($id);
+
+                $order_id = $order_detail->order_id;
+                $price    = $order_detail->amount_with_discount;
+
+                $order                      = Order::where('id','=',$order_id)->first();
+                $total                      = (($order->total_price) - ($price));
+                $room_charge                = $order->room_charge;
+                $service_amount             = ($total * $service)/(100);
+                $tax_amount                 = ($total * $tax)/(100);
+                $all_total_amount           = $total + $service_amount + $tax_amount + $room_charge;
+                $order->total_price         = $total;
+                $order->service_amount      = $service_amount;
+                $order->tax_amount          = $tax_amount;
+                $order->all_total_amount    = $all_total_amount;
+                $order->save();
+
+                $order_detail->status_id = $order_details_cancel_status;
+                $order_detail->message   = $message;
+
+                $order_detail->save();
+                // Change Order Status Iitem
+                $this->normalizeOrderStatus($order);
+            }
+            DB::commit();
+            // Custom Log
+            $date       = date("Y-m-d H:i:s");
+            $message = "[ $date ]  info:  Success Cancel an item from [ Kitchen  ]   [ OrderID = $order_id ] " . PHP_EOL;
+            RmsLog::create($message);
+            $output     = array('message'=>'success','order_id'=> $order_id);
+
+            return \Response::json($output);
+            // return redirect()->action('Kitchen\OrderViewController@productView');
+        } catch (\Exception $e) {
+            DB::rollback();
+            $id         = Input::get('order_details_id');
+            $date       = date("Y-m-d H:i:s");
+            $message    = "[ $date ]  error:  fails to cancel an item from [ Kitchen ] [ OrderdetailID =  $id ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+            RmsLog::create($message);
+            $output = array("message" => "Fail To Cancel an item.");
+            return Response::json($output);
         }
-        $output     = array('message'=>'success','order_id'=> $order_id);
-        return \Response::json($output);
-        // return redirect()->action('Kitchen\OrderViewController@productView');
     }
 
-    private function normalizeOrderDetail(Order $order)
+    private function normalizeOrderStatus(Order $order)
     {
-        $order->fresh()->orderDetail->sortByDesc('status_id')->each(function ($query){ 
+        $createStatus = StatusConstance::ORDER_CREATE_STATUS;
+        $cancelStatus = StatusConstance::ORDER_CANCEL_STATUS;
+
+        $order->fresh()->orderDetail->sortByDesc('status_id')->each(function ($query)use($createStatus,$cancelStatus){
             if ($query->status_id == 6) {
-                $query->Order->zeroStatus();
+                $query->Order->setStatus($cancelStatus);
                 return;
             }
-            $query->Order->oneStatus();
-        });
-    }
-
-    private function normalizeSetMenuDetail(Order $order)
-    {
-        $order->fresh()->setMenuDetail->sortByDesc('status_id')->each(function ($query){ 
-            if ($query->status_id == 6) {
-                $query->Order->zeroStatus();
-                return ;
-            }
-                $query->Order->oneStatus();
+            $query->Order->setStatus($createStatus);
         });
     }
 
