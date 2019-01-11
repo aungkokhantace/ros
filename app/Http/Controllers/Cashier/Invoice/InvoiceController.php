@@ -1262,7 +1262,7 @@ class InvoiceController extends Controller
             $order->tax_amount = $request->gov_tax;
             $order->payment_amount = $request->receive_price;
             $order->refund = $request->change;
-            $order->take_id = $request->take_voucher;
+            $order->take_voucher = $request->take_voucher;
             $order->status = 2;
            
 
