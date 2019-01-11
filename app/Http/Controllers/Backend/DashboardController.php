@@ -29,11 +29,11 @@ class DashboardController extends Controller
         $orders = Order::select(DB::raw('DATE_FORMAT(order_time,"%b") as month'),DB::raw('sum(all_total_amount) as total'))
         ->where('order_time','>=',DB::raw('DATE_ADD(now(),INTERVAL - 12 MONTH)'))
         ->where('status',$order_paid_status)->whereYear('order_time','=',date('Y'))
-        ->groupBy(DB::raw('MONTH(order_time)'))->get();    
+        ->groupBy(DB::raw('MONTH(order_time)'))->get();
 
         $daily_order = Order::select(DB::raw('DATE(order_time) as date'),DB::raw('sum(all_total_amount) as total'))->groupBy(DB::raw('Day(order_time)'))
         ->whereMonth('order_time','=',date('m'))->whereYear('order_time','=',date('Y'))
-        ->where('status',$order_paid_status)->limit(7)->orderBy('date','desc')->get();    
+        ->where('status',$order_paid_status)->limit(7)->orderBy('date','desc')->get();
         return view('Backend.dashboard.dashboard')->with('member',$member)
             ->with('set',$set)->with('item',$item)->with('category',$category)->with('orders',$orders)
             ->with('daily_order',$daily_order);

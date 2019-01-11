@@ -132,6 +132,14 @@
 
           </ul>
         </li>
+        @if (Auth::guard('Cashier')->user()->role_id == 1)
+          <li>
+              <a href="{{ url('Backend/activity-log/index') }}">
+                <i class="fa fa-cog"></i>
+                <span>Activity Log</span>
+              </a>
+          </li>
+        @endif
         <li>
         <a href="/Backend/logout">
             <i class="fa fa-circle-o text-danger"></i>
