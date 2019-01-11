@@ -59,7 +59,7 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-
+        
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body' => $categorys,
