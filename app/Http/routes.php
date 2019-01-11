@@ -249,6 +249,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::group(['middleware' => 'custom:Cashier'], function(){
             Route::get('logout', 'Backend\Auth\AuthController@logout');
             Route::get('userAuth', 'Backend\Staff\UserController@getAuthUser');
+            Route::get('activity-log/index', 'Backend\ActivityLog\ActivityLogController@index');
             Route::get('updateDataBeforeLogout', 'Backend\Staff\UserController@updateDataBeforeLogout');
             Route::group(['middleware' => 'dashboard:Cashier'],function(){
                 Route::get('Dashboard','Backend\DashboardController@dashboard');
