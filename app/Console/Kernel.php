@@ -4,7 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-
+use App\RMS\Config\Config;
 class Kernel extends ConsoleKernel
 {
     /**
@@ -25,10 +25,26 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('BookingReservation:reserve')
-                 ->everyMinute();
+        $config = Config::first();
 
-        $schedule->command('db:backup')
-              ->everyMinute();
+        if($config->backup_frequency == 1){
+            $schedule->command('db:backup')->everyMinute(); // every hour
+        }
+        
+        if($config->backup_frequency == 2){
+            $schedule->command('db:backup')->cron('0 */2 * * *'); //every two hour
+        }
+
+        if($config->backup_frequency == 5){
+            $schedule->command('db:backup')->cron('0 */5 * * *'); // every five hour
+        }
+
+        if($config->backup_frequency == 12){
+            $schedule->command('db:backup')->cron('0 */12 * * *'); // every twelve hour
+        }
+
+        if($config->backup_frequency == 24){
+            $schedule->command('db:backup')->cron('0 */24 * * *'); // every twenty-four hour
+        }
     }
 }

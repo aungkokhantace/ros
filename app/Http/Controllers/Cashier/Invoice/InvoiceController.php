@@ -1224,7 +1224,7 @@ class InvoiceController extends Controller
         }
 
         $order = Order::find($id);
-      
+        
         if(!$order->table->isEmpty()){
             $table_id = $order->table[0]->id;
         
@@ -1260,8 +1260,6 @@ class InvoiceController extends Controller
         $order->refund = $request->change;
         $order->take_id = $request->take_voucher;
         $order->status = 2;
-       
-
         $order->update();
         
         return back();
