@@ -190,7 +190,7 @@ class MakeAPIController extends ApiGuardController
         DB::beginTransaction();
 
         $temp       = Input::all();
-
+        
         $ordersRaw  = $temp['orderID'];
         
         $orders   = json_decode($ordersRaw);
@@ -250,9 +250,9 @@ class MakeAPIController extends ApiGuardController
                 $temp->id       = $order_id;
                 $temp->order_id = $order_id;
                 $temp->table_id = $table->table_id;
-                $id             = $temp->create()->id;
+                $temp->save();
                 // Custom Log
-                $message = " [ $date ]  info: create an OrderTable [ id = $id ] " . PHP_EOL;
+                $message = " [ $date ]  info: create an OrderTable [ id = $order_id ] " . PHP_EOL;
                 RmsLog::create($message);
 
                 //Update Table Status
