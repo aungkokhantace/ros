@@ -122,8 +122,7 @@ class BestSellingItemReportController extends Controller
                             for($i=0; $i <= $row; $i++) 
                             {                          
                               $current_row++;
-                            } 
-                            // dd($current_row);
+                            }                             
                          /* to add background in total */
                         $sheet->cell('A'.$current_row.':E'.$current_row, function($cell) {
                             $cell->setBackground('#3c8dbc');                            
