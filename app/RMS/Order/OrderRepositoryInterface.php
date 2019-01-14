@@ -15,4 +15,5 @@ interface OrderRepositoryInterface
     public function orderRoom();
     public function orderExtra();
     public function getFoodListDetail($order_id,$order_status);
+    public function getOrderTableWithLocation();
 }
