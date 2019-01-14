@@ -25,7 +25,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 	public function getinvoice($tableId,$roomId)
 	{
-		
+
 		$order_status         = StatusConstance::ORDER_CREATE_STATUS;
 		$order_paid_status    = StatusConstance::ORDER_PAID_STATUS;
 		$session_status       = StatusConstance::DAY_STARTING_STATUS;
@@ -35,13 +35,13 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 							->first();
 		$day_id 			  = '';
 
-		
+
 
 		if (count($daystart) > 0) {
 			$day_id 			  = $daystart->id;
 		}
-		
-		
+
+
 		if($roomId == NULL){
 
 			$table = Table::find($tableId);
@@ -49,19 +49,17 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 			$orders = $table->orders()
 							->whereIn('status',[$order_status,$order_paid_status])
 							->orderBy('id','desc')
-							->where('day_id',$day_id)
 							->get();
 			return $orders;
 
 
 		}
-		
+
 		if($tableId == NULL){
 			$room  = Room::find($roomId);
 			$orders = $room->orders()
 							->whereIn('status',[$order_status,$order_paid_status])
 							->orderBy('id','desc')
-							->where('day_id',$day_id)
 							->get();
 			return $orders;
 		}
@@ -73,7 +71,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 					->whereNull('deleted_at')
 					->get();
 			return $orders;
-		}		
+		}
 	}
 
 	public function getinvoiceTimeIncrease()
@@ -204,7 +202,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 	public function getorder($id)
 	{
 		$orders = Order::select('id as order_id','take_id','service_amount','foc_amount','tax_amount','order_time','member_discount','member_discount_amount','member_id','total_price','total_extra_price','all_total_amount','payment_amount','total_discount_amount','refund','over_all_discount','sub_total','over_all_discount_remark','total_price_foc','room_charge','status')->where('id',$id)->first();
-		
+
 		return $orders;
 	}
 
@@ -221,8 +219,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 				'users.user_name','order.id',
 			'order_details.amount_with_discount')->where('order_id','=',$id)
 		->whereNotIn('status_id',[$order_kitchen_cancel_status,$order_customer_cancel_status])->get();
+
 		return $order_details;
-		
+
 	}
 
 	public function cashier($id){
@@ -241,17 +240,17 @@ class InvoiceRepository implements InvoiceRepositoryInterface
     public function orderRoom($id){
         $rooms = OrderRoom::leftjoin('rooms','rooms.id','=','order_room.room_id')
         ->select('order_room.room_id','order_room.order_id','rooms.room_name','rooms.price')->where('order_room.order_id','=',$id)->get();
-      
+
         return $rooms;
     }
 
 	public function getaddon($id){
-		
+
 		$status 		= StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
 		$order_details = Orderdetail::where('order_id','=', $id)->where('deleted_at','=',NULL)->get();
 		$addon = array();
 		foreach($order_details as $order){
-			
+
 			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')
 						->select('order_extra.*','add_on.food_name')
 						->where('order_extra.order_detail_id','=',$order->order_detail_id)
@@ -259,7 +258,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 						->where('order_extra.deleted_at','=',NULL)
 						->get()->toArray();
 			array_push($addon, $tempAddon);
-			
+
 		}
 		return $addon;
 	}
@@ -271,9 +270,9 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		foreach($order_details as $order){
 			$tempAddon = OrderExtra::leftjoin('add_on','add_on.id','=','order_extra.extra_id')->select('order_extra.*',DB::raw('SUM(order_extra.amount) as amount'),'add_on.food_name')->where('order_extra.order_detail_id','=',$order->id)->where('order_extra.status','=',$status)->where('order_extra.deleted_at','=',NULL)->groupBy('order_extra.order_detail_id')->get()->toArray();
 			array_push($addon, $tempAddon);
-			
+
 		}
-		
+
 		return $addon;
 	}
 
@@ -358,7 +357,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 					$tempObj->save();
 				};
 			}
-			
+
 			$paidAmount 	= $input['amount'];
 			$changeAmount 	= $refund;
 			$cardType 		= $input['cardtype'];
@@ -380,7 +379,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 				$tempObj        		= Utility::addCreatedBy($paymentObj);
 				$tempObj->save();
 			}
-			
+
 
 			$returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
 			return $returnedObj;
@@ -404,7 +403,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 			$random 	= sprintf("%02d", mt_rand(1, 99));
 			$ran_char 	= $max_id + $random;
 		}
-		
+
 		return $ran_char;
 	}
 
@@ -438,7 +437,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 				$tempObj->status = $room_available_status;
 				$tempObj->save();
 			}
-			
+
 
 			$returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
 			return $returnedObj;
@@ -449,7 +448,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 			return $returnedObj;
 		}
 	}
-	
+
 	public function getContinent() {
 		$continent  = Continent::select('id','name')->get();
 		return $continent;
