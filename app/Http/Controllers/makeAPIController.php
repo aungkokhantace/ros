@@ -490,7 +490,6 @@ class MakeAPIController extends ApiGuardController
                     $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
                     $order_detail_status        = $order_detail->status;
                     array_push($order_detail_ary,$order_detail->order_detail_id);
-<<<<<<< HEAD
                    if(!in_array($order_detail->order_detail_id,$old_order_detail_ary)){
                        
                         if($detail == null){
@@ -517,49 +516,6 @@ class MakeAPIController extends ApiGuardController
                             $temp->save();
                             // Custom Log
                             $message = "[ $date ]  info:   update an OrderDetails [ id = $order_detail->order_detail_id ] " . PHP_EOL;
-=======
-
-                    if($detail == null){
-                        $temp = new Orderdetail();
-                        $temp->id                   = $order_detail->order_detail_id;
-                        $temp->order_id             = $order_id;
-                        $temp->item_id              = $order_detail->item_id;
-                        $temp->order_detail_id      = $order_detail->order_detail_id;
-                        $temp->setmenu_id           = $order_detail->set_id;
-                        $temp->quantity             = $order_detail->quantity;
-                        $temp->order_type_id        = $order_detail->order_type_id;
-                        $temp->discount_amount      = $order_detail->discount_amount;
-                        $temp->exception            = $order_detail->exception;
-                        $temp->promotion_id         = $order_detail->promotion_id;
-                        $temp->amount               = $order_detail->price;
-                        $temp->amount_with_discount = $order_detail->amount;
-                        $temp->order_time           = $dt->toDateTimeString();
-                        $temp->status_id            = $order_detail_status;
-                        $temp->take_item            = $order_detail->take_item;
-                        if($order_detail->remark_extra != ''){
-                        $temp->remark_extra   = $order_detail->remark_extra;
-                        }
-                        $temp->save();
-                        // Custom Log
-                        $message = "[ $date ]  info:   update an OrderDetails [ id = $order_detail->order_detail_id ] " . PHP_EOL;
-                        RmsLog::create($message);
-
-                        $set_item = $order_detail->set_item;
-                        foreach($set_item as $item){
-                            $order_setdetail_status        = $temp->status_id;
-                            $set = new OrderSetMenuDetail();
-                            $set->order_detail_id = $order_detail->order_detail_id;
-                            $set->setmenu_id      = $item->set_menu_id;
-                            $set->item_id         = $item->item_id;
-                            $set->order_type_id   = $temp->order_type_id;
-                            $set->exception       = $temp->exception;
-                            $set->order_time      = $dt->toDateTimeString();
-                            $set->status_id       = $order_setdetail_status;
-                            $set->quantity        = "1";
-                            $set->save();
-                            // Custom Log
-                            $message = " [  $date  ]  info:  update an OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
->>>>>>> sailao
                             RmsLog::create($message);
 
                             $set_item = $order_detail->set_item;
