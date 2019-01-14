@@ -525,9 +525,9 @@ class MakeAPIController extends ApiGuardController
                             $set->order_time      = $dt->toDateTimeString();
                             $set->status_id       = $order_setdetail_status;
                             $set->quantity        = "1";
-                            $id = $set->create()->id;
+                            $set->save();
                             // Custom Log
-                            $message = " [  $date  ]  info:  update an OrderSetMenuDetail [ id = $id ] " . PHP_EOL;
+                            $message = " [  $date  ]  info:  update an OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
                             RmsLog::create($message);
                         }
 
