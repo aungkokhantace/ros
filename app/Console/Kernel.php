@@ -25,25 +25,34 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $config = Config::first();
+        $order_day = \DB::table('order_day')->where('deleted_at', '=' , NULL)
+                            ->orderby('id','desc')
+                            ->first();
+        
+        if($order_day->status == 2){
 
-        if($config->backup_frequency == 1){
-            $schedule->command('db:backup')->everyMinute(); // every hour
+            $config = Config::first();
+
+            if($config->backup_frequency == 1){
+                $schedule->command('db:backup')->hourly(); // every hour
+            }
+            
+            if($config->backup_frequency == 2){
+                $schedule->command('db:backup')->cron('0 */2 * * *'); //every two hour
+            }
+
+            if($config->backup_frequency == 5){
+                $schedule->command('db:backup')->cron('0 */5 * * *'); // every five hour
+            }
+
+            if($config->backup_frequency == 12){
+                $schedule->command('db:backup')->cron('0 */12 * * *'); // every twelve hour
+            }
+
+            if($config->backup_frequency == 24){
+                $schedule->command('db:backup')->cron('0 */24 * * *'); // every twenty-four hour
+            }
         }
-
-        if($config->backup_frequency == 2){
-            $schedule->command('db:backup')->cron('0 */2 * * *'); //every two hour
-        }
-
-        if($config->backup_frequency == 5){
-            $schedule->command('db:backup')->cron('0 */5 * * *'); // every five hour
-        }
-
-        if($config->backup_frequency == 12){
-            $schedule->command('db:backup')->cron('0 */12 * * *'); // every twelve hour
-        }
-
-        // $schedule->command('db:backup')
-        //       ->everyMinute();
+        
     }
 }
