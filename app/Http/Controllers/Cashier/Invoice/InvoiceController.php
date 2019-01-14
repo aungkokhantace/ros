@@ -1,37 +1,38 @@
 <?php
 namespace App\Http\Controllers\Cashier\Invoice;
-use Faker\Provider\DateTime;
-use Illuminate\Http\Request;
-use App\RMS\Invoice\InvoiceRepositoryInterface;
-use App\RMS\Infrastructure\Forms\InvoiceRequest;
-use App\Http\Requests;
-use Auth;
-use App\Http\Controllers\Controller;
-use App\RMS\Order\Order;
-use App\RMS\OrderTable\OrderTable;
-use App\RMS\Table\Table;
-use App\RMS\Room\Room;
-use App\RMS\OrderRoom\OrderRoom;
-use App\RMS\Orderdetail\Orderdetail;
-use App\RMS\Item\Item;
-use App\RMS\Config\Config;
-use App\Status\StatusConstance;
-use Carbon\Carbon;
-use App\Http\Controllers\inventory\inventoryController;
-use Illuminate\Support\Facades\Input;
-use PDF;
-use Excel;
 use App;
-use App\RMS\Utility;
-use Response;
-use Hash;
-use App\User;
-use App\RMS\Invoice\InvoiceRepository;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\inventory\inventoryController;
+use App\Http\Requests;
+use App\Log\RmsLog;
+use App\RMS\Config\Config;
 use App\RMS\DayStart\DayStart;
 use App\RMS\FormatGenerator As FormatGenerator;
+use App\RMS\Infrastructure\Forms\InvoiceRequest;
+use App\RMS\Invoice\InvoiceRepository;
+use App\RMS\Invoice\InvoiceRepositoryInterface;
+use App\RMS\Item\Item;
+use App\RMS\OrderRoom\OrderRoom;
+use App\RMS\OrderTable\OrderTable;
+use App\RMS\Order\Order;
+use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\ReturnMessage As ReturnMessage;
-use Illuminate\Support\Facades\DB;
+use App\RMS\Room\Room;
+use App\RMS\Table\Table;
+use App\RMS\Utility;
+use App\Status\StatusConstance;
+use App\User;
+use Auth;
+use Carbon\Carbon;
+use Excel;
+use Faker\Provider\DateTime;
+use Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection as Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+use PDF;
+use Response;
 
 
 class InvoiceController extends Controller
@@ -816,9 +817,10 @@ class InvoiceController extends Controller
             $addOn[$key] = $value['extra_id'];
         }
         array_multisort($addOn, SORT_ASC, $addon);
-
         $addon = $addon;
-        return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
+
+        $take_id = $order->take_id;
+        return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders','take_id'));
     }
 
     public function ajaxPaymentRequest($id) {
@@ -969,7 +971,7 @@ class InvoiceController extends Controller
         $rooms          = $this->InvoiceRepository->orderRoom($id);
         $cashier         = $this->InvoiceRepository->cashier($id);
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
-
+        
         $html ='<h1>Invoice Detail</h1>
                 <table >
                 <tr>
@@ -1217,38 +1219,66 @@ class InvoiceController extends Controller
     }
 
     public function invoicePaidUpdate($id,Request $request)
-    {   
-        
-        // $inventorysale   = new inventoryController();
-        // $invenorystatus =  $inventorysale->saleStock($id);
-        
-       
-        $order = Order::find($id);
-        if(!$order->rooms->isEmpty()){
-            $room = Room::where('id',$order->rooms[0]->id)->first();
-            $room->status = 0;
-            $room->update();
-        }
+    { 
 
-        
-        if(!$order->table->isEmpty()){
-            $table = Table::where('id',$order->table[0]->id)->first();
-            $table->status = 0;
-            $table->update();
-        }
+        try {
+            
+            if($request->take_voucher == NULL){
+                $request->take_voucher = 0;
+            }
 
-        $order->over_all_discount_remark = $request->remark;
-        $order->all_total_amount = $request->total_amount;
-        $order->over_all_discount =  $request->discount_price;
-        $order->sub_total = $request->sub_total;
-        $order->service_amount = $request->service_tax;
-        $order->tax_amount = $request->gov_tax;
-        $order->payment_amount = $request->receive_price;
-        $order->refund = $request->change;
-        $order->status = 2;
-        $order->update();
-        
-        return back();
+            $order = Order::find($id);
+          
+            if(!$order->table->isEmpty()){
+                $table_id = $order->table[0]->id;
+            
+                $order_count = OrderTable::where('table_id',$table_id)->pluck('order_id');
+                
+                $check_status = Order::whereIn('id',$order_count)->pluck('status')->toArray();
+               
+                $check = array_count_values($check_status);
+            }
+
+           
+            if(!$order->rooms->isEmpty()){
+                $room = Room::where('id',$order->rooms[0]->id)->first();
+                $room->status = 0;
+                $room->update();
+            }
+            
+            if(!$order->table->isEmpty()){
+                if($check['1'] == 1){
+                $table = Table::where('id',$order->table[0]->id)->first();
+                $table->status = 0;
+                $table->update();
+                }
+            }
+            
+            $order->over_all_discount_remark = $request->remark;
+            $order->all_total_amount = $request->total_amount;
+            $order->over_all_discount =  $request->discount_price;
+            $order->sub_total = $request->sub_total;
+            $order->service_amount = $request->service_tax;
+            $order->tax_amount = $request->gov_tax;
+            $order->payment_amount = $request->receive_price;
+            $order->refund = $request->change;
+            $order->take_voucher = $request->take_voucher;
+            $order->status = 2;
+           
+
+            $order->update();
+            $date       = date("Y-m-d H:i:s");
+            $message    = "[ $date ]  info:  success create an Invoice [ id =  $id ]  with [ takeID = $order->take_id ] [ SubTotal =  $order->sub_total] [ PaymentAmoutn = $order->payment_amount ] ". PHP_EOL;
+            RmsLog::create($message);
+            
+            return back();
+            
+        } catch (\Exception $e) {
+            $date       = date("Y-m-d H:i:s");
+            $message    = "[ $date ]  error:  created an Invoice [ id =  $id ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+            RmsLog::create($message);
+            return $message;
+        }
     }
 }
 

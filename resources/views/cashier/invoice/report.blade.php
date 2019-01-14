@@ -24,7 +24,7 @@
                 <div class="invoice-wrapper">
                 <div class=""><p class="text-center">{{$day}} Report</p></div>
                     <div class="invoice-table-wrapper">
-                        <div id="{{$order->order_id}}-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
+                        <div id="-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
                         <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;background:none;">
                             <thead>
                                 <col width="100">
@@ -43,6 +43,7 @@
                            
                             <tbody style="font-size:13px;line-height:25px;">
                                 @php $v = '' ;@endphp
+                            @if(count($orders) > 0)
                                 @foreach($orders as $order)
                                 
                                     @php  $order_details = App\RMS\Orderdetail\Orderdetail::where('order_id',$order->id)
@@ -77,7 +78,7 @@
                                         @endforeach
                                     </tr>
                                 @endforeach
-                
+                            @endif
                                 <tr>
                                     <td colspan="3">Total Add on </td>
                                    <td>{{$order_extra_quantity }}</td>
@@ -89,9 +90,9 @@
                     </div>
                     <div class="text-center mt-2">
                         <a href="{{ url()->previous() }}" class="btn btn-primary">Back</a>
-                        @if($order->status == 2)
-                        <button class="btn btn-success" id ="{{$order->order_id}}" onClick="print_click(this.id)">Print</button>
-                        @endif
+                       
+                        <button class="btn btn-success" id ="" onClick="print_click(this.id)">Print</button>
+                       
                     </div>
                 </div>
             </div>

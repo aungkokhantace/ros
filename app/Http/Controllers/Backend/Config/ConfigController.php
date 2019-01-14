@@ -29,18 +29,19 @@ class ConfigController extends Controller
         if($config == null){
             return view('Backend.config.config')->with('config',$config);
         }
-                else if(($config->tax == 0.0 && $config->service == 0.0 && $config->room_charge == 0 && $config->booking_warning_time == "00:00:00" && $config->booking_waiting_time == "00:00:00" && $config->booking_service_time == "00:00:00" && $config->message == "" && $config->remark == "") && ($config->restaurant_name != "" || $config->logo != "" || $config->mobile_logo != "" || $config->website != "" || $config->phone != "" || $config->address != "")){
-                    return view('Backend.config.config')->with('record',$config->id);
-                }
-                else{
-                    $warning_time = strtotime($config->booking_warning_time)-strtotime('Today');
-                    $waiting_time = strtotime($config->booking_waiting_time)-strtotime('Today');
-                    $service_time = strtotime($config->booking_service_time)-strtotime('Today');
-                    return view('Backend.config.config')->with('config',$config)->with('warning_time',$warning_time)->with('waiting_time',$waiting_time)->with('service_time',$service_time);
-                }
+        else if(($config->tax == 0.0 && $config->service == 0.0 && $config->room_charge == 0 && $config->booking_warning_time == "00:00:00" && $config->booking_waiting_time == "00:00:00" && $config->booking_service_time == "00:00:00" && $config->message == "" && $config->remark == "") && ($config->restaurant_name != "" || $config->logo != "" || $config->mobile_logo != "" || $config->website != "" || $config->phone != "" || $config->address != "")){
+            return view('Backend.config.config')->with('record',$config->id);
+        }
+        else{
+            $warning_time = strtotime($config->booking_warning_time)-strtotime('Today');
+            $waiting_time = strtotime($config->booking_waiting_time)-strtotime('Today');
+            $service_time = strtotime($config->booking_service_time)-strtotime('Today');
+            return view('Backend.config.config')->with('config',$config)->with('warning_time',$warning_time)->with('waiting_time',$waiting_time)->with('service_time',$service_time);
+        }
     }
 
     public function store(GeneralConfigRequest $request){
+       
         $request->validate();
         $tax                            = $request->get('tax');
         $service                        = $request->get('service');
@@ -55,6 +56,11 @@ class ConfigController extends Controller
         // $remark                         = $request->get('remark');
         $message                        = 'Message';
         $remark                         = 'Remark';
+
+        $backup_url                     = $request->get('backup_url');
+        $backup_frequency               = $request->get('backup_frequency');
+        $db_name                        = $request->get('db_name');
+        
         $paramObj                       = new Config();
         $paramObj->tax                  = $tax;
         $paramObj->service              = $service;
@@ -64,11 +70,15 @@ class ConfigController extends Controller
         // $paramObj->booking_service_time = $service_time;
         $paramObj->message              = $message;
         $paramObj->remark               = $remark;
+        $paramObj->backup_url           = $backup_url;
+        $paramObj->backup_frequency     = $backup_frequency;
+        $paramObj->db_name              = $db_name;
         $this->ConfigRepository->insert_config($paramObj);
         return redirect()->action('Cashier\Config\ConfigController@general_config');
     }
 
     public function update(GeneralConfigRequest $request){
+        
         $request->validate();
         $id                             = $request->get('id');
         $tax                            = $request->get('tax');
@@ -82,6 +92,9 @@ class ConfigController extends Controller
         $service_time                   = gmdate("H:i:s", $service_t);
         $message                        = $request->get('message');
         $remark                         = $request->get('remark');
+        $backup_url                     = $request->get('backup_url');
+        $backup_frequency               = $request->get('backup_frequency');
+        $db_name                        = $request->get('db_name');
         $paramObj                       = Config::find($id);
         $paramObj->tax                  = $tax;
         $paramObj->service              = $service;
@@ -91,6 +104,9 @@ class ConfigController extends Controller
         $paramObj->booking_service_time = $service_time;
         $paramObj->message              = $message;
         $paramObj->remark               = $remark;
+        $paramObj->backup_url           = $backup_url;
+        $paramObj->backup_frequency     = $backup_frequency;
+        $paramObj->db_name              = $db_name;
         $this->ConfigRepository->update_config($paramObj);
         return redirect()->action('Backend\Config\ConfigController@general_config');
     }

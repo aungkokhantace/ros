@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/assets/backend_css/AdminLTE.min.css">
     <link rel="stylesheet" href="/assets/backend_css/AdminLTE.css">
     <link rel="stylesheet" href="/assets/backend_fonts/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/KitchenPrintStyle.css') }}">
     <!-- <link rel="stylesheet" href="/assets/backend_css/jquery-jvectormap.css"> -->
     <link rel="stylesheet" href="/assets/backend_plugins/bootstrap-datepicker/css/datepicker3.css">
     <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
@@ -82,7 +83,7 @@
         $(document).ready(function() {
             //check for notification
             //TableManageTableTools.init();
-                    @if(Session::has('message'))
+            @if(Session::has('message'))
             var message_title = "{{Session::get('message')['title']}}";
             var message_body = "{{Session::get('message')['body']}}";
             setTimeout(addNotification(message_title, message_body), 5000);
@@ -189,6 +190,14 @@
             background-color: #357ca5;
             color: white !important;
         }
+        .sync_inventory {
+            color: black;
+            text-align: center;
+            padding: 13px 12px;
+            font-size: 15px;
+            margin-top:2px;
+            font-weight:bold;
+        }
 
         .logout {
             float: right;
@@ -199,6 +208,9 @@
             text-decoration: none;
             font-size: 15px;
         }
+
+
+
 
         .tbname {
             background: #11463d;
@@ -275,6 +287,7 @@
             width: 70px;
         }
 
+
         .tdname {
             min-width: 300px;
         }
@@ -287,6 +300,25 @@
             font-weight: bolder;
             font-family: 'Source Sans Pro', sans-serif;
         }
+        #loading {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: fixed;
+            display: block;
+            opacity: 0.7;
+            background-color: #fff;
+            z-index: 99;
+            text-align: center;
+            }
+
+            #loading-image {
+            position: absolute;
+            top: 20%;
+            left: 23%;
+            z-index: 100;
+            }
 
         body tbody {
             font-size: 14px;
@@ -298,7 +330,13 @@
 </head>
 
 <header>
+<div id="loading">
+  <img id="loading-image" src="/noti/loadinggif1.gif" alt="Loading..." />
+</div>
     <div class="topnav" id="myTopnav">
+        @if(count(Session::get('message')) != 0)
+            <div ></div>
+        @endif
         <a href="index2.html" class="logo">
             <b>Kitchen</b>@ROS
         </a>
@@ -321,6 +359,9 @@
         <a href="javascript:void(0);" class="icon" onclick="myFunction()">
             <i class="fa fa-bars"></i>
         </a>
+        <a href="/Kitchen/syncinventory">
+        <button class="btn btn-default sync_inventory"><i class="fa fa-database" aria-hidden="true"></i> Sync Inventory</button>
+        </a>
         <a href="/Backend/updateDataBeforeLogout" class="logout">
             <i class="fa fa-circle-o text-danger"></i> <span>Logout</span>
         </a>
@@ -339,7 +380,18 @@
                 x.className = "topnav";
             }
         }
+
+        $('.sync_inventory').click(function(){
+            $('#loading').show();
+        })
     </script>
+<script>
+     $(window).load(function() {
+     $('#loading').hide();
+  });
+</script>
+
+
 <!-- <body>
 <div class="row header">
     <div class="container">

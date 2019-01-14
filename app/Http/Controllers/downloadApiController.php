@@ -48,7 +48,6 @@ class downloadAPIController extends ApiGuardController
 	public function download_voucher(){
 		$returnArr              = array();
         $temp                   = Input::all();
-
         $key                    = $temp['site_activation_key'];
         $waiter_id    			= $temp['waiter_id'];
         $filter 				= $temp['filter'];
@@ -224,15 +223,14 @@ class downloadAPIController extends ApiGuardController
 					unset($set_menu_arr);
 					$set_menu_arr = array();
 
-					$item_id = $order_detail->item_id;
-
-					$category_id = Addon::where('id',$item_id)->value('category_id');
-
-					$add_ons = DB::table('add_on')->where('category_id',$category_id)->whereNull('deleted_at')->get();
-			
+					$category_id = Item::where('id',$order_detail->item_id)->value('category_id');
+					
+					$add_ons = Addon::where('category_id',$category_id)->get();
+					
 					// if(isset($order_extra_raw) && count($order_extra_raw) > 0) {
 
 						$ex_ary = array();
+						
 						foreach($add_ons as $addon){
 							$extra_mq = DB::table('order_extra')->where('extra_id',$addon->id)->where('order_detail_id',$order_detail->order_detail_id)->first();
 
@@ -245,8 +243,8 @@ class downloadAPIController extends ApiGuardController
 							}else{
 								$ex_de['extra_id'] = $addon->id;
 								$ex_de['order_detail_id'] = $order_detail->order_detail_id;
-								$ex_de['quantity'] = $extra_mq->quantity;
-								$ex_de['amount'] = $extra_mq->amount;
+								$ex_de['quantity'] = '0';
+								$ex_de['amount'] = 0.0;
 								$ex_de['status'] = 0;
 							}
 							array_push($ex_ary,$ex_de);

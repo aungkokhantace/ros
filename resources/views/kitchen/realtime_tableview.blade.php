@@ -1,3 +1,6 @@
+<?php
+ini_set('memory_limit', '-1');
+?>
 <div id="body">
     <div class="row" id="autoDiv">
         @foreach($orders as $orderKey =>$orderValue)
@@ -219,7 +222,7 @@
                                         </td>
                                         <td style="border-left: none !important;">
                                             @php
-                                                if (isset($tables)) {
+                                                if (isset($table)) {
                                                     $id = $table->table_id;
                                                 } elseif (isset($room)) {
                                                     $id = $room->rome_id;
@@ -244,4 +247,6 @@
         @endforeach
     </div>
 </div>
-
+<?php
+ini_set('memory_limit', '-1');
+?>

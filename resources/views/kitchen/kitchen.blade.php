@@ -1,6 +1,16 @@
+<?php
+ini_set('memory_limit', '-1');
+?>
 @extends('kitchen.kitchen_header')
 @section('title','Order View')
 @section('content')
+<head>
+  <style>
+  .modal-width {
+    width: 300px;
+  }
+  </style>
+</head>
     <div id="body">
         <div class="container" id="divAuto" style="cursor: pointer;">
             <div class="row" id="autoDiv">
@@ -223,10 +233,10 @@
                                                 </td>
                                                 <td style="border-left: none !important;">
                                                     @php
-                                                        if (isset($tables)) {
+                                                        if (isset($table)) {
                                                             $id = $table->table_id;
                                                         } elseif (isset($room)) {
-                                                            $id = $room->rome_id;
+                                                            $id = $room->room_id;
                                                         }
                                                     @endphp
                                                     @if (empty($item->is_ready_food))
@@ -473,7 +483,7 @@
             ifr.style='height: auto; width: 0px; position: absolute';
 
             document.body.appendChild(ifr);
-            $(e).append('<style type="text/css" media="print">table tr { font-weight: bolder; font-size: 10px; margin-bottom: 10px; }</style>');
+            $(e).append('<style rel="stylesheet" type="text/css" media="print">.modal-body {text-align:center !important;font-size:15px;font-weight:bolder;width:300px;margin:auto !important;}table {width:300px !important;}table .right {float:right !important;}table td {padding: 8px !important}</style>');
             $(e).clone().appendTo(ifr.contentDocument.body);
             ifr.contentWindow.print();
 
@@ -500,3 +510,6 @@
         }
     </script>
 @endsection
+<?php
+ini_set('memory_limit', '-1');
+?>

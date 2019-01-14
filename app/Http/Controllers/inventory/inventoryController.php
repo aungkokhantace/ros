@@ -18,6 +18,7 @@ use App\Inventory\UM;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Middleware;
 use App\RMS\Utility;
+use App\Inventory\OrderRepositoryInterface;
 use App\RMS\Config\ConfigRepositoryInterface;
 use App\RMS\Kitchen\Kitchen;
 use Validator;
@@ -46,7 +47,7 @@ class inventoryController extends Controller
 
 
     public function category(){
-
+     
 		$CateRepo = new CategoryRepository();
 
     	$categorys = $CateRepo->getParentCate();
@@ -58,13 +59,18 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-
+        
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body' => $categorys,
 		]);
-
-
+         
+        if($res->getStatusCode() != 200){
+			return 400;
+		}else{
+			return $res->getStatusCode();
+		}
+       
     }
 
     public function group(){
@@ -89,6 +95,8 @@ class inventoryController extends Controller
 		    'body'    => $groups,
 		]);
 
+		return  $res->getStatusCode();
+
 
     }
 
@@ -107,7 +115,9 @@ class inventoryController extends Controller
     	}
 
 
-    	$classes  = $CateRepo->getCalss($classes);
+        
+    	$classes  = $CateRepo->getClass($classes);
+
         $url  = $this->resquestserverurl.'/classcode/create';
         $classes = json_encode($classes);
         // return $classes;
@@ -120,6 +130,7 @@ class inventoryController extends Controller
 		    'headers' => $headers,
 		    'body' => $classes,
 		]);
+		return  $res->getStatusCode();
 
     }
 
@@ -192,7 +203,7 @@ class inventoryController extends Controller
 
 			}
 		}
-
+        return $ItemAry;
 		$url  = $this->resquestserverurl.'/stock/create';
 
 		$ItemAry = json_encode($ItemAry);
@@ -206,6 +217,8 @@ class inventoryController extends Controller
 		    'headers' => $headers,
 		    'body' => $ItemAry,
 		]);
+
+		return  $res->getStatusCode();
 
 	}
 
@@ -363,7 +376,7 @@ class inventoryController extends Controller
 		    'body' => $orderAry,
 		]);
 
-
+		return  $res->getStatusCode();
 	}
 
     public function index()
@@ -462,4 +475,24 @@ class inventoryController extends Controller
         $client = new \GuzzleHttp\Client($meta);
         $client->post($uri,['body' => $data ]);
     }
+
+
+		
+
+	public function getremainbalance()
+    {
+        $client = new Client([
+          'base_uri' => $this->resquestserverurl
+        ]);
+
+        $review_url = 'dailybalance/get_dailybalance';
+        $remain_stocks   = json_decode($client->get($review_url)->getBody());
+
+        return $remain_stocks;
+    }
+
+
+	
+ 
+
 }

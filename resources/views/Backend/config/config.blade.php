@@ -62,6 +62,62 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label for="service" class="col-sm-3 control-label left-align label-font">Backup Url</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="backup_url" name="backup_url" placeholder="Enter Back Up Url" value="{{ isset($config)? $config->backup_url:Request::old('backup_url') }}"/>
+                <p class="text-danger">{{$errors->first('backup_url')}}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="service" class="col-sm-3 control-label left-align label-font">Backup Frequency</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="backup_frequency">
+                    <option selected disabled value="">___Please Choose Back Up Frequency___</option>
+                    @if($config->backup_frequency == 1)
+                        <option value="1" selected>1</option>
+                    @else 
+                        <option value="1">1</option>
+                    @endif 
+
+                    @if($config->backup_frequency == 2)
+                        <option value="2" selected>2</option>
+                    @else 
+                        <option value="2">2</option>
+                    @endif
+                    
+                    @if($config->backup_frequency == 5)
+                        <option value="5" selected>5</option>
+                    @else 
+                        <option value="5">5</option>
+                    @endif
+                    
+                    @if($config->backup_frequency == 12)
+                        <option value="12" selected>12</option>
+                    @else 
+                        <option value="12">12</option>
+                    @endif
+
+                    @if($config->backup_frequency == 24)
+                        <option value="24" selected>24</option>
+                    @else 
+                        <option value="24">24</option>
+                    @endif
+                    
+                </select>
+                <p class="text-danger">{{$errors->first('backup_frequency')}}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="service" class="col-sm-3 control-label left-align label-font">Database Name</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="db_name" name="db_name" placeholder="Enter Database Name" value="{{ isset($config)? $config->db_name:Request::old('db_name') }}"/>
+                <p class="text-danger">{{$errors->first('db_name')}}</p>
+            </div>
+        </div>
+
         <!-- <div class="form-group">
             <label for="before" class="col-sm-3 control-label left-align label-font">Booking Warning Time</label>
             <div class="col-sm-7">

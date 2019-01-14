@@ -1,13 +1,6 @@
 <?php
 
-
-// Route::get('logo', 'headerController@logo');
-
-if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
-    // Ignores notices and reports all other kinds... and warnings
-    error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
-    // error_reporting(E_ALL ^ E_WARNING); // Maybe this is enough
-}
+Route::get('logo', 'headerController@logo');
 
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', function () {
@@ -671,6 +664,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('getCompleteID','Kitchen\OrderViewController@tableView');
             Route::get('getStartID','Kitchen\OrderViewController@tableView');
 
+
             Route::get('kitchen/ajaxRequestProduct','Kitchen\OrderViewController@ajaxRequestProduct');
             Route::get('getCompleteID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@update');
             Route::get('getStartID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@start');
@@ -695,6 +689,8 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('test-values', 'Kitchen\HomeController@pricesValues');
             Route::resource('stock-requisition', 'inventory\inventoryController', ['only' => ['index', 'store']]);
             Route::resource('stock-review', 'Kitchen\StockReviewController', ['only' => ['index']]);
+            //Bi2 inventory sync
+            Route::get('/syncinventory','Kitchen\OrderViewController@SyncInventory');
         });
     });
 });
@@ -740,6 +736,8 @@ Route::post('api/v1/cancel','makeAPIController@cancel');
 Route::post('api/v1/table_status','makeAPIController@table_status');
 Route::post('api/v1/room_status','makeAPIController@room_status');
 Route::post('api/v1/table_transfer','makeAPIController@table_transfer');
+Route::post('api/v2/table_transfer_v2','makeAPIController@table_transfer_v2');
+
 Route::post('api/v1/room_transfer','makeAPIController@room_transfer');
 Route::post('api/v1/take','makeAPIController@take');
 Route::post('api/v1/check_cancel_status','makeAPIController@check_cancel_status');
@@ -768,3 +766,4 @@ Route::get('/classcode/create','inventory\inventoryController@class');
 Route::get('/stock/create','inventory\inventoryController@stock_item');
 Route::get('sync_um','inventory\inventoryController@getSyncUm');
 Route::get('api/v1/get_kitchen','inventory\inventoryController@getKitchen');
+Route::get('/remainvalance','inventory\inventoryController@getremainbalance');
