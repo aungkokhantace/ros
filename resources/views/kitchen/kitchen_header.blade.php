@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/assets/backend_css/AdminLTE.min.css">
     <link rel="stylesheet" href="/assets/backend_css/AdminLTE.css">
     <link rel="stylesheet" href="/assets/backend_fonts/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/KitchenPrintStyle.css') }}">
     <!-- <link rel="stylesheet" href="/assets/backend_css/jquery-jvectormap.css"> -->
     <link rel="stylesheet" href="/assets/backend_plugins/bootstrap-datepicker/css/datepicker3.css">
     <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
@@ -208,7 +209,7 @@
             font-size: 15px;
         }
 
-        
+
 
 
         .tbname {
@@ -285,7 +286,7 @@
         .td-min-width {
             width: 70px;
         }
-    
+
 
         .tdname {
             min-width: 300px;
