@@ -473,7 +473,7 @@ class MakeAPIController extends ApiGuardController
             if ($order_status == 2) {
                 $output = array("message" => "Paid");
             } else {
-                DB::beginTransaction();
+                
                 $order->total_price             = $total_price;
                 $order->service_amount          = $service_amount;
                 $order->tax_amount              = $tax_amount;
@@ -486,16 +486,19 @@ class MakeAPIController extends ApiGuardController
                 $message = "[ $date ]  info:   Update an Order  [ id = $order->id ] " . PHP_EOL;
                 RmsLog::create($message);
                 $order_detail_ary = array();
+                
                 foreach ($order_details as $order_detail) {
+                   
                     $order_detail_id = $order_detail->order_detail_id;
                     $detail = Orderdetail::where('order_detail_id',$order_detail_id)->first();
                     $order_detail_status        = $order_detail->status;
                     array_push($order_detail_ary,$order_detail->order_detail_id);
 
                    if(!in_array($order_detail->order_detail_id,$old_order_detail_ary)){
-                       
+                    
+                    
                         if($detail == null){
-                        
+                         
                             $temp = new Orderdetail();
                             $temp->id                   = $order_detail->order_detail_id;
                             $temp->order_id             = $order_id;
@@ -516,6 +519,11 @@ class MakeAPIController extends ApiGuardController
                             $temp->remark_extra   = $order_detail->remark_extra;
                             }
                             $temp->save();
+
+                            // if($order_detail->state == 'new'){
+                            //     dd('temp',$temp);
+                            // }  
+
                             // Custom Log
                             $message = "[ $date ]  info:   update an OrderDetails [ id = $order_detail->order_detail_id ] " . PHP_EOL;
                             RmsLog::create($message);
@@ -700,19 +708,23 @@ class MakeAPIController extends ApiGuardController
 
                 }
 
-            DB::commit();
-
+           
             $output = array("message" => "Success");
 
             } 
            
             if(isset($old_order_detail) && count($old_order_detail_ary)>0){
-              $output['cooked'] = $old_order_detail_ary['0'] . 'is cooked';
+              $order_detail_for_item = $old_order_detail_ary['0'];
+              $item_name = Oderdetail::where('order_detail_id',$order_detail_for_item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
+              $item_name = $item_name->item_name;
+              $output['cooked'] = $item_name . " is cooked ";
             }
+            // dd('output',$output);
+            DB::commit();
             return Response::json($output);
 
         }catch(\Exception $e){
-
+            dd($e);
             DB::rollback();
             $date       = date("Y-m-d H:i:s");
             $data       = json_decode(request('orderID'));
