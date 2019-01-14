@@ -271,7 +271,7 @@ class MakeAPIController extends ApiGuardController
                 $temp           = new OrderRoom();
                 $temp->order_id = $order_id;
                 $temp->room_id  = $room->room_id;
-                save();
+                $temp->save();
                 // Custom Log
                 $message = " [ $date ]  info: create an  OrderRoom [ RoomID = $temp->room_id ] " . PHP_EOL;
                 RmsLog::create($message);
