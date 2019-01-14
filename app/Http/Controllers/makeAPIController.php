@@ -724,7 +724,7 @@ class MakeAPIController extends ApiGuardController
             return Response::json($output);
 
         }catch(\Exception $e){
-            dd($e);
+            
             DB::rollback();
             $date       = date("Y-m-d H:i:s");
             $data       = json_decode(request('orderID'));
