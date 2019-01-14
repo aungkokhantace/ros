@@ -715,7 +715,7 @@ class MakeAPIController extends ApiGuardController
            
             if(isset($old_order_detail) && count($old_order_detail_ary)>0){
               $order_detail_for_item = $old_order_detail_ary['0'];
-              $item_name = Oderdetail::where('order_detail_id',$order_detail_for_item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
+              $item_name = Orderdetail::where('order_detail_id',$order_detail_for_item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
               $item_name = $item_name->item_name;
               $output['cooked'] = $item_name . " is cooked ";
             }
