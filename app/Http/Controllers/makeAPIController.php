@@ -104,7 +104,7 @@ class MakeAPIController extends ApiGuardController
                                         ->where('shift_user.user_id','=',$id)
                                         ->where('shift_user.status','=',$user_status)
                                         ->first();
-
+                           
 
                             if (count($dayStart) > 0) {
                                 $output = array("message" => "Success","waiter_id"=>$id,"username"=>$username,"role"=>$r,"day_id"=>$dayStart->day_id,"shift_id"=>$dayStart->shift_id);

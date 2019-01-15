@@ -1190,7 +1190,8 @@ class InvoiceController extends Controller
 		$daystart             = DayStart::select('id')
 							->where('status',$session_status)
 							->whereNull('deleted_at')
-							->first();
+                            ->first();
+   
 		$day_id 			  = '';
 
 		
@@ -1198,7 +1199,7 @@ class InvoiceController extends Controller
 		if (count($daystart) > 0) {
 			$day_id 			  = $daystart->id;
         }
-        
+     
         $orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
                             ->where('take_id',1)
 					        ->orderBy('id', 'desc')

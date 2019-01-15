@@ -209,6 +209,27 @@ ini_set('memory_limit', '-1');
                                                     </div>
                                                 </div>
                                             </td>
+
+                                            <td style="border-left: none !important;">
+                                                <div class="btn-group">
+                                                    <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (Waiter)</button>
+                                                </div>
+                                            </td>
+                                            <td style="border-left: none !important;">
+                                                @php
+                                                    if (isset($tables)) {
+                                                        $id = $table->table_id;
+                                                    } elseif (isset($room)) {
+                                                        $id = $room->rome_id;
+                                                    }
+                                                @endphp
+                                                @if (empty($item->is_ready_food))
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-success" id='{{ $item->id }}' onclick="print_chief('{{$item->id}}')" data-toggle="modal" data-id="{{$item->id}}" data-target="#printModal">Print (Chef)</button>
+                                                    </div>
+                                                @endif
+                                            </td>
+
                                             @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
                                                     <div class="btn-group">
@@ -218,7 +239,7 @@ ini_set('memory_limit', '-1');
                                             @else
                                                 <td style="border-left: none !important;"></td>
                                             @endif
-                                            @if ($item->status_id == 1)
+                                            {{-- @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
                                                     <div class="btn-group">
                                                         <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print For Waiter</button>
@@ -241,7 +262,7 @@ ini_set('memory_limit', '-1');
                                             @else
                                                 <td style="border-left: none !important;"></td>
                                                 <td style="border-left: none !important;"></td>
-                                            @endif
+                                            @endif --}}
                                         </tr>
                                     @endforeach
                                 </table>

@@ -56,7 +56,7 @@ class OrderViewController extends Controller
         $order_setmenu_cookig_done_status   = StatusConstance::ORDER_SETMENU_COOKING_DONE_STATUS;
 
         $ordersRaw          = DB::select("SELECT * FROM `order` WHERE status = '$order_status' OR status = '$order_paid_status' ORDER BY id DESC");
-
+        
         $order_detailsRaw   = DB::select("SELECT order_details.*,items.name,items.category_id,items.image,items.has_continent, items.is_ready_food, items.stock_code,continent.name AS continent_name
                                           FROM `order_details`
                                           LEFT JOIN `items` ON order_details.item_id=items.id
@@ -86,7 +86,7 @@ class OrderViewController extends Controller
         foreach ($ordersRaw as $key => $order) {
             $orders[$order->id]   = $order;
         }
-
+        
         foreach ($orders as $key => $order) {
             $order_id = $order->id;
             $orderItemList = array();
@@ -105,7 +105,7 @@ class OrderViewController extends Controller
                     ->join('order_details', 'order_detail_remark.order_detail_id', '=', 'order_details.order_detail_id')
                     ->where('order_detail_remark.order_detail_id', '=', $order_detail->order_detail_id)
                     ->get();
-
+               
                 if (!empty($remarks)) {
                     $array = [];
                     if (count($remarks) > 0) {

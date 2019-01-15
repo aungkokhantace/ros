@@ -24,7 +24,7 @@
                                     Tel: {{ $config->phone}}<br/>
                                     Addr: {{ $config->address}}<br /><br />
                                     <span style="float:left">Invoice No: {{ $order->id}}</span><br/>
-                                    <span style="float:left">Invoice Date:{{$order->order_time}}</span><br/>
+                                    <span style="float:left">Invoice Date:{{ Carbon\Carbon::parse($order->order_time)->format('d-m-Y') }}</span><br/>
                                     @if(count($tables)>0)
                                         Table No :
                                         @foreach($tables as $table)
