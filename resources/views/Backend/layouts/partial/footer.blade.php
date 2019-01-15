@@ -90,63 +90,66 @@
 
 
 
-        if($('input[name="view"]:checked', '#view_by_radio').val()=="daily"){
-            $('.daily').show();
-            $('.monthly').hide();
-            $('.yearly').hide();
-        }
-        else if($('input[name="view"]:checked', '#view_by_radio').val()=="monthly"){
-            $('.daily').hide();
-            $('.monthly').show();
-            $('.yearly').hide();
-        }
-        else{
-            $('.daily').hide();
-            $('.monthly').hide();
-            $('.yearly').show();
-        }
+    //     if($('input[name="view"]:checked', '#view_by_radio').val()=="daily"){
+    //         $('.daily').show();
+    //         $('.monthly').hide();
+    //         $('.yearly').hide();
+    //     }
+    //     else if($('input[name="view"]:checked', '#view_by_radio').val()=="monthly"){
+    //         $('.daily').hide();
+    //         $('.monthly').show();
+    //         $('.yearly').hide();
+    //     }
+    //     else{
+    //         $('.daily').hide();
+    //         $('.monthly').hide();
+    //         $('.yearly').show();
+    //     }
 
-        $('#view_by_radio input[type=radio][name="view"]').on('change', function() {
-        if($('input[name="view"]:checked', '#view_by_radio').val()=="daily"){
-            var data = $('input[name="view"]:checked', '#view_by_radio').val();
-            $('.daily').show();
-            $('.monthly').hide();
-            $('.yearly').hide();
-            window.location.href = '/Backend/saleSummaryDetailReport/'+ data;
-        }
-        else if($('input[name="view"]:checked', '#view_by_radio').val()=="monthly"){
-            var data = $('input[name="view"]:checked', '#view_by_radio').val();
-            $('.daily').hide();
-            $('.monthly').show();
-            $('.yearly').hide();
+    //     $('#view_by_radio input[type=radio][name="view"]').on('change', function() {
+    //     if($('input[name="view"]:checked', '#view_by_radio').val()=="daily"){
+    //         var data = $('input[name="view"]:checked', '#view_by_radio').val();
+    //         $('.daily').show();
+    //         $('.monthly').hide();
+    //         $('.yearly').hide();
+    //         window.location.href = '/Backend/saleSummaryDetailReport/'+ data;
+    //     }
+    //     else if($('input[name="view"]:checked', '#view_by_radio').val()=="monthly"){
+    //         var data = $('input[name="view"]:checked', '#view_by_radio').val();
+    //         $('.daily').hide();
+    //         $('.monthly').show();
+    //         $('.yearly').hide();
 
-            window.location.href = '/Backend/saleSummaryDetailReport/' + data;
-        }
-        else{
-            var data = $('input[name="view"]:checked', '#view_by_radio').val();
-            $('.daily').hide();
-            $('.monthly').hide();
-            $('.yearly').show();
-            console.log(data);
-            window.location.href = '/Backend/saleSummaryDetailReport/' + data;
-        }
-    });
+    //         window.location.href = '/Backend/saleSummaryDetailReport/' + data;
+    //     }
+    //     else{
+    //         var data = $('input[name="view"]:checked', '#view_by_radio').val();
+    //         $('.daily').hide();
+    //         $('.monthly').hide();
+    //         $('.yearly').show();
+    //         console.log(data);
+    //         window.location.href = '/Backend/saleSummaryDetailReport/' + data;
+    //     }
+    // });
 
-        $('#sale_summary input[type=radio][name="sale"]').on('change', function() {
-        if($('input[name="sale"]:checked', '#sale_summary').val()=="daily"){
-            var data = $('input[name="sale"]:checked', '#sale_summary').val();
+    //     $('#sale_summary input[type=radio][name="sale"]').on('change', function() {
+    //     if($('input[name="sale"]:checked', '#sale_summary').val()=="daily"){
+    //         console.log("awewfe daily");
+    //         var data = $('input[name="sale"]:checked', '#sale_summary').val();
 
-            window.location.href = '/Backend/saleSummaryReport/'+ data;
-        }else if($('input[name="sale"]:checked', '#sale_summary').val()=="monthly"){
-            var data = $('input[name="sale"]:checked', '#sale_summary').val();
+    //         window.location.href = '/Backend/saleSummaryReport/'+ data;
+    //     }else if($('input[name="sale"]:checked', '#sale_summary').val()=="monthly"){
+    //         var data = $('input[name="sale"]:checked', '#sale_summary').val();
+    //           console.log("awewfe monthly");
 
-            window.location.href = '/Backend/saleSummaryReport/'+ data;
-        }else{
-            var data = $('input[name="sale"]:checked', '#sale_summary').val();
+    //         window.location.href = '/Backend/saleSummaryReport/'+ data;
+    //     }else{
+    //         var data = $('input[name="sale"]:checked', '#sale_summary').val();
+    //           console.log("awewfe sale_summary_report");
 
-            window.location.href = '/Backend/saleSummaryReport/'+ data;
-        }
-    });
+    //         window.location.href = '/Backend/saleSummaryReport/'+ data;
+    //     }
+    // });
     });
 </script>
 <script src="/assets/backend_js/multi-row.js"></script>

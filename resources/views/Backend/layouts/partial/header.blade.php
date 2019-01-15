@@ -72,6 +72,7 @@
   <script src="/assets/js/datatables/dataTables.bootstrap.js"></script>
  <script src="/assets/js/checkall.js"></script>
  <script src="/assets/js/enabled-disabled.js"></script>
+  <script src="/assets/backend_js/validation/report.js"></script>
 <script>
 
 

@@ -39,7 +39,7 @@ class OrderViewController extends Controller
     {
         $id                 = Auth::guard('Cashier')->user()->kitchen_id;
         $kitchen            = Kitchen::find($id);
-        $tables             = $this->OrderRepository->orderTable();
+        $tables             = $this->OrderRepository->getOrderTableWithLocation();
         $rooms              = $this->OrderRepository->orderRoom();
         $extra              = $this->OrderRepository->orderExtra();
 
@@ -147,9 +147,11 @@ class OrderViewController extends Controller
             }
             $orders[$key]->items = $orderItemList;
         }
-
+        
         // dd($orders);
-        return view('kitchen.kitchen')->with('orders',$orders)->with('tables',$tables)->with('rooms',$rooms)->with('extra',$extra);
+        return view('kitchen.kitchen')->with('orders',$orders)
+          ->with('tables',$tables)->with('rooms',$rooms)
+          ->with('extra',$extra)->with('kitchen', $kitchen);
     }
 
     public function tableViewDesign() {
@@ -774,7 +776,7 @@ class OrderViewController extends Controller
     public function CancelUpdateFromTableView()
     {
         try {
-            
+
             DB::beginTransaction();
             $id             = Input::get('order_details_id');
             $setmenu_id     = Input::get('setmenu_id');

@@ -1078,7 +1078,9 @@ thead label{color: #FFFFFF;}
     border-bottom:1px dashed black;
 }
 
-body {padding: 0 0 30pt 0;} 
+body {padding: 0 0 30pt 0;
+    position: relative;
+} 
 .modal-backdrop {
   z-index: -1;
 }
