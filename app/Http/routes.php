@@ -507,6 +507,17 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('yearlySale/{year}','Backend\Report\SaleSummaryReportController@yearlySale');
                 Route::get('yearlySaleExport/{year}','Backend\Report\SaleSummaryReportController@yearlySaleExport');
 
+                // / update sale summary report /
+                Route::get('sale_SummaryReport','Backend\Reports\SaleSummaryReportController@saleSummary');
+                Route::get('sale_SummaryReport/search/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@search_query');
+                Route::get('sale_SummaryReport/exportexcel/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@exportExcel');
+                // / sale summary report detial /
+                Route::get('sale_SummaryReport/detail/{date}/{type}','Backend\Reports\SaleSummaryReportController@summary_detail');
+                // / sale summary reprt detail sort /
+                Route::get('sale_SummaryReport/detail/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
+                Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
+                Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}','Backend\Reports\SaleSummaryReportController@invoice_detail');
+                // / update sale summary report /
 
             });
 
@@ -622,19 +633,19 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('DownloadApi','Backend\Log\ApilistController@down');
             });
 
-            //Start Remark
-            Route::group(['middleware'=>'remark:Cashier'],function(){
-                Route::get('Remark/index', 'Backend\Remark\RemarkController@index');
-                Route::get('Remark/create', 'Backend\Remark\RemarkController@create');
-                Route::post('Remark/store', 'Backend\Remark\RemarkController@store');
-                Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
-                Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
-                Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
-
-                Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
-                Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
-            });
-            //End remark
+            // //Start Remark
+            // Route::group(['middleware'=>'remark:Cashier'],function(){
+            //     Route::get('Remark/index', 'Backend\Remark\RemarkController@index');
+            //     Route::get('Remark/create', 'Backend\Remark\RemarkController@create');
+            //     Route::post('Remark/store', 'Backend\Remark\RemarkController@store');
+            //     Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
+            //     Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
+            //     Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
+            //
+            //     Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
+            //     Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
+            // });
+            // //End remark
 
           //Start Remark
         Route::group(['middleware'=>'remark:Cashier'],function(){
@@ -649,6 +660,10 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
         });
         //End remark
+
+        Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+        Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+        Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
 
         });
     });

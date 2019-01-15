@@ -203,7 +203,8 @@ class inventoryController extends Controller
 
 			}
 		}
-        // return $ItemAry;
+		// return $ItemAry;
+		
 		$url  = $this->resquestserverurl.'/stock/create';
 
 		$ItemAry = json_encode($ItemAry);
