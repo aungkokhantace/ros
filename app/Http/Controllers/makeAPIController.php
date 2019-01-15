@@ -44,6 +44,7 @@ use App\RMS\Order_Detail_Remark\Order_Detail_Remark;
 use App\RMS\Order_Detail_Remark\Order_Detail_RemarkRepository;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetailRepository;
 use Storage;
+
 use App\Log\LogCustom;
 use App\Log\RmsLog;
 use App\Status\StatusConstance;
@@ -194,7 +195,7 @@ class MakeAPIController extends ApiGuardController
         $ordersRaw  = $temp['orderID'];
         
         $orders   = json_decode($ordersRaw);
-
+        $session_status       = StatusConstance::DAY_STARTING_STATUS;
 
         $dt         = Carbon::now();
         $date       = date("Y-m-d H:i:s");
@@ -220,6 +221,18 @@ class MakeAPIController extends ApiGuardController
             $tablet_id              = $order->tablet_id;
             $stand_number           = $order->stand_number;
         }
+
+        $daystart             = DayStart::select('id')
+        ->where('status',$session_status)
+        ->whereNull('deleted_at')
+        ->first();
+        
+        if($daystart->id != $day_id){
+            $output = array();
+            $output['message'] = 'you need to logout and Login again';
+            return Response::json($output);
+
+        }
         
         $order                          = new Order();
         $order->id                      = $order_id;
@@ -242,7 +255,7 @@ class MakeAPIController extends ApiGuardController
         // Custom Log
         $message = "[ $date ]  info:   create an Order  [ id = $order_id ] " . PHP_EOL;
         RmsLog::create($message);
-
+       
 
         if(isset($order_tables)){
             foreach($order_tables as $table){
@@ -372,6 +385,7 @@ class MakeAPIController extends ApiGuardController
             return Response::json($output);
 
         }catch(\Exception $e){
+            dd($e);
             DB::rollback();
             $date       = date("Y-m-d H:i:s");
             $data       = json_decode(request('orderID'));
@@ -414,18 +428,20 @@ class MakeAPIController extends ApiGuardController
                 $extra_price        = $order->extra_price;
                 $stand_number       = $order->stand_number;
             }
-
+            
             $order = Order::find($order_id);
 
             if($order){
                 $get_order_detail = Orderdetail::where('order_id',$order->id)->get();
                 $old_order_detail_ary = array();
-                
+               
                 foreach($order_details as $details){
-                    
+                  
                     if($details->state == 'old'){
                         $old_order_detail = Orderdetail::where('order_detail_id',$details->order_detail_id)->first();
+                        dd($old_order_detail);
                         if($old_order_detail->status_id == 2 || $old_order_detail->status_id == 3 || $old_order_detail->status_id == 4){
+                            
                             array_push($old_order_detail_ary,$details->order_detail_id);
                         }    
                     }
