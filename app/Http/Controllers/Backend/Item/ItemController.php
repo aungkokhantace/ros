@@ -354,7 +354,8 @@ class ItemController extends Controller
 /*----------------- start Normalize Item -----------------------------------------------------------*/
             /* if Updated , selected item's updated_at column is not modifide delete it. */
                 $max_date = Item::where('name',$name)->get()->max('updated_at');
-                Item::where('name',$name)->each(function ($item)use($max_date){
+                $update_item = $itemID;
+                Item::where('name',$name)->whereNotIn('id',$update_item)->each(function ($item)use($max_date){
                     if ($item->updated_at < $max_date && $item->isdefault == 0) {
                         $item->normalizeItem();
                     }

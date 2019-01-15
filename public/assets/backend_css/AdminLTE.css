@@ -4989,3 +4989,11 @@ table.text-center th {
 .User_list{
   margin-left:23px;
 }
+.user-border-left{
+  min-height: 100%;
+  width: 100%;
+  background: #EAEFF5 !important;
+}
+.main-footer{
+  clear: both;
+}
