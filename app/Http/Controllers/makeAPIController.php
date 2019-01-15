@@ -1123,7 +1123,7 @@ class MakeAPIController extends ApiGuardController
             }
 
 
-            $orders   = DB::table('order')->whereIn('id',$table_id_array)->select('order.id as voucher_id','order.order_time as date','order.sub_total as total_amount','order.all_total_amount as net_amount','order.stand_number as stand_number')->where('status',1)->get();
+            $orders   = DB::table('order')->whereIn('id',$table_id_array)->select('order.id as voucher_id','order.order_time as date','order.sub_total as total_amount','order.all_total_amount as net_amount','order.stand_number as stand_number','order.will_pay as will_pay')->where('status',1)->get();
 
             foreach($orders as $order){
                 $order->voucher_info = $table_name;

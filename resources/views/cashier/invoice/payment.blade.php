@@ -397,10 +397,10 @@
         @include('cashier.invoice.items_list')
       <script type="text/javascript">
         $(document).ready(function(){
-            window.addEventListener("keypress", function(e){
-                var keyCode = e.keyCode;
-                
-                if(keyCode == 102 || keyCode == 0){
+            window.addEventListener("keydown", function(e){
+               var keyCode = e.key;
+              
+                if(keyCode == '/'){
                    $('.cash_receive_input').val(parseInt($('.total_amount').val()));
                    $('.receive_price').val(parseInt($('.total_amount').val()));
                    $( ".save_btn" ).prop( "disabled", false );
