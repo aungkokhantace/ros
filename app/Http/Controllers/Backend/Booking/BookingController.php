@@ -102,6 +102,12 @@ class BookingController extends Controller
         $request->validate();
         $date           = Carbon::parse(Input::get('date'))->format('Y-m-d');
         $from           = Input::get('from_time');
+        $from_validate  = Carbon::parse($from)->format('g:i');
+        $validate_date  = Carbon::now()->format('g:i');
+        if($from_validate < $validate_date){
+            alert()->warning('Your order time much be grater than current time!')->persistent('Close');
+            return back();
+        }
 
         $from_time      = date("H:i:s", strtotime($from));
 
