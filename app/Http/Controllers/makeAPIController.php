@@ -718,6 +718,8 @@ class MakeAPIController extends ApiGuardController
               $item_name = Orderdetail::where('order_detail_id',$order_detail_for_item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
               $item_name = $item_name->item_name;
               $output['cooked'] = $item_name . " is cooked ";
+            }else{
+              $output['cooked'] = "" ;
             }
             // dd('output',$output);
             DB::commit();
