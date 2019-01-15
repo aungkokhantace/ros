@@ -92,9 +92,6 @@
 
 
     </div>
-</div>
-    <!-- /.content -->
-  </div>
 @php
     $label_arr  = array();
     foreach($orders as $order) {

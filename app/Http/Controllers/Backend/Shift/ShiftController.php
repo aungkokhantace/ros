@@ -209,14 +209,16 @@ class ShiftController extends Controller
             }
         }
 
-        foreach ($users as $key => $user) {
-            $userObj                = new ShiftUser();
-            $userObj->shift_id      = $shift_id;
-            $userObj->user_id       = $user;
-            $userObj->status        = $user_status;
-            $result                 = $this->shiftRepository->store($userObj);
+        if (isset($users)) {
+            foreach ($users as $key => $user) {
+                $userObj                = new ShiftUser();
+                $userObj->shift_id      = $shift_id;
+                $userObj->user_id       = $user;
+                $userObj->status        = $user_status;
+                $result                 = $this->shiftRepository->store($userObj);
+            }
         }
-        return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Shift updated ...'));
+        return redirect('Backend/Shift/index')->withMessage(FormatGenerator::message('Success', 'Shift updated ...'));
     }
     /*
     public function Shift($shift){
