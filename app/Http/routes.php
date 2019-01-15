@@ -451,65 +451,82 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('FoodOrderList/Detail/{order_id}/{order_status}','Backend\Invoice\OrderViewController@detail');
             });
 
+         //Report
+        Route::group(['middleware'=>'report:Cashier'],function(){
+            /* old version report */
 
-            //Report
-            Route::group(['middleware'=>'report:Cashier'],function(){
+            Route::get('invoice','Backend\Invoice\InvoiceController@invoiceList');
+            Route::get('ajaxSearchRequest','Backend\Invoice\InvoiceController@SearchRequest');
+            Route::get('ajaxSearchTimeIncreaseRequest','Backend\Invoice\InvoiceController@TimeIncreaseRequest');
+            Route::get('ajaxSearchTimeDecreaseRequest','Backend\Invoice\InvoiceController@TimeDecreaseRequest');
+            Route::get('ajaxSearchPriceIncreaseRequest','Backend\Invoice\InvoiceController@PriceIncreaseRequest');
+            Route::get('ajaxSearchPriceDecreaseRequest','Backend\Invoice\InvoiceController@PriceDecreaseRequest');
+            Route::get('ajaxSearchCancelRequest','Backend\Invoice\InvoiceController@CancelRequest');
+            Route::get('ajaxRequest','Backend\Invoice\InvoiceController@ajaxRequest');
+            Route::get('invoice/ajaxInvoiceRequest','Backend\Invoice\InvoiceController@ajaxInvoiceRequest');
+            Route::get('invoice/detail/{id}','Backend\Invoice\InvoiceController@invoicedetail');
+            Route::get('invoice/detail/print/{id}','Backend\Invoice\InvoiceController@invoicePrint');
+            Route::get('invoice/paid/{id}','Backend\Invoice\InvoiceController@invoicePaid');
+            Route::get('invoice/paid/ajaxPaymentRequest/{id}','Backend\Invoice\InvoiceController@ajaxPaymentRequest');
+            Route::post('invoice/add_paid','Backend\Invoice\InvoiceController@invoiceAddpaid');
+            Route::get('invoice/cancel','Backend\Invoice\InvoiceController@invoiceCancel');
+            Route::get('invoice/cancel/{id}','Backend\Invoice\InvoiceController@orderCancel');
+            Route::get('invoice/sort/time/increase','Backend\Invoice\InvoiceController@invoiceTimeIncrease');
+            Route::get('invoice/sort/time/decrease','Backend\Invoice\InvoiceController@invoiceTimeDecrease');
+            Route::get('invoice/sort/price/increase','Backend\Invoice\InvoiceController@invoicePriceIncrease');
+            Route::get('invoice/sort/price/decrease','Backend\Invoice\InvoiceController@invoicePriceDecrease');
+            Route::get('invoice/sort/order/increase','Backend\Invoice\InvoiceController@invoiceOrderIncrease');
+            Route::get('invoice/sort/order/decrease','Backend\Invoice\InvoiceController@invoiceOrderDecrease');
+            Route::get('ajaxInvoiceTimeIncrease','Backend\Invoice\InvoiceController@ajaxInvoiceTimeIncrease');
+            Route::get('ajaxInvoiceTimeDecrease','Backend\Invoice\InvoiceController@ajaxInvoiceTimeDecrease');
+            Route::get('ajaxInvoicePriceIncrease','Backend\Invoice\InvoiceController@ajaxInvoicePriceIncrease');
+            Route::get('ajaxInvoicePriceDecrease','Backend\Invoice\InvoiceController@ajaxInvoicePriceDecrease');
+            Route::get('ajaxInvoiceOrderIncrease','Backend\Invoice\InvoiceController@ajaxInvoiceOrderIncrease');
+            Route::get('ajaxInvoiceOrderDecrease','Backend\Invoice\InvoiceController@ajaxInvoiceOrderDecrease');
+            Route::get('invoice/manager/confirm/{username}/{password}','Backend\Invoice\InvoiceController@checkManager');
 
-                Route::get('invoice','Backend\Invoice\InvoiceController@invoiceList');
-                Route::get('ajaxSearchRequest','Backend\Invoice\InvoiceController@SearchRequest');
-                Route::get('ajaxSearchTimeIncreaseRequest','Backend\Invoice\InvoiceController@TimeIncreaseRequest');
-                Route::get('ajaxSearchTimeDecreaseRequest','Backend\Invoice\InvoiceController@TimeDecreaseRequest');
-                Route::get('ajaxSearchPriceIncreaseRequest','Backend\Invoice\InvoiceController@PriceIncreaseRequest');
-                Route::get('ajaxSearchPriceDecreaseRequest','Backend\Invoice\InvoiceController@PriceDecreaseRequest');
-                Route::get('ajaxSearchCancelRequest','Backend\Invoice\InvoiceController@CancelRequest');
-                Route::get('ajaxRequest','Backend\Invoice\InvoiceController@ajaxRequest');
-                Route::get('invoice/ajaxInvoiceRequest','Backend\Invoice\InvoiceController@ajaxInvoiceRequest');
-                Route::get('invoice/detail/{id}','Backend\Invoice\InvoiceController@invoicedetail');
-                Route::get('invoice/detail/print/{id}','Backend\Invoice\InvoiceController@invoicePrint');
-                Route::get('invoice/paid/{id}','Backend\Invoice\InvoiceController@invoicePaid');
-                Route::get('invoice/paid/ajaxPaymentRequest/{id}','Backend\Invoice\InvoiceController@ajaxPaymentRequest');
-                Route::post('invoice/add_paid','Backend\Invoice\InvoiceController@invoiceAddpaid');
-                Route::get('invoice/cancel','Backend\Invoice\InvoiceController@invoiceCancel');
-                Route::get('invoice/cancel/{id}','Backend\Invoice\InvoiceController@orderCancel');
-                Route::get('invoice/sort/time/increase','Backend\Invoice\InvoiceController@invoiceTimeIncrease');
-                Route::get('invoice/sort/time/decrease','Backend\Invoice\InvoiceController@invoiceTimeDecrease');
-                Route::get('invoice/sort/price/increase','Backend\Invoice\InvoiceController@invoicePriceIncrease');
-                Route::get('invoice/sort/price/decrease','Backend\Invoice\InvoiceController@invoicePriceDecrease');
-                Route::get('invoice/sort/order/increase','Backend\Invoice\InvoiceController@invoiceOrderIncrease');
-                Route::get('invoice/sort/order/decrease','Backend\Invoice\InvoiceController@invoiceOrderDecrease');
-                Route::get('ajaxInvoiceTimeIncrease','Backend\Invoice\InvoiceController@ajaxInvoiceTimeIncrease');
-                Route::get('ajaxInvoiceTimeDecrease','Backend\Invoice\InvoiceController@ajaxInvoiceTimeDecrease');
-                Route::get('ajaxInvoicePriceIncrease','Backend\Invoice\InvoiceController@ajaxInvoicePriceIncrease');
-                Route::get('ajaxInvoicePriceDecrease','Backend\Invoice\InvoiceController@ajaxInvoicePriceDecrease');
-                Route::get('ajaxInvoiceOrderIncrease','Backend\Invoice\InvoiceController@ajaxInvoiceOrderIncrease');
-                Route::get('ajaxInvoiceOrderDecrease','Backend\Invoice\InvoiceController@ajaxInvoiceOrderDecrease');
-                Route::get('invoice/manager/confirm/{username}/{password}','Backend\Invoice\InvoiceController@checkManager');
+            //Sale Summary Report & Excel Download
+            Route::get('saleSummaryReport','Backend\Report\SaleSummaryReportController@saleSummary');
 
-                //Sale Summary Report & Excel Download
-                Route::get('saleSummaryReport','Backend\Report\SaleSummaryReportController@saleSummary');
-                Route::get('SaleSummaryExport', 'Backend\Report\SaleSummaryReportController@saleSummaryExport');
-                Route::get('dailysale/{day}/{month}','Backend\Report\SaleSummaryReportController@dailySale');
-                Route::get('dailySaleExport/{day}/{month}','Backend\Report\SaleSummaryReportController@dailySaleExport');
-                Route::post('searchDailySummary','Backend\Report\SaleSummaryReportController@searchDailySummary');
-                Route::get('searchDailySummaryExport/{start_date}/{end_date}','Backend\Report\SaleSummaryReportController@searchDailySummaryExport');
-                Route::get('saleSummaryReport/{checked}', 'Backend\Report\SaleSummaryReportController@saleSummaryReportWithCheck');
-
-
-                Route::get('monthlySaleSummaryExport','Backend\Report\SaleSummaryReportController@monthlySaleSummaryExport');
-                Route::post('searchMonthlySummary', 'Backend\Report\SaleSummaryReportController@searchMonthlySummary');
-                Route::get('searchMonthlySummaryExport/{from_month}/{to_month}','Backend\Report\SaleSummaryReportController@searchMonthlySummaryExport');
-                Route::get('monthlySale/{year}/{month}', 'Backend\Report\SaleSummaryReportController@monthlySale');
-                Route::get('monthlySaleExport/{year}/{month}', 'Backend\Report\SaleSummaryReportController@monthlySaleExport');
-
-                Route::get('yearlySaleSummaryExport','Backend\Report\SaleSummaryReportController@yearlySaleSummaryExport');
-                Route::post('searchYearlySummary','Backend\Report\SaleSummaryReportController@searchYearlySummary');
-                Route::get('searchYearlySummaryExport/{from_year}','Backend\Report\SaleSummaryReportController@searchYearSummaryExport');
-                Route::get('yearlySale/{year}','Backend\Report\SaleSummaryReportController@yearlySale');
-                Route::get('yearlySaleExport/{year}','Backend\Report\SaleSummaryReportController@yearlySaleExport');
+            Route::get('SaleSummaryExport', 'Backend\Report\SaleSummaryReportController@saleSummaryExport');
+            Route::get('dailysale/{day}/{month}','Backend\Report\SaleSummaryReportController@dailySale');
+            Route::get('dailySaleExport/{day}/{month}','Backend\Report\SaleSummaryReportController@dailySaleExport');
+            Route::post('searchDailySummary','Backend\Report\SaleSummaryReportController@searchDailySummary');
+            Route::get('searchDailySummaryExport/{start_date}/{end_date}','Backend\Report\SaleSummaryReportController@searchDailySummaryExport');
+            Route::get('saleSummaryReport/{checked}', 'Backend\Report\SaleSummaryReportController@saleSummaryReportWithCheck');
 
 
-            });
+            Route::get('monthlySaleSummaryExport','Backend\Report\SaleSummaryReportController@monthlySaleSummaryExport');
+            Route::post('searchMonthlySummary', 'Backend\Report\SaleSummaryReportController@searchMonthlySummary');
+            Route::get('searchMonthlySummaryExport/{from_month}/{to_month}','Backend\Report\SaleSummaryReportController@searchMonthlySummaryExport');
+            Route::get('monthlySale/{year}/{month}', 'Backend\Report\SaleSummaryReportController@monthlySale');
+            Route::get('monthlySaleExport/{year}/{month}', 'Backend\Report\SaleSummaryReportController@monthlySaleExport');
 
+            Route::get('yearlySaleSummaryExport','Backend\Report\SaleSummaryReportController@yearlySaleSummaryExport');
+            Route::post('searchYearlySummary','Backend\Report\SaleSummaryReportController@searchYearlySummary');
+            Route::get('searchYearlySummaryExport/{from_year}','Backend\Report\SaleSummaryReportController@searchYearSummaryExport');
+            Route::get('yearlySale/{year}','Backend\Report\SaleSummaryReportController@yearlySale');
+            Route::get('yearlySaleExport/{year}','Backend\Report\SaleSummaryReportController@yearlySaleExport');
+            /* old version report */
+
+            /* update sale summary report */
+            Route::get('sale_SummaryReport','Backend\Reports\SaleSummaryReportController@saleSummary');
+            Route::get('sale_SummaryReport/search/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@search_query');
+            Route::get('sale_SummaryReport/exportexcel/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@exportExcel');
+            /* sale summary report detial */
+            Route::get('sale_SummaryReport/detail/{date}/{type}','Backend\Reports\SaleSummaryReportController@summary_detail');
+            /* sale summary reprt detail sort */
+            Route::get('sale_SummaryReport/detail/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
+            Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
+            Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}','Backend\Reports\SaleSummaryReportController@invoice_detail');
+              /* update sale summary report */
+        });
+
+        //Start Booking
+        Route::group(['middleware'=>'booking:Cashier'],function(){
+            Route::get('Booking/index','Backend\Booking\BookingController@index');
+            Route::get('Booking/create','Backend\Booking\BookingController@create');
+            Route::post('Booking/search','Backend\Booking\BookingController@search');
 
 
             //Start Booking
@@ -558,6 +575,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('downloadItemReport', 'Backend\Report\ReportController@downloadItemReport');
 
 
+
             Route::resource('categorySaleReport', 'Backend\Report\ReportController', [
                 'only' => ['index']
             ]);
@@ -570,7 +588,6 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('table-sale-report/export', 'Backend\Report\SaleReportByTableController@getTableSaleReportExport');
             Route::get('table-sale-report/export/{from}/{to}', 'Backend\Report\SaleReportByTableController@getTableSaleReportExportByDate');
 
-
             //Item Report With Date & Excel Download
             Route::post('itemReportWithDate', 'Backend\Report\ReportController@itemReportWithDate');
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}', 'Backend\Report\ReportController@downloadItemReportWithDateWithNull');
@@ -578,13 +595,23 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithDateAndAmount');
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithAll');
 
-
-
             //Favourite Set Menu & Excel Download
             Route::get('favourite_set_menus', 'Backend\Report\ReportController@favourite_set_menus');
             Route::get('downloadsubReport', 'Backend\Report\ReportController@downloadsubReport');
 
             //Favourite Set Date Report & Excel Download
+
+            /* item report update */
+            Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+            Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+            Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+            /* item report update */
+
+           //Favourite Set Menu & Excel Download
+            Route::get('favourite_set_menus', 'Backend\Report\ReportController@favourite_set_menus');
+            Route::get('downloadsubReport', 'Backend\Report\ReportController@downloadsubReport');
+             //Favourite Set Date Report & Excel Download
+
             Route::post('fav_set_date_report', 'Backend\Report\ReportController@fav_set_date_report');
             Route::get('downloadsubReportWithDate/{start_date}/{end_date}', 'Backend\Report\ReportController@downloadsubReportWithDateWithNull');
             Route::get('downloadsubReportWithDate/{start_date}/{end_date}/{number}', 'Backend\Report\ReportController@downloadsubReportWithDate');
@@ -767,3 +794,5 @@ Route::get('/stock/create','inventory\inventoryController@stock_item');
 Route::get('sync_um','inventory\inventoryController@getSyncUm');
 Route::get('api/v1/get_kitchen','inventory\inventoryController@getKitchen');
 Route::get('/remainvalance','inventory\inventoryController@getremainbalance');
+
+});

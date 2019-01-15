@@ -391,6 +391,7 @@ class SaleSummaryReportController extends Controller
         $to         = "31-".Input::get('to_month');
         $from_date  = date("Y-m-d",strtotime($from));
         $to_date    = date("Y-m-d",strtotime($to));
+        
         if($to_month == null ){
             alert()->warning('Please Choose Month You Want to Search!')->persistent('Close');
             return redirect()->back()->withInput();
