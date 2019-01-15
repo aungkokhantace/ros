@@ -82,7 +82,7 @@ class inventoryController extends Controller
     		array_push($groups,$category->Id);
     	}
     	$groups  = $CateRepo->getGroup($groups);
-    	$groups  = json_encode($groups);
+		$groups  = json_encode($groups);
         // return $groups;
     	$client = new Client();
     	$url  = $this->resquestserverurl . '/groupcode/create';
@@ -203,7 +203,7 @@ class inventoryController extends Controller
 
 			}
 		}
-        return $ItemAry;
+        // return $ItemAry;
 		$url  = $this->resquestserverurl.'/stock/create';
 
 		$ItemAry = json_encode($ItemAry);
