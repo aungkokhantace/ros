@@ -150,9 +150,8 @@
             display: block;
             color: #f2f2f2;
             text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 20px;
+            padding: 16px 16px;
+            font-size: 17px;
             width: 200px;
         }
 
@@ -209,9 +208,6 @@
             font-size: 15px;
         }
 
-
-
-
         .tbname {
             background: #11463d;
             color: white;
@@ -243,7 +239,7 @@
         }
 
         .btn-group button {
-            width: 120px;
+            width: 150px;
             font-weight: bolder;
             font-family: 'Source Sans Pro', sans-serif;
         }
@@ -327,6 +323,7 @@
         }
 
     </style>
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/gr8.jpg') }}"/>
 </head>
 
 <header>
@@ -337,8 +334,8 @@
         @if(count(Session::get('message')) != 0)
             <div ></div>
         @endif
-        <a href="index2.html" class="logo">
-            <b>Kitchen</b>@ROS
+        <a href="/Kitchen/kitchen" class="logo">
+              {{ $kitchen->name }}
         </a>
         <a href="/Kitchen/kitchen" @if(Request::path() == 'Kitchen/kitchen') class="item-list active" @else class="item-list" @endif>
             <i class="fa fa-sliders"></i>

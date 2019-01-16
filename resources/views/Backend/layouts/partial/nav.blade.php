@@ -81,6 +81,8 @@
           <ul class="treeview-menu">
             <li><a href="/Backend/Config/general_config"><i class="fa fa-circle-o text-aqua"></i>  Configuration </a></li>
             <li><a href="/Backend/Discount/index"><i class="fa fa-circle-o text-aqua"></i>  Discount</a></li>
+            <li><a href="/Backend/Booking/index"><i class="fa fa-circle-o text-aqua"></i>  Reservation</a></li>
+            <li><a href="/Backend/invoice"><i class="fa fa-circle-o text-aqua"></i>  Invoice List</a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -91,8 +93,6 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/Backend/Booking/index"><i class="fa fa-circle-o text-aqua"></i>  Reservation</a></li>
-            <li><a href="/Backend/invoice"><i class="fa fa-circle-o text-aqua"></i>  Invoice List</a></li>
             <li><a href="/Backend/saleSummaryReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Summary Report</a></li>
             <li><a href="/Backend/saleReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Report</a></li>
             <li><a href="/Backend/itemReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Item Report</a></li>
