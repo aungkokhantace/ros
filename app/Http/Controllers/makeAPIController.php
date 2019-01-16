@@ -689,11 +689,16 @@ class MakeAPIController extends ApiGuardController
                        }
                     }
                     
-                  
-                   
+                    
+               
                     if(isset($cooking_ary) && count($cooking_ary)>0){
                         foreach($cooking_ary as $item){
-                            $items =  Orderdetail::where('order_detail_id',$item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
+                           
+                            if(!in_array($item,$order_cooking_ary)){
+
+                                $items =  Orderdetail::where('order_detail_id',$item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
+                            }
+                          
                         }
                     }
                    
@@ -717,7 +722,10 @@ class MakeAPIController extends ApiGuardController
                     $output = array("message" => "Success");
                     DB::commit();
                     if(isset($cooking_ary) && count($cooking_ary)>0){
-                     $output['cooked'] = $items->item_name . 'is cooked';
+                     
+                        $output['cooked'] = $items->item_name . 'is cooked';
+                
+                    
                     }else{
                         $output['cooked'] = '';
                     }
@@ -731,6 +739,7 @@ class MakeAPIController extends ApiGuardController
              return Response::json($output);
 
          }catch(\Exception $e){
+             dd($e);
             DB::rollback();
             $date       = date("Y-m-d H:i:s");
             $data       = json_decode(request('orderID'));
