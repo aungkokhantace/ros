@@ -635,10 +635,12 @@ class MakeAPIController extends ApiGuardController
 
                                 //Order_Extra
                                 $extra      = $order_detail->extra;
+                                
                                 foreach ($extra as $e) {
-                                    
+                                   
                                    if($e->status == 1){
-                                     $order_extra = OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
+                                      
+                                     $delete_extra = OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
                                     ->where('extra_id','=',$e->extra_id)
                                     ->first();
                                         if(!isset($order_extra) ){
@@ -656,7 +658,7 @@ class MakeAPIController extends ApiGuardController
                                         
             
                                     }else{
-                                        $order_extra = OrderExtra::where('order_detail_id','=',$order_detail->order_detail_id)
+                                        $delete_extra = OrderExtra::where('order_detail_id','=',$order_detail->order_detail_id)
                                     ->where('extra_id','=',$e->extra_id)
                                     ->delete();
                                     }
