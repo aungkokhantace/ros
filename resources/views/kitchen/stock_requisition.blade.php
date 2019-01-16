@@ -6,12 +6,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="row">
-                        <div class="col-lg-1"></div>
-                        <div class="col-lg-7">
+                        <div class="col-lg-12">
                             <div class="form-div">
                                 <form action="{{ url('/Kitchen/stock-requisition') }}" method="post">
                                     {{ csrf_field() }}
-                                    <h4><b>Stock Requisition Form</b></h4><br>
+                                    <h4><b>Stock Requisition Form</b></h4>
                                     @if (Session::has('success'))
                                         <div class="alert alert-success">
                                             {{ session('success') }}
@@ -26,18 +25,16 @@
                                         <div class="bg-div form-block" id="clone0">
                                             <span id="remove1" onclick="remove(this)" class="close"><i class="fa fa-times"></i></span>
                                             <div class="form-group row first-div">
-                                                <label for="group-type" class="col-sm-3 col-form-label">Raw Group Type</label>
-                                                <div class="col-sm-8">
+                                                <div class="col-sm-3 custom">
+                                                    <label for="group-type">Raw Group Type</label>
                                                     <select class="form-control" style="border-radius:5px !important" name="stock[0][group].group" id="group-type">
                                                         @foreach($raw_group_responses as $raw_group_response)
                                                             <option value="{{ $raw_group_response->Id }}">{{ $raw_group_response->Raw_group_name }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="item" class="col-sm-3 col-form-label">Raw Item</label>
-                                                <div class="col-sm-8">
+                                                <div class="col-sm-3 custom">
+                                                    <label for="item">Raw Item</label>
                                                     <select class="form-control" style="border-radius:5px !important" name="stock[0][StockId].stick_id" id="item">
                                                         @foreach($raw_stock_responses as $raw_stock_response)
                                                             <option value="{{ $raw_stock_response->Raw_item_no.','.$raw_stock_response->PurchasePrice }}">
@@ -46,29 +43,25 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="quantity" class="col-sm-3 col-form-label">Quantity</label>
-                                                <div class="col-sm-8">
+                                                <div class="col-sm-3">
+                                                    <label for="quantity">Quantity</label>
                                                     <input type="number" class="form-control" name="stock[0][Quantity].quantity" placeholder="Quantity" id="quantity"/>
                                                     <span class="error">This field is required.</span>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="unit" class="col-sm-3 col-form-label">Measurement Units</label>
-                                                <div class="col-sm-8">
+                                                <div class="col-sm-3 custom">
+                                                    <label for="unit">Measurement Units</label>
                                                     <select class="form-control" style="border-radius:5px !important" name="stock[0][unit].unit" id="unit">
                                                         @foreach($measurement_unit_responses as $measurement_unit_response)
                                                             <option value="{{ $measurement_unit_response->Id }}">{{ $measurement_unit_response->Code }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
+                                              </div>
                                         </div>
                                     </div>
                                     <div class="form-group row" id="beforeDiv">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label"></label>
-                                        <div class="col-sm-8">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label"></label>
+                                        <div class="col-sm-4">
                                             <div class="btn-group mr-2" role="group">
                                                 <button type="button" class="btn btn-dark add-more-btn">Add New</button>
                                             </div>
@@ -80,7 +73,6 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="col-lg-4"></div>
                     </div>
                 </div>
             </div>
