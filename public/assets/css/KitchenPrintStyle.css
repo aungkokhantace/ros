@@ -6,7 +6,7 @@
 .modal-body {
   text-align: center !important;
   font-size: 15px;
-  font-weight: bolder;
+  /* font-weight: bolder; */
 }
 .modal-body hr {
   display: block;

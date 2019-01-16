@@ -635,51 +635,54 @@ class MakeAPIController extends ApiGuardController
 
                                 //Order_Extra
                                 $extra      = $order_detail->extra;
+                                
                                 foreach ($extra as $e) {
-                                    $order_extra = OrderExtra::where('order_detail_id','=',$detail_id)
-                                                            ->where('extra_id','=',$e->extra_id)
-                                                            ->first();
-                                    if($order_extra == null){
-                                        $extra                  = new OrderExtra();
-                                        $extra->order_detail_id = $order_detail->order_detail_id;
-                                        $extra->extra_id        = $e->extra_id;
-                                        $extra->quantity        = $e->quantity;
-                                        $extra->amount          = $e->amount;
-                                        $extra->save();
-                                        $message = "[  $date ] info:  update  OrderExtra [ order_detail_id = $extra->order_detail_id ]" . PHP_EOL;
-                                        RmsLog::create($message);
-                                    }
-                                    else{
-
-                                        $extra_update   = DB::table('order_extra')
-                                                        ->where('order_detail_id', $detail_id)
-                                                        ->where('extra_id',$e->extra_id)
-                                                        ->update([
-                                                            'quantity' => $e->quantity,
-                                                            'amount' => $e->amount,
-                                                            'status' => $e->status
-                                                            ]);
-                                        // Custom Log
-                                        $message = "[ $date ]  info:  Update OrderExtra [ order_detail_id = $detail_id ] " . PHP_EOL;
-                                        RmsLog::create($message);
+                                   
+                                   if($e->status == 1){
+                                      
+                                     $delete_extra = OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
+                                    ->where('extra_id','=',$e->extra_id)
+                                    ->first();
+                                        if(!isset($order_extra) ){
+                                            $extra = new OrderExtra();
+                                            $extra->order_detail_id         = $order_detail->order_detail_id;
+                                            $extra->extra_id                = $e->extra_id;
+                                            $extra->quantity                = $e->quantity;
+                                            $extra->amount                  = $e->amount;
+                                            $extra->status                  = 1;
+                                            $extra->save();
+                                            // Custom Log
+                                            $message = "[  $date ] info:  update an OrderExtra [ order_detail_id =  $extra->order_detail_id ]" . PHP_EOL;
+                                            RmsLog::create($message);
+                                        }
+                                        
+            
+                                    }else{
+                                        $delete_extra = OrderExtra::where('order_detail_id','=',$order_detail->order_detail_id)
+                                    ->where('extra_id','=',$e->extra_id)
+                                    ->delete();
                                     }
                                }
                             }
                 }
 
-                
-                $old_orders_details = Orderdetail::where('order_id',$order_id)->select('order_detail_id')->get()->toArray();
+               
+                $old_orders_details = Orderdetail::where('order_id',$order_id)->select('order_detail_id')->get();
                 $old_orders_details_ary = array();
+              
                
                 foreach($old_orders_details as $old_orders){
-                    array_push($old_orders_details_ary,$old_orders['order_detail_id']);
+                    array_push($old_orders_details_ary,$old_orders->order_detail_id);
                 }
-                
+               
                     $delete_order_detail =  array_merge(array_diff($old_orders_details_ary, $new_order_detail_ary), array_diff($new_order_detail_ary, $old_orders_details_ary));
                     $cooking_ary = array();
+                  
                     foreach($delete_order_detail as $delete_order){
+            
                        $cancel_orders = Orderdetail::where('order_detail_id',$delete_order)->first();
                        if($cancel_orders->status_id == 1){
+                        $deleting_orders = Orderdetail::where('order_detail_id',$delete_order);
                         $order_extra = OrderExtra::where('order_detail_id',$delete_order); 
                         $order_remark = Order_Detail_Remark::where('order_detail_id',$delete_order);
                         $order_set_menu_detail = OrderSetMenuDetail::where('order_detail_id',$delete_order);
@@ -689,7 +692,7 @@ class MakeAPIController extends ApiGuardController
                        }
                     }
                     
-                    
+                   
                
                     if(isset($cooking_ary) && count($cooking_ary)>0){
                         foreach($cooking_ary as $item){
@@ -716,6 +719,10 @@ class MakeAPIController extends ApiGuardController
                     if(isset($deleting_order_detail) && count($deleting_order_detail)){
                         $deleting_order_detail->forceDelete();
                     }
+                    if(isset($deleting_orders) && count($deleting_orders)>0){
+                        $deleting_orders->forceDelete();
+                    }
+                   
 
                 
                 
