@@ -164,8 +164,8 @@ class inventoryController extends Controller
 		foreach($items as $item){
 			if(in_array($item->category_id,$categoryary)){
 			   $categoryid = $item->category_id;
-			   $groupid    = 0;
-			   $classid    = 0;
+			   $groupid    = 1;
+			   $classid    = 1;
 			   $item_ary   = $this->getItem($item,$groupid,$classid,$categoryid);
 			   array_push($ItemAry,$item_ary);
 
@@ -173,7 +173,7 @@ class inventoryController extends Controller
 			   $item_ary = array();
 			   $groupid    = $item->category_id;
 			   $categoryid = $this->getparentId($groupid);
-			   $classid    = 0;
+			   $classid    = 1;
 			   $item_ary   = $this->getItem($item,$groupid,$classid,$categoryid);
 			   array_push($ItemAry,$item_ary);
 
@@ -218,7 +218,7 @@ class inventoryController extends Controller
 		    'headers' => $headers,
 		    'body' => $ItemAry,
 		]);
-
+       return $res;
 		return  $res->getStatusCode();
 
 	}

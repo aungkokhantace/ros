@@ -677,11 +677,12 @@ class MakeAPIController extends ApiGuardController
                
                     $delete_order_detail =  array_merge(array_diff($old_orders_details_ary, $new_order_detail_ary), array_diff($new_order_detail_ary, $old_orders_details_ary));
                     $cooking_ary = array();
-                   
+                  
                     foreach($delete_order_detail as $delete_order){
             
                        $cancel_orders = Orderdetail::where('order_detail_id',$delete_order)->first();
                        if($cancel_orders->status_id == 1){
+                        $deleting_orders = Orderdetail::where('order_detail_id',$delete_order);
                         $order_extra = OrderExtra::where('order_detail_id',$delete_order); 
                         $order_remark = Order_Detail_Remark::where('order_detail_id',$delete_order);
                         $order_set_menu_detail = OrderSetMenuDetail::where('order_detail_id',$delete_order);
@@ -691,7 +692,7 @@ class MakeAPIController extends ApiGuardController
                        }
                     }
                     
-                    
+                   
                
                     if(isset($cooking_ary) && count($cooking_ary)>0){
                         foreach($cooking_ary as $item){
@@ -718,6 +719,10 @@ class MakeAPIController extends ApiGuardController
                     if(isset($deleting_order_detail) && count($deleting_order_detail)){
                         $deleting_order_detail->forceDelete();
                     }
+                    if(isset($deleting_orders) && count($deleting_orders)>0){
+                        $deleting_orders->forceDelete();
+                    }
+                   
 
                 
                 
