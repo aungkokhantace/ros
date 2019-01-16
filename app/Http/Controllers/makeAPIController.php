@@ -682,11 +682,11 @@ class MakeAPIController extends ApiGuardController
             
                        $cancel_orders = Orderdetail::where('order_detail_id',$delete_order)->first();
                        if($cancel_orders->status_id == 1){
-                        $deleting_orders = Orderdetail::where('order_detail_id',$delete_order);
-                        $order_extra = OrderExtra::where('order_detail_id',$delete_order); 
-                        $order_remark = Order_Detail_Remark::where('order_detail_id',$delete_order);
-                        $order_set_menu_detail = OrderSetMenuDetail::where('order_detail_id',$delete_order);
-                        $deleting_order_detail = Orderdetail::where('order_detail_id',$delete_order);
+                        $deleting_orders = Orderdetail::where('order_detail_id',$delete_order)->delete();
+                        $order_extra = OrderExtra::where('order_detail_id',$delete_order)->delete(); 
+                        $order_remark = Order_Detail_Remark::where('order_detail_id',$delete_order)->delete();
+                        $order_set_menu_detail = OrderSetMenuDetail::where('order_detail_id',$delete_order)->delete();
+                        $deleting_order_detail = Orderdetail::where('order_detail_id',$delete_order)->delete();
                        }else{                   
                          array_push($cooking_ary,$delete_order);
                        }
@@ -706,22 +706,22 @@ class MakeAPIController extends ApiGuardController
                     }
                    
                     
-                    if(isset($order_extra) && count($order_extra)>0){
-                        $order_extra->forceDelete();
-                    }
-                    if(isset($order_remark) && count($order_remark)>0){
-                        $order_remark->forceDelete();
-                    }
-                    if(isset($order_set_menu_detail) && count($order_set_menu_detail)>0){
-                        $order_set_menu_detail->forceDelete();
-                    }
+                    // if(isset($order_extra) && count($order_extra)>0){
+                    //     $order_extra->forceDelete();
+                    // }
+                    // if(isset($order_remark) && count($order_remark)>0){
+                    //     $order_remark->forceDelete();
+                    // }
+                    // if(isset($order_set_menu_detail) && count($order_set_menu_detail)>0){
+                    //     $order_set_menu_detail->forceDelete();
+                    // }
 
-                    if(isset($deleting_order_detail) && count($deleting_order_detail)){
-                        $deleting_order_detail->forceDelete();
-                    }
-                    if(isset($deleting_orders) && count($deleting_orders)>0){
-                        $deleting_orders->forceDelete();
-                    }
+                    // if(isset($deleting_order_detail) && count($deleting_order_detail)){
+                    //     $deleting_order_detail->forceDelete();
+                    // }
+                    // if(isset($deleting_orders) && count($deleting_orders)>0){
+                    //     $deleting_orders->forceDelete();
+                    // }
                    
 
                 
