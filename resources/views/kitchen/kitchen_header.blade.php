@@ -337,7 +337,7 @@
         @if(count(Session::get('message')) != 0)
             <div ></div>
         @endif
-        <a href="index2.html" class="logo">
+        <a href="/Kitchen/kitchen" class="logo">
             <b>Kitchen</b>@ROS
         </a>
         <a href="/Kitchen/kitchen" @if(Request::path() == 'Kitchen/kitchen') class="item-list active" @else class="item-list" @endif>
