@@ -10,7 +10,7 @@ namespace App\RMS\Reports_update\BestSellingItem;
 interface BestSellingItemRepositoryInterface
 {
     
-    
+  public function bestItem($from_date,$to_date,$number,$from_amount,$to_amount);
    
     
     

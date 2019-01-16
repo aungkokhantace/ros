@@ -74,5 +74,10 @@ class Kernel extends HttpKernel
         'shift'=>\App\Http\Middleware\ShiftMiddleware::class,
         'order'=>\App\Http\Middleware\OrderMiddleware::class,
         'remark'=>\App\Http\Middleware\RemarkMiddleware::class,
+
+        'best_item'=>\App\Http\Middleware\BestSellingItemReportMiddleware::class,
+        'best_category'=>\App\Http\Middleware\BestSellingCategoryReport::class,
+        'best_set'=>\App\Http\Middleware\BestSellingSetReport::class,
+        'table_report'=>\App\Http\Middleware\ReportByTable::class,
     ];
 }

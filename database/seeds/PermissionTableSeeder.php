@@ -563,6 +563,34 @@ class PermissionTableSeeder extends Seeder
             'created_by' => '1',
         ]);
 
+         DB::table('permissions')->insert([
+            'id' =>'89',
+            'role_id' => '1',
+            'module_id' => '27',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'90',
+            'role_id' => '1',
+            'module_id' => '28',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'91',
+            'role_id' => '1',
+            'module_id' => '29',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'92',
+            'role_id' => '1',
+            'module_id' => '30',
+            'created_by' => '1',
+        ]);
+
 
 
     }

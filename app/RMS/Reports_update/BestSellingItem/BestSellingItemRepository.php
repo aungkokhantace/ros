@@ -17,10 +17,10 @@ class BestSellingItemRepository implements BestSellingItemRepositoryInterface
         $from 						 = date('Y-m-d',strtotime($from_date));
         $to 						 = date('Y-m-d',strtotime($to_date));	
 		 $query  		=Orderdetail::query();
-		 $query	 		= $query->leftjoin('items','items.id','=','order_details.item_id')
+		 $query	 		= $query->join('items','items.id','=','order_details.item_id')
 		    					->leftjoin('order', 'order.id', '=', 'order_details.order_id')
-		 						->leftjoin('order_day','order_day.id','=','order.day_id')
-		 						->select('items.name as name','order_details.amount',DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('SUM(order_details.quantity) as total'),
+		 						 ->leftjoin('order_day','order_day.id','=','order.day_id')
+		 						 ->select('items.name as name','order_details.amount',DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('SUM(order_details.quantity) as total'),
                 				DB::raw('(SUM(order_details.amount_with_discount)) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
                 				->where('order_day.start_date','>=',$from)
                 				->where('order_day.start_date','<=',$to)
@@ -29,6 +29,7 @@ class BestSellingItemRepository implements BestSellingItemRepositoryInterface
                 				->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                 				->whereNotNull('order_details.item_id')
                 				->groupBy('order_details.item_id')
+                        ->where('order_details.item_id','!=',0)
                 				->orderBy('total','desc');
                 				// ->orderBy('name','desc');
              // dd($from_amount);
@@ -42,7 +43,7 @@ class BestSellingItemRepository implements BestSellingItemRepositoryInterface
           
           	$query 				= $query->having('total_amt','<=',$to_amount);
           }
-        if($number 		 	!= ""){
+        if($number 		 	!= "" && $number !=' '){
         	$query 				= $query->take($number);
 
         }

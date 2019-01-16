@@ -167,5 +167,33 @@ class moduleTableSeeder extends Seeder
             'view'=>'cashier',
             'created_by'=>'1',
         ]);
+
+        DB::table('modules')->insert([
+            'id'=>'27',
+            'module'=>'Best Selling Item Report',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
+
+         DB::table('modules')->insert([
+            'id'=>'28',
+            'module'=>'Best Selling Category Report',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
+
+        DB::table('modules')->insert([
+            'id'=>'29',
+            'module'=>'Best Selling Set Menu Report',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
+
+         DB::table('modules')->insert([
+            'id'=>'30',
+            'module'=>'Table  Report',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
     }
 }

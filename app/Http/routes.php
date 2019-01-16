@@ -424,7 +424,6 @@ Route::group(['middleware' => 'web'], function () {
          //Report
         Route::group(['middleware'=>'report:Cashier'],function(){
             /* old version report */
-
             Route::get('invoice','Backend\Invoice\InvoiceController@invoiceList');
             Route::get('ajaxSearchRequest','Backend\Invoice\InvoiceController@SearchRequest');
             Route::get('ajaxSearchTimeIncreaseRequest','Backend\Invoice\InvoiceController@TimeIncreaseRequest');
@@ -484,11 +483,13 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('sale_SummaryReport/search/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@search_query');
             Route::get('sale_SummaryReport/exportexcel/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@exportExcel');
             /* sale summary report detial */
-            Route::get('sale_SummaryReport/detail/{date}/{type}','Backend\Reports\SaleSummaryReportController@summary_detail');
+            Route::get('sale_SummaryReport/detail/{date}/{type}/{from?}/{to?}','Backend\Reports\SaleSummaryReportController@summary_detail');
             /* sale summary reprt detail sort */
-            Route::get('sale_SummaryReport/detail/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
-            Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
-            Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}','Backend\Reports\SaleSummaryReportController@invoice_detail');
+            Route::get('sale_SummaryReport/detail_sort/{date}/{type}/{sort}/{from?}/{to?}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
+
+            Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}/{from?}/{to?}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
+
+            Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}/{from?}/{to?}','Backend\Reports\SaleSummaryReportController@invoice_detail');
               /* update sale summary report */
         });
 
@@ -543,13 +544,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}', 'Backend\Report\ReportController@downloadItemReportWithDateWithNull');
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}', 'Backend\Report\ReportController@downloadItemReportWithDateAndNumber');
             Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithDateAndAmount');
-            Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithAll');
-
-            /* item report update */            
-            Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
-            Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
-            Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');    
-            /* item report update */
+            Route::get('downloadItemReportWithDate/{start_date}/{end_date}/{number}/{from_amount}/{to_amount}', 'Backend\Report\ReportController@downloadItemReportWithAll');          
            
            //Favourite Set Menu & Excel Download
             Route::get('favourite_set_menus', 'Backend\Report\ReportController@favourite_set_menus');
@@ -605,6 +600,30 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
         });
         //End remark
+        /* item Report update */
+        Route::group(['middleware'=>'best_item:Cashier'],function(){                    
+            Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+
+            Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+            
+            Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');   
+           
+        });
+
+        Route::group(['middleware'=>'best_category:Cashier'],function(){    
+
+            Route::get('categorySaleReport', 'Backend\Reports\BestSellingCategoryReportController@index');
+            Route::get('categorySaleReport/search/{form_date?}/{to_date?}', 'Backend\Reports\BestSellingCategoryReportController@search');
+            Route::get('categorySaleReport/export/{form_date?}/{to_date?}', 'Backend\Reports\BestSellingCategoryReportController@export');
+            
+
+        });   
+        //  Route::group(['middleware'=>'best_set:Cashier'],function(){    
+
+        // });   
+        //  Route::group(['middleware'=>'table_report:Cashier'],function(){    
+
+        // });        
 
         });
     });

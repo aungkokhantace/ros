@@ -11,7 +11,7 @@
         <div class="row date_button">
             <div class="col-md-11 date_row">
 
-                <div class="col-md-12"><h3 class="h3"><strong>Best-selling Item Report</strong></h3></div>
+                <div class="col-md-12"><h3 class="h3"><strong>Best-Selling Category Report</strong></h3></div>
             <div class="col-md-12 btn-gp">
         
         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
@@ -39,62 +39,13 @@
             </div>
         </div>
          
-
-         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-            <label for="from_date" class="text_bold_black">Top Item</label>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-           <div class="input-group">
-            @if(isset($number))
-                <input type="number" name="number" id="number" class="form-control" value="{{$number}}" min="1" step="1" placeholder="Enter Item Quantity">
-            @else
-                <input type="number" name="number" id="number" class="form-control" min="1" step="1" placeholder="Enter Item Quantity">
-            @endif
-            </div>
-        </div>  
-        <br><br>
-
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-            <label for="from_date" class="text_bold_black">From Amount</label>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-           <div class="input-group">
-            @if(isset($from_amount))
-                <input type="text" name="from_amount" class="form-control" 
-                value="{{$from_amount}}" id="from_amount">
-                @else
-                <input type="text" name="from_amount" class="form-control" placeholder="Start Amount" id="from_amount">
-            @endif
-             <div class="input-group-addon">
-                    <i class="glyphicon glyphicon-usd"></i>
-                </div>
-            </div>
-        </div> 
-
-
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-            <label for="from_date" class="text_bold_black">To Amount </label>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-           <div class="input-group">
-            @if(isset($to_amount))
-                <input type="text" name="to_amount" class="form-control" id="to_amount"
-                value="{{$to_amount}}">
-                @else
-                <input type="text" name="to_amount" class="form-control" placeholder="End Amount" id="to_amount">
-            @endif
-            <div class="input-group-addon">
-                <i class="glyphicon glyphicon-usd"></i>
-            </div>
-            </div>
-            
-        </div>                        
+                   
                    
         <div class="col-md-2 pull-right ">                    
-            <button class="btn btn-primary " onclick="best_item_excel('Best_itemReport');">Export</button>                    
+            <button class="btn btn-primary " onclick="best_category_excel('categorySaleReport');">Export</button>                    
         </div>
          <div class="col-md-1 pull-right">          
-        <button type="submit" class="btn btn-primary " onclick="best_item_search('Best_itemReport');">
+        <button type="submit" class="btn btn-primary " onclick="best_category_search('categorySaleReport');">
             Search
         </button>
         </div>
@@ -118,50 +69,42 @@
         <div class="container">
         <div class="row" id="autoDiv">
             <div class="col-md-12">
-                <table class="table table-bordered">
+               <table class="table table-striped" style="width:100%" id="example3">
                     <thead class="thead_report">
                     <tr class="report-th">
-                        <th>Item Name</th>
+                     
+                        <th>Category</th>
                         <th>Quantity</th>
-                        <th>Price </th>
-                        <th>Discount Price</th>
                         <th>Total Amount</th>
-                        <!-- <th>View</th> -->
                     </tr>
                     </thead>
-
-                    <?php 
-                    $sum_qty        = 0;
-                    $item_price     = 0;
-                    $sum_discount   = 0;                    
-                    $sum            = 0;
-                    ?>
-                    @if(isset($orders))
-                    @foreach($orders as $order)
+                  <?php $sum = 0; ?>
+                    @if(!empty($orders))
+                        @foreach($orders as $value)
+                          
                         <tr class="tr-row active">
-                            <td>{{ $order->name }}</td>
-                            <td>{{ $order->total }}</td>
-                            <td>{{number_format($order->amount)}}</td>
-                            <td>{{ $order->discount_amount === "" ? "0.0" : number_format($order->discount_amount) }}</td>
-                            <td class="money-align">{{ number_format($order->price) }}</td>
-                            <!-- <td><a href="" class="btn btn-primary">View Detail</a></td> -->
-                            <?php 
-                            $sum_qty += $order->total;
-                            $sum     += $order->total_amt;
-                            $item_price+= $order->amount;
-                            $sum_discount += $order->discount_amount;
-                            ?>
+                         
+                            <td>{{ $value['name'] }}</td>
+                            <td>{{ $value['qty'] }}</td>
+                            <td>{{ number_format($value['price']) }}</td>
                         </tr>
-                    @endforeach
+                            <?php                         
+                               $sum +=(int)$value['price'];                             
+                            
+                            ?>
+                        @endforeach 
+                    @else
+                        <tr>
+                            <td colspan="3" style="text-align: center; height: 50px">No data available in table</td>
+                        </tr>
                     @endif
-                    <tr class="active">
-                        <!-- <td colspan="3"></td> -->
 
-                        <td class="money-align">Total Amount</td>
-                        <td class="money-align">{{number_format($sum_qty)}}</td>
-                        <td class="money-align">{{number_format($item_price)}}</td>
-                        <td class="money-align">{{number_format($sum_discount)}}</td>
-                        <td class="money-align">{{number_format($sum)}}</td>
+                    <tr class="tr-row">
+                        <td colspan="1"></td>
+                        <td class="money-align">Total amount</td>
+                        <td class="money-align">{{number_format($sum)}}
+                           
+                        </td>
                     </tr>
                 </table>
             </div>
