@@ -40,14 +40,8 @@ class CategoryRepository implements CategoryRepositoryInterface
         $returnedObj['aceplusStatusCode'] = ReturnMessage::INTERNAL_SERVER_ERROR;
 
         try {
-            $tempObj        = Utility::addCreatedBy($paramObj);
-            $tempObj->save();
-
-            $inserted_id = $tempObj->id;
-            $product_type = 2; //Product Type 1 = items, 2 = category, 3 = add on, 4 = set menu
-            $stock_code = Utility::generateStockCode($inserted_id,$product_type);
-            $paramObj = Category::find($inserted_id);
-            $paramObj->stock_code = $stock_code;
+            $tempObj                    = Utility::addCreatedBy($paramObj);
+            $paramObj->stock_code       = Utility::generateStockCode();
             $paramObj->save();
 
             $returnedObj['aceplusStatusCode'] = ReturnMessage::OK;
