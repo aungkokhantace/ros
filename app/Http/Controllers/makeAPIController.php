@@ -637,26 +637,26 @@ class MakeAPIController extends ApiGuardController
                                 $extra      = $order_detail->extra;
                                 foreach ($extra as $e) {
                                     
-                                if($e->status == 1){
-                                     $order_extra = OrderExtra::where('order_detail_id','=',$detail_id)
+                                   if($e->status == 1){
+                                     $order_extra = OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
                                     ->where('extra_id','=',$e->extra_id)
                                     ->first();
-                                      if(!isset($order_extra) ){
-                                        $extra = new OrderExtra();
-                                        $extra->order_detail_id         = $order_detail->order_detail_id;
-                                        $extra->extra_id                = $e->extra_id;
-                                        $extra->quantity                = $e->quantity;
-                                        $extra->amount                  = $e->amount;
-                                        $extra->status                  = 1;
-                                        $extra->save();
-                                        // Custom Log
-                                        $message = "[  $date ] info:  update an OrderExtra [ order_detail_id =  $extra->order_detail_id ]" . PHP_EOL;
-                                        RmsLog::create($message);
-                                      }
+                                        if(!isset($order_extra) ){
+                                            $extra = new OrderExtra();
+                                            $extra->order_detail_id         = $order_detail->order_detail_id;
+                                            $extra->extra_id                = $e->extra_id;
+                                            $extra->quantity                = $e->quantity;
+                                            $extra->amount                  = $e->amount;
+                                            $extra->status                  = 1;
+                                            $extra->save();
+                                            // Custom Log
+                                            $message = "[  $date ] info:  update an OrderExtra [ order_detail_id =  $extra->order_detail_id ]" . PHP_EOL;
+                                            RmsLog::create($message);
+                                        }
                                         
             
                                     }else{
-                                        $order_extra = OrderExtra::where('order_detail_id','=',$detail_id)
+                                        $order_extra = OrderExtra::where('order_detail_id','=',$order_detail->order_detail_id)
                                     ->where('extra_id','=',$e->extra_id)
                                     ->delete();
                                     }
