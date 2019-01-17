@@ -43,6 +43,7 @@ class SaleSummaryReportController extends Controller
     	$orders 		= $this->reportRepository->get_last_order_day();    	
     	$from 			= $orders;
     	$to 			= $orders;
+    	
 
     	$orders 		= $this->reportRepository->sale_summary($type,$from,$to);
 	           return view('Backend.reports.sale_summary.sale_summary')
@@ -73,14 +74,12 @@ class SaleSummaryReportController extends Controller
 	            if($type == "Monthly"){
 	                $from_month = $from;
 	                $to_month   = $to;
-	                // session()->put('from_month', $from_month);
-	                // session()->put('to_month', $to_month);
+	               
 	            }
 	            if($type == "Daily"){
 	                $from_date  = $from;
 	                $to_date    = $to;
-	                // session()->put('from_date', $from_date);
-	                // session()->put('to_date', $to_date);
+	              
 	            }
 	            $orders 		= $this->reportRepository->sale_summary($type,$from,$to);
 	           return view('Backend.reports.sale_summary.sale_summary')
@@ -100,7 +99,7 @@ class SaleSummaryReportController extends Controller
     	}
     	catch(\Exception $e){ 
     		
-    		  return redirect('/');       
+    		  return redirect('/') ->withMessage(FormatGenerator::message('Error..', 'There is an error in Sale Summary Report ...'));       
       	}  	 
       }
 
@@ -133,18 +132,28 @@ class SaleSummaryReportController extends Controller
       
 	            $orders 		= $this->reportRepository->sale_summary($type,$from,$to);
 	           if(count($orders)>0){
-	           		foreach ($orders as $key => $order) {			    
-		            $items[$key]['Shift Date']              = $order->ShiftDate;
-		            $items[$key]['Order Time']              = $order->Day;
-		            $items[$key]['Total Discount Amount']   = (string)$order->DiscountAmount;
-		            $items[$key]['Total Tax Amount']        = (string)$order->TaxAmount;
-		            $items[$key]['Total Service Amount']    = (string)$order->ServiceAmount;          
+	           		foreach ($orders as $key => $order) {	
+	           		if ($type =="Yearly") {
+	           			$items[$key]['Year']              = date('Y',strtotime($order->ShiftDate));
+	           		}
+	           		elseif ($type=="Monthly") {
+	           			$items[$key]['Month']              = date('m-Y',strtotime($order->ShiftDate));
+	           		}
+	           		else{
+	           			$items[$key]['Day']              = date('d-m-Y',strtotime($order->ShiftDate));
+
+	           		}		    
+		            // $items[$key]['Shift Date']              = $order->ShiftDate;
+		            // $items[$key]['Order Time']              = $order->Day;
+		            $items[$key]['Total Discount Amount']   = (string)number_format($order->DiscountAmount);
+		            $items[$key]['Total Tax Amount']        = (string)number_format($order->TaxAmount);
+		            $items[$key]['Total Service Amount']    = (string)number_format($order->ServiceAmount);          
 		            
-		            $items[$key]['Total Room Charge']       = (string)$order->RoomAmount;
-		            $items[$key]['Total Extra Price']       = (string)$order->ExtraAmount;
-		            $items[$key]['Sub Total']       		= $order->SubTotal;
-		            $items[$key]['Total Net Amount']        = $order->NetAmount;
-		            $items[$key]['Total All Amount']        = $order->TotalAmount;
+		            $items[$key]['Total Room Charge']       = (string)number_format($order->RoomAmount);
+		            $items[$key]['Total Extra Price']       = (string)number_format($order->ExtraAmount);
+		            $items[$key]['Sub Total']       		= number_format($order->SubTotal);
+		            $items[$key]['Total Net Amount']        = number_format($order->NetAmount);
+		            $items[$key]['Total All Amount']        = number_format($order->TotalAmount);
 		           
 		        }
 		        Excel::create('SaleReport', function($excel)use($orders,$items) {
@@ -172,16 +181,15 @@ class SaleSummaryReportController extends Controller
                             $sum_amount     += $order->TotalAmount;        
 		                }
 		                $sheet->appendRow(array(
-		                        'Total',
-		                        '',
-		                        $sum_discount,
-		                        $sum_tax,
-		                        $sum_service,		                       
-		                        $sum_room,
-		                        $sum_extra,
-		                        $sum_subtotal,
-		                        $sum_net,		                      
-		                        $sum_amount
+		                        'Total',		                        
+		                        number_format($sum_discount),
+		                        number_format($sum_tax),
+		                        number_format($sum_service),		                       
+		                        number_format($sum_room),
+		                        number_format($sum_extra),
+		                        number_format($sum_subtotal),
+		                        number_format($sum_net),		                      
+		                        number_format($sum_amount)
 		                        ));	              
 
 		                $sheet->row(1,function($row){
@@ -213,22 +221,33 @@ class SaleSummaryReportController extends Controller
     	 	}/* guard */
 
     	}
-    	catch(\Exception $e){	
-    		
-    		  return redirect('/');
+    	catch(\Exception $e){	    		
+    		  return redirect('/')
+    		  ->withMessage(FormatGenerator::message('Error..', 'There is an error in Sale Summary Report ...'));
     	} 	 
 	}
-    public function summary_detail($date,$type){
+    public function summary_detail($date,$type,$from=null,$to=null){
 
     	$orders 		= $this->reportRepository->sale_summary_detail($date, $type);
-        return view('Backend.reports.sale_summary.sale_detail')->with('orders',$orders)->with('date',$date)->with('type',$type);
+        return view('Backend.reports.sale_summary.sale_detail')
+        ->with('orders',$orders)
+        ->with('date',$date)
+        ->with('type',$type)
+        ->with('from',$from)
+        ->with('to',$to);
 
     }
 
-    public function summary_detail_sort($date,$type,$sort){
+    public function summary_detail_sort($date,$type,$sort,$from=null,$to=null){    	
     	$orders 		= $this->reportRepository->sale_summary_detail_sort($date, $type,$sort);
 
-    	  return view('Backend.reports.sale_summary.sale_detail')->with('orders',$orders)->with('date',$date)->with('type',$type)->with('sort',$sort);
+    	  return view('Backend.reports.sale_summary.sale_detail')
+    	  ->with('orders',$orders)
+    	  ->with('date',$date)
+    	  ->with('type',$type)
+    	  ->with('sort',$sort)
+    	  ->with('from',$from)
+    	  ->with('to',$to);
 
     }
 
@@ -242,28 +261,28 @@ class SaleSummaryReportController extends Controller
 	           if(count($orders)>0){
 	           	foreach ($orders as $key => $order) {		    	
 		           
-		            $items[$key]['Invoice ID']              = $order->invoice_id;
+		            $items[$key]['Voucher No']              	= $order->invoice_id;
 		            if($type == "Yearly"){
-		            	$items[$key]['Shift Day']              	= date('Y',strtotime($date.'-01-01'));
+		            	$items[$key]['Year']              		= date('Y',strtotime($date.'-01-01'));
 		            }elseif ($type == "Monthly") {
-		           	 	$items[$key]['Shift Day']              	= date('m-Y',strtotime($date.'-01'));
+		           	 	$items[$key]['Month']              	= date('m-Y',strtotime($date.'-01'));
 		            }
 		            else{
-		            	$items[$key]['Shift Day']              	= date('d-m-Y',strtotime($date));
+		            	$items[$key]['Day']              		= date('d-m-Y',strtotime($date));
 		            }
 		         
-		            $items[$key]['Order Time']              = $order->Date;
+		            // $items[$key]['Order Time']              = $order->Date;
 		            $items[$key]['Staff']   				= $order->Staff;		         
-		            $items[$key]['Discount Amount']    		= (string)$order->Discount;		            
-		            $items[$key]['Tax']        				=(string) $order->Tax;            
+		            $items[$key]['Discount']    		= (string)number_format($order->Discount);		            
+		            $items[$key]['Tax']        				= (string) number_format($order->Tax);            
 		            
-		            $items[$key]['Service']       			= (string)$order->Service;
-		            $items[$key]['Room Charge']             = (string)$order->Room;
-		            $items[$key]['Extra']        			= (string)$order->Extra;
-		            $items[$key]['Quantity']        		= $order->Quantity;
-		            $items[$key]['Sub Total']			    = $order->SubTotal;
-		            $items[$key]['Net Amount']			    = $order->NetAmount;
-		            $items[$key]['Total Amount']			= $order->Amount;
+		            $items[$key]['Service']       			= (string)number_format($order->Service);
+		            $items[$key]['Room Charge']             = (string)number_format($order->Room);
+		            $items[$key]['Extra']        			= (string)number_format($order->Extra);
+		            $items[$key]['Quantity']        		= number_format($order->Quantity);
+		            $items[$key]['Sub Total']			    = number_format($order->SubTotal);
+		            $items[$key]['Net Amount']			    = number_format($order->NetAmount);
+		            $items[$key]['Total Amount']			= number_format($order->Amount);
 
 		        }
 		        Excel::create('Sale_Report_Detail'.$type, function($excel)use($orders,$items) {
@@ -294,19 +313,18 @@ class SaleSummaryReportController extends Controller
 		                }
 		                $sheet->appendRow(array(
 
-		                        'Total',
+		                        'Total',		                       
 		                        '',
 		                        '',
-		                        '',
-		                        $sum_discount,
-								$sum_tax,
-								$sum_service,
-								$sum_room,
-								$sum_extra,
-								$sum_qty,
-								$sum_subtotal,
-								$sum_net,
-								$sum_amount,
+		                        number_format($sum_discount),
+								number_format($sum_tax),
+								number_format($sum_service),
+								number_format($sum_room),
+								number_format($sum_extra),
+								number_format($sum_qty),
+								number_format($sum_subtotal),
+								number_format($sum_net),
+								number_format($sum_amount),
 		                     ));	              
 
 		                $sheet->row(1,function($row){
@@ -321,7 +339,7 @@ class SaleSummaryReportController extends Controller
 	                        } 
 	                        // dd($current_row);
 	                     /* to add background in total */
-		                $sheet->cell('A'.$current_row.':M'.$current_row, function($cell) {
+		                $sheet->cell('A'.$current_row.':L'.$current_row, function($cell) {
                             $cell->setBackground('#3c8dbc');                            
                       	});
 
@@ -342,14 +360,14 @@ class SaleSummaryReportController extends Controller
 
     	}
     	catch(\Exception $e){    		
-    		  return redirect('/');
+    		  return redirect('/') ->withMessage(FormatGenerator::message('Error..', 'There is an error in Sale Summary Report ...'));
     	}
     
     	
 
     }
 
-    public function invoice_detail($invoice_id,$date,$type){
+    public function invoice_detail($invoice_id,$date,$type,$from=null,$to=null){
      $orders 		= $this->invoiceRepo->getorder($invoice_id);
      // dd($orders);
         $add    	= $this->invoiceRepo->getaddon($invoice_id);
@@ -376,6 +394,6 @@ class SaleSummaryReportController extends Controller
       
     	// dd($orders);
 
-        return view('Backend.reports.sale_summary.invoice_detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','continent','invoice_id','config','date','type'));
+        return view('Backend.reports.sale_summary.invoice_detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','continent','invoice_id','config','date','type','from','to'));
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 
 class PermissionTableSeeder extends Seeder
 {
-    
+
     public function run()
     {
         DB::table('permissions')->delete();
@@ -578,6 +578,41 @@ class PermissionTableSeeder extends Seeder
             'id' =>'91',
             'role_id' => '3',
             'module_id' => '27',
+            'created_by' => '1',
+        ]);
+
+         DB::table('permissions')->insert([
+            'id' =>'89',
+            'role_id' => '1',
+            'module_id' => '27',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'90',
+            'role_id' => '1',
+            'module_id' => '28',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'91',
+            'role_id' => '1',
+            'module_id' => '29',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'92',
+            'role_id' => '1',
+            'module_id' => '30',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'93',
+            'role_id' => '1',
+            'module_id' => '31',
             'created_by' => '1',
         ]);
 

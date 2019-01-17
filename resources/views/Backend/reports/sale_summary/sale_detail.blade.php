@@ -36,6 +36,9 @@
        {{-- <input type="text" name="date"  value="{{isset($date)?date('d-m-Y',strtotime($from_date)):''}}"> --}}
          <input type="hidden" name="date"  id="date" value="{{isset($date)?$date:''}}">
          <input type="hidden" name="type" id="type" value="{{isset($type)?$type:''}}">
+
+         <input type="hidden" name="from" id="from" value="{{isset($from)?$from:''}}">
+         <input type="hidden" name="to" id="to" value="{{isset($to)?$to:''}}">
         <br><br><br>    
     </div>
 
@@ -48,19 +51,28 @@
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
             <button type="button" onclick="report_export_with_sort('sale_SummaryReport');" class="form-control btn-primary">Export Excel</button>
         </div> 
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-            <?php 
-            // use App\Session;
-            // $temp_fmonth    = session()->get('from_month');
-            // $temp_tmonth    = session()->get('to_month');
-            // dd($temp_fmonth,$temp_tmonth);
-            ?>
-           <a href="/Backend/sale_SummaryReport"><button type="button"  class="form-control btn-primary">Back</button></a> 
-           <?php  
-           // session()->forget('from_month');
-           // session()->forget('to_month');
-            ?>
+
+        @if(isset($type) && $type =="Yearly")
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">           
+           <a href="{{'/Backend/sale_SummaryReport/search/Yearly/'.$date}}"><button type="button"  class="form-control btn-primary">Back</button></a> 
+          
         </div>  
+        @endif
+
+        @if(isset($type) && $type =="Monthly")
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">           
+           <a href="{{'/Backend/sale_SummaryReport/search/Monthly/'.$from.'/'.$to}}"><button type="button"  class="form-control btn-primary">Back</button></a> 
+          
+        </div>  
+        @endif
+
+         @if(isset($type) && $type =="Daily")
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">           
+           <a href="{{'/Backend/sale_SummaryReport/search/Daily/'.$from.'/'.$to}}"><button type="button"  class="form-control btn-primary">Back</button></a> 
+          
+        </div>  
+        @endif
+        
         </div>
     </div>
 </div>
@@ -73,9 +85,17 @@
                     <table class="table table-bordered">
                         <thead class="thead_report">
                         <tr class="report-th">
-                            <th width="12%">Invoice ID</th>
-                            <th>Shift Date</th>
-                            <th>Order Time</th>
+                            <th width="12%">Voucher No</th>
+                          @if($type == "Yearly")
+                            <th>Year</th>
+                            @endif
+                            @if($type == "Monthly")
+                            <th>Month</th>
+                            @endif
+                            @if($type == "Daily")
+                            <th>Day</th>
+                            @endif
+                          <!--   <th>Order Time</th> -->
                             <th>Staff</th>
                             <th>Discount</th>
                             <th>Tax</th>
@@ -112,7 +132,7 @@
                                   @if($type == "Daily")
                                   <td width="10%">{{date('d-m-Y',strtotime($date))}}</td>
                             @endif
-                            <td class="money-align" width="10%">{{ $order->Date }}</td>
+                           
                             <td class="money-align">{{ $order->Staff }}</td>
                            
                             <td class="money-align">{{ number_format($order->Discount)}}</td>
@@ -120,11 +140,12 @@
                             <td class="money-align">{{ number_format($order->Service)}}</td>
                             <td class="money-align">{{ number_format($order->Room)}}</td>
                             <td class="money-align">{{ number_format($order->Extra)}}</td>
-                            <td class="money-align">{{ $order->Quantity}}</td>
-                            <td class="money-align">{{ $order->SubTotal}}</td>                           
-                            <td class="money-align">{{ $order->NetAmount}}</td>
-                            <td class="money-align">{{ $order->Amount}}</td>                      
-                           <td><a href="/Backend/sale_SummaryReport/invoice_detail/{{ $order->invoice_id }}/{{$date}}/{{$type}}">View</a></td>
+                            <td class="money-align">{{ number_format($order->Quantity)}}</td>
+                            <td class="money-align">{{ number_format($order->SubTotal)}}</td>                           
+                            <td class="money-align">{{ number_format($order->NetAmount)}}</td>
+                            <td class="money-align">{{ number_format($order->Amount)}}</td>                      
+                           <td><a href="{{'/Backend/sale_SummaryReport/invoice_detail/'.$order->invoice_id.'/'.$date.'/'.$type.'/'.$from.'/'.$to}}">View</a></td>
+                      
                         </tr>
                           <?php 
                             $sum_discount   += $order->Discount;
@@ -139,7 +160,9 @@
                         ?>
                         @endforeach
                         <tr>
-                            <td colspan="3"></td>
+                            <td ></td>
+                           
+                            <td ></td>
                             <td class="money-align">All Total</td>
                             <td class="money-align">{{number_format($sum_discount)}}</td>
                             <td class="money-align">{{number_format($sum_tax)}}</td>

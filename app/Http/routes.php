@@ -661,9 +661,28 @@ Route::group(['middleware' => 'web'], function () {
         });
         //End remark
 
-        Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
-        Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
-        Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+         // item Report update
+        Route::group(['middleware'=>'best_item:Cashier'],function(){
+            Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+            Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+            Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+        });
+
+        // Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+        // Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+        // Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+
+        Route::group(['middleware'=>'best_category:Cashier'],function(){
+           Route::get('categorySaleReport', 'Backend\Reports\BestSellingCategoryReportController@index');
+           Route::get('categorySaleReport/search/{form_date?}/{to_date?}', 'Backend\Reports\BestSellingCategoryReportController@search');
+           Route::get('categorySaleReport/export/{form_date?}/{to_date?}', 'Backend\Reports\BestSellingCategoryReportController@export');
+       });
+
+       Route::group(['middleware'=>'best_category:Cashier'],function(){
+           Route::get('categorySaleReport', 'Backend\Reports\BestSellingCategoryReportController@index');
+           Route::get('categorySaleReport/search/{form_date?}/{to_date?}', 'Backend\Reports\BestSellingCategoryReportController@search');
+           Route::get('categorySaleReport/export/{form_date?}/{to_date?}', 'Backend\Reports\BestSellingCategoryReportController@export');
+       });
 
         });
     });
