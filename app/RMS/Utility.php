@@ -10,11 +10,9 @@ use App\Http\Requests;
 use App\Session;
 use App\RMS\User\UserRepository;
 use App\User;
-use App\RMS\Order\Order;
 use App\RMS\SyncsTable\SyncsTable;
 use App\RMS\Category\Category;
 use Carbon\Carbon;
-use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\Order\OrderRepository;
 use App\RMS\Config\ConfigRepositoryInterface;
 use App\RMS\Kitchen\Kitchen;
@@ -225,43 +223,5 @@ class Utility
       return $orders;
     }
 
-    public static function VoucherID(){
-        
-        $date            = Carbon::now()->format('ymd');
-        
-        $setting         = DB::table('core_settings')->where('code','VOUCHER')->select('value')->first();
-        $length          = $setting->value; 
-        $prefix          = DB::table('core_settings')->where('code','VOUCHER_PREFIX')->select('value')->first();
-        if($prefix != ''){
-            $prefix = $prefix->value.'-' . $date;
-        }else{
-            $prefix = $date;
-        }
-        
-        $maxID           = Order::where('id', 'like', '%' .$date. '%')->max('id');
-        
-        $maxID           = str_replace($prefix,"",$maxID);
-        
-        $vocher_code     = intval($maxID);
-       
-        $vocher_code++;
-        $voucher_id      = str_pad($vocher_code,$length,0,STR_PAD_LEFT);
-        $voucher_id      = $prefix.$voucher_id;
-       
-        return $voucher_id;
-    }
-
-    public static function OrderDetailId($order_id){
-        $date            = Carbon::now()->format('ymd');
-        $maxID           = Orderdetail::where('order_detail_id', 'like', '%' .$order_id. '%')->max('order_detail_id');
-        $length          = 2;
-        $maxID           = str_replace($order_id,"",$maxID);
-        $detail_code     = intval($maxID);
-        $detail_code++;
-        $detail_id       = str_pad($detail_code,$length,0,STR_PAD_LEFT);
-        
-        $detail_id       = $order_id . $detail_id;
-        return $detail_id;
-    }
 
 }
