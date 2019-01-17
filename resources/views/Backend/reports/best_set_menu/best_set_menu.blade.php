@@ -12,8 +12,8 @@
             <div class="col-md-11 date_row">
                 <div class="col-md-12"><h3 class="h3"><strong>Best Selling Set Menu Report</strong></h3></div>
             <div class="col-md-12 btn-gp">
-        
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+        <div class="row">
+             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
             <label for="from_date" class="text_bold_black">From Date</label>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
@@ -52,7 +52,9 @@
             </div>
         </div>  
         <br><br>
-
+        </div>
+        <div class="row">
+            
         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
             <label for="from_date" class="text_bold_black">From Amount</label>
         </div>
@@ -97,6 +99,10 @@
             Search
         </button>
         </div>
+        </div>
+        
+       
+
                 </div>
             </div>
         </div>

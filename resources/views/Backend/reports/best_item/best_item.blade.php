@@ -13,8 +13,8 @@
 
                 <div class="col-md-12"><h3 class="h3"><strong>Best-selling Item Report</strong></h3></div>
             <div class="col-md-12 btn-gp">
-        
-        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+        <div class="row">
+             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
             <label for="from_date" class="text_bold_black">From Date</label>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
@@ -53,6 +53,9 @@
             </div>
         </div>  
         <br><br>
+            
+        </div> <!-- row -->
+        <div class="row">
 
         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
             <label for="from_date" class="text_bold_black">From Amount</label>
@@ -97,7 +100,11 @@
         <button type="submit" class="btn btn-primary " onclick="best_item_search('Best_itemReport');">
             Search
         </button>
-        </div>
+        </div>            
+        </div> <!-- ro -->
+        
+       
+
                 </div>
             </div>
         </div>
