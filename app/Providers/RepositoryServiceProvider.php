@@ -63,7 +63,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind('App\RMS\Reports_update\Invoice\InvoiceRepositoryInterface','App\RMS\Reports_update\Invoice\InvoiceRepository');
                 
         $this->app->bind('App\RMS\Reports_update\BestSellingItem\BestSellingItemRepositoryInterface','App\RMS\Reports_update\BestSellingItem\BestSellingItemRepository');
-         $this->app->bind('App\RMS\Reports_update\BestSellingCategory\BestSellingCategoryRepositoryInterface','App\RMS\Reports_update\BestSellingCategory\BestSellingCategoryRepository');
+        $this->app->bind('App\RMS\Reports_update\BestSellingCategory\BestSellingCategoryRepositoryInterface','App\RMS\Reports_update\BestSellingCategory\BestSellingCategoryRepository');
+        
+        $this->app->bind('App\RMS\Reports_update\BestSellingSet\BestSellingSetRepositoryInterface','App\RMS\Reports_update\BestSellingSet\BestSellingSetRepository');
         //End
     }
 }

@@ -618,9 +618,14 @@ Route::group(['middleware' => 'web'], function () {
             
 
         });   
-        //  Route::group(['middleware'=>'best_set:Cashier'],function(){    
+         Route::group(['middleware'=>'best_set:Cashier'],function(){ 
+            Route::get('Best_SetReport', 'Backend\Reports\BestSellingSetReportController@index');
 
-        // });   
+            Route::get('Best_SetReport/search/{form_date?}/{to_date?}/{number?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingSetReportController@search');
+
+            Route::get('Best_SetReport/export/{form_date?}/{to_date?}/{number?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingSetReportController@export');   
+
+        });   
         //  Route::group(['middleware'=>'table_report:Cashier'],function(){    
 
         // });        
