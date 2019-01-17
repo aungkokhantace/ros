@@ -79,5 +79,7 @@ class Kernel extends HttpKernel
         'best_category'=>\App\Http\Middleware\BestSellingCategoryReport::class,
         'best_set'=>\App\Http\Middleware\BestSellingSetReport::class,
         'table_report'=>\App\Http\Middleware\ReportByTable::class,
+        'invoice_cancel_report'=>\App\Http\Middleware\invoice_cancel::class,
+        
     ];
 }
