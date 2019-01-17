@@ -325,7 +325,7 @@ class MakeAPIController extends ApiGuardController
             }
             $temp->save();
             // Custom Log
-            $message = "[ $date ]  info:   create an OrderDetails [ id = $order_detail->order_detail_id ] " . PHP_EOL;
+            $message = "[ $date ]  info:   create an OrderDetails [ id = $order_detail_id ] " . PHP_EOL;
             RmsLog::create($message);
 
             $set_item = $order_detail->set_item;
