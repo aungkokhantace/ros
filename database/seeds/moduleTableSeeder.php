@@ -195,5 +195,13 @@ class moduleTableSeeder extends Seeder
             'view'=>'cashier',
             'created_by'=>'1',
         ]);
+
+
+         DB::table('modules')->insert([
+            'id'=>'32',
+            'module'=>'Invoice Cancel  Report',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
     }
 }

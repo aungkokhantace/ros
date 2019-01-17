@@ -382,7 +382,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         $orders                  = $query->where('order.status',$order_paid_status)
                                     ->whereNull('order_details.deleted_at')
                                     ->groupBy('order_details.order_id')
-                                    ->orderBy('Date','ASC')
+                                    ->orderBy('order_day.start_date','ASC')
                                     ->get();  
         return $orders;
     }
@@ -417,7 +417,6 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         if($type == "Daily"){
             $query               = $query->where(DB::raw('Date(order_day.start_date)'),$date); 
         }
-
 
         $query                  = $query->where('order.status',$order_paid_status)
                                     ->whereNull('order_details.deleted_at')

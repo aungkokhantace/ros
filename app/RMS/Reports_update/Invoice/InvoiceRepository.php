@@ -112,6 +112,52 @@ class InvoiceRepository implements InvoiceRepositoryInterface
         return $config;
     }
 
+    // public function getinvoiceCancel() {
+    //     $order_cancel_status    = StatusConstance::ORDER_CANCEL_STATUS;
+    //     // $orders = DB::select("select `id`, `total_price`,`member_discount`,`service_amount`,`tax_amount`,`all_total_amount`, `created_at`,`total_discount_amount`,`payment_amount`,`status`
+    //     // from `order` where `deleted_at` is null AND status = $order_cancel_status order by `order_time` desc");
+    //     $orders     = Order::where('status',$order_cancel_status)
+    //                 ->orderBy('id', 'desc')
+    //                 // ->whereDate('created_at','=',date('Y-m-d'))
+    //                 ->whereNull('deleted_at')
+                   
+    //     return $orders;
+    // }
+
+    public function getinvoiceCancel($from_date,$to_date) {
+        $from                   = date('Y-m-d',strtotime($from_date));
+        $to                     = date('Y-m-d',strtotime($to_date));   
+
+        $order_cancel_status    = StatusConstance::ORDER_CANCEL_STATUS;  
+        $query                  = Orderdetail::query();
+        $query                  = $query->join('order','order.id','=','order_details.order_id')
+                                    ->join('users','users.id','=','order.user_id')
+                                    ->join('order_day','order.day_id','=','order_day.id')
+                                    ->select('order.id as invoice_id',DB::raw('DATE_FORMAT(order.order_time,"%d-%m-%Y")as Date'),
+                                        'users.user_name as Staff',DB::raw('SUM(order_details.quantity) as Quantity'),
+                                        'order.over_all_discount as Discount',
+                                        'order.tax_amount as Tax',
+                                        'order.service_amount as Service',
+                                        'order.room_charge as Room',                                                   
+                                        'order.total_extra_price as Extra',
+                                        'order.sub_total as SubTotal', 
+                                        'order.total_price as NetAmount',                                        
+                                        'order.all_total_amount as Amount'
+                                    );
+        
+        $query                   = $query->where(DB::raw('Date(order_day.start_date)'),'>=',$from)
+                                        ->where(DB::raw('Date(order_day.start_date)'),'<=',$to);
+    
+        $orders                  = $query->where('order.status',$order_cancel_status)
+                                    ->whereNull('order_details.deleted_at')
+                                    ->groupBy('order_details.order_id')
+                                    ->orderBy('Date','ASC')
+                                    ->get();  
+
+       
+        return $orders;
+    }
+
    
 
      
