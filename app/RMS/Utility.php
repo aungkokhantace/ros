@@ -11,6 +11,7 @@ use App\Session;
 use App\RMS\User\UserRepository;
 use App\User;
 use App\RMS\SyncsTable\SyncsTable;
+use App\RMS\Category\Category;
 use Carbon\Carbon;
 use App\RMS\Order\OrderRepository;
 use App\RMS\Config\ConfigRepositoryInterface;
@@ -116,29 +117,14 @@ class Utility
         PDF::Output('exportPDF.pdf');
     }
 
-    public static function generateStockCode($inserted_id,$product_type)
+    public static function generateStockCode()
     {
-        $generate_codes = DB::table('core_settings')
-                        ->select('code')
-                        ->WHERE ('value','=',$product_type)
-                        ->get();
+        $path_length     = 4;
+        $maxCode         = Category::where('stock_code','regexp', '^[0-9]+')->max('stock_code') ?: str_repeat('0',$path_length);
+        $category_code   = intval($maxCode);
+        $category_code++;
+        $stock_code      = str_pad($category_code,$path_length,0,STR_PAD_LEFT);
 
-        foreach($generate_codes as $generate_code) {
-            $code = $generate_code->code;
-        }
-
-        $inserted_id_length =  strlen($inserted_id);
-        $limit_length = 4;
-        $remain_length = $limit_length - $inserted_id_length;
-        $remain_length_arr = array();
-        for ($i = 1;$i <= $remain_length; $i++) {
-            $remain_length_arr[$i] = 0;
-        }
-
-        $code_length = implode('',$remain_length_arr);
-
-        // $stock_code = $code . "_" . $code_length . $inserted_id;
-        $stock_code = $code . "" . $code_length . $inserted_id;
         return $stock_code;
     }
 
@@ -215,9 +201,9 @@ class Utility
         $prefix          = 'loc';
         $maxCode         = Kitchen::where('kitchen_code', 'like', $prefix.'%')->max('kitchen_code') ?: $prefix.str_repeat('0',$path_length);
         $code            =  substr($maxCode,3,6);
-        $kitchen_code    = intval($code);
-        $kitchen_code++;
-        $code             = str_pad($kitchen_code,$path_length,0,STR_PAD_LEFT);
+        $category_code    = intval($code);
+        $category_code++;
+        $code             = str_pad($category_code,$path_length,0,STR_PAD_LEFT);
         return $prefix . $code;
     }
 

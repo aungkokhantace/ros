@@ -55,9 +55,9 @@
             noti();
             function noti(){
                 var socket  = io.connect( 'http://'+window.location.hostname  +':' + 3334);
-                socket.on( invoice_update, function( data ) {
-                    console.log('socket connected');
-                });
+                // socket.on( invoice_update, function( data ) {
+                //     console.log('socket connected');
+                // });
             }
           }else{
 
