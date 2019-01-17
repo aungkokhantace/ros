@@ -216,8 +216,12 @@ function report_search_with_sort(module){
     console.log("sort",sort); 
     var date        = $("#date").val();
     var type        = $("#type").val();
+    var from        = $("#from").val();
+    var to          = $("#to").val();
+    console.log(from+to);
+
     var form_action = "";       
-    form_action     = "/Backend/"+module+"/detail/" + date + "/" + type + "/" + sort;
+    form_action     = "/Backend/"+module+"/detail_sort/" + date + "/" + type + "/" + sort +'/'+from +'/' + to;
     
     window.location = form_action;
     // sale_SummaryReport/detail/2018-11/monthly
@@ -228,35 +232,49 @@ function report_export_with_sort(module){
     console.log("sort",sort); 
     var date        = $("#date").val();
     var type        = $("#type").val();
+    var from        = $("#from").val();
+    var to          = $("#to").val();
+
     var form_action = "";       
-    form_action     = "/Backend/"+module+"/detail_exprot/" + date + "/" + type + "/" + sort;
+    form_action     = "/Backend/"+module+"/detail_exprot/" + date + "/" + type + "/" + sort+'/'+from +'/' + to;
     
     window.location = form_action;
 }
 
-function best_item_search(module){   
-    var form_action = "";
-    var from_date           = $("#from_date").val();
-    var to_date             = $("#to_date").val();
-    var number              = $("#number").val();
-    var from_amount         = $("#from_amount").val();
-    var to_amount           = $("#to_amount").val();   
-     if(from_date == "" && to_date == ""){
-            sweetAlert("Oops...", "Please Choose the date !");
-            return;
-        }
-    else{
-            var dateComparison = check_date(from_date, to_date);
-            if(dateComparison){
-                form_action = "/Backend/"+module+"/search/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
+// function best_item_search(module){   
+//     var form_action = "";
+//     var from_date           = $("#from_date").val();
+//     var to_date             = $("#to_date").val();
+//     var number              = $("#number").val();
+//     var from_amount         = $("#from_amount").val();
+//     var to_amount           = $("#to_amount").val();   
+//      if(from_date == "" && to_date == ""){
+//             sweetAlert("Oops...", "Please Choose the date !");
+//             return;
+//         }
+//     else{
+//             var dateComparison = check_date(from_date, to_date);
+//             if(dateComparison){
+//                 form_action = "/Backend/"+module+"/search/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
                
-            }
-            else{
-                sweetAlert("Oops...", "Please Choose the valid date !");
-                return;
-            }       
-    } 
-    window.location = form_action;
+//             }
+//             else{
+//                 sweetAlert("Oops...", "Please Choose the valid date !");
+//                 return;
+//             }       
+//     } 
+//     window.location = form_action;
+// }
+
+function checkamount(from_amount, to_amount){     
+
+    if( to_amount > from_amount ){
+        return false;
+    }
+    else{
+         // sweetAlert("Oops...", "Please Enter valid amount !");
+        return true;
+    }
 }
 
 function best_item_search(module){   
@@ -265,33 +283,112 @@ function best_item_search(module){
     var to_date             = $("#to_date").val();
     var number              = $("#number").val();
     var from_amount         = $("#from_amount").val();
-    var to_amount           = $("#to_amount").val();   
+    var to_amount           = $("#to_amount").val();  
+    // console.log(number);
+    if(number == '' || number == null){
+        number = ' ';
+    
+    } 
+      
      if(from_date == "" && to_date == ""){
             sweetAlert("Oops...", "Please Choose the date !");
             return;
         }
-    else{
-            var dateComparison = check_date(from_date, to_date);
-            if(dateComparison){
+    else{           
+            if(from_amount  && to_amount ==''){
+                sweetAlert("Oops...", "Please Enter valid amount !");
+                return;
+
+            }
+            else if(from_amount=='' && to_amount ){
+                 sweetAlert("Oops...", "Please Enter valid amount !");
+                return;
+            }
+            var dateComparison      = check_date(from_date, to_date);  
+
+            if(from_amount !='' && to_amount !=''){ 
+            var test1 = parseInt(to_amount);
+            var test2 = parseInt(from_amount);            
+               
+               if( parseInt(to_amount) < parseInt(from_amount) ){
+
+                   sweetAlert("Oops...", "Please Enter valid amount !");
+                    return;
+                }               
+            }      
+           
+           if(dateComparison){
                 form_action = "/Backend/"+module+"/search/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
                
-            }
+            }            
             else{
                 sweetAlert("Oops...", "Please Choose the valid date !");
                 return;
-            }       
-    } 
+            }      
+           } 
     window.location = form_action;
 }
+
 
 function best_item_excel(module){   
-    console.log("wfewf");
+   
     var form_action = "";
     var from_date           = $("#from_date").val();
     var to_date             = $("#to_date").val();
     var number              = $("#number").val();
     var from_amount         = $("#from_amount").val();
-    var to_amount           = $("#to_amount").val();   
+    var to_amount           = $("#to_amount").val();
+    if(number == '' || number == null){
+        number = ' ';
+    
+    } 
+    
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else{
+
+        if(from_amount  && to_amount ==''){
+            sweetAlert("Oops...", "Please Enter valid amount !");
+            return;
+
+        }
+        else if(from_amount=='' && to_amount ){
+             sweetAlert("Oops...", "Please Enter valid amount !");
+            return;
+        }
+
+
+         if(from_amount !='' && to_amount !=''){             
+               
+               if( parseInt(to_amount) < parseInt(from_amount) ){
+
+                   sweetAlert("Oops...", "Please Enter valid amount !");
+                    return;
+                }               
+            }      
+           
+        var dateComparison = check_date(from_date, to_date);
+        // var amountComparison = checkamount(from_amount,to_amount);
+        // console.log(amountComparison);
+        if(dateComparison){               
+            form_action = "/Backend/"+module+"/export/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
+           
+        }
+        else{
+            sweetAlert("Oops...", "Please Choose the valid date !");
+            return;
+        }       
+    } 
+    window.location = form_action;
+}
+
+function best_category_search(module){   
+    var form_action = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+     
      if(from_date == "" && to_date == ""){
             sweetAlert("Oops...", "Please Choose the date !");
             return;
@@ -299,14 +396,134 @@ function best_item_excel(module){
     else{
             var dateComparison = check_date(from_date, to_date);
             if(dateComparison){
-                console.log("aa");
-                form_action = "/Backend/"+module+"/export/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
+                form_action = "/Backend/"+module+"/search/" + from_date + "/" + to_date ;
                
             }
             else{
                 sweetAlert("Oops...", "Please Choose the valid date !");
                 return;
             }       
+    } 
+    window.location = form_action;
+}
+
+function best_category_excel(module){   
+    var form_action = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+     
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else{
+            var dateComparison = check_date(from_date, to_date);
+            if(dateComparison){
+                form_action = "/Backend/"+module+"/export/" + from_date + "/" + to_date ;
+               
+            }
+            else{
+                sweetAlert("Oops...", "Please Choose the valid date !");
+                return;
+            }       
+    } 
+    window.location = form_action;
+}
+
+function best_set_search(module){
+    var form_action         = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+    var number              = $("#number").val();
+    var from_amount         = $("#from_amount").val();
+    var to_amount           = $("#to_amount").val();
+    if(number == '' || number == null){
+        number = ' ';
+    } 
+    
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else{
+
+        if(from_amount  && to_amount ==''){
+            sweetAlert("Oops...", "Please Enter valid amount !");
+            return;
+
+        }
+        else if(from_amount=='' && to_amount ){
+             sweetAlert("Oops...", "Please Enter valid amount !");
+            return;
+        }
+
+         if(from_amount !='' && to_amount !=''){            
+               
+               if( parseInt(to_amount) < parseInt(from_amount) ){
+
+                   sweetAlert("Oops...", "Please Enter valid amount !");
+                    return;
+                }               
+            }      
+           
+        var dateComparison = check_date(from_date, to_date);      
+        if(dateComparison){               
+            form_action = "/Backend/"+module+"/search/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
+           
+        }
+        else{
+            sweetAlert("Oops...", "Please Choose the valid date !");
+            return;
+        }       
+    } 
+    window.location = form_action;
+}
+
+function best_set_export(module){
+    var form_action         = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+    var number              = $("#number").val();
+    var from_amount         = $("#from_amount").val();
+    var to_amount           = $("#to_amount").val();
+    if(number == '' || number == null){
+        number = ' ';
+    } 
+    
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else{
+
+        if(from_amount  && to_amount ==''){
+            sweetAlert("Oops...", "Please Enter valid amount !");
+            return;
+
+        }
+        else if(from_amount=='' && to_amount ){
+             sweetAlert("Oops...", "Please Enter valid amount !");
+            return;
+        }
+
+         if(from_amount !='' && to_amount !=''){            
+               
+               if( parseInt(to_amount) < parseInt(from_amount) ){
+
+                   sweetAlert("Oops...", "Please Enter valid amount !");
+                    return;
+                }               
+            }      
+           
+        var dateComparison = check_date(from_date, to_date);      
+        if(dateComparison){               
+            form_action = "/Backend/"+module+"/export/" + from_date + "/" + to_date + "/" + number + "/" + from_amount + "/" +to_amount;
+           
+        }
+        else{
+            sweetAlert("Oops...", "Please Choose the valid date !");
+            return;
+        }       
     } 
     window.location = form_action;
 }

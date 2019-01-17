@@ -171,8 +171,17 @@
                         <table class="table table-bordered dailytable" style ="padding: 15px;margin-left: 13px;">
                             <thead class="thead_report">                        
                             <tr class="report-th">
-                                <th>Shift Date</th>                                
-                                <th>Order Time</th>                            
+                                @if($type == "Yearly")
+                                <th>Year</th>
+                                @endif
+                                @if($type == "Monthly")
+                                <th>Month</th>
+                                @endif
+                                @if($type == "Daily")
+                                <th>Day</th>
+                                @endif
+                               <!--  <th>Date</th>                                
+                                <th>Order Time</th>  -->                          
                               
                                 <th>Total Discount Amount</th>
                                 <th>Total Tax Amount</th>
@@ -210,7 +219,7 @@
                                       <td width="10%">{{date('d-m-Y',strtotime($order->ShiftDate))}}</td>
                                 @endif
                                
-                                    <td width="10%">{{date('d-m-Y',strtotime($order->Day))}}</td>                             
+                                   {{-- <td width="10%">{{date('d-m-Y',strtotime($order->Day))}}</td> --}}                             
                                   
                                     <td class="money-align">{{ number_format($order->DiscountAmount) }}</td>
                                     <td class="money-align">{{ number_format($order->TaxAmount) }}</td>
@@ -222,15 +231,15 @@
                                     <td class="money-align">{{ number_format($order->TotalAmount) }}</td>
                                  
                                     @if($type == "Yearly")
-                                     <td> <a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y',strtotime($order->ShiftDate)).'/'.$type}}">View Detail</a></td>
+                                     <td> <a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y',strtotime($order->ShiftDate)).'/'.$type.'/'.$from_year}}">View Detail</a></td>
                                     @endif
 
                                     @if($type == "Monthly")
-                                       <td><a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y-m',strtotime($order->ShiftDate)).'/'.$type}}">View Detail</a></td>
+                                       <td><a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y-m',strtotime($order->ShiftDate)).'/'.$type .'/'.$from_month.'/'.$to_month}}">View Detail</a></td>
                                     @endif
                                       
                                     @if($type == "Daily")
-                                      <td><a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y-m-d',strtotime($order->ShiftDate)).'/'.$type}}">View Detail</a></td>
+                                      <td><a href="{{'/Backend/sale_SummaryReport/detail/'.date('Y-m-d',strtotime($order->ShiftDate)).'/'.$type.'/'.$from_date.'/'.$to_date}}">View Detail</a></td>
                                     @endif
                                     
                                     <?php 
@@ -250,7 +259,7 @@
                            
                             <tr class="active">
 
-                                <td colspan='2' class="money-align">
+                                <td  class="money-align">
                                     Total Amount
                                 </td>
                                <td class="money-align">{{number_format($sum_discount)}}</td>

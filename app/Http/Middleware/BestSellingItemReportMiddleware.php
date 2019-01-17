@@ -8,7 +8,8 @@ use App\RMS\User;
 use App\RMS\Role\Role;
 use App\RMS\Permission\Permission;
 
-class ContinentMiddleware
+
+class BestSellingItemReportMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,14 +18,14 @@ class ContinentMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+     public function handle($request, Closure $next, $guard = null)
     {
         $role_id = Auth::guard($guard)->user()->role_id;
         $role    = Permission::select('module_id')->where('role_id','=',$role_id)->get();
         foreach($role as $r){
             $array[] = $r->module_id;
         }
-        if(in_array(27,$array)){
+        if(in_array(28,$array)){
             return $next( $request );
         }else{
             //return response('Unauthorized',401);

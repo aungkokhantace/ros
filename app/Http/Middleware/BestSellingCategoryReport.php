@@ -8,7 +8,7 @@ use App\RMS\User;
 use App\RMS\Role\Role;
 use App\RMS\Permission\Permission;
 
-class ContinentMiddleware
+class BestSellingCategoryReport
 {
     /**
      * Handle an incoming request.
@@ -24,7 +24,7 @@ class ContinentMiddleware
         foreach($role as $r){
             $array[] = $r->module_id;
         }
-        if(in_array(27,$array)){
+        if(in_array(29,$array)){
             return $next( $request );
         }else{
             //return response('Unauthorized',401);
