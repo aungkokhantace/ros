@@ -1,5 +1,5 @@
 .col-lg-12 .form-div {
-    margin-left: 60px;
+    margin-left: 10px;
 }
 
 .col-lg-12 .bg-div {
@@ -9,12 +9,12 @@
 }
 
 .col-lg-12 .form-group {
-    margin: 0 0 0 35px;
+    /* margin: 0 0 0 35px; */
     padding: 15px 0 15px 0;
 }
 
 .col-lg-12 .first-div {
-    padding-top: 40px;
+    padding: 20px;
 }
 
 .form-group input {
@@ -50,9 +50,44 @@
     font-size: 12px;
     padding-top: 10px;
 }
+.custom label {
+  padding: 0 0 5px 5px;
+  font-size: 12px;
+}
+
+.col-sm-3 label {
+  padding: 0 0 5px 5px;
+  font-size: 12px;
+}
+
+@-moz-document url-prefix() {
+  .custom .form-control {
+    padding-right: 25px;
+    background-image: url("data:image/svg+xml,\
+      <svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='14px'\
+           height='14px' viewBox='0 0 1200 1000' fill='rgb(51,51,51)'>\
+        <path d='M1100 411l-198 -199l-353 353l-353 -353l-197 199l551 551z'/>\
+      </svg>");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 7px) 50%;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
 
 .alert {
     text-align: center;
     color: white;
     font-weight: bolder;
+}
+
+.col-sm-4 .mr-2 {
+    margin: 0 22px 0 42px;
+}
+.col-sm-4 input[type=submit] {
+  width: 150px;
+}
+
+.form-div h4 {
+  padding-bottom: 10px;
 }
