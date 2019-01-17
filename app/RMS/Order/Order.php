@@ -11,7 +11,7 @@ class Order extends Model
     protected $dates = ['deleted_at'];
     protected $table = 'order';
     protected $casts = ['id'=> 'string'];
-    protected $fillable = ['id','user_id','take_id','order_time','member_id','total_price','member_discount'
+    protected $fillable = ['id','user_id','take_id','shift_id','order_time','member_id','total_price','member_discount'
     ,'service_amount','tax_amount','all_total_amount','payment_amount','refund','status','over_all_discount','sub_total','over_all_discount_remark','created_by','updated_by',
     'deleted_by','created_at','updated_at','deleted_at'];
 
