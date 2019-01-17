@@ -8,6 +8,9 @@
     .dataTables_filter {
         display: none;
     }
+    #example2 thead th {
+  background-color: #354a51;
+}
 </style>
  <div class="content-wrapper">
       <div class="box">
@@ -40,7 +43,7 @@
                 </div>
                 </div>
                
-                <div class="col-md-12">
+               {{-- <div class="col-md-12">
                     <div class="col-md-12" style="padding:0;float:right;">
                         <div class="input-group" style="float:left;">
                             <select id="invoice-form" style="width:400px" class="form-control" onchange="sortingOrder()">
@@ -62,7 +65,7 @@
                             </select>
                         </div>
                     </div>
-                </div>
+                </div>--}}
             </div>
         </div>
     </div>
@@ -269,28 +272,14 @@ function DataTableSearch(url) {
         "serverSide": true,
         "ajax": url,
         iDisplayLength: 10,
-        "ordering":false,
-        "bLengthChange": false,
-        "bFilter": true,
-        "bInfo": false,
-        "bAutoWidth": false,
-        "columnDefs": [ {
-        "searchable": false,
-        "orderable": false,
-        "targets": 0
-        } ],
-        "order": [[ 1, "desc" ]],
-        stateSave: false,
-        "dom": '<"pull-right m-t-20"i>rt<"bottom"lp><"clear">',
-        "sDom": "lfrti"
-
+        "lengthChange" : false
     });
 
-    table.on( 'order.dt search.dt', function () {
-        table.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-            cell.innerHTML = i+1;
-        } );
-    } ).draw(); 
+    // table.on( 'order.dt search.dt', function () {
+    //     table.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+    //         cell.innerHTML = i+1;
+    //     } );
+    // } ).draw(); 
     // Apply the search
     table.columns().eq( 0 ).each( function ( colIdx ) {
         $( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
@@ -299,7 +288,6 @@ function DataTableSearch(url) {
                     .search( this.value )
                     .draw();
         } );
-
     });
 }
 </script>
