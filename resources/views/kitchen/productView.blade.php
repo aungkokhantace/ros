@@ -1,10 +1,53 @@
 @extends('kitchen.kitchen_header')
 @section('title','Order View')
 @section('content')
+<head>
+  <style>
+  .modal-header {
+    border-radius: 5px 5px 0 0 !important;
+  }
+  .modal-header h4 {
+    font-weight: bolder !important;
+    color: white;
+  }
+  .cancle-modal {
+    width: 400px !important;
+  }
+  .modal-body table td {
+    border: 0 !important;
+    background: #ecf0f5 !important;
+  }
+  .modal-body input[type=text] {
+    float: right;
+    width: 230px !important;
+  }
+  .modal-body {
+    background: #ecf0f5;
+  }
+  .modal-body table button {
+    float: left;
+    width: 120px;
+    background: #eb9605;
+    border-color: #eb9605;
+    font-weight: bolder;
+  }
+  .modal-body table input[type=button] {
+    width: 120px !important;
+    font-weight: bolder;
+  }
+  .modal-foot {
+    padding: 15px;
+    font-weight: bolder !important;
+    color :white;
+    background: #5cb85c;
+    border-radius: 0 0 5px 5px !important;
+  }
+  </style>
+</head>
     <div id="body">
         <div class="container product">
             <div class="row" id="autoDiv">
-                @foreach($product as $orderKey=>$p)
+                @foreach($product as $orderKey => $p)
                     <div class="col-md-12 tbl-container">
                         <div class="table-responsive">
                             <table class="table to-down">
@@ -17,9 +60,9 @@
                                             @endif
                                         </h4>
                                     </td>
-                                    <td colspan="3" class="txt-l">
+                                    <!-- <td colspan="3" class="txt-l">
                                         <img src="/uploads/{{$p['item_image']}}" alt="food">
-                                    </td>
+                                    </td> -->
                                 </tr>
                                 <tr class="tr_header">
                                     <td>Table/Room Name/Take Away</td>
@@ -46,7 +89,7 @@
                                                     @if(isset($tables) && count($tables) >0 )
                                                         @foreach($tables as $table)
                                                             @if($table->order_id == $item->order_id)
-                                                                {{$table->table_no}}
+                                                                {{$table->table_no}}&nbsp;[ Stand No : {{ $item->stand_number }}]
                                                             @endif
                                                         @endforeach
                                                     @endif
@@ -61,13 +104,17 @@
                                                 </td>
                                                 <td class="tr_right">{{ $item->quantity }}</td>
                                             <!-- <td class="tr_right">{{ $item->exception }}</td> -->
-                                                <td class="tr_right">{{ $item->remark }}</td>
                                                 <td class="tr_right">
-                                                    @foreach($extra as $ex)
-                                                        @if($ex->order_detail_id == $item->order_detail_id)
-                                                            {{ $ex->food_name }},
-                                                        @endif
-                                                    @endforeach
+                                                  {{ $item->remark }}
+                                                </td>
+                                                <td class="tr_right">
+                                                  @php $extra_array = []; @endphp
+                                                  @foreach($extra as $ex)
+                                                    @if($ex->order_detail_id == $item->order_detail_id)
+                                                      @php $extra_array[] = $ex->food_name @endphp
+                                                    @endif
+                                                  @endforeach
+                                                  <span>{{ implode(',', $extra_array) }}</span>
                                                 </td>
                                                 <td class="td-row tr_right" data-ordertime = "{{ $item->order_time}}">
                                                     {{ date('h:i:s A', strtotime($item->order_time)) }}
@@ -108,40 +155,45 @@
                                                     <td class="tr_right" style="border-left: none !important;">
                                                         <input type="button" class="cancel btn_k btn btn-danger" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
                                                         <div class="modal fade" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content pop-up-content">
-                                                                    <div class="modal-header pop-up-header">
-                                                                        <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $item->order_detail_id . "-" . $item->setmenu_id . "form")) !!}
+                                                          <div class="modal-dialog cancle-modal" role="document">
+                                                            <div class="modal-content">
+                                                              <div class="modal-header">
+                                                                  <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                                              </div>
+                                                              <div class="modal-body">
+                                                                {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $item->order_detail_id . "-" . $item->setmenu_id . "form")) !!}
 
-                                                                        @if(isset($item->setmenu_id) && $item->setmenu_id != 0)
-                                                                            <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
-                                                                        @else
-                                                                            <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
-                                                                        @endif
-                                                                        <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
-
-                                                                        <div class="row">
-                                                                            <label class="col-sm-3 control-label"><b>Enter Message</b></label>
-                                                                            <div class="col-sm-7">
-                                                                                <input type="text" name="message" class="form-control">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
-                                                                                <button type="button" name="submit" class="btn btn-primary pop-up-button cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">Save</button>
-                                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                            </div>
-                                                                        </div>
-                                                                        {!! Form::close() !!}
-                                                                    </div>
-                                                                    <div class="modal-footer pop-up-footer">
-                                                                        <span>AcePlus Solutions.,Co Ltd</span>
-                                                                    </div>
-                                                                </div>
+                                                                @if(isset($item->setmenu_id) && $item->setmenu_id != 0)
+                                                                    <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
+                                                                @else
+                                                                    <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}">
+                                                                @endif
+                                                                <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
+                                                                <table class="table">
+                                                                  <tr>
+                                                                    <td>Enter Message</td>
+                                                                    <td><input type="text" name="message" class="form-control"></td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                    <td>
+                                                                      <input type="button" name="submit" value="Save" class="btn btn-info cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">
+                                                                    </td>
+                                                                    <td>
+                                                                      <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                                                    </td>
+                                                                  </tr>
+                                                                </table>
+                                                                {!! Form::close() !!}
+                                                              </div>
+                                                              <div class="modal-foot">
+                                                                  <span>AcePlus Solutions.,Co Ltd</span>
+                                                              </div>
                                                             </div>
+                                                          </div>
                                                         </div>
                                                         <!-- Modal -->
                                                     </td>
@@ -228,40 +280,45 @@
                                                     <td>
                                                         <input type="button" class="cancel btn_k btn btn-danger" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
                                                         <div class="modal fade" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content pop-up-content">
-                                                                    <div class="modal-header pop-up-header">
-                                                                        <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $setmenu->order_detail_id . "-" . $setmenu->setmenu_id . "form")) !!}
+                                                          <div class="modal-dialog cancle-modal" role="document">
+                                                            <div class="modal-content">
+                                                              <div class="modal-header">
+                                                                  <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                                              </div>
+                                                              <div class="modal-body">
+                                                                {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $setmenu->order_detail_id . "-" . $setmenu->setmenu_id . "form")) !!}
 
-                                                                        @if(isset($setmenu->setmenu_id) && $setmenu->setmenu_id != 0)
-                                                                            <input type="hidden" name="order_details_id" value="{{$setmenu->order_detail_id}}">
-                                                                        @else
-                                                                            <input type="hidden" name="order_details_id" value="{{$setmenu->order_detail_id}}">
-                                                                        @endif
-                                                                        <input type="hidden" name="setmenu_id" value="{{$setmenu->setmenu_id}}">
-
-                                                                        <div class="row">
-                                                                            <label class="col-sm-3 control-label"><b>Enter Message</b></label>
-                                                                            <div class="col-sm-7">
-                                                                                <input type="text" name="message" class="form-control">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
-                                                                                <input type="button" name="submit" value="Save" class="btn btn-primary pop-up-button cancel_product">
-                                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                            </div>
-                                                                        </div>
-                                                                        {!! Form::close() !!}
-                                                                    </div>
-                                                                    <div class="modal-footer pop-up-footer">
-                                                                        <span>AcePlus Solutions.,Co Ltd</span>
-                                                                    </div>
-                                                                </div>
+                                                                @if(isset($setmenu->setmenu_id) && $setmenu->setmenu_id != 0)
+                                                                    <input type="hidden" name="order_details_id" value="{{$setmenu->order_detail_id}}">
+                                                                @else
+                                                                    <input type="hidden" name="order_details_id" value="{{$setmenu->order_detail_id}}">
+                                                                @endif
+                                                                <input type="hidden" name="setmenu_id" value="{{$setmenu->setmenu_id}}">
+                                                                <table class="table">
+                                                                  <tr>
+                                                                    <td>Enter Message</td>
+                                                                    <td><input type="text" name="message" class="form-control"></td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                    <td>
+                                                                      <input type="button" name="submit" value="Save" class="btn btn-info cancel_product">
+                                                                    </td>
+                                                                    <td>
+                                                                      <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                                                    </td>
+                                                                  </tr>
+                                                                </table>
+                                                                {!! Form::close() !!}
+                                                              </div>
+                                                              <div class="modal-foot">
+                                                                  <span>AcePlus Solutions.,Co Ltd</span>
+                                                              </div>
                                                             </div>
+                                                          </div>
                                                         </div>
                                                         <!-- Modal -->
                                                     </td>

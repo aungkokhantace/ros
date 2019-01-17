@@ -224,8 +224,18 @@
                     <button class="btn print-modal" onclick="printInvoice('{{$order->order_id}}')">
                         <img src="/assets/cashier/images/payment/print_img.png" alt="Print Image" class="heightLine_06">
                     </button>
-                    
-                    <a href="/Cashier/Dashboard" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>
+
+                    @if($tables->count() > 0)
+                            @foreach($tables as $table)
+                                <a href="/Cashier/table/{{$table->table_id}}/invoice" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>
+                            @endforeach
+                        @elseif($rooms->count() > 0)
+                            @foreach($rooms as $room)
+                                <a href="/Cashier/room/{{$room->room_id}}/invoice" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>                                
+                            @endforeach
+                        @else
+                            <a href="/Cashier/takeaway/invoice" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>                                
+                    @endif
                   </div>
                 </div> 
               </div> 
@@ -397,10 +407,10 @@
         @include('cashier.invoice.items_list')
       <script type="text/javascript">
         $(document).ready(function(){
-            window.addEventListener("keypress", function(e){
-                var keyCode = e.keyCode;
-                
-                if(keyCode == 102 || keyCode == 0){
+            window.addEventListener("keydown", function(e){
+               var keyCode = e.key;
+              
+                if(keyCode == '/'){
                    $('.cash_receive_input').val(parseInt($('.total_amount').val()));
                    $('.receive_price').val(parseInt($('.total_amount').val()));
                    $( ".save_btn" ).prop( "disabled", false );

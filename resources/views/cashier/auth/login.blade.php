@@ -117,6 +117,7 @@
                    $('.login-form').submit();
              }
             });
+            $('#inputUsername').focus();
         });
     </script>
 </body>

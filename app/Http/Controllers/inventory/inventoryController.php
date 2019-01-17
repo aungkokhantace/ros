@@ -47,7 +47,7 @@ class inventoryController extends Controller
 
 
     public function category(){
-     
+
 		$CateRepo = new CategoryRepository();
 
     	$categorys = $CateRepo->getParentCate();
@@ -59,18 +59,18 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-        
+
 		$res = $client->post($url, [
 		    'headers' => $headers,
 		    'body' => $categorys,
 		]);
-         
+
         if($res->getStatusCode() != 200){
 			return 400;
 		}else{
 			return $res->getStatusCode();
 		}
-       
+
     }
 
     public function group(){
@@ -82,7 +82,7 @@ class inventoryController extends Controller
     		array_push($groups,$category->Id);
     	}
     	$groups  = $CateRepo->getGroup($groups);
-    	$groups  = json_encode($groups);
+		$groups  = json_encode($groups);
         // return $groups;
     	$client = new Client();
     	$url  = $this->resquestserverurl . '/groupcode/create';
@@ -115,7 +115,7 @@ class inventoryController extends Controller
     	}
 
 
-        
+
     	$classes  = $CateRepo->getClass($classes);
 
         $url  = $this->resquestserverurl.'/classcode/create';
@@ -164,8 +164,8 @@ class inventoryController extends Controller
 		foreach($items as $item){
 			if(in_array($item->category_id,$categoryary)){
 			   $categoryid = $item->category_id;
-			   $groupid    = 0;
-			   $classid    = 0;
+			   $groupid    = 1;
+			   $classid    = 1;
 			   $item_ary   = $this->getItem($item,$groupid,$classid,$categoryid);
 			   array_push($ItemAry,$item_ary);
 
@@ -173,7 +173,7 @@ class inventoryController extends Controller
 			   $item_ary = array();
 			   $groupid    = $item->category_id;
 			   $categoryid = $this->getparentId($groupid);
-			   $classid    = 0;
+			   $classid    = 1;
 			   $item_ary   = $this->getItem($item,$groupid,$classid,$categoryid);
 			   array_push($ItemAry,$item_ary);
 
@@ -203,7 +203,8 @@ class inventoryController extends Controller
 
 			}
 		}
-        return $ItemAry;
+		// return $ItemAry;
+		
 		$url  = $this->resquestserverurl.'/stock/create';
 
 		$ItemAry = json_encode($ItemAry);
@@ -217,7 +218,7 @@ class inventoryController extends Controller
 		    'headers' => $headers,
 		    'body' => $ItemAry,
 		]);
-
+       return $res;
 		return  $res->getStatusCode();
 
 	}
@@ -384,6 +385,8 @@ class inventoryController extends Controller
         $client = new Client([
             'base_uri' => $this->resquestserverurl
         ]);
+        $id                 = Auth::guard('Cashier')->user()->kitchen_id;
+        $kitchen            = Kitchen::find($id);
         $raw_group_url    = 'groupcode/get_rawgroup';
         $raw_stock_url    = 'stock/get_raw_stock';
         $measurement_unit = 'um/get_um';
@@ -392,7 +395,7 @@ class inventoryController extends Controller
         $measurement_unit_responses  = json_decode($client->get($measurement_unit)->getBody());
         return view('kitchen.stock_requisition', compact(['raw_group_responses',
             'raw_stock_responses', 'measurement_unit_responses'
-        ]));
+        ]))->with('kitchen', $kitchen);
     }
 
     public function store(Request $request)
@@ -477,7 +480,7 @@ class inventoryController extends Controller
     }
 
 
-		
+
 
 	public function getremainbalance()
     {
@@ -492,7 +495,7 @@ class inventoryController extends Controller
     }
 
 
-	
- 
+
+
 
 }

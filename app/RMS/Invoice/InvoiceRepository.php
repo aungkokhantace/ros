@@ -48,6 +48,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
 			$orders = $table->orders()
 							->whereIn('status',[$order_status,$order_paid_status])
+							->where('day_id',$day_id)
 							->orderBy('id','desc')
 							->get();
 			return $orders;
@@ -59,6 +60,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 			$room  = Room::find($roomId);
 			$orders = $room->orders()
 							->whereIn('status',[$order_status,$order_paid_status])
+							->where('day_id',$day_id)
 							->orderBy('id','desc')
 							->get();
 			return $orders;
@@ -67,7 +69,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 		if($tableId == 'all' && $roomId == 'all'){
 			$orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
 					->orderBy('id', 'desc')
-					->where('day_id','=',$day_id)
+					->where('day_id',$day_id)
 					->whereNull('deleted_at')
 					->get();
 			return $orders;
