@@ -4,7 +4,9 @@
 @section('content')
 
     <div class="container">
+        
         @section('dayEnd')
+        
             @if($sessions->daystart->status == 1)
             <button class="btn btn-large dash-btn ml-2 mb-2 start" id="{{ $sessions->daystart->start_date}}/{{$sessions->daystart->status }}" style="background:rgb(75, 146, 221);">
                 Day Start
@@ -15,6 +17,7 @@
                 Day End
             </button>
             @endif
+           
         @endsection
 
         @section('nightEnd')
@@ -23,13 +26,43 @@
                 @if($sessions->shift->current_status == 0)
                     {{ ' Start'}}
                 @else
-                    {{ ' End'}}
+                    {{ ' End'}}                   
                 @endif
             </button>
             @else
-            <a href="/Cashier/Report" class="btn btn-large dash-btn ml-2 mb-2"  style="background:#8EC449;">Report</a>            
+
             @endif
+           
         @endsection
+        
+        <div class="dropdown ">
+                <button class="btn btn-outline-danger dropdown-toggle mb-2" type="button" data-toggle="dropdown">Report
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    @if($sessions->daystart)
+                    @if($sessions->daystart->session_status == 1)
+                    <li><a href="/Cashier/day/report" class="dropdown-item">Day Report</a></li>
+                    @endif
+                    @endif
+
+                    
+                    @if($hide == 'false')
+                    @if($sessions->daystart)
+                    @if($sessions->daystart->session_status == 0)
+                    <li><a href="/Cashier/shift/report" class="dropdown-item">Shift Report</a></li>
+                    @endif
+                    @endif
+                    
+                    @if($sessions->daystart && $sessions->shift)
+                    @if($sessions->daystart->session_status == 2 && $sessions->shift->current_status == 0)
+                    <li><a href="/Cashier/shift/report" class="dropdown-item">Shift Report</a></li>
+                    @endif
+                    @endif
+                    @endif
+                   
+                </ul>
+            </div>
+       
 
         @foreach($locations as $location)
             <button type="button" value="{{$location->id}}" class="btn btn-outline-dark btn-lg mr-2 mt-1 location_btn">{{ $location->location_type }}</button>
