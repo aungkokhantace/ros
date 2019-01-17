@@ -13,6 +13,7 @@
                 <thead>
                     <tr>
                         <th>Order No.</th>
+                        <th>Stand No.</th>
                         <th>Total Amount</th>
                         <th>Date</th>
                         <th>Detail</th>
@@ -25,7 +26,8 @@
                 @foreach($orders as $order)
                     <tr class="tr-{{$order->id}}">
                         <td id="ordere-id"> {{$order->id}} </td>
-                        <td> {{$order->all_total_amount}} </td>
+                        <td align='center' id="ordere-id"> <b>{{$order->stand_number}}</b> </td>
+                        <td align='right' style="padding-right:80px"> {{$order->all_total_amount}} </td>
                         <td > {{$order->created_at }} </td>
                         <td><a class="btn detail-btn" href="/Cashier/invoice/detail/{{$order->id}}">view detail</a></td>
                         <td>

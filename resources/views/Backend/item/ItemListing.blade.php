@@ -60,7 +60,7 @@ tfoot {
                             <th>No</th>
                             <th>Item Name</th>
                             <th>Item Category</th>
-                            <th>Item Image</th>
+                            <!-- <th>Item Image</th> -->
                             <th>Item Description</th>
                             <th>Item Price</th>
                             <th>Status</th>
@@ -72,7 +72,7 @@ tfoot {
                             <th></th>
                             <th class="search-col" con-id="item_name">Name</th>
                             <th class="search-col" con-id="item_category">Category</th>
-                            <th></th>
+                            <!-- <th></th> -->
                             <th class="search-col" con-id="item_description">Description</th>
                             <th class="search-col" con-id="item_price">Price</th>
                             <th></th>
@@ -88,7 +88,7 @@ tfoot {
                                 <td></td>
                                 <td><a href="/Backend/Item/edit/{{$item->id}}">{{ $item->name}}</a></td>
                                 <td>{{ $item->category->name}}</td>
-                                <td>{{ $item->image}}</td>
+                                {{--<td>{{ $item->image}}</td>--}}
                                 <td>{{ $item->description}}</td>
                                 <td>{{ $item->price}}</td>
                                 <td>

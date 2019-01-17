@@ -1,6 +1,45 @@
+<?php
+ini_set('memory_limit', '-1');
+?>
 @extends('kitchen.kitchen_header')
 @section('title','Order View')
 @section('content')
+<head>
+  <style>
+  .modal-width {
+    width: 300px;
+  }
+  .modal-header {
+    border-radius: 5px 5px 0 0 !important;
+  }
+  .cancle-modal {
+    width: 400px !important;
+  }
+  .modal-body table td {
+    border: 0 !important;
+    background: #ecf0f5 !important;
+  }
+  .modal-body input[type=text] {
+    float: right;
+    width: 230px !important;
+  }
+  .modal-body {
+    background: #ecf0f5;
+  }
+  .modal-body table button {
+    float: left;
+    background: #eb9605;
+    border-color: #eb9605;
+  }
+  .modal-foot {
+    padding: 15px;
+    font-weight: bolder !important;
+    color :white;
+    background: #5cb85c;
+    border-radius: 0 0 5px 5px !important;
+  }
+  </style>
+</head>
     <div id="body">
         <div class="container" id="divAuto" style="cursor: pointer;">
             <div class="row" id="autoDiv">
@@ -26,7 +65,6 @@
                                                             @if($table->order_id == $orderKey)
                                                                 <h4>
                                                                     Table No : {{ $table->table_no }}
-                                                                    <span>({{ $orderValue->stand_number }})</span>
                                                                 </h4>
                                                             @endif
                                                         @endforeach
@@ -46,7 +84,7 @@
                                         </td> -->
                                     </tr>
                                     <tr class="tr_header">
-                                        <td></td>
+                                        <td>Stand No : {{ $orderValue->stand_number }}</td>
                                         <td><span>&nbsp;Quantity&nbsp;</span></td>
                                         <!--  <td>Exception</td> -->
                                         <td><span>&nbsp;Remark&nbsp;</span></td>
@@ -105,24 +143,20 @@
                                         @endif
                                                 </td> -->
                                             <td>
-                                                @if ($item->remark !== '')
-                                                    <span>
-                                            {{ $item->remark }}
-                                        </span>
-                                                @endif
+                                              @if ($item->remark !== '')
+                                                {{ $item->remark }}
+                                              @endif
                                             </td>
                                             <td>
-                                                @foreach($extra as $ex)
-                                                    @if($ex->order_detail_id == $item->id && $item->setmenu_id == 0)
-                                                        <span>
-                                                {{ $ex->food_name }}
-                                            </span>
-                                                    @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
-                                                        <span>
-                                                {{ $ex->food_name }}
-                                            </span>
-                                                    @endif
-                                                @endforeach
+                                              @php $extra_array = []; @endphp
+                                              @foreach($extra as $ex)
+                                                @if($ex->order_detail_id == $item->id && $item->setmenu_id == 0)
+                                                  @php $extra_array[] = $ex->food_name @endphp
+                                                @elseif ($ex->order_detail_id == $item->order_detail_id && $item->setmenu_id > 0)
+                                                  @php $extra_array[] = $ex->food_name @endphp
+                                                @endif
+                                              @endforeach
+                                              <span>{{ implode(',', $extra_array) }}</span>
                                             </td>
                                         <!-- <td>
                                 @if($item->status_id =='2')
@@ -169,43 +203,70 @@
                                                         @endif
                                                     </div>
                                                     <div>
-                                                        <div class="modal fade" id="{{$item->id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content pop-up-content">
-                                                                    <div class="modal-header pop-up-header">
-                                                                        <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        {!! Form::open(array('url' => 'Kitchen/getCancelID/TableView', 'class'=> 'form-horizontal', 'id' => $item->id)) !!}
-                                                                        @if ($item->setmenu_id != 0)
-                                                                            <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}" />
-                                                                        @else
-                                                                            <input type="hidden" name="order_details_id" value="{{$item->id}}" />
-                                                                        @endif
-                                                                        <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
-                                                                        <div class="row">
-                                                                            <label class="col-sm-3 control-label text-info"><b>Enter Message</b></label>
-                                                                            <div class="col-sm-7">
-                                                                                <input type="text" name="message" class="form-control">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-sm-offset-3 col-sm-8 pop-up-linespace">
-                                                                                <input type="button" name="submit" value="Save" class="btn btn-primary pop-up-button cancel_item" id="{{$item->id}}-{{$item->setmenu_id}}">
-                                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                            </div>
-                                                                        </div>
-                                                                        {!! Form::close() !!}
-                                                                    </div>
-                                                                    <div class="modal-footer pop-up-footer">
-                                                                        <span>AcePlus Solutions.,Co Ltd</span>
-                                                                    </div>
-                                                                </div>
+                                                      <div class="modal fade" id="{{$item->id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog cancle-modal" role="document">
+                                                          <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
                                                             </div>
+                                                            <div class="modal-body">
+                                                              {!! Form::open(array('url' => 'Kitchen/getCancelID/TableView', 'class'=> 'form-horizontal', 'id' => $item->id)) !!}
+                                                              @if ($item->setmenu_id != 0)
+                                                                  <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}" />
+                                                              @else
+                                                                  <input type="hidden" name="order_details_id" value="{{$item->id}}" />
+                                                              @endif
+                                                              <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
+                                                              <table class="table">
+                                                                <tr>
+                                                                  <td>Enter Message</td>
+                                                                  <td><input type="text" name="message" class="form-control"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                  <td></td>
+                                                                  <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                  <td>
+                                                                    <input type="button" name="submit" value="Save" class="btn btn-info cancel_item" id="{{$item->id}}-{{$item->setmenu_id}}">
+                                                                  </td>
+                                                                  <td>
+                                                                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                                                  </td>
+                                                                </tr>
+                                                              </table>
+                                                              {!! Form::close() !!}
+                                                            </div>
+                                                            <div class="modal-foot">
+                                                                <span>AcePlus Solutions.,Co Ltd</span>
+                                                            </div>
+                                                          </div>
                                                         </div>
+                                                      </div>
                                                     </div>
                                                 </div>
                                             </td>
+
+                                            <td style="border-left: none !important;">
+                                                <div class="btn-group">
+                                                    <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (Waiter)</button>
+                                                </div>
+                                            </td>
+                                            <td style="border-left: none !important;">
+                                                @php
+                                                    if (isset($tables)) {
+                                                        $id = $table->table_id;
+                                                    } elseif (isset($room)) {
+                                                        $id = $room->rome_id;
+                                                    }
+                                                @endphp
+                                                @if (empty($item->is_ready_food))
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-success" id='{{ $item->id }}' onclick="print_chief('{{$item->id}}')" data-toggle="modal" data-id="{{$item->id}}" data-target="#printModal">Print (Chef)</button>
+                                                    </div>
+                                                @endif
+                                            </td>
+
                                             @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
                                                     <div class="btn-group">
@@ -215,7 +276,7 @@
                                             @else
                                                 <td style="border-left: none !important;"></td>
                                             @endif
-                                            @if ($item->status_id == 1)
+                                            {{-- @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
                                                     <div class="btn-group">
                                                         <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print For Waiter</button>
@@ -223,10 +284,10 @@
                                                 </td>
                                                 <td style="border-left: none !important;">
                                                     @php
-                                                        if (isset($tables)) {
+                                                        if (isset($table)) {
                                                             $id = $table->table_id;
                                                         } elseif (isset($room)) {
-                                                            $id = $room->rome_id;
+                                                            $id = $room->room_id;
                                                         }
                                                     @endphp
                                                     @if (empty($item->is_ready_food))
@@ -238,7 +299,7 @@
                                             @else
                                                 <td style="border-left: none !important;"></td>
                                                 <td style="border-left: none !important;"></td>
-                                            @endif
+                                            @endif --}}
                                         </tr>
                                     @endforeach
                                 </table>
@@ -473,7 +534,7 @@
             ifr.style='height: auto; width: 0px; position: absolute';
 
             document.body.appendChild(ifr);
-            $(e).append('<style type="text/css" media="print">table tr { font-weight: bolder; font-size: 10px; margin-bottom: 10px; }</style>');
+            $(e).append('<style rel="stylesheet" type="text/css" media="print">.modal-body {text-align:center !important;font-size:15px;font-weight:bolder;width:300px;margin:auto !important;}table {width:300px !important;}table .right {float:right !important;}table td {padding: 8px !important}</style>');
             $(e).clone().appendTo(ifr.contentDocument.body);
             ifr.contentWindow.print();
 
@@ -500,3 +561,6 @@
         }
     </script>
 @endsection
+<?php
+ini_set('memory_limit', '-1');
+?>

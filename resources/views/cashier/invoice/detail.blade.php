@@ -26,24 +26,24 @@
                     <div class="invoice-table-wrapper">
                         <div id="{{$order->order_id}}-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
                         <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;background:none;">
-                            <col width="80">
+                            <col width="90">
                             <col width="40">
-                            <col width="40">
+                            <col width="30">
                             <col width="50">
                             <thead>
                                 <tr>
                                     <td colspan="4" style="text-align:center;font-size:13px;line-height:25px;padding:5px 7px;">
                                         {{ $config->restaurant_name}}<br/>
-                                        Website: {{ $config->website}}<br/>
+                                        {{ $config->website}}<br/>
                                         Email: {{ $config->email }}<br/>
                                         Tel: {{ $config->phone}}<br/>
                                         Addr: {{ $config->address}}<br /><br />
                                         <span style="float:left">Invoice No: {{ $order->order_id}}</span><br/>
-                                        <span style="float:left">Invoice Date:{{$order->order_time}}</span><br/>
+                                        <span style="float:left">Invoice Date:{{ Carbon\Carbon::parse($order->order_time)->format('d-m-Y') }}</span><br/>
                                         @if(count($tables)>0)
                                             Table No :
                                             @foreach($tables as $table)
-                                                {{ $table->table_no . "," }}
+                                                {{ $table->table_no }}
                                             @endforeach
                                         @elseif(count($rooms)>0)
                                             Room No :
@@ -58,7 +58,7 @@
                                 <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
                                     <td>Item</th>
                                     <td>Price</th>
-                                    <td>Qty</th>
+                                    <td align="right">Qty</th>
                                     <td align="right">Amount</th>
                                 </tr>
                             </thead>
@@ -82,16 +82,16 @@
                                                 @if($v != $detail['item_id'])
                                                 @php $v = $detail['item_id'] @endphp
                                                     <td class="no-border" style="">{{ $detail['item_name'] }}</td>
-                                                    <td class="no-border">{{ $detail['amount'] }}</td>
-                                                    <td class="no-border">{{ $qty2 }}</td>
-                                                    <td class="no-border" align="right">{{ $detail['amount']* $qty2 }} </td>
+                                                    <td class="no-border">{{ number_format($detail['amount']) }}</td>
+                                                    <td class="no-border" align="right">{{ $qty2 }}</td>
+                                                    <td class="no-border" align="right">{{ number_format($detail['amount']* $qty2) }} </td>
                                                 @endif
                                             @else
         
                                                 <td class="no-border">{{ $detail['item_name'] }}</td>
-                                                <td class="no-border">{{ $detail['amount'] }}</td>
-                                                <td class="no-border">{{ $qty2 }}</td>
-                                                <td class="no-border" align="right">{{ $detail['amount']* $qty2 }} </td>
+                                                <td class="no-border">{{ number_format($detail['amount']) }}</td>
+                                                <td class="no-border" align="right">{{ $qty2 }}</td>
+                                                <td class="no-border" align="right">{{ number_format($detail['amount']* $qty2) }} </td>
                                             @endif                                                                                            
                                     </tr>
                                 @endforeach
@@ -99,9 +99,9 @@
                                 @foreach($addon as $add)
                                 <tr>
                                     <td class="no-border">{{ $add['food_name']}} (addon)</td>
-                                    <td class="no-border">{{ $add['amount'] }}</td>
-                                    <td class="no-border">{{ $add['quantity'] }} </td>
-                                    <td class="no-border" align="right">{{ $add['amount'] * $add['quantity'] }}</td>
+                                    <td class="no-border">{{ number_format($add['amount']) }}</td>
+                                    <td class="no-border" align="right">{{ $add['quantity'] }} </td>
+                                    <td class="no-border" align="right">{{ number_format($add['amount'] * $add['quantity']) }}</td>
                                 </tr>
     
                                 @endforeach
@@ -130,12 +130,12 @@
     
                                 <tr>
                                     <td colspan="3" style="height:25px;padding:5px 7px;">Service Charge</td>
-                                    <td align="right">{{ $order->service_amount }}</td>
+                                    <td align="right">{{ number_format($order->service_amount) }}</td>
                                 </tr>
     
                                 <tr>
                                     <td colspan="3" style="height:25px;padding:5px 7px;">Tax</td>
-                                    <td align="right">{{ $order->tax_amount }}</td>
+                                    <td align="right">{{ number_format($order->tax_amount) }}</td>
                                 </tr>
                                 
                                 <tr style="border-bottom:1px dashed black;">

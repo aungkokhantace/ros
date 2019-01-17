@@ -50,6 +50,7 @@ tfoot {
                                 <th><input type="checkbox" id="user_check_all" ></th>
                                 <th>No</th>
                                 <th>Staff Name</th>
+                                <th>Staff ID</th>
                                 <th>Status</th>
                                 <th>Staff Type</th>
                                 <th>Change Password</th>
@@ -61,6 +62,7 @@ tfoot {
                                     <th></th>
                                     <th></th>
                                     <th class="search-col" con-id="staff_name">StaffName</th>
+                                    <th class="search-col" con-id="staff_id"></th>
                                     <th></th>
                                     <th class="search-col" con-id="staff_type">Staff Type</th>
                                     <th></th>
@@ -74,7 +76,7 @@ tfoot {
                                 </td>
                                 <td></td>
                                 <td><a href="/Backend/Staff/edit/{{$user->id}}">{{ $user->user_name }}</a></td>
-                                
+                                <td>{{$user->staff_id}}</td>                                
                                 <td>
                                     {{--@if($user->status == 1 && time() - date('H:i:s',strtotime($user->last_activity)) <= 3600)--}}
 

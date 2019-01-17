@@ -1,50 +1,51 @@
 <?php
 namespace App\Http\Controllers\Cashier\Invoice;
-use Faker\Provider\DateTime;
-use Illuminate\Http\Request;
-use App\RMS\Invoice\InvoiceRepositoryInterface;
-use App\RMS\Infrastructure\Forms\InvoiceRequest;
-use App\Http\Requests;
-use Auth;
-use App\Http\Controllers\Controller;
-use App\RMS\Order\Order;
-use App\RMS\OrderTable\OrderTable;
-use App\RMS\Table\Table;
-use App\RMS\Room\Room;
-use App\RMS\OrderRoom\OrderRoom;
-use App\RMS\Orderdetail\Orderdetail;
-use App\RMS\Item\Item;
-use App\RMS\Config\Config;
-use App\Status\StatusConstance;
-use Carbon\Carbon;
-use App\Http\Controllers\inventory\inventoryController;
-use Illuminate\Support\Facades\Input;
-use PDF;
-use Excel;
 use App;
-use App\RMS\Utility;
-use Response;
-use Hash;
-use App\User;
-use App\RMS\Invoice\InvoiceRepository;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\inventory\inventoryController;
+use App\Http\Requests;
+use App\Log\RmsLog;
+use App\RMS\Config\Config;
 use App\RMS\DayStart\DayStart;
 use App\RMS\FormatGenerator As FormatGenerator;
+use App\RMS\Infrastructure\Forms\InvoiceRequest;
+use App\RMS\Invoice\InvoiceRepository;
+use App\RMS\Invoice\InvoiceRepositoryInterface;
+use App\RMS\Item\Item;
+use App\RMS\OrderRoom\OrderRoom;
+use App\RMS\OrderTable\OrderTable;
+use App\RMS\Order\Order;
+use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\ReturnMessage As ReturnMessage;
-use Illuminate\Support\Facades\DB;
+use App\RMS\Room\Room;
+use App\RMS\Table\Table;
+use App\RMS\Utility;
+use App\Status\StatusConstance;
+use App\User;
+use Auth;
+use Carbon\Carbon;
+use Excel;
+use Faker\Provider\DateTime;
+use Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection as Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+use PDF;
+use Response;
 
 
 class InvoiceController extends Controller
 {
     private $InvoiceRepository;
-   
+
 
     public function __construct(InvoiceRepositoryInterface $InvoiceRepository)
     {
         $this->InvoiceRepository = $InvoiceRepository;
-        
+
     }
-    
+
     public function invoiceList()
     {
         $tableId = 'all';
@@ -65,10 +66,10 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->get();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -80,7 +81,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -91,7 +92,7 @@ class InvoiceController extends Controller
         $config         = Config::select('restaurant_name','email','logo','website','address','phone','tax','service')->first();
         return view('cashier.invoice.index',compact('orders','config','orderRepo','continent'));
 
-    } 
+    }
 
     public function invoiceTimeIncrease() {
     	$today      = Carbon::now();
@@ -110,10 +111,10 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -125,7 +126,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -157,10 +158,10 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -172,7 +173,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -204,10 +205,10 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -219,7 +220,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -251,10 +252,10 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -266,7 +267,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -298,10 +299,10 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -313,7 +314,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -328,7 +329,7 @@ class InvoiceController extends Controller
         return view('cashier.invoice.index',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
-    public function invoiceOrderDecrease() 
+    public function invoiceOrderDecrease()
     {
     	$today      = Carbon::now();
     	$cur_date   = Carbon::parse($today)->format('Y-m-d');
@@ -346,10 +347,10 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -361,7 +362,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -394,11 +395,11 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
 
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -410,7 +411,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -422,7 +423,7 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "time";
         $amount         = "increase";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));   
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
     public function ajaxInvoiceTimeDecrease()
@@ -443,11 +444,11 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
 
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -459,7 +460,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -471,7 +472,7 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "time";
         $amount         = "decrease";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));   
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
     public function ajaxInvoicePriceIncrease(Request $request)
@@ -493,11 +494,11 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
 
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -509,7 +510,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -521,7 +522,7 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "price";
         $amount         = "increase";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));   
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','page','sortBy','amount','continent'));
     }
 
     public function ajaxInvoicePriceDecrease() {
@@ -541,11 +542,11 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
 
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -557,7 +558,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -569,7 +570,7 @@ class InvoiceController extends Controller
         //Flag For Sorting
         $sortBy         = "price";
         $amount         = "decrease";
-        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));   
+        return view('cashier.invoice.real_time_invoice',compact('orders','config','orderRepo','sortBy','amount','continent'));
     }
 
     public function ajaxInvoiceOrderIncrease() {
@@ -589,11 +590,11 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
 
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -605,7 +606,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -637,11 +638,11 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
 
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -653,7 +654,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -685,11 +686,11 @@ class InvoiceController extends Controller
                                 ->select('rooms.room_name as room_name')
                                 ->where('order_room.order_id','=',$orderID)
                                 ->first();
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
             $order->order_detail        = $order_detail;
 
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
             if (count($orderTable) > 0) {
@@ -701,7 +702,7 @@ class InvoiceController extends Controller
             }
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -724,7 +725,7 @@ class InvoiceController extends Controller
     }
 
     public function invoicedetail($id){
-       
+
         $order = $this->InvoiceRepository->getorder($id);
         $add    = $this->InvoiceRepository->getaddon($id);
         $total  = $this->InvoiceRepository->getaddonAmount($id);
@@ -735,7 +736,7 @@ class InvoiceController extends Controller
                 $addon[] = $d;
             }
         }
-       
+
         $amount = array();
         foreach($total as $t){
             foreach($t as $tt){
@@ -763,7 +764,7 @@ class InvoiceController extends Controller
         }
         array_multisort($item, SORT_ASC, $collection_array);
 
-        $details = collect($collection_array);    
+        $details = collect($collection_array);
         return view('cashier.invoice.detail',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
 
     }
@@ -807,18 +808,19 @@ class InvoiceController extends Controller
         }
         array_multisort($item, SORT_ASC, $collection_array);
 
-        $details = collect($collection_array);    
+        $details = collect($collection_array);
 
         $addOn = array();
 
         foreach($addon as $key => $value)
-        {   
+        {
             $addOn[$key] = $value['extra_id'];
         }
         array_multisort($addOn, SORT_ASC, $addon);
-
         $addon = $addon;
-        return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders'));
+
+        $take_id = $order->take_id;
+        return view('cashier.invoice.payment',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','cards','payments','continent','tenders','take_id'));
     }
 
     public function ajaxPaymentRequest($id) {
@@ -873,7 +875,7 @@ class InvoiceController extends Controller
         if ($foc > 0) {
             $all_total_with_foc     = $all_total - $foc;
         } else {
-            $all_total_with_foc     = $all_total;    
+            $all_total_with_foc     = $all_total;
         }
 
         $paramObj                   = Order::find($id);
@@ -941,10 +943,10 @@ class InvoiceController extends Controller
                 return \Response::json($output);
             } else {
                 $output     = array('message'=>'fail');
-                return \Response::json($output);    
+                return \Response::json($output);
             }
         }
-        
+
     }
     public function invoiceprint($id){
         $orders = $this->InvoiceRepository->getorder($id);
@@ -956,14 +958,14 @@ class InvoiceController extends Controller
                 $addon[] = $d;
             }
         }
-        
+
         $amount = array();
         foreach($total as $t){
             foreach($t as $tt){
                 $amount[] = $tt;
             }
         }
-        
+
         $order_detail   = $this->InvoiceRepository->getdetail($id);
         $tables         = $this->InvoiceRepository->orderTable($id);
         $rooms          = $this->InvoiceRepository->orderRoom($id);
@@ -985,8 +987,8 @@ class InvoiceController extends Controller
                 <th colspan="2" style="font-size:10px;font-weight:bold;">
                     <br/> Invoice No: '.$orders->order_id.'<br/>
                      Invoice Date:'.$orders->order_time.'<br/>';
-                if(isset($tables)){ 
-                    foreach($tables as $table){                  
+                if(isset($tables)){
+                    foreach($tables as $table){
                         $html.= 'Table No: '.$table->table_no;
                     }
                 }
@@ -1028,7 +1030,7 @@ class InvoiceController extends Controller
                             $add['food_name'];
                         }
                     }
-                $html.='</td>';  
+                $html.='</td>';
                 $html.='<td>';
                         foreach($amount as $am){
                             if($detail->id == $am['order_detail_id']){
@@ -1062,7 +1064,7 @@ class InvoiceController extends Controller
                         <td colspan="6"></td><td>Net Amount</td>';
                 $html.='<td height="20">'.number_format($orders->all_total_amount).'</td>';
                 $html.='</tr></tbody></table>';
- 
+
         ob_end_clean(); //solve for causing TCPDF ERROR: Some data has already been output, can't send PDF file
 
                 Utility::exportPDF($html);
@@ -1088,17 +1090,17 @@ class InvoiceController extends Controller
         foreach($orderRepo as $key => $order) {
             $orderID        = $order->id;
 
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
 
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
 
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -1120,7 +1122,7 @@ class InvoiceController extends Controller
         }
         array_multisort($item, SORT_ASC, $collection_array);
 
-        $details = collect($collection_array);    
+        $details = collect($collection_array);
 
         return view('cashier.invoice.index',compact('payments','details','tables','rooms','orders','config','orderRepo','continent'));
     }
@@ -1144,17 +1146,17 @@ class InvoiceController extends Controller
         foreach($orderRepo as $key => $order) {
             $orderID        = $order->id;
 
-            //Get Order Detail 
+            //Get Order Detail
             $order_detail   = $this->InvoiceRepository->getdetail($orderID);
 
             $order->order_detail        = $order_detail;
-            //Get Add On 
+            //Get Add On
             $add_on         = $this->InvoiceRepository->getaddon($orderID);
             $order->addon   = $add_on;
 
             //Payment
             $payment       = $this->InvoiceRepository->getPayment($orderID);
-            
+
             $order->paid = $payment;
             $orders[$key]   = $order;
         }
@@ -1176,9 +1178,9 @@ class InvoiceController extends Controller
         }
         array_multisort($item, SORT_ASC, $collection_array);
 
-        $details = collect($collection_array);    
+        $details = collect($collection_array);
         return view('cashier.invoice.index',compact('payments','details','tables','rooms','orders','config','orderRepo','continent'));
-    }   
+    }
 
     public function invoiceListByTakeAway()
     {
@@ -1188,19 +1190,19 @@ class InvoiceController extends Controller
 		$daystart             = DayStart::select('id')
 							->where('status',$session_status)
 							->whereNull('deleted_at')
-							->first();
+                            ->first();
+   
 		$day_id 			  = '';
 
-		
+
 
 		if (count($daystart) > 0) {
 			$day_id 			  = $daystart->id;
         }
-        
         $orders 	= Order::whereIn('status',[$order_status,$order_paid_status])
                             ->where('take_id',1)
+                            ->where('day_id',$day_id)
 					        ->orderBy('id', 'desc')
-					        ->where('day_id','=',$day_id)
 					        ->whereNull('deleted_at')
 					        ->get();
 
@@ -1217,38 +1219,65 @@ class InvoiceController extends Controller
     }
 
     public function invoicePaidUpdate($id,Request $request)
-    {   
-        
-        $inventorysale   = new inventoryController();
-        $invenorystatus =  $inventorysale->saleStock($id);
-        
-       
-        $order = Order::find($id);
-        if(!$order->rooms->isEmpty()){
-            $room = Room::where('id',$order->rooms[0]->id)->first();
-            $room->status = 0;
-            $room->update();
-        }
+    {
 
-        
-        if(!$order->table->isEmpty()){
-            $table = Table::where('id',$order->table[0]->id)->first();
-            $table->status = 0;
-            $table->update();
-        }
+        try {
 
-        $order->over_all_discount_remark = $request->remark;
-        $order->all_total_amount = $request->total_amount;
-        $order->over_all_discount =  $request->discount_price;
-        $order->sub_total = $request->sub_total;
-        $order->service_amount = $request->service_tax;
-        $order->tax_amount = $request->gov_tax;
-        $order->payment_amount = $request->receive_price;
-        $order->refund = $request->change;
-        $order->status = 2;
-        $order->update();
-        
-        return back();
+            if($request->take_voucher == NULL){
+                $request->take_voucher = 0;
+            }
+
+            $order = Order::find($id);
+
+            if(!$order->table->isEmpty()){
+                $table_id = $order->table[0]->id;
+
+                $order_count = OrderTable::where('table_id',$table_id)->pluck('order_id');
+
+                $check_status = Order::whereIn('id',$order_count)->pluck('status')->toArray();
+
+                $check = array_count_values($check_status);
+            }
+
+
+            if(!$order->rooms->isEmpty()){
+                $room = Room::where('id',$order->rooms[0]->id)->first();
+                $room->status = 0;
+                $room->update();
+            }
+
+            if(!$order->table->isEmpty()){
+                if($check['1'] == 1){
+                $table = Table::where('id',$order->table[0]->id)->first();
+                $table->status = 0;
+                $table->update();
+                }
+            }
+
+            $order->over_all_discount_remark = $request->remark;
+            $order->all_total_amount = $request->total_amount;
+            $order->over_all_discount =  $request->discount_price;
+            $order->sub_total = $request->sub_total;
+            $order->service_amount = $request->service_tax;
+            $order->tax_amount = $request->gov_tax;
+            $order->payment_amount = $request->receive_price;
+            $order->refund = $request->change;
+            $order->take_voucher = $request->take_voucher;
+            $order->status = 2;
+
+
+            $order->update();
+            $date       = date("Y-m-d H:i:s");
+            $message    = "[ $date ]  info:  success create an Invoice [ id =  $id ]  with [ takeID = $order->take_id ] [ SubTotal =  $order->sub_total] [ PaymentAmoutn = $order->payment_amount ] ". PHP_EOL;
+            RmsLog::create($message);
+
+            return back();
+
+        } catch (\Exception $e) {
+            $date       = date("Y-m-d H:i:s");
+            $message    = "[ $date ]  error:  created an Invoice [ id =  $id ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+            RmsLog::create($message);
+            return $message;
+        }
     }
 }
-

@@ -6,6 +6,7 @@ use App\RMS\Infrastructure\Forms\UserEditFormRequest;
 use App\RMS\Infrastructure\Forms\UserEntryFormRequest;
 use App\RMS\Infrastructure\Forms\ProfileEditRequest;
 use App\RMS\Role\Role;
+use App\RMS\Utility;
 use App\Status\StatusConstance;
 use App\RMS\Permission\Permission;
 use App\Session;
@@ -89,6 +90,7 @@ class UserController extends Controller
         $paramObj->user_name    = $name;
         $paramObj->password     = $password;
         $paramObj->role_id      = $roleId;
+        $paramObj->staff_id      = Utility::generateStaffId();
         $paramObj->kitchen_id   = $kitchenId;
         $paramObj->status       = 1;
 

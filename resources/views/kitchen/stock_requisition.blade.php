@@ -12,13 +12,23 @@
                                 <form action="{{ url('/Kitchen/stock-requisition') }}" method="post">
                                     {{ csrf_field() }}
                                     <h4><b>Stock Requisition Form</b></h4><br>
+                                    @if (Session::has('success'))
+                                        <div class="alert alert-success">
+                                            {{ session('success') }}
+                                        </div>
+                                    @endif
+                                    @if (Session::has('fail'))
+                                        <div class="alert alert-danger">
+                                            {{ session('fail') }}
+                                        </div>
+                                    @endif
                                     <div class="clone-div">
                                         <div class="bg-div form-block" id="clone0">
-                                            <span id="remove1" onclick="remove(this)"><i class="fa fa-times"></i></span>
+                                            <span id="remove1" onclick="remove(this)" class="close"><i class="fa fa-times"></i></span>
                                             <div class="form-group row first-div">
                                                 <label for="group-type" class="col-sm-3 col-form-label">Raw Group Type</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" name="stock[0][group].group" id="group-type">
+                                                    <select class="form-control" style="border-radius:5px !important" name="stock[0][group].group" id="group-type">
                                                         @foreach($raw_group_responses as $raw_group_response)
                                                             <option value="{{ $raw_group_response->Id }}">{{ $raw_group_response->Raw_group_name }}</option>
                                                         @endforeach
@@ -28,9 +38,11 @@
                                             <div class="form-group row">
                                                 <label for="item" class="col-sm-3 col-form-label">Raw Item</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" name="stock[0][StockId].stick_id" id="item">
+                                                    <select class="form-control" style="border-radius:5px !important" name="stock[0][StockId].stick_id" id="item">
                                                         @foreach($raw_stock_responses as $raw_stock_response)
-                                                            <option value="{{ $raw_stock_response->Id }}">{{ $raw_stock_response->Raw_item_name }}</option>
+                                                            <option value="{{ $raw_stock_response->Raw_item_no.','.$raw_stock_response->PurchasePrice }}">
+                                                              {{ $raw_stock_response->Raw_item_name }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -38,13 +50,14 @@
                                             <div class="form-group row">
                                                 <label for="quantity" class="col-sm-3 col-form-label">Quantity</label>
                                                 <div class="col-sm-8">
-                                                    <input type="number" class="form-control"  name="stock[0][Quantity].quantity" placeholder="Quantity" id="quantity"/>
+                                                    <input type="number" class="form-control" name="stock[0][Quantity].quantity" placeholder="Quantity" id="quantity"/>
+                                                    <span class="error">This field is required.</span>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="unit" class="col-sm-3 col-form-label">Measurement Units</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" name="stock[0][unit].unit" id="unit">
+                                                    <select class="form-control" style="border-radius:5px !important" name="stock[0][unit].unit" id="unit">
                                                         @foreach($measurement_unit_responses as $measurement_unit_response)
                                                             <option value="{{ $measurement_unit_response->Id }}">{{ $measurement_unit_response->Code }}</option>
                                                         @endforeach
@@ -102,5 +115,17 @@
             var element = document.getElementById(parent.id);
             element.parentNode.removeChild(element);
         }
+
+        $(document).ready(function() {
+          $('form').submit(function (e) {
+
+            var value = $('#quantity').val();
+            if (value == '') {
+              e.preventDefault();
+              $('#quantity').css('border-color', 'red');
+              $('.error').css('display', 'block');
+            }
+          });
+        });
     </script>
 @endsection

@@ -167,5 +167,13 @@ class moduleTableSeeder extends Seeder
             'view'=>'cashier',
             'created_by'=>'1',
         ]);
+
+        DB::table('modules')->insert([
+            'id'=>'27',
+            'module'=>'Continent',
+            'view'=>'cashier',
+            'created_by'=>'1',
+        ]);
+
     }
 }

@@ -1,12 +1,7 @@
 <?php
 
-if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
-    // Ignores notices and reports all other kinds... and warnings
-    error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
-    // error_reporting(E_ALL ^ E_WARNING); // Maybe this is enough
-}
-
 Route::get('logo', 'headerController@logo');
+
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', function () {
         if (Auth::guard('Cashier')->user())
@@ -247,6 +242,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::group(['middleware' => 'custom:Cashier'], function(){
             Route::get('logout', 'Backend\Auth\AuthController@logout');
             Route::get('userAuth', 'Backend\Staff\UserController@getAuthUser');
+            Route::get('activity-log/index', 'Backend\ActivityLog\ActivityLogController@index');
             Route::get('updateDataBeforeLogout', 'Backend\Staff\UserController@updateDataBeforeLogout');
             Route::group(['middleware' => 'dashboard:Cashier'],function(){
                 Route::get('Dashboard','Backend\DashboardController@dashboard');
@@ -365,6 +361,20 @@ Route::group(['middleware' => 'web'], function () {
 
             });
             //end set
+
+            //start Continent
+            Route::group(['middleware'=>'continent:Cashier'],function(){
+                Route::get('Continent/index', 'Backend\Continent\ContinentController@index');
+                Route::get('Continent/create', 'Backend\Continent\ContinentController@create');
+                Route::post('Continent/store', 'Backend\Continent\ContinentController@store');
+                Route::get('Continent/edit/{id}', 'Backend\Continent\ContinentController@edit');
+                Route::post('Continent/update', 'Backend\Continent\ContinentController@update');
+                Route::get('Continent/delete/{id}', 'Backend\Continent\ContinentController@delete');
+            });
+            // Continent Ajax
+                Route::get('Continent/ajax/{Categoryid}', 'Backend\Continent\ContinentController@getContientByCategory');
+
+            //end Continent
 
             //start Table Route
             Route::group(['middleware'=>'table:Cashier'],function(){
@@ -497,6 +507,17 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('yearlySale/{year}','Backend\Report\SaleSummaryReportController@yearlySale');
                 Route::get('yearlySaleExport/{year}','Backend\Report\SaleSummaryReportController@yearlySaleExport');
 
+                // / update sale summary report /
+                Route::get('sale_SummaryReport','Backend\Reports\SaleSummaryReportController@saleSummary');
+                Route::get('sale_SummaryReport/search/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@search_query');
+                Route::get('sale_SummaryReport/exportexcel/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@exportExcel');
+                // / sale summary report detial /
+                Route::get('sale_SummaryReport/detail/{date}/{type}','Backend\Reports\SaleSummaryReportController@summary_detail');
+                // / sale summary reprt detail sort /
+                Route::get('sale_SummaryReport/detail/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
+                Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
+                Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}','Backend\Reports\SaleSummaryReportController@invoice_detail');
+                // / update sale summary report /
 
             });
 
@@ -612,19 +633,19 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('DownloadApi','Backend\Log\ApilistController@down');
             });
 
-            //Start Remark
-            Route::group(['middleware'=>'remark:Cashier'],function(){
-                Route::get('Remark/index', 'Backend\Remark\RemarkController@index');
-                Route::get('Remark/create', 'Backend\Remark\RemarkController@create');
-                Route::post('Remark/store', 'Backend\Remark\RemarkController@store');
-                Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
-                Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
-                Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
-
-                Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
-                Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
-            });
-            //End remark
+            // //Start Remark
+            // Route::group(['middleware'=>'remark:Cashier'],function(){
+            //     Route::get('Remark/index', 'Backend\Remark\RemarkController@index');
+            //     Route::get('Remark/create', 'Backend\Remark\RemarkController@create');
+            //     Route::post('Remark/store', 'Backend\Remark\RemarkController@store');
+            //     Route::get('Remark/edit/{id}', 'Backend\Remark\RemarkController@edit');
+            //     Route::post('Remark/update', 'Backend\Remark\RemarkController@update');
+            //     Route::get('Remark/delete/{ids}', 'Backend\Remark\RemarkController@delete');
+            //
+            //     Route::get('Remark/active/{id}', 'Backend\Remark\RemarkController@active');
+            //     Route::get('Remark/inactive/{id}', 'Backend\Remark\RemarkController@inactive');
+            // });
+            // //End remark
 
           //Start Remark
         Route::group(['middleware'=>'remark:Cashier'],function(){
@@ -640,6 +661,10 @@ Route::group(['middleware' => 'web'], function () {
         });
         //End remark
 
+        Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+        Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+        Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+
         });
     });
 
@@ -653,6 +678,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('kitchen/ajaxRequest','Kitchen\OrderViewController@ajaxRequest');
             Route::get('getCompleteID','Kitchen\OrderViewController@tableView');
             Route::get('getStartID','Kitchen\OrderViewController@tableView');
+
 
             Route::get('kitchen/ajaxRequestProduct','Kitchen\OrderViewController@ajaxRequestProduct');
             Route::get('getCompleteID/{item_id}/{setmenu_id}', 'Kitchen\OrderViewController@update');
@@ -677,6 +703,9 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('test', 'Kitchen\HomeController@pricesPage');
             Route::get('test-values', 'Kitchen\HomeController@pricesValues');
             Route::resource('stock-requisition', 'inventory\inventoryController', ['only' => ['index', 'store']]);
+            Route::resource('stock-review', 'Kitchen\StockReviewController', ['only' => ['index']]);
+            //Bi2 inventory sync
+            Route::get('/syncinventory','Kitchen\OrderViewController@SyncInventory');
         });
     });
 });
@@ -722,6 +751,8 @@ Route::post('api/v1/cancel','makeAPIController@cancel');
 Route::post('api/v1/table_status','makeAPIController@table_status');
 Route::post('api/v1/room_status','makeAPIController@room_status');
 Route::post('api/v1/table_transfer','makeAPIController@table_transfer');
+Route::post('api/v2/table_transfer_v2','makeAPIController@table_transfer_v2');
+
 Route::post('api/v1/room_transfer','makeAPIController@room_transfer');
 Route::post('api/v1/take','makeAPIController@take');
 Route::post('api/v1/check_cancel_status','makeAPIController@check_cancel_status');
@@ -749,3 +780,5 @@ Route::get('/groupcode/create','inventory\inventoryController@group');
 Route::get('/classcode/create','inventory\inventoryController@class');
 Route::get('/stock/create','inventory\inventoryController@stock_item');
 Route::get('sync_um','inventory\inventoryController@getSyncUm');
+Route::get('api/v1/get_kitchen','inventory\inventoryController@getKitchen');
+Route::get('/remainvalance','inventory\inventoryController@getremainbalance');

@@ -24,7 +24,7 @@
                                     Tel: {{ $config->phone}}<br/>
                                     Addr: {{ $config->address}}<br /><br />
                                     <span style="float:left">Invoice No: {{ $order->id}}</span><br/>
-                                    <span style="float:left">Invoice Date:{{$order->order_time}}</span><br/>
+                                    <span style="float:left">Invoice Date:{{ Carbon\Carbon::parse($order->order_time)->format('d-m-Y') }}</span><br/>
                                     @if(count($tables)>0)
                                         Table No :
                                         @foreach($tables as $table)
@@ -62,16 +62,16 @@
                                         @if($v != $detail['item_id'])
                                         @php $v = $detail['item_id'] @endphp
                                             <td class="no-border" style="">{{ $detail['item_name'] }}</td>
-                                            <td class="no-border">{{ $detail['amount'] }}</td>
+                                            <td class="no-border">{{ number_format($detail['amount']) }}</td>
                                             <td class="no-border">{{ $qty }}</td>
-                                            <td class="no-border">{{ $detail['amount']* $qty }} </td>
+                                            <td class="no-border">{{ number_format($detail['amount']* $qty) }} </td>
                                         @endif
                                     @else
 
                                         <td class="no-border">{{ $detail['item_name'] }}</td>
-                                        <td class="no-border">{{ $detail['amount'] }}</td>
+                                        <td class="no-border">{{ number_format($detail['amount']) }}</td>
                                         <td class="no-border">{{ $qty }}</td>
-                                        <td class="no-border">{{ $detail['amount']*$qty }} </td>
+                                        <td class="no-border">{{ number_format($detail['amount']*$qty) }} </td>
                                     @endif                                                                                            
                             </tr>
                             @endforeach
@@ -101,12 +101,12 @@
 
                             <tr>
                                 <td colspan="3" style="height:25px;padding:5px 7px;">Service Charge</td>
-                                <td>{{ $order->service_amount }}</td>
+                                <td>{{ number_format($order->service_amount) }}</td>
                             </tr>
 
                             <tr>
                                 <td colspan="3" style="height:25px;padding:5px 7px;">Tax</td>
-                                <td>{{ $order->tax_amount }}</td>
+                                <td>{{ number_format($order->tax_amount) }}</td>
                             </tr>
                             
                             <tr style="border-bottom:1px dashed black;">

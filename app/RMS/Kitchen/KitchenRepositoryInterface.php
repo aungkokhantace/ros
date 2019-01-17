@@ -15,4 +15,5 @@ interface KitchenRepositoryInterface
     public function delete($id);
     public function check_category($id);
     public function check_staff($id);
+    public function getKitchenCode($id);
 }

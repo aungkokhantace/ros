@@ -58,4 +58,11 @@ class ConfigRepository implements ConfigRepositoryInterface {
 			return $returnedObj;
         }
     }
+
+    public function updateRequisitionNo($id, $param)
+    {
+        return DB::table('config')
+            ->where('id', '=', $id)
+            ->update(['requisition_no' => $param]);
+    }
 }

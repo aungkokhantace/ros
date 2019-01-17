@@ -1,5 +1,5 @@
 <?php
-namespace App\inventory;
+namespace App\Inventory;
 use App\RMS\Order\Order;
 use App\RMS\Orderdetail\Orderdetail;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +11,7 @@ use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetail;
 use App\RMS\Kitchen\Kitchen;
 use App\Status\StatusConstance;
+use App\Inventory\CategoryRepositoryInterface;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
@@ -29,7 +30,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     return $groups;
     }
 
-    public function getCalss($classes){
+    public function getClass($classes){
       $class =   Category::whereIn('parent_id',$classes)->whereNull('deleted_at')->where('status',1)->select('id as Id','stock_code as ClassNo','name as Description')->get();
       return $class;
     }

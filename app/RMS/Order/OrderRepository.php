@@ -23,7 +23,7 @@ class OrderRepository implements OrderRepositoryInterface
         $order_detail_cooked_status        = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
         $order_detail_cooking_done_status  = StatusConstance::ORDER_DETAIL_COOKING_DONE_STATUS;
         $order_detail_delievered_status    = StatusConstance::ORDER_DETAIL_DELIEVERED_STATUS;
-        
+
         $orders = Orderdetail::
         leftjoin('order','order_details.order_id','=','order.id')
         ->leftjoin('order_type','order_type.id','=','order_details.order_type_id')
@@ -32,23 +32,23 @@ class OrderRepository implements OrderRepositoryInterface
         ->leftjoin('category','category.id','=','items.category_id')
         ->leftjoin('users','users.id','=','order.user_id')
         ->select('order.take_id','order.status','order_details.order_id','order_type.type as order_type','set_menu.set_menus_name','items.name','order_details.order_time','order_details.item_id','order_details.setmenu_id','order_details.status_id as order_status','order_details.exception','order_details.id as order_details_id','order_details.order_duration')
-        ->where(function($query) use 
+        ->where(function($query) use
         ($order_status,$order_detail_cooking_status,$order_detail_cooked_status,$order_detail_cooking_done_status,$order_detail_delievered_status) {
             $query->where('order.status', '=',$order_status)->where('order_details.status_id','=',$order_detail_cooking_status)->orwhere('order_details.status_id','=',$order_detail_cooked_status)
             ->orwhere('order_details.status_id','=',$order_detail_cooking_done_status)
             ->orwhere('order_details.status_id','=',$order_detail_delievered_status);
-           
+
         })
         ->orderBy('order.created_at', 'desc')
         ->get();
-       
+
         return $orders;
     }
 
     public function getInvoice($id){
         $order_detail_cooking_status       = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
         $order_detail_cooked_status        = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
-        
+
         $orders = Orderdetail::
         leftjoin('order','order_details.order_id','=','order.id')
         ->leftjoin('order_type','order_type.id','=','order_details.order_type_id')
@@ -67,7 +67,7 @@ class OrderRepository implements OrderRepositoryInterface
         return $orders;
     }
 
-    
+
 
     public function orderTable(){
         $tables = OrderTable::leftjoin('tables','order_tables.table_id','=','tables.id')
@@ -79,7 +79,7 @@ class OrderRepository implements OrderRepositoryInterface
     public function orderRoom(){
         $rooms = OrderRoom::leftjoin('rooms','rooms.id','=','order_room.room_id')
         ->select('order_room.room_id','order_room.order_id','rooms.room_name')->get();
-      
+
         return $rooms;
     }
 
@@ -140,5 +140,14 @@ class OrderRepository implements OrderRepositoryInterface
         $result = DB::table('order_room')->where('order_id',$order_id)->join('rooms','order_room.room_id','=','rooms.id')->select('rooms.room_name')->get();
         return $result;
     }
-    
+
+    public function getOrderTableWithLocation()
+    {
+        return DB::table('order_tables')
+            ->join('tables','order_tables.table_id','=','tables.id')
+            ->join('locations', 'tables.location_id', '=', 'locations.id')
+            ->select('order_tables.table_id','order_tables.order_id','tables.table_no', 'locations.location_type')
+            ->get();
+    }
+
 }

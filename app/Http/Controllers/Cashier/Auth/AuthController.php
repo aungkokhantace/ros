@@ -48,7 +48,7 @@ class AuthController extends Controller
         $status     = StatusConstance::USER_AVAILABLE_STATUS;
         $request->validate();
         $user_role      = User::select('role_id')
-                        ->where('user_name','=',$request->user_name)
+                        ->where('user_name','=',$request->staff_id)
                         ->first();
         //Flag For $check_role
         $check_role     = 0;
@@ -60,7 +60,7 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($this->getFailedWaiterLogin());
         } else {
             $validation = Auth::guard('Cashier')->attempt([
-                'user_name'=>$request->user_name,
+                'staff_id'=>$request->staff_id,
                 'password'=>$request->password,
                 'status'=>$status,
             ]);

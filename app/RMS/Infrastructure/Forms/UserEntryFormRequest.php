@@ -15,7 +15,7 @@ class UserEntryFormRequest extends Request
     public function rules()
     {
         return [
-            'name'                => 'required|numeric|unique:users,user_name,NULL,id,deleted_at,NULL',
+            'name'                => 'required|unique:users,user_name,NULL,id,deleted_at,NULL',
             'login_password'      => 'required|numeric|min:8',
             'conpassword'         => 'required|same:login_password',
             'userType'            => 'required'

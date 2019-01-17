@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\inventory;
 
+use App\RMS\Config\ConfigRepository;
+use Carbon\Carbon;
+//use Chrisbjr\ApiGuard\Contracts\Providers\Auth;
 use Illuminate\Http\Request;
-
+use Auth;
 use App\Http\Requests;
 use App\RMS\Item\ItemRepository;
 use App\Inventory\CategoryRepository;
@@ -11,16 +14,26 @@ use App\Http\Controllers\Controller;
 use App\RMS\Category\Category;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+use App\Inventory\UM;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Middleware;
 use App\RMS\Utility;
+use App\Inventory\OrderRepositoryInterface;
+use App\RMS\Config\ConfigRepositoryInterface;
+use App\RMS\Kitchen\Kitchen;
+use Validator;
 use App\Inventory\OrderRepository;
 use App\RMS\Item\Item;
 use DB;
 use GuzzleHttp\Psr7\Request as GuRequest;
+use App\RMS\Kitchen\KitchenRepository;
+
 
 class inventoryController extends Controller
 {
+    private $utility;
+
+    private $configRepository;
 
 	public $resquestserverurl  = 'http://gr8.acebi2.com.preview.my-hosting-panel.com';
 	public $SupplierId 	       = 1;
@@ -31,6 +44,7 @@ class inventoryController extends Controller
 	public $maximum  		   = 0;
 	public $mininum 		   = 0;
 	public $marginpercence     = 0;
+
 
     public function category(){
 
@@ -45,12 +59,17 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
+
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body' => $categorys,
 		]);
-    	
+
+        if($res->getStatusCode() != 200){
+			return 400;
+		}else{
+			return $res->getStatusCode();
+		}
 
     }
 
@@ -63,7 +82,7 @@ class inventoryController extends Controller
     		array_push($groups,$category->Id);
     	}
     	$groups  = $CateRepo->getGroup($groups);
-    	$groups  = json_encode($groups);
+		$groups  = json_encode($groups);
         // return $groups;
     	$client = new Client();
     	$url  = $this->resquestserverurl . '/groupcode/create';
@@ -71,16 +90,17 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body'    => $groups,
 		]);
+
+		return  $res->getStatusCode();
 
 
     }
 
-    public function class(){
+    public function classes(){
 		$CateRepo = new CategoryRepository();
     	$categorys = $CateRepo->getParentCate();
     	$groups = array();
@@ -93,8 +113,11 @@ class inventoryController extends Controller
     	foreach($groups as $group){
     		array_push($classes,$group->Id);
     	}
-        
-    	$classes  = $CateRepo->getCalss($classes);
+
+
+
+    	$classes  = $CateRepo->getClass($classes);
+
         $url  = $this->resquestserverurl.'/classcode/create';
         $classes = json_encode($classes);
         // return $classes;
@@ -102,45 +125,47 @@ class inventoryController extends Controller
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
+		$client = new Client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body' => $classes,
 		]);
+		return  $res->getStatusCode();
 
     }
 
 
     public function stock_item(){
+
 		$CateRepo = new CategoryRepository();
 		$categorys = $CateRepo->getParentCate();
     	$categoryary = array();
     	foreach($categorys as $category){
     		array_push($categoryary,$category->Id);
 		}
-		
+
     	$groups  = 	$groups  = $CateRepo->getGroup($categoryary);
     	$groupary = array();
-	
+
     	foreach($groups as $group){
     		array_push($groupary,$group->Id);
     	}
-        
+
     	$classes  =  $CateRepo->getClass($groupary);
 		$classarray = array();
-		
+
     	foreach($classes as $class){
     		array_push($classarray,$class->Id);
 		}
 
 		$ItemAry = array();
-		
+
 		$items = Item::where('status',1)->whereNull('deleted_at')->get();
 		foreach($items as $item){
 			if(in_array($item->category_id,$categoryary)){
 			   $categoryid = $item->category_id;
-			   $groupid    = 0;
-			   $classid    = 0;
+			   $groupid    = 1;
+			   $classid    = 1;
 			   $item_ary   = $this->getItem($item,$groupid,$classid,$categoryid);
 			   array_push($ItemAry,$item_ary);
 
@@ -148,7 +173,7 @@ class inventoryController extends Controller
 			   $item_ary = array();
 			   $groupid    = $item->category_id;
 			   $categoryid = $this->getparentId($groupid);
-			   $classid    = 0;
+			   $classid    = 1;
 			   $item_ary   = $this->getItem($item,$groupid,$classid,$categoryid);
 			   array_push($ItemAry,$item_ary);
 
@@ -159,16 +184,16 @@ class inventoryController extends Controller
 			   $item_ary   = $this->getItem($item,$groupid,$classid,$categoryid);
 			   array_push($ItemAry,$item_ary);
 			}else{
-				
+
 				$response = $this->checkcategory($item->category_id,$categoryary,$groupary,$classarray);
-				
+
 				while($response['message'] == 404){
 					$response = $this->checkcategory($response['category_id'],$categoryary,$groupary,$classarray);
 					if($response['message'] == 200){
 						break;
 					}
 				}
-				
+
 			   $groupid    = $this->getparentId($response['category_id']);
 			   $categoryid = $this->getparentId($groupid);
 			   $classid    = $response['category_id'];
@@ -178,29 +203,60 @@ class inventoryController extends Controller
 
 			}
 		}
-
-		$url  = $this->resquestserverurl.'/stock/create';
+		// return $ItemAry;
 		
+		$url  = $this->resquestserverurl.'/stock/create';
+
 		$ItemAry = json_encode($ItemAry);
 
 		$headers = [
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
+		$client = new Client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body' => $ItemAry,
 		]);
+       return $res;
+		return  $res->getStatusCode();
 
 	}
 
 
-  public function sale_create(){
-	  
-  }
+	public function getSyncUm()
+    {
+    	$uri = 'um/get_um';
+    	$data = $this->guzzleClient($uri);
 
-	
+    	foreach ($data as $um) {
+
+        if (UM::pluck('um_id')->contains($um->Id)) {
+                UM::find($um->Id)->first()->update([
+                    'um_id' =>$um->Id,
+                    'code' =>$um->Code ,
+                    'description' =>$um->Description,
+                    'updated_by' =>1,
+                ]);
+        }else{
+            UM::create([
+                    'um_id' =>$um->Id,
+                    'code' =>$um->Code,
+                    'description' =>$um->Description,
+                    'created_by' =>1,
+                ]);
+        }
+    }
+
+    }
+    public function guzzleClient($uri)
+    {
+	   	$client 		= new Client(['base_uri' => $this->resquestserverurl]);
+		$response 		= $client->get($uri)->getBody();
+    	return json_decode($response);
+    }
+
+
    public function getItem($item,$groupid,$classid,$categoryid){
 	    $item_ary = array();
 		$item_ary['Id'] 				= $item->id;
@@ -269,7 +325,7 @@ class inventoryController extends Controller
 	public function saleStock($id){
 		 $orderRepo = new OrderRepository();
 		 $order     = $orderRepo->getOrderById($id);
-		 
+
 		 $order_details = $orderRepo->getOrderDetail($order->id);
 
 		 foreach($order_details as $key=>$details){
@@ -280,10 +336,10 @@ class inventoryController extends Controller
 			 }
 		 }
 
-		
-		
+
+
 		 $orderAry = array();
-		 
+
 		 $orderAry['InvoiceNo']     = $order->id;
 		 $orderAry['InvoiceDate']   = Utility::saledate($order->order_time);
 		 $orderAry['CustomerId']    = 'ROS001';
@@ -308,28 +364,138 @@ class inventoryController extends Controller
 		$url  = $this->resquestserverurl.'/sale/create';
 		$saleAry = array();
 		$saleAry[] = $orderAry;
-		
-		
-		
+
+
 		$orderAry = json_encode($saleAry);
-
-		
-
 		$headers = [
 		    'Content-Type' => 'application/json',
 		];
 
-		$client = new client();
+		$client = new Client();
 		$res = $client->post($url, [
-		    'headers' => $headers, 
+		    'headers' => $headers,
 		    'body' => $orderAry,
 		]);
 
-		
-		
+		return  $res->getStatusCode();
 	}
 
+    public function index()
+    {
+        $client = new Client([
+            'base_uri' => $this->resquestserverurl
+        ]);
+        $id                 = Auth::guard('Cashier')->user()->kitchen_id;
+        $kitchen            = Kitchen::find($id);
+        $raw_group_url    = 'groupcode/get_rawgroup';
+        $raw_stock_url    = 'stock/get_raw_stock';
+        $measurement_unit = 'um/get_um';
+        $raw_group_responses  = json_decode($client->get($raw_group_url)->getBody());
+        $raw_stock_responses  = json_decode($client->get($raw_stock_url)->getBody());
+        $measurement_unit_responses  = json_decode($client->get($measurement_unit)->getBody());
+        return view('kitchen.stock_requisition', compact(['raw_group_responses',
+            'raw_stock_responses', 'measurement_unit_responses'
+        ]))->with('kitchen', $kitchen);
+    }
 
-	
- 
+    public function store(Request $request)
+    {
+		    $configRepo  = new ConfigRepository();
+        $kitchenRepo = new KitchenRepository();
+        $post_url  = $this->resquestserverurl.'/purchaserequest/create';
+        $get_url   = '/purchaserequest/get_purchaserequisition';
+        $id        = Auth::guard('Cashier')->user()->kitchen_id;
+        $code      = Utility::generateRequisitionNo()['code'];
+        $config_id = Utility::generateRequisitionNo()['id'];
+        $detail    = [];
+        $date_string = Utility::dateString();
+        $kitchen_code = $kitchenRepo->getKitchenCode($id)->kitchen_code;
+        $stock_requisitions = $request->stock;
+
+        foreach ($stock_requisitions as $stock_requisition) {
+            $validator = Validator::make($stock_requisition, [
+                'Quantity' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                return redirect('Kitchen/stock-requisition')->with('fail', 'Required Please Insert All Fields.');
+            }
+
+            $stock = explode(',', $stock_requisition['StockId']);
+            $stock_requisition['StockId'] = $stock[0];
+            if (!empty($stock[1])) {
+              $stock_requisition['PurchasePrice'] = (int)$stock[1];
+              $stock_requisition['Amount'] = $stock_requisition['Quantity'] * $stock[1];
+            }
+            $detail[] = $stock_requisition;
+        }
+
+        $data = [
+            [
+                "RequisitionNo" => $code,
+                "RequisitionDate" => $date_string,
+                "LocationId" => $kitchen_code,
+                "PriorityId"=> 0,
+                "ReceivedDate" => $date_string,
+                "requisition_details" => $detail
+            ]
+        ];
+
+        $body = json_encode($data);
+
+        $post_client = new Client([
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
+
+        $get_client  = new Client([
+           'base_uri' => $this->resquestserverurl
+        ]);
+
+        $post_client->post($post_url, ['body' => $body]);
+
+        $requisitions = json_decode($get_client->get($get_url)->getBody());
+
+        foreach ($requisitions as $requisition) {
+            if ($requisition->RequisitionNo == $code) {
+                $configRepo->updateRequisitionNo($config_id, $code);
+                return redirect('Kitchen/stock-requisition')->with('success', 'Successful To Request.');
+            }
+        }
+
+        return redirect('Kitchen/stock-requisition')->with('fail', 'Fail To Request, Please Try Again Later.');
+    }
+
+    public function getKitchen()
+    {
+        $uri            = '/Location/create';
+        $kitchenData    =  Kitchen::all(['id as Id ','name as LocationName','kitchen_code as LocationNo'])->toJson();
+        $response       = $this->guzzleStore($uri, $kitchenData);
+    }
+
+    public function guzzleStore($uri,$data)
+    {
+        $meta   = [ 'base_uri' => $this->resquestserverurl,'headers' => ['Content-Type' => 'application/json']];
+        $client = new \GuzzleHttp\Client($meta);
+        $client->post($uri,['body' => $data ]);
+    }
+
+
+
+
+	public function getremainbalance()
+    {
+        $client = new Client([
+          'base_uri' => $this->resquestserverurl
+        ]);
+
+        $review_url = 'dailybalance/get_dailybalance';
+        $remain_stocks   = json_decode($client->get($review_url)->getBody());
+
+        return $remain_stocks;
+    }
+
+
+
+
+
 }

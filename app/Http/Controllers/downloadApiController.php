@@ -48,7 +48,6 @@ class downloadAPIController extends ApiGuardController
 	public function download_voucher(){
 		$returnArr              = array();
         $temp                   = Input::all();
-
         $key                    = $temp['site_activation_key'];
         $waiter_id    			= $temp['waiter_id'];
         $filter 				= $temp['filter'];
@@ -169,6 +168,7 @@ class downloadAPIController extends ApiGuardController
 		$temp	= Input::all();
 		$key                    = $temp['site_activation_key'];
 		$order_id				= $temp['order_id'];
+		
 		$site_activation_key    = Config::all();
 		$activate_key           = 0;
 		//Order Extra Status
@@ -176,14 +176,14 @@ class downloadAPIController extends ApiGuardController
 		foreach($site_activation_key as $k){
 			$activate_key = $k->site_activation_key;
 		}
-
+	
 		if($key == $activate_key){
 			$order_raw			= DB::select("SELECT os.*,u.user_name FROM `order` os,`users` u WHERE os.id = '$order_id' AND os.user_id = u.id AND os.deleted_at IS NULL");
 			$order_detail_raw 	= DB::select("SELECT * FROM `order_details` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$order_setmenu_raw	= DB::select("SELECT * FROM `order_setmenu_detail` WHERE deleted_at IS NULL");
 			// $order_extra_raw	= DB::select("SELECT extra_id,order_detail_id,quantity,amount FROM `order_extra` WHERE status = '$extra_status' AND deleted_at IS NULL");
 			
-			$order_extra_raw    = OrderExtra::select('extra_id','order_detail_id','quantity','amount','status')->get();
+			
 			
 			$order_table_raw	= DB::select("SELECT order_id,table_id FROM `order_tables` WHERE order_id = '$order_id' AND deleted_at IS NULL");
 			$order_room_raw		= DB::select("SELECT order_id,room_id FROM `order_room` WHERE order_id = '$order_id' AND deleted_at IS NULL");
@@ -195,8 +195,15 @@ class downloadAPIController extends ApiGuardController
 			$table_arr			= array();
 			$room_arr			= array();
 			$remark_arr         = array();
+			
 			if(isset($order_detail_raw) && count($order_detail_raw) > 0){
+				
 				foreach($order_detail_raw as $order_detail){
+					$order_extra_raw    = OrderExtra::select('extra_id','order_detail_id','quantity','amount','status')->where('order_detail_id',$order_detail->order_detail_id)->get();
+					$extra_ary = array();
+					foreach($order_extra_raw as $ex){
+						array_push($extra_ary,$ex->extra_id);
+					}
 					//merge setmenu to order_detail
 					if(isset($order_setmenu_raw) && count($order_setmenu_raw) > 0) {
 						foreach ($order_setmenu_raw as $order_setmenu) {
@@ -216,24 +223,43 @@ class downloadAPIController extends ApiGuardController
 					unset($set_menu_arr);
 					$set_menu_arr = array();
 
-					//merge order_extra to order_detail
-					if(isset($order_extra_raw) && count($order_extra_raw) > 0) {
-						foreach ($order_extra_raw as $order_extra) {
-
-							if ($order_detail->id == $order_extra->order_detail_id) {
-
-								
-								array_push($extra_arr, $order_extra);
-								
-							}
-						}
-					}
+					$category_id = Item::where('id',$order_detail->item_id)->value('category_id');
 					
-					$order_detail->order_extra = $extra_arr;
+					$add_ons = Addon::where('category_id',$category_id)->get();
+					
+					// if(isset($order_extra_raw) && count($order_extra_raw) > 0) {
+
+						$ex_ary = array();
+						
+						foreach($add_ons as $addon){
+							$extra_mq = DB::table('order_extra')->where('extra_id',$addon->id)->where('order_detail_id',$order_detail->order_detail_id)->first();
+
+							if(in_array($addon->id,$extra_ary)){
+								$ex_de['extra_id'] = $addon->id;
+								$ex_de['order_detail_id'] = $order_detail->order_detail_id;
+								$ex_de['quantity'] = $extra_mq->quantity;
+								$ex_de['amount'] = $extra_mq->amount;
+								$ex_de['status'] = 1;
+							}else{
+								$ex_de['extra_id'] = $addon->id;
+								$ex_de['order_detail_id'] = $order_detail->order_detail_id;
+								$ex_de['quantity'] = '0';
+								$ex_de['amount'] = 0.0;
+								$ex_de['status'] = 0;
+							}
+							array_push($ex_ary,$ex_de);
+							
+						}
+							
+							array_push($extra_arr,$ex_ary);
+					// }
+					
+					
+					$order_detail->order_extra = $extra_arr[0];
 					
 					unset($extra_arr);
 					$extra_arr = array();
-					
+				
 					//merge order_table to order_detail
 					if(isset($order_table_raw) && count($order_table_raw) > 0){
 						foreach($order_table_raw as $order_table){

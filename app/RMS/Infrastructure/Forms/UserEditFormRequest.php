@@ -15,7 +15,7 @@ class UserEditFormRequest extends Request
     public function rules()
     {
         return [
-            "name"      => "required|numeric",
+            "name"      => "required",
         ];
     }
 

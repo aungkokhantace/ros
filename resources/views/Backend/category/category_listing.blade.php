@@ -56,7 +56,7 @@ tfoot {
                                 <th>No</th>
                                 <th>Category Name</th>
                                 <th>Kitchen</th>
-                                <th>Category Image</th>
+                                <!-- <th>Category Image</th> -->
                                 <th>Description</th>
                                 <th>Status</th>
                             </tr>
@@ -67,7 +67,7 @@ tfoot {
                             <th></th>
                             <th class="search-col" con-id="category_name">Category Name</th>
                             <th class="search-col" con-id="kitchen">Kitchen</th>
-                            <th></th>
+                            <!-- <th></th> -->
                             <th class="search-col" con-id="description">Description</th>
                             <th></th>
                         </tr>
@@ -81,7 +81,7 @@ tfoot {
                                     <td></td>
                                     <td><a href="/Backend/Category/edit/{{$category->id}}">{{ $category->name }}</a></td>
                                     <td>{{ $category->kitchen->name }}</td>
-                                    <td>{{ $category->image }}</td>
+                                    {{-- <td>{{ $category->image }}</td>--}}
                                     <td>{{ $category->description }}</td>
                                     <td>
                                         @if($category->status == 1)

@@ -34,4 +34,16 @@ class Order extends Model
     {
         return $this->belongsToMany('App\RMS\Table\Table','order_tables');
     }
+
+    public function orderDetail()
+    {
+        return $this->hasMany('App\RMS\Orderdetail\Orderdetail');        
+    }    
+
+    public function setStatus($status)
+    {
+         $this->status = $status ;
+         $this->save();
+    }
+
 }

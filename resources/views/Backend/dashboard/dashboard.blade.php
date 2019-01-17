@@ -1,4 +1,3 @@
-
 @extends('Backend.layouts.master')
 @section('title','Dashboard')
 @section('content')
@@ -93,9 +92,6 @@
 
 
     </div>
-</div>
-    <!-- /.content -->
-  </div>
 @php
     $label_arr  = array();
     foreach($orders as $order) {

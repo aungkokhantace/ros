@@ -10,6 +10,7 @@ use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\OrderExtra\OrderExtra;
 use App\RMS\OrderSetMenuDetail\OrderSetMenuDetail;
 use App\RMS\Kitchen\Kitchen;
+use App\Inventory\OrderRepositoryInterface;
 use App\Status\StatusConstance;
 
 class OrderRepository implements OrderRepositoryInterface
