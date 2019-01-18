@@ -5,11 +5,18 @@
 .item_scroll{
     overflow: auto;
     white-space: nowrap;
-    
+
  }
 tfoot {
      display: table-header-group;
 }
+#item_list {
+    width: 100% !important;
+}
+#item_list_paginate ul:first-child li {
+    margin-left: -16px !important;
+}
+
 </style>
     <div class="content-wrapper">
       <div class="box">
@@ -25,7 +32,7 @@ tfoot {
                 </div>
             </div>
 
-       
+
                 {{--End heading title--}}
                 <div class="col-md-9 pull-right">
                     <div class="buttons">
@@ -114,7 +121,7 @@ tfoot {
                 var title = $('#item_list thead th').eq( $(this).index() ).text();
                 $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
             } );
-            
+
             var table = $('#item_list').DataTable({
                 aLengthMenu: [
                     [5,25, 50, 100, 200, -1],
@@ -141,7 +148,7 @@ tfoot {
             table.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
                 cell.innerHTML = i+1;
             } );
-        } ).draw(); 
+        } ).draw();
 //            new $.fn.dataTable.FixedHeader( table, {
 //            });
 
@@ -157,5 +164,5 @@ tfoot {
 
             });
         });
-    </script> 
+    </script>
 @endsection
