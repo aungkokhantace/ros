@@ -578,26 +578,43 @@ class MakeAPIController extends ApiGuardController
   
   
                           //OrderSetMenuDetail
+                        if($temp->status_id == 1){
                           $set_item                   = $order_detail->set_item;
+                          OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id)->foreDelete();
                          foreach($set_item as $item){
-                              $set_detail = OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id)
-                                                              ->where('item_id','=',$item->item_id)
-                                                              ->first();
-                              if($set_detail == null){
-                                  $set = new OrderSetMenuDetail();
-                                  $set->order_detail_id = $order_detail->order_detail_id;
-                                  $set->setmenu_id      = $item->set_menu_id;
-                                  $set->item_id         = $item->item_id;
-                                  $set->order_type_id   = $temp->order_type_id;
-                                  $set->exception       = $temp->exception;
-                                  $set->order_time      = $dt->toDateTimeString();
-                                  $set->status_id       = $temp->status_id;
-                                  $set->quantity        = $quantity;
-                                  $set->save();
-                                  // Custom Log
-                                  $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
-                                  RmsLog::create($message);
-                              }
+                            $set = new OrderSetMenuDetail();
+                            $set->order_detail_id = $order_detail->order_detail_id;
+                            $set->setmenu_id      = $item->set_menu_id;
+                            $set->item_id         = $item->item_id;
+                            $set->order_type_id   = $temp->order_type_id;
+                            $set->exception       = $temp->exception;
+                            $set->order_time      = $dt->toDateTimeString();
+                            $set->status_id       = $temp->status_id;
+                            $set->quantity        = $quantity;
+                            $set->save();
+                            // Custom Log
+                            $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
+                            RmsLog::create($message);
+                        }
+                          
+                            //   $set_detail = OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id)
+                            //                                   ->where('item_id','=',$item->item_id)
+                            //                                   ->first();
+                            //   if($set_detail == null){
+                            //       $set = new OrderSetMenuDetail();
+                            //       $set->order_detail_id = $order_detail->order_detail_id;
+                            //       $set->setmenu_id      = $item->set_menu_id;
+                            //       $set->item_id         = $item->item_id;
+                            //       $set->order_type_id   = $temp->order_type_id;
+                            //       $set->exception       = $temp->exception;
+                            //       $set->order_time      = $dt->toDateTimeString();
+                            //       $set->status_id       = $temp->status_id;
+                            //       $set->quantity        = $quantity;
+                            //       $set->save();
+                            //       // Custom Log
+                            //       $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
+                            //       RmsLog::create($message);
+                            //   }
                             //   else{
                             //       $set                  = $set_detail;
                             //       $set->order_detail_id = $order_detail->order_detail_id;
@@ -615,7 +632,7 @@ class MakeAPIController extends ApiGuardController
                             //   }
                           }
                         $remarks  = $order_detail->remark;
-  
+                        if($temp->status_id == 1){
                           if(count($remarks) > 0){
                               foreach($remarks as $remark){
                                   if($remark->selected == "true"){
@@ -635,10 +652,11 @@ class MakeAPIController extends ApiGuardController
                                   }
                               }
                           }
+                        }
   
                           //Order_Extra
                             $extra      = $order_detail->extra;
-  
+                     if($temp->status_id == 1){
                           foreach ($extra as $e) {
   
                              if($e->status == 1){
@@ -666,6 +684,7 @@ class MakeAPIController extends ApiGuardController
                               ->delete();
                               }
                          }
+                        }
           
                      }
                   }
