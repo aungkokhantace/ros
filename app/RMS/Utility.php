@@ -10,6 +10,8 @@ use App\Http\Requests;
 use App\Session;
 use App\RMS\User\UserRepository;
 use App\User;
+use App\RMS\Order\Order;
+use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\SyncsTable\SyncsTable;
 use App\RMS\Category\Category;
 use Carbon\Carbon;
