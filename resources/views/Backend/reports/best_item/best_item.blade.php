@@ -131,7 +131,7 @@
                         <th>Item Name</th>
                         <th>Quantity</th>
                         <th>Price </th>
-                        <th>Discount Price</th>
+                        <!-- <th>Discount Price</th> -->
                         <th>Total Amount</th>
                         <!-- <th>View</th> -->
                     </tr>
@@ -146,17 +146,23 @@
                     @if(isset($orders))
                     @foreach($orders as $order)
                         <tr class="tr-row active">
-                            <td>{{ $order->name }}</td>
+                            @if($order->contient_name != null)
+                             <td>{{ $order->name .'('.$order->contient_name.')'}}</td>
+                             @else
+                               <td>{{ $order->name}}</td>
+                            @endif
+                          
                             <td>{{ $order->total }}</td>
                             <td>{{number_format($order->amount)}}</td>
-                            <td>{{ $order->discount_amount === "" ? "0.0" : number_format($order->discount_amount) }}</td>
+                            
+                            {{-- <td>{{ $order->discount_amount === "" ? "0.0" : number_format($order->discount_amount) }}</td> --}}
                             <td class="money-align">{{ number_format($order->price) }}</td>
                             <!-- <td><a href="" class="btn btn-primary">View Detail</a></td> -->
                             <?php 
                             $sum_qty += $order->total;
                             $sum     += $order->total_amt;
                             $item_price+= $order->amount;
-                            $sum_discount += $order->discount_amount;
+                            // $sum_discount += $order->discount_amount;
                             ?>
                         </tr>
                     @endforeach
@@ -167,7 +173,7 @@
                         <td class="money-align">Total Amount</td>
                         <td class="money-align">{{number_format($sum_qty)}}</td>
                         <td class="money-align">{{number_format($item_price)}}</td>
-                        <td class="money-align">{{number_format($sum_discount)}}</td>
+                       
                         <td class="money-align">{{number_format($sum)}}</td>
                     </tr>
                 </table>

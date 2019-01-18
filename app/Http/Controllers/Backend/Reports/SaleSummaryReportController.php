@@ -386,14 +386,41 @@ class SaleSummaryReportController extends Controller
                 $amount[] = $tt;
             }
         }
-        $order_detail   = $this->invoiceRepo->getdetail($invoice_id);
+        $order_detail   = $this->invoiceRepo->getdetail($invoice_id);       
         $tables         = $this->invoiceRepo->orderTable($invoice_id);
         $rooms          = $this->invoiceRepo->orderRoom($invoice_id);
         $cashier        = $this->invoiceRepo->cashier($invoice_id);
         $config 		= $this->invoiceRepo->config();
-      
-    	// dd($orders);
+
+        $order_arry 	= array();
+
+        /*$v='';
+
+
+        $item = array();
+
+        $collection_array = $order_detail->toArray();
+
+        foreach($collection_array as $key => $value)
+        {
+            $item[$key] = $value['item_id'];
+        }
+        array_multisort($item, SORT_ASC, $collection_array);
+
+        $details = collect($collection_array);    
+
+        $addOn = array();
+
+        foreach($addon as $key => $value)
+        {   
+            $addOn[$key] = $value['extra_id'];
+        }
+        array_multisort($addOn, SORT_ASC, $addon);
+        $addon = $addon;  */
 
         return view('Backend.reports.sale_summary.invoice_detail',compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','continent','invoice_id','config','date','type','from','to'));
+
+		// return view('Backend.reports.sale_summary.invoice_detail',compact('details','order','order_detail','addon','amount','config','tables','rooms','cashier','continent','date','type','from','to','invoice_id','orders'));
+        	// compact('orders','order_detail','addon','amount','config','tables','rooms','cashier','continent','invoice_id','config','date','type','from','to','order_arr'));
     }
 }
