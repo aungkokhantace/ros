@@ -598,21 +598,21 @@ class MakeAPIController extends ApiGuardController
                                   $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
                                   RmsLog::create($message);
                               }
-                              else{
-                                  $set                  = $set_detail;
-                                  $set->order_detail_id = $order_detail->order_detail_id;
-                                  $set->setmenu_id      = $item->set_menu_id;
-                                  $set->item_id         = $item->item_id;
-                                  $set->order_type_id   = $temp->order_type_id;
-                                  $set->exception       = $temp->exception;
-                                  $set->order_time      = $dt->toDateTimeString();
-                                  $set->status_id       = $temp->status_id;
-                                  $set->quantity        = $quantity;
-                                  $set->save();
-                                  // Custom Log
-                                  $message = "[ $date ]  info:   Update OrderSetMenuDetail [ id = $set_detail->id ] " . PHP_EOL;
-                                  RmsLog::create($message);
-                              }
+                            //   else{
+                            //       $set                  = $set_detail;
+                            //       $set->order_detail_id = $order_detail->order_detail_id;
+                            //       $set->setmenu_id      = $item->set_menu_id;
+                            //       $set->item_id         = $item->item_id;
+                            //       $set->order_type_id   = $temp->order_type_id;
+                            //       $set->exception       = $temp->exception;
+                            //       $set->order_time      = $dt->toDateTimeString();
+                            //       $set->status_id       = $temp->status_id;
+                            //       $set->quantity        = $quantity;
+                            //       $set->save();
+                            //       // Custom Log
+                            //       $message = "[ $date ]  info:   Update OrderSetMenuDetail [ id = $set_detail->id ] " . PHP_EOL;
+                            //       RmsLog::create($message);
+                            //   }
                           }
                         $remarks  = $order_detail->remark;
   
