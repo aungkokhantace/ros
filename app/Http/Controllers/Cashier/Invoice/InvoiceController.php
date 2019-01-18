@@ -1226,7 +1226,8 @@ class InvoiceController extends Controller
             if($request->take_voucher == NULL){
                 $request->take_voucher = 0;
             }
-
+            $saleinventoryCon = new inventoryController();
+            $saleinventoryCon->saleStock($id);
             $order = Order::find($id);
 
             if(!$order->table->isEmpty()){

@@ -1425,10 +1425,9 @@ class MakeAPIController extends ApiGuardController
 
         foreach($details as $detail)
         {
-          $orderObj           = Orderdetail::where('order_detail_id','=',$detail->detail_id)->first();
-
+          $orderObj           = Orderdetail::where('order_detail_id',$detail->detail_id)->first();
           if($orderObj->status_id == 6){
-              $Obj                = Orderdetail::where('id','=',$orderObj->id)->first();
+              $Obj                = Orderdetail::where('id','=',$orderObj->order_detail_id)->first();
               $Obj->cancel_status = 'Yes';
               $Obj->save();
 
