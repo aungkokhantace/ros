@@ -648,7 +648,7 @@ class MakeAPIController extends ApiGuardController
                                           RmsLog::create($message);
                                       }
                                   }else{
-                                      $remark_detail = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$remark->remark_id)->delete();
+                                      $remark_detail = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$remark->remark_id)->forceDelete();
                                   }
                               }
                           }
