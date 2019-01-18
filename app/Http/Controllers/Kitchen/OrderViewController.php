@@ -69,7 +69,8 @@ class OrderViewController extends Controller
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
-                                          WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status,$order_setmenu_cookig_done_status) ");
+                                          WHERE category.kitchen_id = $id AND
+                                          order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status,$order_setmenu_cookig_done_status) ");
 
         $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
         $categoryIdArr      = array();
@@ -117,7 +118,7 @@ class OrderViewController extends Controller
                     array_push($array, $order_detail->remark_extra);
                 }
 
-                $remark_name = implode(',', $array);
+                $remark_name = implode(', ', $array);
                 $order_detail->remark = $remark_name;
                 unset($array);
 
@@ -294,7 +295,8 @@ class OrderViewController extends Controller
                                           LEFT JOIN `items` ON order_setmenu_detail.item_id = items.id
                                           LEFT JOIN `category` ON category.id = items.category_id
                                           LEFT JOIN `continent` ON continent.id = items.continent_id
-                                          WHERE order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status,$order_setmenu_cookig_done_status) ");
+                                          WHERE category.kitchen_id = $id AND
+                                          order_setmenu_detail.status_id IN ($order_setmenu_cooking_status,$order_setmenu_cooked_status,$order_setmenu_cookig_done_status) ");
 
         $categoryRaw        = DB::select("SELECT id FROM category WHERE kitchen_id = $kitchen->id AND deleted_at is NULL");
         $categoryIdArr      = array();

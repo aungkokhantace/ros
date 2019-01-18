@@ -38,6 +38,10 @@ ini_set('memory_limit', '-1');
     background: #5cb85c;
     border-radius: 0 0 5px 5px !important;
   }
+  table tr .remark {
+    max-width: 100px;
+    word-break: break-all;
+  }
   </style>
 </head>
     <div id="body">
@@ -551,12 +555,14 @@ ini_set('memory_limit', '-1');
 
         function print_chief(order) {
             var id      = order;
-            var modal   = id + '-print';
+            var modal   = id + '-print-chef';
             $('#' + modal).modal('show');
         }
+
         function print_waiter(order) {
+
             var id      = order;
-            var modal   = id + '-print';
+            var modal   = id + '-print-waiter';
             $('#' + modal).modal('show');
         }
     </script>
