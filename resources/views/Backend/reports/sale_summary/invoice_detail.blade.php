@@ -32,16 +32,19 @@
         <div class="row">
             <div class="col-md-7 col-md-offset-2">
                 <div class="thumbnail">
+
                     <div class="row">                      
-                             <h3 class="text-center">Invoice Detail</h4>                        
+                             <h3 class="text-center">Voucher  Detail</h4>                        
                     </div><br />
+                    <input type="hidden" name="from" id="from" value="{{isset($from)?$from:''}}">
+                    <input type="hidden" name="to" id="to" value="{{isset($to)?$to:''}}">
                  <!--    <div class="row i-body"> -->
                     <div class="row invoice_report">
                         <table class="table table-bordered">
-                            <thead>
+                            
                             <tr>
-                                <td><b>Order No :</b></td>
-                                 <td colspan="3">{{$invoice_id }} - 
+                                <th><b>Voucher No :</b></th>
+                                 <th colspan="3">{{$invoice_id }} - 
                                 @if($tables->count() > 0)
                                     @foreach($tables as $table)
                                         {{ $table->table_no }}
@@ -53,13 +56,13 @@
                                 @else
                                     {{ "Take Away" }}
                                 @endif
-                                </td>                              
+                                </th>                              
                             </tr>
                             <tr>
-                                <td><b>Invoice Date :</b></td>
-                                <td colspan="3">{{date('d-m-Y g:i:s A',strtotime($orders->order_time))}}</td>
+                                <th><b>Date :</b></th>
+                                <th colspan="3">{{date('d-m-Y g:i:s A',strtotime($orders->order_time))}}</th>
                             </tr>
-                            </thead>
+                           
                             <tbody>
                                 <tr>                                  
                                     <td width="50%"><span>Product</span></td>
@@ -87,7 +90,7 @@
                                         @endif
                                     </span></td>
                                     <td  width="20%" class="text-left"><span>{{ number_format($detail->amount)  }}</span></td>
-                                     <td style="font-size:13px;line-height: 25px;border:none;" width="10%" class="text-left"><span>{{$detail->quantity }}</span></td>
+                                     <td  class="text-left"><span>{{$detail->quantity }}</span></td>
                                     <td  width="20%" class="text-left"><span>{{number_format($detail->quantity * $detail->amount)}}</span></td>
                                 </tr>
 
@@ -127,7 +130,7 @@
                                 <td><b>{{number_format($orders->Amount)}}</b></td>
                             </tr>
                             <tr>
-                                <td colspan="3"><b>Cash Receive</b> </td>
+                                <td colspan="3"><b>Cash Received</b> </td>
                                 <td><b>{{number_format($orders->cash_receive)}}</b></td>
                             </tr>
                             <tr>
@@ -143,7 +146,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p class="text-center" style="font-size: 16px;">Thank You</p>
-                            <p class="text-center" style="font-size: 16px;"><a href="/Backend/sale_SummaryReport/detail/{{$date}}/{{$type}} " class="btn btn-primary">Go Back</a></p>
+                            {{-- <p class="text-center" style="font-size: 16px;"><a href="/Backend/sale_SummaryReport/detail/{{$date}}/{{$type}} " class="btn btn-primary">Go Back</a></p> --}}
+
+                            <p class="text-center" style="font-size: 16px;"><a href="{{'/Backend/sale_SummaryReport/detail/'.$date.'/'.$type.'/'.$from.'/'.$to}}" class="btn btn-primary">Go Back</a></p>
                         </div>
                     </div>
                 </div>

@@ -29,10 +29,19 @@ class DashboardController extends Controller
 {
     public function dashboard(Request $request)
     {    
+        $orderDay = DB::table('order_day')->orderBy('id','desc')->first();
+        
+        $orderShift = DB::table('order_shift')->where('day_id',$orderDay->id)->orderBy('id','desc')->first();
+        
+        $hide = 'false';
 
+        if(!$orderShift){
+            $hide = 'true';            
+        }
+        
         $sessions        = $this->getDayStart();
         $locations = Location::all();
-        return view('cashier.dashboard.dashboard',compact('sessions','locations'));
+        return view('cashier.dashboard.dashboard',compact('sessions','locations','hide'));
 
     }
 
@@ -120,31 +129,38 @@ class DashboardController extends Controller
 
     public function getReport()
     {
-        $now = Carbon::now();
-        $start_date = $now->toDateString(); 
-        $orderDay = DB::table('order_day')->where('start_date' , '=', $start_date)->first();
-        
+        $orderDay = DB::table('order_day')->orderBy('id','desc')->first();
+         
         if(!is_null($orderDay) && count($orderDay)>0){
                 $orders = Order::where('day_id',$orderDay->id)->get();
 
-                $order_pluck = Order::where('day_id',$orderDay->id)->pluck('id');
-
-                $order_detail_id = Orderdetail::whereIn('order_id',$order_pluck)
-                                                            ->orderBy('item_id','asc')
-                                                            ->pluck('order_detail_id');
-
-                $order_extra_sum = OrderExtra::whereIn('order_detail_id', $order_detail_id)->sum(\DB::raw('amount * quantity')); 
-                
-                $order_extra_quantity = OrderExtra::whereIn('order_detail_id', $order_detail_id)->sum('quantity'); 
-
         }else{
                 $orders                 = null;
-                $order_pluck            = null;
-                $order_extra_sum        = null;
-                $order_extra_quantity   = null;
         }
-        $day = $now;
-        return view('cashier.invoice.report',compact('orders','order_pluck','order_extra_sum','order_extra_quantity','day'));
+        $day = $orderDay->start_date;
+        return view('cashier.invoice.report',compact('orders','day'));
+
+    }
+
+    public function getReportByShift()
+    {
+        $orderDay = DB::table('order_day')->orderBy('id','desc')->first();
+        
+        $orderShift = DB::table('order_shift')->where('day_id',$orderDay->id)->orderBy('id','desc')->first();
+        
+        $hide = 'false';
+
+        if(!$orderShift){
+            $hide = true;            
+        }
+        
+        $orderDay = DB::table('order_day')->where('id',$orderShift->day_id)->orderBy('id','desc')->first();
+
+        $orders = Order::where('day_id',$orderDay->id)->where('shift_id',$orderShift->shift_id)->get();
+   
+        $day = $orderDay->start_date;
+
+        return view('cashier.invoice.report',compact('orders','day','hide'));
 
     }
 

@@ -4,7 +4,7 @@
 <div class="content-wrapper">
       <div class="box">
        <div class="box-header">
-    
+
         <h3 class="h3-font"><b>Shift Permission</b></h3>
      </div>
  </div>
@@ -26,13 +26,13 @@
             <div class="col-sm-7">
                 <div class="shift-checkbox">
                 @foreach($category as $cat)
-                    <div class="col-md-6"> 
+                    <div class="col-md-6">
                         <input type="checkbox" name="category[]" id="cat_{{$cat->id}}" value="{{ $cat->id }}" @if(in_array($cat->id,$shift_category)) {{ 'checked' }} @endif > <label for="cat_{{$cat->id}}">&nbsp;&nbsp;{{ $cat->name }}</label>
                     </div>
                 @endforeach
 
                 @foreach($setmenu as $set)
-                    <div class="col-md-6"> 
+                    <div class="col-md-6">
                         <input type="checkbox" name="setmenu[]" id="set_{{$set->id}}" value="{{ $set->id }}" @if(in_array($set->id,$shift_setmenu)) {{ 'checked' }} @endif> <label for="set_{{$set->id}}">&nbsp;&nbsp;{{ $set->set_menus_name }}</label>
                     </div>
                 @endforeach
@@ -45,19 +45,19 @@
             <div class="col-sm-7">
                 <div class="shift-checkbox">
                 @if(count($users) > 0)
-                <div class="col-md-12"> 
+                <div class="col-md-12">
                     <input type="checkbox" id="select_all_user"><label for="select_all_user"><b>SELECT ALL</b></label>
                 </div>
                 @else
-                <div class="col-md-12"> 
+                <div class="col-md-12">
                     <span>No Staff To Display</span>
                 </div>
                 @endif
                 @foreach($users as $user)
-                    <div class="col-md-6"> 
+                    <div class="col-md-6">
                         <input type="checkbox" name="user[]" id="staff_{{ $user->id }}" value="{{ $user->id }}" @if(in_array($user->id,$shift_user)) {{ 'checked' }} @endif />
-                        <label for="staff_{{ $user->id }}">&nbsp;&nbsp;{{ $user->user_name }}</label>
-                        
+                        <label for="staff_{{ $user->id }}">&nbsp;&nbsp;[ ID : {{ $user->staff_id }} ] {{ $user->user_name }}</label>
+
                     </div>
                 @endforeach
                 <div class="clear"></div>

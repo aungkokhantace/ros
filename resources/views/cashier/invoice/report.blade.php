@@ -27,64 +27,43 @@
                         <div id="-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
                         <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;background:none;">
                             <thead>
-                                <col width="100">
-                                <col width="100">
                                 <col width="60">
-                                <col width="40">
-                                <col width="70">
+                                <col width="140">
+                                <col width="100">
+                                <col width="80">
+
                                 <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
-                                    <td>Order No</td>
-                                    <td>Item</th>
-                                    <td>Price</th>
-                                    <td>Qty</th>
+                                    <td>No</td>
+                                    <td>Order No</th>
+                                    <td>Table (Stand No)</td>
                                     <td align="right">Amount</th>
                                 </tr>
                             </thead>
                            
                             <tbody style="font-size:13px;line-height:25px;">
-                                @php $v = '' ;@endphp
-                            @if(count($orders) > 0)
-                                @foreach($orders as $order)
+                                @php $i = 1; $tot = 0; @endphp
                                 
-                                    @php  $order_details = App\RMS\Orderdetail\Orderdetail::where('order_id',$order->id)
-                                                        ->orderBy('item_id','asc')
-                                                        ->get() 
-                                       
-                                    @endphp
-                                       
+                                @foreach($orders as $order)
                                     <tr>
-                                        @foreach($order_details as $order_detail)
-                                            
-                                                @if($v != $order_detail->order_id)
-                                                @php $v = $order_detail->order_id @endphp
-                                                <tr>   
-                                                        <td>{{ $order_detail->order_id }}</td>
-                                                        <td>{{ $order_detail->item->name }}</td>
-                                                        <td>{{ $order_detail->item->price }}</td>
-                                                        <td>{{ $order_detail->quantity }}</td>
-                                                        <td align="right">{{ $order_detail->item->price * $order_detail->quantity }}</td>
-                                                </tr>
-
-                                                @else
-                                               
-                                                <tr>
-                                                    <td></td>
-                                                    <td>{{ $order_detail->item->name }}</td>
-                                                    <td>{{ $order_detail->item->price }}</td>
-                                                    <td>{{ $order_detail->quantity }}</td>
-                                                    <td align="right">{{  $order_detail->item->price * $order_detail->quantity }}</td>
-                                                </tr>
-                                                @endif
-                                        @endforeach
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $order->id }}</td>
+                                        @if(!$order->table->isEmpty())
+                                        <td>{{ $order->table[0]->table_no }}({{$order->stand_number}})</td>
+                                        @elseif(!$order->rooms->isEmpty())
+                                        <td>
+                                            {{$order->rooms[0]->room_name}}
+                                        </td>
+                                        @else 
+                                            <td>Take Away</td>
+                                        @endif
+                                        <td align="right">{{ $order->total_price }}</td>
+                                        @php  $tot += $order->total_price  @endphp
                                     </tr>
                                 @endforeach
-                            @endif
-                                <tr>
-                                    <td colspan="3">Total Add on </td>
-                                   <td>{{$order_extra_quantity }}</td>
-                                   <td align="right">{{ $order_extra_sum }}</td
+                                <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
+                                    <td colspan="3">Total Amount</td>
+                                    <td align="right">{{ $tot }}</td>
                                 </tr>
-                                                           
                             </tbody>
                         </table> 
                     </div>

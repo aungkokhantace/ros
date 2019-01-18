@@ -32,7 +32,8 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('Dashboard','Cashier\DashboardController@dashboard');
                 Route::get('/Tables/{location_id}','Cashier\DashboardController@getTable'); // ajax route
                 Route::get('/Rooms','Cashier\DashboardController@getRoom'); // ajax route
-                Route::get('/Report','Cashier\DashboardController@getReport');
+                Route::get('/day/report','Cashier\DashboardController@getReport');
+                Route::get('/shift/report','Cashier\DashboardController@getReportByShift');
                 Route::get('/table/{table_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByTableId');
                 Route::get('/room/{room_id}/invoice','Cashier\Invoice\InvoiceController@invoiceListByRoomId');
                 Route::get('/takeaway/invoice','Cashier\Invoice\InvoiceController@invoiceListByTakeAway');
@@ -511,12 +512,19 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('sale_SummaryReport','Backend\Reports\SaleSummaryReportController@saleSummary');
                 Route::get('sale_SummaryReport/search/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@search_query');
                 Route::get('sale_SummaryReport/exportexcel/{type}/{from}/{to?}','Backend\Reports\SaleSummaryReportController@exportExcel');
+                // // / sale summary report detial /
+                // Route::get('sale_SummaryReport/detail/{date}/{type}','Backend\Reports\SaleSummaryReportController@summary_detail');
+                // // / sale summary reprt detail sort /
+                // Route::get('sale_SummaryReport/detail/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
+                // Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
+                // Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}','Backend\Reports\SaleSummaryReportController@invoice_detail');
+
                 // / sale summary report detial /
-                Route::get('sale_SummaryReport/detail/{date}/{type}','Backend\Reports\SaleSummaryReportController@summary_detail');
+                Route::get('sale_SummaryReport/detail/{date}/{type}/{from?}/{to?}','Backend\Reports\SaleSummaryReportController@summary_detail');
                 // / sale summary reprt detail sort /
-                Route::get('sale_SummaryReport/detail/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
-                Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
-                Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}','Backend\Reports\SaleSummaryReportController@invoice_detail');
+                Route::get('sale_SummaryReport/detail_sort/{date}/{type}/{sort}/{from?}/{to?}','Backend\Reports\SaleSummaryReportController@summary_detail_sort');
+                Route::get('sale_SummaryReport/detail_exprot/{date}/{type}/{sort}/{from?}/{to?}','Backend\Reports\SaleSummaryReportController@summary_detail_sort_export');
+                Route::get('sale_SummaryReport/invoice_detail/{invoice_id}/{date}/{type}/{from?}/{to?}','Backend\Reports\SaleSummaryReportController@invoice_detail');
                 // / update sale summary report /
 
             });
@@ -661,9 +669,28 @@ Route::group(['middleware' => 'web'], function () {
         });
         //End remark
 
-        Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
-        Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
-        Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+         // item Report update
+        Route::group(['middleware'=>'best_item:Cashier'],function(){
+            Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+            Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+            Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+        });
+
+        // Route::get('Best_itemReport', 'Backend\Reports\BestSellingItemReportController@itemReport');
+        // Route::get('Best_itemReport/search/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReportSearch');
+        // Route::get('Best_itemReport/export/{from_date?}/{to_date?}/{quantity?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingItemReportController@itemReport_excel');
+
+        Route::group(['middleware'=>'best_category:Cashier'],function(){
+           Route::get('categorySaleReport', 'Backend\Reports\BestSellingCategoryReportController@index');
+           Route::get('categorySaleReport/search/{form_date?}/{to_date?}', 'Backend\Reports\BestSellingCategoryReportController@search');
+           Route::get('categorySaleReport/export/{form_date?}/{to_date?}', 'Backend\Reports\BestSellingCategoryReportController@export');
+       });
+
+       Route::group(['middleware'=>'best_set:Cashier'],function(){
+           Route::get('Best_SetReport', 'Backend\Reports\BestSellingSetReportController@index');
+           Route::get('Best_SetReport/search/{form_date?}/{to_date?}/{number?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingSetReportController@search');
+           Route::get('Best_SetReport/export/{form_date?}/{to_date?}/{number?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingSetReportController@export');
+       });
 
         });
     });

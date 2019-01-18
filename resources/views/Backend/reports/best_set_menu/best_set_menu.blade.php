@@ -10,8 +10,7 @@
         {{--From date, to date, and view report button--}}
         <div class="row date_button">
             <div class="col-md-11 date_row">
-
-                <div class="col-md-12"><h3 class="h3"><strong>Best-selling Item Report</strong></h3></div>
+                <div class="col-md-12"><h3 class="h3"><strong>Best Selling Set Menu Report</strong></h3></div>
             <div class="col-md-12 btn-gp">
         
         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
@@ -91,10 +90,10 @@
         </div>                        
                    
         <div class="col-md-2 pull-right ">                    
-            <button class="btn btn-primary " onclick="best_item_excel('Best_itemReport');">Export</button>                    
+            <button class="btn btn-primary " onclick="best_set_export('Best_SetReport');">Export</button>                    
         </div>
          <div class="col-md-1 pull-right">          
-        <button type="submit" class="btn btn-primary " onclick="best_item_search('Best_itemReport');">
+        <button type="submit" class="btn btn-primary " onclick="best_set_search('Best_SetReport');">
             Search
         </button>
         </div>
@@ -102,16 +101,7 @@
             </div>
         </div>
         {{--From date, to date, and view report button--}}
-       {{-- <div class="row">
-            <div class="table col-md-11">
-                @if(isset($start))
-                  
-                    <strong>Showing results from <em class="text-success">{{( date("d-m-Y",strtotime($start->min )))}}</em> to <em class="text-success"> {{( date("d-m-Y",strtotime($end ->max )))}} </em></strong>
-                @else                   
-                    <strong>Showing results from <em class="text-success"> {{( date("d-m-Y",strtotime($start_date )))}}</em class="text-success"> to <em>{{( date("d-m-Y",strtotime($end_date)))}}</em></strong>
-                @endif
-            </div>
-        </div> --}}
+       
     </div>
 </div>
         {{--From date, to date, and view report button--}}
@@ -122,9 +112,7 @@
                     <thead class="thead_report">
                     <tr class="report-th">
                         <th>Item Name</th>
-                        <th>Quantity</th>
-                        <th>Price </th>
-                        <th>Discount Price</th>
+                        <th>Quantity</th>                                      
                         <th>Total Amount</th>
                         <!-- <th>View</th> -->
                     </tr>
@@ -139,17 +127,13 @@
                     @if(isset($orders))
                     @foreach($orders as $order)
                         <tr class="tr-row active">
-                            <td>{{ $order->name }}</td>
-                            <td>{{ $order->total }}</td>
-                            <td>{{number_format($order->amount)}}</td>
-                            <td>{{ $order->discount_amount === "" ? "0.0" : number_format($order->discount_amount) }}</td>
-                            <td class="money-align">{{ number_format($order->price) }}</td>
-                            <!-- <td><a href="" class="btn btn-primary">View Detail</a></td> -->
+                            <td>{{ $order->Name }}</td>
+                            <td>{{ $order->Quantity }}</td>
+                            <td>{{number_format($order->TotalAmount)}}</td>                           
+                            
                             <?php 
-                            $sum_qty += $order->total;
-                            $sum     += $order->total_amt;
-                            $item_price+= $order->amount;
-                            $sum_discount += $order->discount_amount;
+                            $sum_qty += $order->Quantity;
+                            $sum     += $order->TotalAmount;                           
                             ?>
                         </tr>
                     @endforeach
@@ -159,9 +143,8 @@
 
                         <td class="money-align">Total Amount</td>
                         <td class="money-align">{{number_format($sum_qty)}}</td>
-                        <td class="money-align">{{number_format($item_price)}}</td>
-                        <td class="money-align">{{number_format($sum_discount)}}</td>
                         <td class="money-align">{{number_format($sum)}}</td>
+                        
                     </tr>
                 </table>
             </div>

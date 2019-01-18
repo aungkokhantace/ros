@@ -59,8 +59,12 @@ class BestSellingItemReportController extends Controller
       
     }
     public function itemReportSearch($from_date =null ,$to_date=null,$number=null,$from_amount =null,$to_amount =null){
+        // dd($from_amount,$to_amount);
+        // var_dump($from_amount,$to_amount);
+        // die();
         try{
-            if( Auth::guard('Cashier')->check()){   	  
+            if( Auth::guard('Cashier')->check()){   
+
     	$orders_item        = $this->BestItemRepo->bestItem($from_date,$to_date,$number,$from_amount,$to_amount);
 
     	return view('Backend.reports.best_item.best_item')->with('from_date',$from_date)
@@ -88,10 +92,10 @@ class BestSellingItemReportController extends Controller
                if(count($orders_item)>0){
                      foreach ($orders_item as $key => $order) {
                         $items[$key]['Item Name']       = $order->name;
-                        $items[$key]['Quantity']        = $order->total;
-                        $items[$key]['Price']           = $order->amount;
-                        $items[$key]['Discount Price']  = (string)$order->discount_amount;
-                        $items[$key]['Total Amount']    = $order->price;
+                        $items[$key]['Quantity']        = number_format($order->total);
+                        $items[$key]['Price']           = number_format($order->amount);
+                        $items[$key]['Discount Price']  = (string)number_format($order->discount_amount);
+                        $items[$key]['Total Amount']    = number_format($order->price);
                     }                    
                 Excel::create('BestSellingItem', function($excel)use($orders_item,$items) {
                 $excel->getDefaultStyle()
@@ -110,7 +114,7 @@ class BestSellingItemReportController extends Controller
                             $sum_discount += $order->discount_amount;
                         }
                         $sheet->appendRow(array(
-                    'Total Amount',$sum_qty,$item_price,$sum_discount,$sum
+                    'Total Amount',number_format($sum_qty),number_format($item_price),number_format($sum_discount),number_format($sum)
                      ));           
 
                         $sheet->row(1,function($row){

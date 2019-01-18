@@ -311,7 +311,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
 
         $query                  = Order::query();
         $query                  = $query->join('order_day','order.day_id','=','order_day.id');
-        $query                  = $query->select(DB::raw('SUM(order.total_discount_amount) as DiscountAmount,
+        $query                  = $query->select(DB::raw('SUM(order.over_all_discount) as DiscountAmount,
                                                          SUM(order.tax_amount) as TaxAmount,
                                                         SUM(order.service_amount) as ServiceAmount,
                                                         SUM(order.room_charge) as RoomAmount,
@@ -425,11 +425,12 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
 
          if($sort               == "date_asc")
          {
-        $query                  = $query->orderBy('Date','ASC');
+
+        $query                  = $query->orderBy('order_day.start_date','ASC');
         // $posts = Post::orderBy('id', 'DESC')->get();
          }
-         elseif ($sort          == "date_desc") {
-         $query                  = $query->orderBy('Date','DESC');
+         elseif ($sort          == "date_desc") {         
+         $query                  = $query->orderBy('order_day.start_date','DESC');
          }
          elseif ($sort          == "amount_asc") {           
              $query             = $query->orderBy('Amount','ASC');

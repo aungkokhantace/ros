@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use PDF;
 use Response;
+use App\RMS\Shift\OrderShift;
 
 
 class InvoiceController extends Controller
@@ -1229,7 +1230,9 @@ class InvoiceController extends Controller
             $saleinventoryCon = new inventoryController();
             $saleinventoryCon->saleStock($id);
             $order = Order::find($id);
-
+            
+            $orderShift = OrderShift::orderBy('id','desc')->value('shift_id');
+          
             if(!$order->table->isEmpty()){
                 $table_id = $order->table[0]->id;
 
@@ -1264,6 +1267,7 @@ class InvoiceController extends Controller
             $order->payment_amount = $request->receive_price;
             $order->refund = $request->change;
             $order->take_voucher = $request->take_voucher;
+            $order->shift_id = $orderShift;
             $order->status = 2;
 
 
