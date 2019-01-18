@@ -238,10 +238,10 @@ class Utility
             $prefix = $date;
         }
 
-        $maxID           = Order::where('id', 'like', '%' .$date. '%')->max('id');
+        $maxID           = Order::where('id', 'like', '%' .$prefix. '%')->max('id');
 
         $maxID           = str_replace($prefix,"",$maxID);
-
+        
         $vocher_code     = intval($maxID);
 
         $vocher_code++;
