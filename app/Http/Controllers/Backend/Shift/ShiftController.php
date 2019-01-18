@@ -86,7 +86,7 @@ class ShiftController extends Controller
         $paramObj->name         = $name;
         $paramObj->description  = $description;
         $result                 = $this->shiftRepository->update($paramObj);
-       
+
          if($result['aceplusStatusCode'] ==  ReturnMessage::OK){
                 return redirect()->action('Backend\Shift\ShiftController@index')
                     ->withMessage(FormatGenerator::message('Success', 'Shift updated ...'));
@@ -156,7 +156,7 @@ class ShiftController extends Controller
                               ->where('status',$user_status)
                               ->whereNull('deleted_at')
                               ->get()->toArray();
-        $users          = User::select('id','user_name')
+        $users          = User::select('staff_id', 'id', 'user_name')
                           ->where('role_id','=',$user_role)
                           ->whereNotIn('id',$shift_other_users)->get();
         return view('Backend.shift.Shift_Type')
@@ -193,8 +193,8 @@ class ShiftController extends Controller
         if (isset($categories) AND count($categories) > 0) {
             foreach ($categories as $key => $category) {
                 $categoryObj                = new ShiftCategory();
-                $categoryObj->shift_id      = $shift_id;    
-                $categoryObj->category_id   = $category;    
+                $categoryObj->shift_id      = $shift_id;
+                $categoryObj->category_id   = $category;
                 $categoryObj->status        = $cat_status;
                 $result                     = $this->shiftRepository->store($categoryObj);
             }
@@ -202,8 +202,8 @@ class ShiftController extends Controller
         if (isset($setmenu) AND count($setmenu) > 0) {
             foreach ($setmenu as $key => $set) {
                 $setObj                     = new ShiftSetMenu();
-                $setObj->shift_id           = $shift_id;    
-                $setObj->setmenu_id         = $set;    
+                $setObj->shift_id           = $shift_id;
+                $setObj->setmenu_id         = $set;
                 $setObj->status             = $set_status;
                 $result                     = $this->shiftRepository->store($setObj);
             }
@@ -225,7 +225,7 @@ class ShiftController extends Controller
         $user_role      = StatusConstance::WAITER_ROLE;
         if ($shift == 'day_shift') {
             $shift_name     = StatusConstance::DAY_SHIFT_NAME;
-        } 
+        }
         if ($shift == 'night_shift') {
             $shift_name     = StatusConstance::NIGHT_SHIFT_NAME;
         }
@@ -273,8 +273,8 @@ class ShiftController extends Controller
         if (isset($categories) AND count($categories) > 0) {
             foreach ($categories as $key => $category) {
                 $categoryObj                = new ShiftCategory();
-                $categoryObj->shift_id      = $shift_id;    
-                $categoryObj->category_id   = $category;    
+                $categoryObj->shift_id      = $shift_id;
+                $categoryObj->category_id   = $category;
                 $categoryObj->status        = $cat_status;
                 $result                     = $this->shiftRepository->store($categoryObj);
             }
@@ -282,8 +282,8 @@ class ShiftController extends Controller
         if (isset($setmenu) AND count($setmenu) > 0) {
             foreach ($setmenu as $key => $set) {
                 $setObj                     = new ShiftSetMenu();
-                $setObj->shift_id           = $shift_id;    
-                $setObj->setmenu_id         = $set;    
+                $setObj->shift_id           = $shift_id;
+                $setObj->setmenu_id         = $set;
                 $setObj->status             = $set_status;
                 $result                     = $this->shiftRepository->store($setObj);
             }
