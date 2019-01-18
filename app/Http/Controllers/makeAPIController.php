@@ -737,7 +737,7 @@ class MakeAPIController extends ApiGuardController
                       if(isset($cancel_order_ary) && count($cancel_order_ary)>0){
                           $output['cooked'] = $cancel_order_ary;
                       }else{
-                          $output['cooked'] = '';
+                          $output['cooked'] = [];
                       }
   
                }
