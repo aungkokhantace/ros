@@ -639,11 +639,13 @@ class OrderViewController extends Controller
         $order_details_cooked_status   = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
         //Setmenu Status
         $order_setmenu_cooked_status   = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
-        if($id != 0 && $setmenu_id == 0){
+       
+        if($id != "0" && $setmenu_id == "0"){
             DB::statement('update order_details set status_id=?, order_duration=? where id=?',[$order_details_cooked_status,$date, $id]);
             $orders     = Orderdetail::where('id','=',$id)->get()->toArray();
         }
         else{
+           
             $setMenu                        = OrderSetMenuDetail::find($id);
             $orderDetail                    = OrderDetail::find($setMenu->order_detail_id);
             if($orderDetail->status_id == 1){

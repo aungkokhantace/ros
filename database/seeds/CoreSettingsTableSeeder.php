@@ -50,5 +50,17 @@ class CoreSettingsTableSeeder extends Seeder
             'value'         => '6',
             'description'   => 'Continent code will generate Whent get value 4'
         ]);
+        DB::table('core_settings')->insert([
+            'code'          => 'VOUCHER',
+            'type'          => 'VOUCHER_TYPE',
+            'value'         => '6',
+            'description'   => 'VOUCHER ID LENGTH'
+        ]);
+        DB::table('core_settings')->insert([
+            'code'          => 'VOUCHER_PREFIX',
+            'type'          => 'VOUCHER_PREFIX TYPE',
+            'value'         => 'VOC',
+            'description'   => 'VOUCHER ID PREFIX'
+        ]);
     }
 }
