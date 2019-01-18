@@ -580,7 +580,7 @@ class MakeAPIController extends ApiGuardController
                           //OrderSetMenuDetail
                         if($temp->status_id == 1){
                           $set_item                   = $order_detail->set_item;
-                          OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id)->foreDelete();
+                          OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id)->forceDelete();
                          foreach($set_item as $item){
                             $set = new OrderSetMenuDetail();
                             $set->order_detail_id = $order_detail->order_detail_id;
