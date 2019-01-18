@@ -547,7 +547,7 @@ class MakeAPIController extends ApiGuardController
                           $order_detail_id             = $order_detail->order_detail_id;
                           $temp = Orderdetail::where('order_detail_id',$order_detail_id)->first();
                           
-                          if($temp->status_id == 6){
+                          if($temp->status_id == 6 && $order_detail->satus != 6){
                               array_push($backend_cancel_order_ary,$temp->order_detail_id);
                           }
                           $quantity                   = $order_detail->quantity;
