@@ -140,7 +140,7 @@ class SaleSummaryReportController extends Controller
 	           			$items[$key]['Month']              = date('m-Y',strtotime($order->ShiftDate));
 	           		}
 	           		else{
-	           			$items[$key]['Day']              = date('d-m-Y',strtotime($order->ShiftDate));
+	           			$items[$key]['Date']              = date('d-m-Y',strtotime($order->ShiftDate));
 
 	           		}		    
 		            // $items[$key]['Shift Date']              = $order->ShiftDate;
@@ -268,7 +268,7 @@ class SaleSummaryReportController extends Controller
 		           	 	$items[$key]['Month']              	= date('m-Y',strtotime($date.'-01'));
 		            }
 		            else{
-		            	$items[$key]['Day']              		= date('d-m-Y',strtotime($date));
+		            	$items[$key]['Date']              		= date('d-m-Y',strtotime($date));
 		            }
 		         
 		            // $items[$key]['Order Time']              = $order->Date;
