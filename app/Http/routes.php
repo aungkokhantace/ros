@@ -691,6 +691,18 @@ Route::group(['middleware' => 'web'], function () {
            Route::get('Best_SetReport/search/{form_date?}/{to_date?}/{number?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingSetReportController@search');
            Route::get('Best_SetReport/export/{form_date?}/{to_date?}/{number?}/{from_amount?}/{to_amount?}', 'Backend\Reports\BestSellingSetReportController@export');
        });
+ 
+
+          Route::group(['middleware'=>'invoice_cancel_report:Cashier'],function(){ 
+
+          Route::get('invoice/cancel_report','Backend\Reports\InvoiceCancelReportController@invoiceCancel');
+          Route::get('invoice/cancel_report/search/{from_date?}/{to_date?}','Backend\Reports\InvoiceCancelReportController@invoiceCancel_Search');
+          Route::get('invoice/cancel_report/export/{from_date?}/{to_date?}','Backend\Reports\InvoiceCancelReportController@export');   
+
+           Route::get('invoice/cancel_report/detail/{invoice_id}/{from?}/{to?}','Backend\Reports\InvoiceCancelReportController@invoice_detail');
+       
+
+        }); 
 
         });
     });

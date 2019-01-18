@@ -19,9 +19,10 @@ class BestSellingItemRepository implements BestSellingItemRepositoryInterface
 		 $query  		=Orderdetail::query();
 		 $query	 		= $query->join('items','items.id','=','order_details.item_id')
 		    					->leftjoin('order', 'order.id', '=', 'order_details.order_id')
-		 						 ->leftjoin('order_day','order_day.id','=','order.day_id')
-		 						 ->select('items.name as name','order_details.amount',DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('SUM(order_details.quantity) as total'),
-                				DB::raw('(SUM(order_details.amount_with_discount)) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'))
+		 						  ->leftjoin('order_day','order_day.id','=','order.day_id')
+                  ->leftjoin('continent','continent.id','=','items.continent_id')
+		 						  ->select('items.name as name','order_details.amount',DB::raw('(SUM(order_details.quantity)*(order_details.discount_amount)) as discount_amount'),DB::raw('SUM(order_details.quantity) as total'),
+                				DB::raw('(SUM(order_details.amount_with_discount)) as price'),DB::raw('(SUM(order_details.quantity))*((order_details.amount)-(order_details.discount_amount)) as total_amt'), DB::raw('SUM(order_details.amount_with_discount) as net_price'),'continent.name as contient_name')
                 				->where('order_day.start_date','>=',$from)
                 				->where('order_day.start_date','<=',$to)
                 				->where('order.status','=',$order_paid_status)

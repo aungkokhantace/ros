@@ -616,6 +616,13 @@ class PermissionTableSeeder extends Seeder
             'created_by' => '1',
         ]);
 
+        DB::table('permissions')->insert([
+            'id' =>'96',
+            'role_id' => '1',
+            'module_id' => '32',
+            'created_by' => '1',
+        ]);
+
 
 
     }
