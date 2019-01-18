@@ -214,7 +214,8 @@ ini_set('memory_limit', '-1');
                                                                 <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
                                                             </div>
                                                             <div class="modal-body">
-                                                              {!! Form::open(array('url' => 'Kitchen/getCancelID/TableView', 'class'=> 'form-horizontal', 'id' => $item->id)) !!}
+                                                              {!! Form::open(array('class'=> 'form-horizontal', 'id' => $item->id)) !!}
+                                                              <!-- <form id -->
                                                               @if ($item->setmenu_id != 0)
                                                                   <input type="hidden" name="order_details_id" value="{{$item->order_detail_id}}" />
                                                               @else
@@ -481,6 +482,12 @@ ini_set('memory_limit', '-1');
 
             $('#viewBy').change(function (e) {
                 var url = 'getTableView?view=' + $(this).value();
+            });
+
+            $(document).bind('keypress', function(e) {
+            if(e.keyCode==13){
+                   e.preventDefault();
+             }
             });
 
         });

@@ -27,6 +27,10 @@ class ConfigController extends Controller
 
     public function general_config()
     {
+        $core_setting = new CoreSetting();
+        $voucher = $core_setting->select('value')->where('code', '=', 'VOUCHER')->first();
+        $prefix  = $core_setting->select('value')->where('code', '=', 'VOUCHER_PREFIX')->first();
+
         $config=$this->ConfigRepository->getAllConfig();
         if($config == null){
             return view('Backend.config.config')->with('config',$config);
@@ -38,7 +42,9 @@ class ConfigController extends Controller
             $warning_time = strtotime($config->booking_warning_time)-strtotime('Today');
             $waiting_time = strtotime($config->booking_waiting_time)-strtotime('Today');
             $service_time = strtotime($config->booking_service_time)-strtotime('Today');
-            return view('Backend.config.config')->with('config',$config)->with('warning_time',$warning_time)->with('waiting_time',$waiting_time)->with('service_time',$service_time);
+            return view('Backend.config.config')->with('config',$config)
+              ->with('warning_time',$warning_time)->with('waiting_time',$waiting_time)
+              ->with('service_time',$service_time)->with('voucher', $voucher)->with('prefix', $prefix);
         }
     }
 

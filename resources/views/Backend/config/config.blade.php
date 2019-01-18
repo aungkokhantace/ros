@@ -120,14 +120,14 @@
         <div class="form-group">
             <label for="voucher_length" class="col-sm-3 control-label left-align label-font">Voucher Length</label>
             <div class="col-sm-7">
-                <input type="number" class="form-control" id="voucher" name="voucher" placeholder="Enter Voucher Length" value="{{ isset($config)? $config->db_name:Request::old('db_name') }}"/>
+                <input type="number" class="form-control" id="voucher" name="voucher" placeholder="Enter Voucher Length" value="{{ isset($voucher) ? $voucher->value : Request::old('voucher') }}"/>
                 <p class="text-danger" id="voucher-length" style="display:none;">The input value is between 1 to 6 or field is required.</p>
             </div>
         </div>
         <div class="form-group">
             <label for="voucher_prefix" class="col-sm-3 control-label left-align label-font">Voucher Prefix</label>
             <div class="col-sm-7">
-                <input type="text" class="form-control" id="prefix" name="prefix" placeholder="Enter Voucher Prefix" value="{{ isset($config)? $config->db_name:Request::old('db_name') }}"/>
+                <input type="text" class="form-control" id="prefix" name="prefix" placeholder="Enter Voucher Prefix" value="{{ isset($prefix) ? $prefix->value : Request::old('prefix') }}"/>
                 <p class="text-danger" id="voucher-prefix" style="display:none">The input value of string length must not greater than 4.</p>
             </div>
         </div>
