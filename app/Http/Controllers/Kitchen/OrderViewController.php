@@ -714,7 +714,7 @@ class OrderViewController extends Controller
             DB::statement('update order_setmenu_detail set status_id=?, cooking_time=? where id=?', [$order_setmenu_done_status,$date,$item_id]);
 
             $order_setmenu                  = DB::table('order_setmenu_detail')
-                ->where('id',$item_id)
+                ->where('order_detail_id',$item_id)
                 ->where('setmenu_id',$setmenu_id)
                 ->first();
             $order_detail_id                = $order_setmenu->order_detail_id;
