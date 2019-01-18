@@ -77,34 +77,34 @@
                     <option selected disabled value="">___Please Choose Back Up Frequency___</option>
                     @if($config->backup_frequency == 1)
                         <option value="1" selected>1</option>
-                    @else 
+                    @else
                         <option value="1">1</option>
-                    @endif 
+                    @endif
 
                     @if($config->backup_frequency == 2)
                         <option value="2" selected>2</option>
-                    @else 
+                    @else
                         <option value="2">2</option>
                     @endif
-                    
+
                     @if($config->backup_frequency == 5)
                         <option value="5" selected>5</option>
-                    @else 
+                    @else
                         <option value="5">5</option>
                     @endif
-                    
+
                     @if($config->backup_frequency == 12)
                         <option value="12" selected>12</option>
-                    @else 
+                    @else
                         <option value="12">12</option>
                     @endif
 
                     @if($config->backup_frequency == 24)
                         <option value="24" selected>24</option>
-                    @else 
+                    @else
                         <option value="24">24</option>
                     @endif
-                    
+
                 </select>
                 <p class="text-danger">{{$errors->first('backup_frequency')}}</p>
             </div>
@@ -115,6 +115,20 @@
             <div class="col-sm-7">
                 <input type="text" class="form-control" id="db_name" name="db_name" placeholder="Enter Database Name" value="{{ isset($config)? $config->db_name:Request::old('db_name') }}"/>
                 <p class="text-danger">{{$errors->first('db_name')}}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="voucher_length" class="col-sm-3 control-label left-align label-font">Voucher Length</label>
+            <div class="col-sm-7">
+                <input type="number" class="form-control" id="voucher" name="voucher" placeholder="Enter Voucher Length" value="{{ isset($config)? $config->db_name:Request::old('db_name') }}"/>
+                <p class="text-danger" id="voucher-length" style="display:none;">The input value is between 1 to 6 or field is required.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="voucher_prefix" class="col-sm-3 control-label left-align label-font">Voucher Prefix</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="prefix" name="prefix" placeholder="Enter Voucher Prefix" value="{{ isset($config)? $config->db_name:Request::old('db_name') }}"/>
+                <p class="text-danger" id="voucher-prefix" style="display:none">The input value of string length must not greater than 4.</p>
             </div>
         </div>
 
@@ -352,7 +366,7 @@
 
         <div class="form-group">
             <div class="col-sm-8 col-sm-offset-3">
-                <input type="submit" name="submit" value="{{isset($config)? 'UPDATE' : 'ADD'}}" class="user-button-ok">
+                <input type="submit" name="submit" id="submit" onclick="validate()" value="{{isset($config)? 'UPDATE' : 'ADD'}}" class="user-button-ok">
                 <input type="button" value="CANCEL" class="user-button-cancel" onclick="config_cancel();">
             </div>
         </div>
@@ -361,6 +375,20 @@
 </div>
 </div>
     <script>
+      $('#submit').on("click",function(e){
+        var value = $('#voucher').val();
+        var prefix = $('#prefix').val();
+        var length = prefix.length;
+        if (value < 1 || value > 6 || value == null) {
+            $("#voucher-length").css("display","block");
+            e.preventDefault();
+        }
+        if (length > 4) {
+          $("#voucher-prefix").css("display","block");
+          e.preventDefault();
+        }
+      });
+
         $( document ).ready(function() {
             $( "#tax" ).validate({
                 rules: {
@@ -371,6 +399,5 @@
                 }
             });
         });
-
     </script>
 @endsection

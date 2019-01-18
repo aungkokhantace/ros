@@ -1,7 +1,7 @@
 @foreach($orders as $orderKey => $orderValue)
     @if (isset($orderValue->items) && count($orderValue->items) > 0)
         @foreach($orderValue->items as $item)
-        <div class="modal fade " id="{{$item->id}}-print" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade " id="{{$item->id}}-print-chef" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-width" role="document">
             <div class="modal-content" id="order-id">
               <div class="modal-body" id="{{$item->id}}-print-table">
@@ -29,7 +29,7 @@
                     @if(strlen($item->remark) != 0)
                       <tr>
                         <td class="left">Remark:</td>
-                        <td class="right">{{ $item->remark }}</td>
+                        <td class="right remark"><span>{{ $item->remark }}</span></td>
                       </tr>
                     @endif
                     @foreach($extra as $ex)
@@ -66,7 +66,7 @@
             $index_keys[] = $orderKey;
         ?>
         @foreach($orderValue->items as $item)
-        <div class="modal fade " id="{{$item->order_detail_id}}-print" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade " id="{{$item->order_detail_id}}-print-waiter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-width" role="document">
             <div class="modal-content" id="order-id">
               <div class="modal-body" id="{{$item->order_detail_id}}-print-table">
@@ -143,7 +143,7 @@
                     @if(strlen($item->remark) != 0)
                       <tr>
                         <td class="left">Remark:</td>
-                        <td class="right">{{ $item->remark }}</td>
+                        <td class="right remark">{{ $item->remark }}</td>
                       </tr>
                     @endif
                     @foreach($extra as $ex)

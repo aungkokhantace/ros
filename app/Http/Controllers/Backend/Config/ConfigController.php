@@ -14,6 +14,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Validator;
+use App\RMS\CoreSetting\CoreSetting;
 
 class ConfigController extends Controller
 {
@@ -41,7 +43,7 @@ class ConfigController extends Controller
     }
 
     public function store(GeneralConfigRequest $request){
-       
+
         $request->validate();
         $tax                            = $request->get('tax');
         $service                        = $request->get('service');
@@ -60,7 +62,7 @@ class ConfigController extends Controller
         $backup_url                     = $request->get('backup_url');
         $backup_frequency               = $request->get('backup_frequency');
         $db_name                        = $request->get('db_name');
-        
+
         $paramObj                       = new Config();
         $paramObj->tax                  = $tax;
         $paramObj->service              = $service;
@@ -77,8 +79,8 @@ class ConfigController extends Controller
         return redirect()->action('Cashier\Config\ConfigController@general_config');
     }
 
-    public function update(GeneralConfigRequest $request){
-        
+    public function update(GeneralConfigRequest $request)
+    {
         $request->validate();
         $id                             = $request->get('id');
         $tax                            = $request->get('tax');
@@ -108,6 +110,19 @@ class ConfigController extends Controller
         $paramObj->backup_frequency     = $backup_frequency;
         $paramObj->db_name              = $db_name;
         $this->ConfigRepository->update_config($paramObj);
+
+        $core_setting = new CoreSetting();
+
+        if (!empty($request->voucher)) {
+          $core_setting->where('code', '=', 'VOUCHER')
+            ->update(['value' => $request->voucher]);
+        }
+
+        if (!empty($request->prefix)) {
+          $core_setting->where('code', '=', 'VOUCHER_PREFIX')
+            ->update(['value' => $request->prefix]);
+        }
+
         return redirect()->action('Backend\Config\ConfigController@general_config');
     }
 

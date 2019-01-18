@@ -109,10 +109,9 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-          <ul class="treeview-menu"> 
-            <li><a href="/Backend/Booking/index"><i class="fa fa-circle-o text-aqua"></i>  Reservation</a></li>           
+          <ul class="treeview-menu">          
             <li><a href="/Backend/sale_SummaryReport"><i class="fa fa-circle-o text-aqua"></i>  Sale Summary Report</a></li>
-           
+
             <li><a href="/Backend/Best_itemReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Item Report</a></li>
             <li><a href="/Backend/categorySaleReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Category Report</a></li>
            <!--  <li><a href="/Backend/favourite_set_menus"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Set Report</a></li> -->
