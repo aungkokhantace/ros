@@ -109,6 +109,11 @@ class BestSellingCategoryRepository implements BestSellingCategoryRepositoryInte
 				                'order_details.item_id as iem_id'
 
 				            	)
+                      ->where('order_day.start_date','>=',$from)
+                      ->where('order_day.start_date','<=',$to)
+                      ->where('order.status','=',$order_paid_status)
+                      ->whereNull('order.deleted_at')
+                      ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
 				            	->where('category.id','=',$cate_id);	            				
    $orders 						= $query->get();
    return $orders;
