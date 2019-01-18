@@ -1195,9 +1195,9 @@ order page
     background-color:#064173;
 }
 
-#item_list{
+/*#item_list{
  width:500px;
-}
+}*/
 .navbar-nav>li>a:hover{
     text-decoration: none !important;
 }
