@@ -130,7 +130,7 @@ class BestSellingCategoryReportController extends Controller
 
        }//count >0
        else{
-        return redirect()->action('Backend\Reports\BestSellingItemReportController@itemReport')
+        return redirect()->action('Backend\Reports\BestSellingCategoryReportController@index')
         ->withMessage(FormatGenerator::message('Oops..', 'There is no data on this day ...'));
        }         
          }/* guard */

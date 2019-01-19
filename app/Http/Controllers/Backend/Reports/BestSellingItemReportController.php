@@ -91,10 +91,17 @@ class BestSellingItemReportController extends Controller
        
                if(count($orders_item)>0){
                      foreach ($orders_item as $key => $order) {
-                        $items[$key]['Item Name']       = $order->name;
+                        if($order->contient_name != null){
+                            $items[$key]['Item Name']       = $order->name .'('.$order->contient_name .')';
+
+                        }else{
+                            $items[$key]['Item Name']       = $order->name;
+
+                        }                     
+                      
                         $items[$key]['Quantity']        = number_format($order->total);
                         $items[$key]['Price']           = number_format($order->amount);
-                        $items[$key]['Discount Price']  = (string)number_format($order->discount_amount);
+                        // $items[$key]['Discount Price']  = (string)number_format($order->discount_amount);
                         $items[$key]['Total Amount']    = number_format($order->price);
                     }                    
                 Excel::create('BestSellingItem', function($excel)use($orders_item,$items) {
@@ -105,16 +112,18 @@ class BestSellingItemReportController extends Controller
                         $sheet->fromArray($items);
                             $sum_qty        = 0;
                             $item_price     = 0;
-                            $sum_discount   = 0;                    
+                            // $sum_discount   = 0;                    
                             $sum            = 0;    
                          foreach($orders_item as $order){
                             $sum_qty    += $order->total;
                             $sum        += $order->total_amt;
                             $item_price += $order->amount;
-                            $sum_discount += $order->discount_amount;
+                            // $sum_discount += $order->discount_amount;
                         }
                         $sheet->appendRow(array(
-                    'Total Amount',number_format($sum_qty),number_format($item_price),number_format($sum_discount),number_format($sum)
+                    'Total Amount',number_format($sum_qty),number_format($item_price),
+                    // number_format($sum_discount),
+                    number_format($sum)
                      ));           
 
                         $sheet->row(1,function($row){
@@ -128,7 +137,7 @@ class BestSellingItemReportController extends Controller
                               $current_row++;
                             }                             
                          /* to add background in total */
-                        $sheet->cell('A'.$current_row.':E'.$current_row, function($cell) {
+                        $sheet->cell('A'.$current_row.':D'.$current_row, function($cell) {
                             $cell->setBackground('#3c8dbc');                            
                         });
 
@@ -144,7 +153,7 @@ class BestSellingItemReportController extends Controller
             }/* guard */
 
         }
-        catch(\Exception $e){  
+        catch(\Exception $e){
             
              return redirect()->action('Backend\Reports\BestSellingItemReportController@itemReport')
                 ->withMessage(FormatGenerator::message('Fail..', 'Error ...'));

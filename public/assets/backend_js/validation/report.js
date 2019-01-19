@@ -294,6 +294,14 @@ function best_item_search(module){
             sweetAlert("Oops...", "Please Choose the date !");
             return;
         }
+     else if(from_date == "" && to_date != ""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else if(from_date != "" && to_date==""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
     else{           
             if(from_amount  && to_amount ==''){
                 sweetAlert("Oops...", "Please Enter valid amount !");
@@ -347,6 +355,14 @@ function best_item_excel(module){
             sweetAlert("Oops...", "Please Choose the date !");
             return;
         }
+     else if(from_date == "" && to_date != ""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else if(from_date != "" && to_date==""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
     else{
 
         if(from_amount  && to_amount ==''){
@@ -393,6 +409,14 @@ function best_category_search(module){
             sweetAlert("Oops...", "Please Choose the date !");
             return;
         }
+     else if(from_date == "" && to_date != ""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else if(from_date != "" && to_date==""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
     else{
             var dateComparison = check_date(from_date, to_date);
             if(dateComparison){
@@ -416,6 +440,14 @@ function best_category_excel(module){
             sweetAlert("Oops...", "Please Choose the date !");
             return;
         }
+     else if(from_date == "" && to_date != ""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else if(from_date != "" && to_date==""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
     else{
             var dateComparison = check_date(from_date, to_date);
             if(dateComparison){
@@ -445,6 +477,14 @@ function best_set_search(module){
             sweetAlert("Oops...", "Please Choose the date !");
             return;
         }
+     else if(from_date == "" && to_date != ""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else if(from_date != "" && to_date==""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
     else{
 
         if(from_amount  && to_amount ==''){
@@ -494,6 +534,14 @@ function best_set_export(module){
             sweetAlert("Oops...", "Please Choose the date !");
             return;
         }
+     else if(from_date == "" && to_date != ""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else if(from_date != "" && to_date==""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }    
     else{
 
         if(from_amount  && to_amount ==''){
@@ -524,6 +572,67 @@ function best_set_export(module){
             sweetAlert("Oops...", "Please Choose the valid date !");
             return;
         }       
+    } 
+    window.location = form_action;
+}
+
+function cancel_invoice_search(module){   
+    var form_action = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+     
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else if(from_date == "" && to_date != ""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else if(from_date != "" && to_date==""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else{
+            var dateComparison = check_date(from_date, to_date);
+            if(dateComparison){
+                form_action = "/Backend/invoice/"+module+"/search/" + from_date + "/" + to_date ;
+               
+            }
+            else{
+                sweetAlert("Oops...", "Please Choose the valid date !");
+                return;
+            }       
+    } 
+    window.location = form_action;
+}
+function cancel_invoice_excel(module){   
+    var form_action = "";
+    var from_date           = $("#from_date").val();
+    var to_date             = $("#to_date").val();
+     
+     if(from_date == "" && to_date == ""){
+            sweetAlert("Oops...", "Please Choose the date !");
+            return;
+        }
+    else if(from_date == "" && to_date != ""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else if(from_date != "" && to_date==""){
+         sweetAlert("Oops...", "Please Choose the date !");
+            return;
+    }
+    else{
+            var dateComparison = check_date(from_date, to_date);
+            if(dateComparison){
+                form_action = "/Backend/invoice/"+module+"/export/" + from_date + "/" + to_date ;
+               
+            }
+            else{
+                sweetAlert("Oops...", "Please Choose the valid date !");
+                return;
+            }       
     } 
     window.location = form_action;
 }

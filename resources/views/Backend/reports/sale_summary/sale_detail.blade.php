@@ -81,7 +81,7 @@
             <div class="row" id="autoDiv">
                 <div class="col-md-12">
                     <div class="table-responsive table-hover">
-                        <table class="table table-bordered Dailytable" style ="padding: 15px;margin-left: 13px;">
+                        <!-- <table class="table table-bordered Dailytable" style ="padding: 15px;margin-left: 13px;"> -->
                     <table class="table table-bordered">
                         <thead class="thead_report">
                         <tr class="report-th">
@@ -93,7 +93,7 @@
                             <th>Month</th>
                             @endif
                             @if($type == "Daily")
-                            <th>Day</th>
+                            <th>Date</th>
                             @endif
                           <!--   <th>Order Time</th> -->
                             <th>Staff</th>

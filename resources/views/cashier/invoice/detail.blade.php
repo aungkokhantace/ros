@@ -76,19 +76,31 @@
                                             $qty2 = App\RMS\Orderdetail\Orderdetail::where('order_id',$detail['order_id'])
                                             ->where('item_id',$detail['item_id'])
                                             ->sum('quantity');                         
-    
+
+                                            $item = App\RMS\Item\Item::where('id',$detail['item_id'])->first();
+
                                             @endphp
                                             @if($qty > 1)
                                                 @if($v != $detail['item_id'])
                                                 @php $v = $detail['item_id'] @endphp
-                                                    <td class="no-border" style="">{{ $detail['item_name'] }}</td>
+                                                    <td class="no-border" style="">
+                                                        {{ $detail['item_name'] }}
+                                                        @if($item->Continent)
+                                                        ({{ $item->Continent->name }})
+                                                        @endif
+                                                    </td>
                                                     <td class="no-border">{{ number_format($detail['amount']) }}</td>
                                                     <td class="no-border" align="right">{{ $qty2 }}</td>
                                                     <td class="no-border" align="right">{{ number_format($detail['amount']* $qty2) }} </td>
                                                 @endif
                                             @else
         
-                                                <td class="no-border">{{ $detail['item_name'] }}</td>
+                                                <td class="no-border" style="">
+                                                    {{ $detail['item_name'] }}
+                                                    @if($item->Continent)
+                                                    ({{ $item->Continent->name }})
+                                                    @endif
+                                                </td>
                                                 <td class="no-border">{{ number_format($detail['amount']) }}</td>
                                                 <td class="no-border" align="right">{{ $qty2 }}</td>
                                                 <td class="no-border" align="right">{{ number_format($detail['amount']* $qty2) }} </td>

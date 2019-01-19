@@ -178,7 +178,7 @@
                                 <th>Month</th>
                                 @endif
                                 @if($type == "Daily")
-                                <th>Day</th>
+                                <th>Date</th>
                                 @endif
                                <!--  <th>Date</th>                                
                                 <th>Order Time</th>  -->                          
