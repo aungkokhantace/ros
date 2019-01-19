@@ -230,7 +230,7 @@ class MakeAPIController extends ApiGuardController
 
         if($daystart->id != $day_id){
             $output = array();
-            $output['message'] = 'you need to logout and Login again';
+            $output['message'] = 'wrong shift';
             return Response::json($output);
 
         }
@@ -435,7 +435,7 @@ class MakeAPIController extends ApiGuardController
 
                 if($daystart->id != $day_id){
                     $output = array();
-                    $output['message'] = 'you need to logout and Login again';
+                    $output['message'] = 'wrong shift';
                     $output['cooked'] = [];
                     return Response::json($output);
 
