@@ -44,11 +44,12 @@
                         <td class="right"><span>{{ $ex->food_name }}</span></td>
                       @endif
                     @endforeach
+                    
                   </table>
                   <hr>
               </div>
               <div class="modal-footer">
-                <button class="btn btn-success" id ="{{ $item->id}}" onClick="print_click(this.id)">Print</button>
+                <button class="btn btn-success" id="{{$item->id}}/{{$item->setmenu_id}}" onClick="print_click_chief({{$item->id}})">Print</button>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">Close</button>
               </div>
             </div>
@@ -161,7 +162,7 @@
                   </table>
               </div>
               <div class="modal-footer">
-                <button class="btn btn-success" id ="{{ $item->order_detail_id}}" onClick="print_click(this.id)">Print</button>
+                <button class="btn btn-success" id="{{$item->id}}/{{$item->setmenu_id}}" onClick="print_click_waiter({{$item->id}})">Print</button>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">Close</button>
               </div>
             </div>

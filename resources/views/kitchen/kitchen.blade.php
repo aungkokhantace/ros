@@ -194,16 +194,16 @@ ini_set('memory_limit', '-1');
                                                 <div class="btn-group">
                                                     <div>
                                                         @if ($item->status_id == 1 && !$item->is_ready_food)
-                                                            <input type="submit" class="start btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking"/>
+                                                            <input type="hidden" class="start btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking"/>
                                                         @elseif(!empty($item->is_ready_food) && $item->status_id == 1)
-                                                            <input type="submit" class="complete btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Food Ready"/>
+                                                            <input type="hidden" class="complete btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Food Ready"/>
                                                         @elseif($item->status_id == '3')
                                                             <div>
-                                                                <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Take"/>
+                                                                <input type="hidden" class="taken btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Take"/>
                                                             </div>
                                                         @endif
                                                         @if ($item->status_id == 2)
-                                                            <input type="submit" class="complete btn btn-success btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Complete"/>
+                                                            <input type="hidden" class="complete btn btn-success btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Complete"/>
                                                         @endif
                                                     </div>
                                                     <div>
@@ -251,12 +251,24 @@ ini_set('memory_limit', '-1');
                                                     </div>
                                                 </div>
                                             </td>
-
+                                            @if ($item->status_id == 2)
                                             <td style="border-left: none !important;">
+                                           
                                                 <div class="btn-group">
                                                     <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (Waiter)</button>
                                                 </div>
+                                           
                                             </td>
+                                            @endif
+
+                                            @if($item->status_id == '3')
+                                            <td>
+                                                <div>
+                                                    <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Take"/>
+                                                </div>
+                                            </td>
+
+                                            @endif
                                             <td style="border-left: none !important;">
                                                 @php
                                                     if (isset($tables)) {
@@ -265,12 +277,13 @@ ini_set('memory_limit', '-1');
                                                         $id = $room->rome_id;
                                                     }
                                                 @endphp
-                                                @if (empty($item->is_ready_food))
+                                                @if (empty($item->is_ready_food) && $item->status_id == 1 && !$item->is_ready_food)
                                                     <div class="btn-group">
                                                         <button class="btn btn-success" id='{{ $item->id }}' onclick="print_chief('{{$item->id}}')" data-toggle="modal" data-id="{{$item->id}}" data-target="#printModal">Print (Chef)</button>
                                                     </div>
                                                 @endif
                                             </td>
+
 
                                             @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
@@ -382,7 +395,13 @@ ini_set('memory_limit', '-1');
                 });
             });
 
+            function startcooking(itemID){
+                
+            }
 
+            function completecooking(){
+                
+            }
             $('#divAuto').on('click', '.taken', function(e){
                 var itemID      = $(this).attr('id');
                 $(document).ready(function  (){
@@ -552,13 +571,52 @@ ini_set('memory_limit', '-1');
             ifr.parentElement.removeChild(ifr);
         }
 
-        function print_click(clicked_id)
+        function print_click_waiter(clicked_id)
         {
+            var itemID      = $('.complete').attr('id');
+            $.ajax({
+                                type: 'GET',
+                                url: '/Kitchen/getCompleteID/' + itemID,
+                                success: function (Response) {
+                                    var returnResp        = Response.message;
+                                    if (returnResp == 'success') {
+                                        //Socket Emit
+                                        var socketKey        = "cooking_complete";
+                                        var socketValue      = "cooking_complete";
+                                        socketEmit(socketKey,socketValue);
+                                        swal.close();
+                                    }
+                                }
+                            });
+          
             var clickID     = clicked_id;
             var printID     = clickID + "-print-table";
             var test        = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
+
+        function print_click_chief(clicked_id)
+        {
+            var itemID      = $('.start').attr('id');
+            
+            $.ajax({
+                    type: 'GET',
+                    url: '/Kitchen/getStart/ajaxRequest/' + itemID,
+                    success: function (Response) {
+                        // alert(Response);
+                        //Socket Emit
+                        var socketKey        = "start_cooking";
+                        var socketValue      = "start_cooking";
+                        socketEmit(socketKey,socketValue);
+                        
+                    }
+                });
+            var clickID     = clicked_id;
+            var printID     = clickID + "-print-table";
+            var test        = document.getElementById(printID);
+            printElement(document.getElementById(printID));
+        }
+
 
         function print_chief(order) {
             var id      = order;
@@ -567,7 +625,7 @@ ini_set('memory_limit', '-1');
         }
 
         function print_waiter(order) {
-
+            
             var id      = order;
             var modal   = id + '-print-waiter';
             $('#' + modal).modal('show');

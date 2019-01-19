@@ -562,7 +562,9 @@ class MakeAPIController extends ApiGuardController
                           if($temp->status_id == 6 && $order_detail->status != 6){
                               array_push($backend_cancel_order_ary,$temp->order_detail_id);
                           }
+                          if($temp->status_id == 1){
                           $quantity                   = $order_detail->quantity;
+                          }
                           //save Orderdetail
                           $temp->order_id             = $order_id;
                           $temp->item_id              = $order_detail->item_id;
@@ -664,6 +666,8 @@ class MakeAPIController extends ApiGuardController
                                   }
                               }
                           }
+                        }else{
+
                         }
   
                           //Order_Extra
@@ -700,6 +704,8 @@ class MakeAPIController extends ApiGuardController
                         }
           
                      }
+                  }else{
+
                   }
   
   
