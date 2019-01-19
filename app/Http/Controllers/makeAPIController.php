@@ -413,7 +413,7 @@ class MakeAPIController extends ApiGuardController
               $temp       = Input::all();
               $ordersRaw  = $temp['orderID'];
               $orders     = json_decode($ordersRaw);
-  
+              $session_status       = StatusConstance::DAY_STARTING_STATUS;
               $dt         = Carbon::now();
               $date       = date("Y-m-d H:i:s");
               foreach($orders as $order) {
