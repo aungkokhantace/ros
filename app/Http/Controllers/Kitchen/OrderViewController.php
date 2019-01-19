@@ -671,7 +671,7 @@ class OrderViewController extends Controller
         //Order Detail Status
         $order_delivery_status   = StatusConstance::ORDER_DETAIL_DELIEVERED_STATUS;
 
-        if($id != 0 && $setmenu_id == 0){
+        if($id != "0" && $setmenu_id == "0"){
             DB::statement('update order_details set status_id=?, order_duration=? where id=?',[$order_delivery_status,$date, $id]);
             $orders     = Orderdetail::where('id','=',$id)->get()->toArray();
         }

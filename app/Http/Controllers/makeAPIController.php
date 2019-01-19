@@ -240,7 +240,7 @@ class MakeAPIController extends ApiGuardController
         $order->user_id                 = $user_id;
         $order->take_id                 = $take_id;
         $order->order_time              = $dt->toDateTimeString();
-	$order->total_extra_price       = $total_extra_price;
+	    $order->total_extra_price       = $total_extra_price;
         $order->total_discount_amount   = $total_discount_amount;
         $order->total_price             = $total_price;
         $order->service_amount          = $service_amount;
@@ -422,12 +422,24 @@ class MakeAPIController extends ApiGuardController
                   $service_amount     = $order->service_amount;
                   $tax_amount         = $order->tax_amount;
                   $net_price          = $order->net_price;
+                  $day_id             = $order->day_id;
                   $order_details      = $order->order_detail;
                   $discount_amount    = $order->discount_amount;
                   $extra_price        = $order->extra_price;
                   $stand_number       = $order->stand_number;
               }
-  
+              $daystart             = DayStart::select('id')
+                ->where('status',$session_status)
+                ->whereNull('deleted_at')
+                ->first();
+
+                if($daystart->id != $day_id){
+                    $output = array();
+                    $output['message'] = 'you need to logout and Login again';
+                    $output['cooked'] = [];
+                    return Response::json($output);
+
+                }
               $order = Order::find($order_id);
              
               if ($order->status == 2) {
