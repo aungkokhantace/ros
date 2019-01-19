@@ -28,10 +28,12 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
     public function dashboard(Request $request)
-    {    
+    {   
+        $orderShift = null; 
         $orderDay = DB::table('order_day')->orderBy('id','desc')->first();
-        
-        $orderShift = DB::table('order_shift')->where('day_id',$orderDay->id)->orderBy('id','desc')->first();
+        if(isset($orderDay)){
+            $orderShift = DB::table('order_shift')->where('day_id',$orderDay->id)->orderBy('id','desc')->first();
+        }        
         
         $hide = 'false';
 
@@ -135,9 +137,13 @@ class DashboardController extends Controller
                 $orders = Order::where('day_id',$orderDay->id)->get();
 
         }else{
-                $orders                 = null;
+                $orders                 = [];
         }
-        $day = $orderDay->start_date;
+        $day = null;
+        if(!is_null($orderDay) && count($orderDay)>0){
+            $day = $orderDay->start_date;
+        }
+
         return view('cashier.invoice.report',compact('orders','day'));
 
     }
