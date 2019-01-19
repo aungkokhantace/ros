@@ -1237,10 +1237,11 @@ class InvoiceController extends Controller
                 $table_id = $order->table[0]->id;
 
                 $order_count = OrderTable::where('table_id',$table_id)->pluck('order_id');
-
+                
                 $check_status = Order::whereIn('id',$order_count)->pluck('status')->toArray();
-
                 $check = array_count_values($check_status);
+                
+               
             }
 
 
@@ -1251,10 +1252,14 @@ class InvoiceController extends Controller
             }
 
             if(!$order->table->isEmpty()){
-                if($check['1'] == 1){
-                $table = Table::where('id',$order->table[0]->id)->first();
-                $table->status = 0;
-                $table->update();
+                
+            if($check['1'] == 1){
+                    foreach($order->table as $table_status){
+                        $table = Table::where('id',$table_status->id)->first();
+                        $table->status = 0;
+                        $table->update();
+                    }      
+                
                 }
             }
 

@@ -72,13 +72,18 @@ class downloadAPIController extends ApiGuardController
 		        			$order_id = $voucher_check->id;
 		        			$rooms = DB::table('order_room')->join('rooms','order_room.room_id','=','rooms.id')->where('order_id',$order_id)->first();
 		        			
-		        			$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->first();
+							$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->get();
+							$tab = '';
+							foreach($tables as $table){
+								$tab .=  $table->table_no .',';
+							}
+							
 		        			if(isset($rooms) && count($rooms)>0){
 		        				$voucher_check->isRoom = 'true';
 		        				$voucher_check->roomOrTable = $rooms->room_name;
 		        			}elseif(isset($tables) && count($tables)>0){
 		        				$voucher_check->isRoom = 'false';
-		        				$voucher_check->roomOrTable = $tables->table_no;
+		        				$voucher_check->roomOrTable = $tab;
 		        			}else{
 		        				$voucher_check->isRoom = 'false';
 		        				$voucher_check->roomOrTable = "Take Away";
@@ -95,13 +100,18 @@ class downloadAPIController extends ApiGuardController
 		        			$order_id = $voucher_check->id;
 		        			$rooms = DB::table('order_room')->join('rooms','order_room.room_id','=','rooms.id')->where('order_id',$order_id)->first();
 		        			
-		        			$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->first();
+		        			$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->get();
+							$tab = '';
+							foreach($tables as $table){
+								$tab .=  $table->table_no .',';
+							}
+							
 		        			if(isset($rooms) && count($rooms)>0){
 		        				$voucher_check->isRoom = 'true';
 		        				$voucher_check->roomOrTable = $rooms->room_name;
 		        			}elseif(isset($tables) && count($tables)>0){
 		        				$voucher_check->isRoom = 'false';
-		        				$voucher_check->roomOrTable = $tables->table_no;
+		        				$voucher_check->roomOrTable = $tab;
 		        			}else{
 		        				$voucher_check->isRoom = 'false';
 		        				$voucher_check->roomOrTable = "Take Away";
@@ -117,13 +127,18 @@ class downloadAPIController extends ApiGuardController
 		        			$order_id = $voucher_check->id;
 		        			$rooms = DB::table('order_room')->join('rooms','order_room.room_id','=','rooms.id')->where('order_id',$order_id)->first();
 		        			
-		        			$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->first();
+		        			$tables = DB::table('order_tables')->join('tables','order_tables.table_id','=','tables.id')->where('order_id',$order_id)->get();
+							$tab = '';
+							foreach($tables as $table){
+								$tab .=  $table->table_no .',';
+							}
+							
 		        			if(isset($rooms) && count($rooms)>0){
 		        				$voucher_check->isRoom = 'true';
 		        				$voucher_check->roomOrTable = $rooms->room_name;
 		        			}elseif(isset($tables) && count($tables)>0){
 		        				$voucher_check->isRoom = 'false';
-		        				$voucher_check->roomOrTable = $tables->table_no;
+		        				$voucher_check->roomOrTable = $tab;
 		        			}else{
 		        				$voucher_check->isRoom = 'false';
 		        				$voucher_check->roomOrTable = "Take Away";
