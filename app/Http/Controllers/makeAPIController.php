@@ -409,8 +409,8 @@ class MakeAPIController extends ApiGuardController
 
     public function add_new_to_voucher(){
 
-        // try{
-        //    DB::beginTransaction();
+        try{
+           DB::beginTransaction();
               $temp       = Input::all();
               $ordersRaw  = $temp['orderID'];
               $orders     = json_decode($ordersRaw);
@@ -443,10 +443,10 @@ class MakeAPIController extends ApiGuardController
                 }
                 $order = Order::find($order_id);
               
-                $order->total_price             = $order_total_price;
+                $order->total_price             = $net_price;
                 $order->service_amount          = $service_amount;
                 $order->tax_amount              = $tax_amount;
-                $order->all_total_amount        = $net_price;
+                $order->all_total_amount        = $total_price;
                 $order->total_discount_amount   = $discount_amount;
                 if(isset($order->total_extra_price)){
                     $order->total_extra_price       = $extra_price;
@@ -856,17 +856,17 @@ class MakeAPIController extends ApiGuardController
                }
   
                return Response::json($output);
-        //     }catch(\Exception $e){
-        //        dd($e);
-        //       DB::rollback();
-        //       $date       = date("Y-m-d H:i:s");
-        //       $data       = json_decode(request('orderID'));
-        //       $tabletID   = $data[0]->order_id;
-        //       $message    = "[  $date ]  error:  updated  Order [ id = $tabletID ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
-        //       RmsLog::create($message);
-        //       $output = array("message" => "Please Upload Again");
-        //       return Response::json($output);
-        //   }
+            }catch(\Exception $e){
+               dd($e);
+              DB::rollback();
+              $date       = date("Y-m-d H:i:s");
+              $data       = json_decode(request('orderID'));
+              $tabletID   = $data[0]->order_id;
+              $message    = "[  $date ]  error:  updated  Order [ id = $tabletID ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+              RmsLog::create($message);
+              $output = array("message" => "Please Upload Again");
+              return Response::json($output);
+          }
       }
   
 
