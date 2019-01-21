@@ -560,16 +560,14 @@ class MakeAPIController extends ApiGuardController
                           if($temp->status_id == 6 && $order_detail->status != 6){
                               array_push($backend_cancel_order_ary,$temp->order_detail_id);
                           }
-                         
+                          if($temp->status_id == 1){
                           $quantity                   = $order_detail->quantity;
                           //save Orderdetail
                           $temp->order_id             = $order_id;
                           $temp->item_id              = $order_detail->item_id;
                           $temp->order_detail_id      = $order_detail->order_detail_id;
                           $temp->setmenu_id           = $order_detail->set_id;
-                          if($temp->status_id == 1){
-                            $temp->quantity             = $order_detail->quantity;
-                          }
+                          $temp->quantity             = $order_detail->quantity;
                           $temp->order_type_id        = $order_detail->order_type_id;
                           $temp->discount_amount      = $order_detail->discount_amount;
                           $temp->exception            = $order_detail->exception;
@@ -585,6 +583,7 @@ class MakeAPIController extends ApiGuardController
                           $temp->remark_extra   = $order_detail->remark_extra;
                           }
                           $temp->save();
+                          }
                           // Custom Log
                           $message = "[ $date ]  info:  Update Order Detail [ id = $order_detail->order_detail_id ] " . PHP_EOL;
                           RmsLog::create($message);
@@ -763,7 +762,7 @@ class MakeAPIController extends ApiGuardController
                      
   
                      
-                      
+                      $cooking_ary      = array_unique($cooking_ary);
                       $cancel_order_ary = array();
                       if(isset($cooking_ary) && count($cooking_ary)>0){
                             foreach($cooking_ary as $item){
@@ -802,15 +801,19 @@ class MakeAPIController extends ApiGuardController
                      $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
                     
                      $order_total_price = 0;
+                     $order_tax_edit = 0;
+                     $order_service_edit = 0;
                      foreach($order_detail_not_delete as $price_order){
                             $order_total_price += $price_order->amount;
+                            $order_tax_edit    += $price_order->tax_amount;
+                            $order_service_edit += $price_order->tax_amount;
                      }
 
                     
                        
                         $order_all_total_amount         = ($order_total_price + $order->service_amount + $order->tax_amount) - $order->total_discount_amount; 
                        
-                        $order->total_price             = $order_total_price + $order->service_amount + $order->tax_amount;
+                        $order->total_price             = $order_total_price;
                         $order->service_amount          = $service_amount;
                         $order->tax_amount              = $tax_amount;
                         $order->all_total_amount        = $order_all_total_amount;
