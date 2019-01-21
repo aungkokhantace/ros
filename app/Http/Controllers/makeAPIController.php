@@ -468,12 +468,16 @@ class MakeAPIController extends ApiGuardController
                   $remark_detail_ary        = array();
                   $detail_extra_ary         = array();
                   $cooking_ary              = array();
-                    foreach ($order_details as $order_detail) {
+                 foreach ($order_details as $order_detail) {
   
   
                      $order_detail_status         = $order_detail->status;
   
                      if($order_detail->state == 'new'){
+                      
+               // if($order_detail->state == 'new'){
+                      //     dd('temp',$temp);
+                      // }
                       $temp = new Orderdetail();
                       $order_detail_id = Utility::OrderDetailId($order_id);
                       array_push($new_order_detail_ary,$order_detail_id);
@@ -496,9 +500,6 @@ class MakeAPIController extends ApiGuardController
                       $temp->remark_extra   = $order_detail->remark_extra;
                       }
                       $temp->save();
-               // if($order_detail->state == 'new'){
-                      //     dd('temp',$temp);
-                      // }
   
                       // Custom Log
                       $message = "[ $date ]  info:   update an OrderDetails [ id = $temp->order_detail_id ] " . PHP_EOL;
@@ -555,6 +556,7 @@ class MakeAPIController extends ApiGuardController
                       }
                      }
                     if($order_detail->state =='old'){
+                       
                           if($order_detail->status != 1){
                               array_push($order_cooking_ary,$order_detail->order_detail_id);
                           }
@@ -582,7 +584,7 @@ class MakeAPIController extends ApiGuardController
                           $temp->amount_with_discount = $order_detail->amount;
                           $temp->order_time           = $dt->toDateTimeString();
                           if($temp->status_id == 6){
-                             $temp->status_id            = 6;
+                             $temp->status_id         = 6;
                           }
                           $temp->take_item            = $order_detail->take_item;
                           if($order_detail->remark_extra != ''){
@@ -670,14 +672,23 @@ class MakeAPIController extends ApiGuardController
                                   }
                               }
                           }
+                        }else{
+                            foreach($remarks as $remark){
+                                if($remark->selected == "true"){
+                                    array_push($remark,$remark_detail_ary);
+                                }
+                            }
+
                         }
-  
+
                           //Order_Extra
                      $extra      = $order_detail->extra;
+                    
                      if($temp->status_id == 1){
+                        
                           foreach ($extra as $e) {
                              if($e->status == 1){
-                                array_push($e->extra_id,$detail_extra_ary);
+                                
                                $detail_extra = OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
                               ->where('extra_id','=',$e->extra_id)
                               ->first();
@@ -701,7 +712,47 @@ class MakeAPIController extends ApiGuardController
                               ->forceDelete();
                               }
                          }
+                        }else{
+                            foreach ($extra as $e) {
+                                
+                                if($e->status == 1){
+                                    array_push($detail_extra_ary,$e);
+                                }
+                            }
                         }
+
+
+                        if($order_detail->status == 1 && $temp->status_id != 1){
+                            foreach($remark_detail_ary as $edit_remark){
+                                $check_edit_remark = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$edit_remark)->first();
+                                if(!isset($check_edit_remark)){
+                                    array_push($order_detail->order_detail_id,$cooking_ary);
+                                }
+                            }
+                        }
+
+    
+                        if($order_detail->status == 1 && $temp->status_id != 1){
+                            
+                            foreach($detail_extra_ary as $edit_extra){
+                                
+                                $check_edit_extra =OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
+                                ->where('extra_id','=',$edit_extra->extra_id)
+                                ->first();
+                                if(!isset($check_edit_extra)){
+                                    array_push($cooking_ary,$order_detail->order_detail_id);
+                                }
+                            }
+                        }
+
+
+                        if($order_detail->status == 1 && $temp->status_id != 1){
+                            if($temp->quantity != $order_detail->quantity){
+                                array_push($order_detail->order_detail_id,$cooking_ary);
+                            }
+    
+                        }
+                       
           
                      }
                   }
@@ -713,23 +764,11 @@ class MakeAPIController extends ApiGuardController
                   foreach($old_orders_details as $old_orders){
                       array_push($old_orders_details_ary,$old_orders->order_detail_id);
                   }
-  
+                 
                       $delete_order_detail =  array_merge(array_diff($old_orders_details_ary, $new_order_detail_ary), array_diff($new_order_detail_ary, $old_orders_details_ary));
                      
   
-                      foreach($delete_order_detail as $delete_order){
-  
-                         $cancel_orders = Orderdetail::where('order_detail_id',$delete_order)->first();
-                         if($cancel_orders->status_id == 1 ){
-                          $deleting_orders = Orderdetail::where('order_detail_id',$delete_order)->forceDelete();
-                          $order_extra = OrderExtra::where('order_detail_id',$delete_order)->forceDelete();
-                          $order_remark = Order_Detail_Remark::where('order_detail_id',$delete_order)->forceDelete();
-                          $order_set_menu_detail = OrderSetMenuDetail::where('order_detail_id',$delete_order)->forceDelete();
-                          $deleting_order_detail = Orderdetail::where('order_detail_id',$delete_order)->forceDelete();
-                         }else{
-                           array_push($cooking_ary,$delete_order);
-                         }
-                      }
+                     
                       
                       $cancel_order_ary = array();
                       if(isset($cooking_ary) && count($cooking_ary)>0){
@@ -748,32 +787,44 @@ class MakeAPIController extends ApiGuardController
                             array_push($cancel_order_ary,$item->item_name .' is canceled by kitchen');
                         }
                     }
+                    
+                  
 
-                    if($order_detail->status == 1 && $temp->status_id != 1){
-                        foreach($remark_detail_ary as $edit_remark){
-                            $check_edit_remark = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$edit_remark->remark_id)->first();
-                            if(!isset($check_edit_remark)){
-                                array_push($order_detail->order_detail_id,$cooking_ary);
-                            }
+                    foreach($delete_order_detail as $delete_order){
+  
+                        $cancel_orders = Orderdetail::where('order_detail_id',$delete_order)->first();
+                        if($cancel_orders->status_id == 1 ){
+                         $deleting_orders = Orderdetail::where('order_detail_id',$delete_order)->forceDelete();
+                         $order_extra = OrderExtra::where('order_detail_id',$delete_order)->forceDelete();
+                         $order_remark = Order_Detail_Remark::where('order_detail_id',$delete_order)->forceDelete();
+                         $order_set_menu_detail = OrderSetMenuDetail::where('order_detail_id',$delete_order)->forceDelete();
+                         $deleting_order_detail = Orderdetail::where('order_detail_id',$delete_order)->forceDelete();
+                        }else{
+                          array_push($cooking_ary,$delete_order);
                         }
-                    }
+                     }
 
-                    if($order_detail->status == 1 && $temp->status_id != 1){
-                        foreach($detail_extra_ary as $edit_extra){
-                            $check_edit_extra =OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
-                            ->where('extra_id','=',$edit_extra->extra_id)
-                            ->first();
-                            if(!isset($check_edit_extra)){
-                                array_push($order_detail->order_detail_id,$cooking_ary);
-                            }
+                    
+                     $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
+                     $order_total_price = 0;
+                     foreach($order_detail_not_delete as $price_order){
+                         if($price_order->status_id == 1){
+                            $order_total_price += $price_order->amount;
+                         }
+                        
+                     }
+                       
+                        $order_all_total_amount         = ($order_total_price + $order->service_amount + $order->tax_amount) - $order->total_discount_amount; 
+                        $order->total_price             = $total_price;
+                        $order->service_amount          = $service_amount;
+                        $order->tax_amount              = $tax_amount;
+                        $order->all_total_amount        = $order_all_total_amount;
+                        $order->total_discount_amount   = $discount_amount;
+                        if(isset($order->total_extra_price)){
+                            $order->total_extra_price       = $extra_price;
                         }
-                    }
-                    if($order_detail->status == 1 && $temp->status_id != 1){
-                        if($temp->quantity != $order_detail->quantity){
-                            array_push($order_detail->order_detail_id,$cooking_ary);
-                        }
-
-                    }
+                        $order->stand_number            = $stand_number;
+                        $order->save();
                    
                       // if(isset($order_extra) && count($order_extra)>0){
                       //     $order_extra->forceDelete();
@@ -791,6 +842,8 @@ class MakeAPIController extends ApiGuardController
                       // if(isset($deleting_orders) && count($deleting_orders)>0){
                       //     $deleting_orders->forceDelete();
                       // }
+                      
+
                       $output = array("message" => "Success");
                       DB::commit();
                       if(isset($cancel_order_ary) && count($cancel_order_ary)>0){
