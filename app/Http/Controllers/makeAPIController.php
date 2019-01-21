@@ -195,6 +195,7 @@ class MakeAPIController extends ApiGuardController
         $ordersRaw  = $temp['orderID'];
 
         $orders   = json_decode($ordersRaw);
+       
         $session_status       = StatusConstance::DAY_STARTING_STATUS;
 
         $dt         = Carbon::now();
@@ -799,17 +800,16 @@ class MakeAPIController extends ApiGuardController
 
                     
                      $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
-                     
+                    
                      $order_total_price = 0;
                      foreach($order_detail_not_delete as $price_order){
-                         if($price_order->status_id == 1){
                             $order_total_price += $price_order->amount;
-                         }
-                        
                      }
+
+                     return $order_total_price;
                        
                         $order_all_total_amount         = ($order_total_price + $order->service_amount + $order->tax_amount) - $order->total_discount_amount; 
-
+                       
                         $order->total_price             = $order_total_price + $order->service_amount + $order->tax_amount;
                         $order->service_amount          = $service_amount;
                         $order->tax_amount              = $tax_amount;
@@ -818,7 +818,7 @@ class MakeAPIController extends ApiGuardController
                         if(isset($order->total_extra_price)){
                             $order->total_extra_price       = $extra_price;
                         }
-                        
+
                         $order->stand_number            = $stand_number;
                         $order->save();
                        
