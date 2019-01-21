@@ -30,13 +30,13 @@
                             <thead>
                                 <col width="60">
                                 <col width="140">
-                                <col width="90">
+                                <!-- <col width="90"> -->
                                 <col width="100">
 
                                 <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
                                     <td>No</td>
                                     <td>Order No</th>
-                                    <td>Table (Stand No)</td>
+                                    <!-- <td>Table (Stand No)</td> -->
                                     <td align="right">Amount</th>
                                 </tr>
                             </thead>
@@ -48,7 +48,7 @@
                                     <tr>
                                         <td>{{ $i++ }}</td>
                                         <td>{{ $order->id }}</td>
-                                        @if(!$order->table->isEmpty())
+                                        <!-- @if(!$order->table->isEmpty())
                                         <td>{{ $order->table[0]->table_no }}({{$order->stand_number}})</td>
                                         @elseif(!$order->rooms->isEmpty())
                                         <td>
@@ -56,13 +56,13 @@
                                         </td>
                                         @else 
                                             <td>Take Away</td>
-                                        @endif
+                                        @endif -->
                                         <td align="right">{{ number_format($order->total_price) }}</td>
                                         @php  $tot += $order->total_price  @endphp
                                     </tr>
                                 @endforeach
                                 <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
-                                    <td colspan="3">Total Amount</td>
+                                    <td colspan="2">Total Amount</td>
                                     <td align="right">{{ number_format($tot) }}</td>
                                 </tr>
                             </tbody>
