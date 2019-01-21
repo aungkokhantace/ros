@@ -4,7 +4,7 @@
         <div class="modal fade " id="{{$item->id}}-print-chef" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-width" role="document">
             <div class="modal-content" id="order-id">
-              <div class="modal-body" id="{{$item->id}}-print-table">
+              <div class="modal-body" id="{{$item->id}}-chef">
                   <hr>{{ $kitchen->name }} Kitchen<hr>
                   <table class="table">
                     <tr>
@@ -47,8 +47,8 @@
                   </table>
                   <hr>
               </div>
-              <div class="modal-footer">
-                <button class="btn btn-success" id ="{{ $item->id}}" onClick="print_click(this.id)">Print</button>
+              <div class="footer-modal">
+                <button class="btn btn-success" id ="{{ $item->id }}" onClick="print_chef(this.id)">Print</button>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">Close</button>
               </div>
             </div>
@@ -69,7 +69,7 @@
         <div class="modal fade " id="{{$item->order_detail_id}}-print-waiter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-width" role="document">
             <div class="modal-content" id="order-id">
-              <div class="modal-body" id="{{$item->order_detail_id}}-print-table">
+              <div class="modal-body" id="{{$item->order_detail_id}}-waiter">
                   <hr>
                     <table class="table">
                           @if($orderKey)
@@ -159,9 +159,10 @@
                       @endif
                     @endforeach
                   </table>
+                  <hr>
               </div>
-              <div class="modal-footer">
-                <button class="btn btn-success" id ="{{ $item->order_detail_id}}" onClick="print_click(this.id)">Print</button>
+              <div class="footer-modal">
+                <button class="btn btn-success" id ="{{ $item->order_detail_id }}" onClick="print_for_waiter(this.id)">Print</button>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">Close</button>
               </div>
             </div>
