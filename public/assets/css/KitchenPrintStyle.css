@@ -1,6 +1,6 @@
 .modal-content  {
-  -webkit-border-radius: 5px !important;
-  -moz-border-radius: 5px !important;
+  /* -webkit-border-radius: 5px !important;
+  -moz-border-radius: 5px !important; */
   border-radius: 5px !important;
 }
 .modal-body {
@@ -29,14 +29,4 @@ table .right {
 }
 table .center {
   border: 0 !important;
-}
-.modal-footer {
-  padding-top: 5px !important;
-  border-top: 0 none;
-  text-align: center !important;
-}
-.modal-footer button {
-  font-weight: bolder;
-  width: 130px;
-  height: 35px;
 }
