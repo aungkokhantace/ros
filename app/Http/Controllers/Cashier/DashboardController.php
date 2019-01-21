@@ -141,7 +141,7 @@ class DashboardController extends Controller
         }
         $day = null;
         if(!is_null($orderDay) && count($orderDay)>0){
-            $day = $orderDay->start_date;
+            $day = \Carbon\Carbon::parse($orderDay->start_date)->format('d-m-Y');
         }
 
         return view('cashier.invoice.report',compact('orders','day'));
