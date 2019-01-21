@@ -462,9 +462,12 @@ class MakeAPIController extends ApiGuardController
                   $message = "[ $date ]  info:   Update an Order  [ id = $order->id ] " . PHP_EOL;
                   RmsLog::create($message);
   
-                  $new_order_detail_ary = array();
-                  $order_cooking_ary    = array();
+                  $new_order_detail_ary     = array();
+                  $order_cooking_ary        = array();
                   $backend_cancel_order_ary = array();
+                  $remark_detail_ary        = array();
+                  $detail_extra_ary         = array();
+                  $cooking_ary              = array();
                     foreach ($order_details as $order_detail) {
   
   
@@ -568,7 +571,9 @@ class MakeAPIController extends ApiGuardController
                           $temp->item_id              = $order_detail->item_id;
                           $temp->order_detail_id      = $order_detail->order_detail_id;
                           $temp->setmenu_id           = $order_detail->set_id;
-                          $temp->quantity             = $order_detail->quantity;
+                          if($temp->status_id == 1){
+                            $temp->quantity             = $order_detail->quantity;
+                          }
                           $temp->order_type_id        = $order_detail->order_type_id;
                           $temp->discount_amount      = $order_detail->discount_amount;
                           $temp->exception            = $order_detail->exception;
@@ -649,6 +654,7 @@ class MakeAPIController extends ApiGuardController
                               foreach($remarks as $remark){
                                   if($remark->selected == "true"){
                                       $remark_detail = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$remark->remark_id)->first();
+                                      array_push($remark->remark_id,$remark_detail_ary);
                                       if(!isset($remark_detail)){
                                           $OrderDetailObj = new Order_Detail_Remark();
                                           $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
@@ -667,17 +673,15 @@ class MakeAPIController extends ApiGuardController
                         }
   
                           //Order_Extra
-                            $extra      = $order_detail->extra;
+                     $extra      = $order_detail->extra;
                      if($temp->status_id == 1){
-                        OrderExtra::where('order_detail_id',$order_detail->order_detail_id)->forceDelete();
                           foreach ($extra as $e) {
-  
                              if($e->status == 1){
-  
-                               $delete_extra = OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
+                                array_push($e->extra_id,$detail_extra_ary);
+                               $detail_extra = OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
                               ->where('extra_id','=',$e->extra_id)
                               ->first();
-                                  if(!isset($order_extra) ){
+                                  if(!isset($detail_extra) ){
                                       $extra = new OrderExtra();
                                       $extra->order_detail_id         = $order_detail->order_detail_id;
                                       $extra->extra_id                = $e->extra_id;
@@ -711,7 +715,7 @@ class MakeAPIController extends ApiGuardController
                   }
   
                       $delete_order_detail =  array_merge(array_diff($old_orders_details_ary, $new_order_detail_ary), array_diff($new_order_detail_ary, $old_orders_details_ary));
-                      $cooking_ary = array();
+                     
   
                       foreach($delete_order_detail as $delete_order){
   
@@ -726,9 +730,6 @@ class MakeAPIController extends ApiGuardController
                            array_push($cooking_ary,$delete_order);
                          }
                       }
-
-                    
-  
                       
                       $cancel_order_ary = array();
                       if(isset($cooking_ary) && count($cooking_ary)>0){
@@ -740,12 +741,38 @@ class MakeAPIController extends ApiGuardController
     
                             }
                         }
-                  
+                   
                     if(isset($backend_cancel_order_ary) && count($backend_cancel_order_ary)>0){
                         foreach($backend_cancel_order_ary as $backedn_cancel){
                             $item  = Orderdetail::where('order_detail_id',$backedn_cancel)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
                             array_push($cancel_order_ary,$item->item_name .' is canceled by kitchen');
                         }
+                    }
+
+                    if($order_detail->status == 1 && $temp->status_id != 1){
+                        foreach($remark_detail_ary as $edit_remark){
+                            $check_edit_remark = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$edit_remark->remark_id)->first();
+                            if(!isset($check_edit_remark)){
+                                array_push($order_detail->order_detail_id,$cooking_ary);
+                            }
+                        }
+                    }
+
+                    if($order_detail->status == 1 && $temp->status_id != 1){
+                        foreach($detail_extra_ary as $edit_extra){
+                            $check_edit_extra =OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
+                            ->where('extra_id','=',$edit_extra->extra_id)
+                            ->first();
+                            if(!isset($check_edit_extra)){
+                                array_push($order_detail->order_detail_id,$cooking_ary);
+                            }
+                        }
+                    }
+                    if($order_detail->status == 1 && $temp->status_id != 1){
+                        if($temp->quantity != $order_detail->quantity){
+                            array_push($order_detail->order_detail_id,$cooking_ary);
+                        }
+
                     }
                    
                       // if(isset($order_extra) && count($order_extra)>0){
