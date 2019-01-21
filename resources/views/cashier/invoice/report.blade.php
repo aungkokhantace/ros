@@ -22,15 +22,16 @@
         <div class="row">
             <div class="col-md-12 tbl-container">
                 <div class="invoice-wrapper">
-                <div class=""><p class="text-center">{{$day}} Report</p></div>
+                <div class=""></div>
                     <div class="invoice-table-wrapper">
                         <div id="-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
                         <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;background:none;">
+                        <p align="center">{{$day}} Report</p>
                             <thead>
                                 <col width="60">
                                 <col width="140">
+                                <col width="90">
                                 <col width="100">
-                                <col width="80">
 
                                 <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
                                     <td>No</td>
@@ -56,13 +57,13 @@
                                         @else 
                                             <td>Take Away</td>
                                         @endif
-                                        <td align="right">{{ $order->total_price }}</td>
+                                        <td align="right">{{ number_format($order->total_price) }}</td>
                                         @php  $tot += $order->total_price  @endphp
                                     </tr>
                                 @endforeach
                                 <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">
                                     <td colspan="3">Total Amount</td>
-                                    <td align="right">{{ $tot }}</td>
+                                    <td align="right">{{ number_format($tot) }}</td>
                                 </tr>
                             </tbody>
                         </table> 
