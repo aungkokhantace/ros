@@ -443,10 +443,10 @@ class MakeAPIController extends ApiGuardController
                 }
                 $order = Order::find($order_id);
               
-                $order->total_price             = $net_price;
+                $order->total_price             = $total_price;
                 $order->service_amount          = $service_amount;
                 $order->tax_amount              = $tax_amount;
-                $order->all_total_amount        = $total_price;
+                $order->all_total_amount        = $net_price;
                 $order->total_discount_amount   = $discount_amount;
                 if(isset($order->total_extra_price)){
                     $order->total_extra_price       = $extra_price;
