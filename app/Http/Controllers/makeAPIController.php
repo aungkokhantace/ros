@@ -228,13 +228,14 @@ class MakeAPIController extends ApiGuardController
         ->where('status',$session_status)
         ->whereNull('deleted_at')
         ->first();
-
+       
         if($daystart->id != $day_id){
             $output = array();
             $output['message'] = 'wrong shift';
             return Response::json($output);
 
         }
+
 
         $order                          = new Order();
         $order->id                      = $order_id;
