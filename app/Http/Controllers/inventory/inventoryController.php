@@ -27,6 +27,7 @@ use App\RMS\Item\Item;
 use DB;
 use GuzzleHttp\Psr7\Request as GuRequest;
 use App\RMS\Kitchen\KitchenRepository;
+use App\RMS\CoreSetting\CoreSetting;
 
 
 class inventoryController extends Controller
@@ -34,8 +35,7 @@ class inventoryController extends Controller
     private $utility;
 
     private $configRepository;
-
-	public $resquestserverurl  = 'http://gr8.acebi2.com.preview.my-hosting-panel.com';
+    
 	public $SupplierId 	       = 1;
 	public $producttype 	   = 1;
 	public $pprice_percent 	   = 0;
@@ -54,7 +54,7 @@ class inventoryController extends Controller
 		$categorys  = json_encode($categorys);
         // return $categorys;
     	$client = new Client();
-    	$url    = $this->resquestserverurl . '/category/create';
+    	$url    = $this->BI2_URL(). '/category/create';
     	$headers = [
 		    'Content-Type' => 'application/json',
 		];
@@ -85,7 +85,7 @@ class inventoryController extends Controller
 		$groups  = json_encode($groups);
         // return $groups;
     	$client = new Client();
-    	$url  = $this->resquestserverurl . '/groupcode/create';
+    	$url  = $this->BI2_URL(). '/groupcode/create';
     	$headers = [
 		    'Content-Type' => 'application/json',
 		];
@@ -118,7 +118,7 @@ class inventoryController extends Controller
 
     	$classes  = $CateRepo->getClass($classes);
 
-        $url  = $this->resquestserverurl.'/classcode/create';
+        $url  = $this->BI2_URL().'/classcode/create';
         $classes = json_encode($classes);
         // return $classes;
 	    $headers = [
@@ -204,8 +204,8 @@ class inventoryController extends Controller
 			}
 		}
 		// return $ItemAry;
-		
-		$url  = $this->resquestserverurl.'/stock/create';
+
+		$url  = $this->BI2_URL().'/stock/create';
 
 		$ItemAry = json_encode($ItemAry);
 
@@ -251,7 +251,7 @@ class inventoryController extends Controller
     }
     public function guzzleClient($uri)
     {
-	   	$client 		= new Client(['base_uri' => $this->resquestserverurl]);
+	   	$client 		= new Client(['base_uri' => $this->BI2_URL()]);
 		$response 		= $client->get($uri)->getBody();
     	return json_decode($response);
     }
@@ -361,7 +361,7 @@ class inventoryController extends Controller
 		 $orderAry['sale_details']  = $order_details;
 
 
-		$url  = $this->resquestserverurl.'/sale/create';
+		$url  = $this->BI2_URL().'/sale/create';
 		$saleAry = array();
 		$saleAry[] = $orderAry;
 
@@ -383,10 +383,10 @@ class inventoryController extends Controller
     public function index()
     {
         $client = new Client([
-            'base_uri' => $this->resquestserverurl
+            'base_uri' => $this->BI2_URL()
         ]);
-        $id                 = Auth::guard('Cashier')->user()->kitchen_id;
-        $kitchen            = Kitchen::find($id);
+        $id      = Auth::guard('Cashier')->user()->kitchen_id;
+        $kitchen = Kitchen::find($id);
         $raw_group_url    = 'groupcode/get_rawgroup';
         $raw_stock_url    = 'stock/get_raw_stock';
         $measurement_unit = 'um/get_um';
@@ -402,13 +402,13 @@ class inventoryController extends Controller
     {
 		    $configRepo  = new ConfigRepository();
         $kitchenRepo = new KitchenRepository();
-        $post_url  = $this->resquestserverurl.'/purchaserequest/create';
+        $post_url  = $this->BI2_URL().'/purchaserequest/create';
         $get_url   = '/purchaserequest/get_purchaserequisition';
         $id        = Auth::guard('Cashier')->user()->kitchen_id;
         $code      = Utility::generateRequisitionNo()['code'];
         $config_id = Utility::generateRequisitionNo()['id'];
         $detail    = [];
-        $date_string = Utility::dateString();
+        $date_string  = Utility::dateString();
         $kitchen_code = $kitchenRepo->getKitchenCode($id)->kitchen_code;
         $stock_requisitions = $request->stock;
 
@@ -448,7 +448,7 @@ class inventoryController extends Controller
         ]);
 
         $get_client  = new Client([
-           'base_uri' => $this->resquestserverurl
+           'base_uri' => $this->BI2_URL()
         ]);
 
         $post_client->post($post_url, ['body' => $body]);
@@ -474,18 +474,15 @@ class inventoryController extends Controller
 
     public function guzzleStore($uri,$data)
     {
-        $meta   = [ 'base_uri' => $this->resquestserverurl,'headers' => ['Content-Type' => 'application/json']];
+        $meta   = [ 'base_uri' => $this->BI2_URL(),'headers' => ['Content-Type' => 'application/json']];
         $client = new \GuzzleHttp\Client($meta);
         $client->post($uri,['body' => $data ]);
     }
 
-
-
-
 	public function getremainbalance()
     {
         $client = new Client([
-          'base_uri' => $this->resquestserverurl
+          'base_uri' => $this->BI2_URL()
         ]);
 
         $review_url = 'dailybalance/get_dailybalance';
@@ -494,8 +491,10 @@ class inventoryController extends Controller
         return $remain_stocks;
     }
 
-
-
-
-
+    protected function BI2_URL ()
+    {
+        $coreSetting = new CoreSetting();
+        $url = $coreSetting->select('value')->where('code', '=', 'BI2URL')->first();
+        return $url->value;
+    }
 }
