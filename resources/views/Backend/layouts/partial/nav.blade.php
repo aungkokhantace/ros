@@ -54,7 +54,7 @@
             <li><a href="/Backend/Item/index"><i class="fa fa-circle-o text-aqua"></i>  Items</a></li>
             <li><a href="/Backend/Continent/index"><i class="fa fa-circle-o text-aqua"></i> </i> Continent</a></li>
             <li><a href="/Backend/AddOn/index"><i class="fa fa-circle-o text-aqua"></i>  Add On</a></li>
-            <li><a href="/Backend/SetMenu/index"><i class="fa fa-circle-o text-aqua"></i> </i> Set Menu</a></li>
+            <!-- <li><a href="/Backend/SetMenu/index"><i class="fa fa-circle-o text-aqua"></i> </i> Set Menu</a></li> -->
 
           </ul>
         </li>
@@ -115,7 +115,7 @@
             <li><a href="/Backend/Best_itemReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Item Report</a></li>
             <li><a href="/Backend/categorySaleReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Category Report</a></li>
            <!--  <li><a href="/Backend/favourite_set_menus"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Set Report</a></li> -->
-            <li><a href="/Backend/Best_SetReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Set Report</a>
+            <!-- <li><a href="/Backend/Best_SetReport"><i class="fa fa-circle-o text-aqua"></i>  Best Selling Set Report</a> -->
             <li><a href="/Backend/invoice/cancel_report"><i class="fa fa-circle-o text-aqua"></i>  Cancel Vocher List</a></li></li>
 
           </ul>

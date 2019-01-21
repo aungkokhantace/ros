@@ -75,6 +75,12 @@
             <div class="col-sm-7">
                 <select class="form-control" name="backup_frequency">
                     <option selected disabled value="">___Please Choose Back Up Frequency___</option>
+                    @if($config->backup_frequency == 0.5)
+                        <option value="0.5" selected>30 minutes</option>
+                    @else
+                        <option value="0.5">30 minutes</option>
+                    @endif
+
                     @if($config->backup_frequency == 1)
                         <option value="1" selected>1</option>
                     @else

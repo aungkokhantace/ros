@@ -623,6 +623,41 @@ class PermissionTableSeeder extends Seeder
             'created_by' => '1',
         ]);
 
+        //additional permissions for manager role (role = 2)
+        DB::table('permissions')->insert([
+            'id' =>'97',
+            'role_id' => '2',
+            'module_id' => '28',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'98',
+            'role_id' => '2',
+            'module_id' => '29',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'99',
+            'role_id' => '2',
+            'module_id' => '30',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'100',
+            'role_id' => '2',
+            'module_id' => '31',
+            'created_by' => '1',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' =>'101',
+            'role_id' => '2',
+            'module_id' => '32',
+            'created_by' => '1',
+        ]);
 
 
     }

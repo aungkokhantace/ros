@@ -32,6 +32,10 @@ class Kernel extends ConsoleKernel
         if($order_day->status == 2){
 
             $config = Config::first();
+            // $schedule->command('db:backup')->everyMinute(); // every minute
+            if($config->backup_frequency == 0.5){
+                $schedule->command('db:backup')->everyThirtyMinutes(); // every 30 minutes
+            }
 
             if($config->backup_frequency == 1){
                 $schedule->command('db:backup')->hourly(); // every hour
