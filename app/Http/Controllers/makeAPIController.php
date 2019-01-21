@@ -748,7 +748,7 @@ class MakeAPIController extends ApiGuardController
 
                         if($order_detail->status == 1 && $temp->status_id != 1){
                             if($temp->quantity != $order_detail->quantity){
-                                array_push($order_detail->order_detail_id,$cooking_ary);
+                                array_push($cooking_ary,$order_detail->order_detail_id);
                             }
     
                         }
