@@ -806,7 +806,7 @@ class MakeAPIController extends ApiGuardController
                             $order_total_price += $price_order->amount;
                      }
 
-                     return $order_total_price;
+                    
                        
                         $order_all_total_amount         = ($order_total_price + $order->service_amount + $order->tax_amount) - $order->total_discount_amount; 
                        
