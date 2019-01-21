@@ -55,7 +55,7 @@
                                             {{$order->rooms[0]->room_name}}
                                         </td>
                                         @else 
-                                            <td>Take Away</td>
+                                            <td>TA</td>
                                         @endif
                                         <td align="right">{{ number_format($order->total_price) }}</td>
                                         @php  $tot += $order->total_price  @endphp
