@@ -157,6 +157,22 @@ class InvoiceRepository implements InvoiceRepositoryInterface
        
         return $orders;
     }
+      public function getdetail_cancel($id){
+        $order_kitchen_cancel_status    = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $order_customer_cancel_status   = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
+
+        $order_details                  = Orderdetail::leftjoin('order','order_details.order_id','=','order.id')
+        ->leftjoin('items','items.id','=','order_details.item_id')
+        ->leftjoin('set_menu','set_menu.id','=','order_details.setmenu_id')
+        ->leftjoin('users','users.id','=','order.user_id')
+        ->select('items.name as item_name','items.id as item_id','items.has_continent','items.continent_id','set_menu.set_menus_name as set_name','order_details.quantity',
+                'order_details.discount_amount','order_details.amount','order_details.id as order_detail_id',
+                'users.user_name','order.id','order_details.amount_with_discount','order.over_all_discount as Discount','tax_amount as Tax','order.service_amount as Service','order.room_charge as Room','order.sub_total','order.total_price as NetAmount','all_total_amount as Amount','order.payment_amount as rename ','order.refund as change')
+        ->where('order_id','=',$id)
+        ->whereIn('status_id',[$order_kitchen_cancel_status,$order_customer_cancel_status])->get();
+        return $order_details;
+        
+    }                           
 
    
 
