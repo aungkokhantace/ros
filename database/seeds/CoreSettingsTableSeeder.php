@@ -62,5 +62,11 @@ class CoreSettingsTableSeeder extends Seeder
             'value'         => 'VOC',
             'description'   => 'VOUCHER ID PREFIX'
         ]);
+        DB::table('core_settings')->insert([
+            'code'          => 'BI2URL',
+            'type'          => 'URL_TYPE',
+            'value'         => 'http://gr8.acebi2.com.preview.my-hosting-panel.com',
+            'description'   => 'BI2 URL'
+        ]);
     }
 }

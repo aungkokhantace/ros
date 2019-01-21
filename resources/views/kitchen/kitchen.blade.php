@@ -275,6 +275,7 @@ ini_set('memory_limit', '-1');
                                                     <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (Waiter)</button>
                                                 </div>
                                             </td>
+                                            @if ($item->status_id == 1)
                                             <td style="border-left: none !important;">
                                                 @php
                                                     if (isset($tables)) {
@@ -289,6 +290,7 @@ ini_set('memory_limit', '-1');
                                                     </div>
                                                 @endif
                                             </td>
+                                            @endif
 
                                             @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
@@ -298,7 +300,9 @@ ini_set('memory_limit', '-1');
                                                 </td>
                                             @else
                                                 <td style="border-left: none !important;"></td>
+                                                <td style="border-left: none !important;"></td>
                                             @endif
+
                                             {{-- @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
                                                     <div class="btn-group">
