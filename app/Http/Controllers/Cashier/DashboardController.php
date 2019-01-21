@@ -131,6 +131,8 @@ class DashboardController extends Controller
 
     public function getReport()
     {
+        $type = 'Day';
+
         $orderDay = DB::table('order_day')->orderBy('id','desc')->first();
          
         if(!is_null($orderDay) && count($orderDay)>0){
@@ -144,12 +146,14 @@ class DashboardController extends Controller
             $day = \Carbon\Carbon::parse($orderDay->start_date)->format('d-m-Y');
         }
 
-        return view('cashier.invoice.report',compact('orders','day'));
+        return view('cashier.invoice.report',compact('orders','day','type'));
 
     }
 
     public function getReportByShift()
     {
+        $type = 'Shift';
+
         $orderDay = DB::table('order_day')->orderBy('id','desc')->first();
         
         $orderShift = DB::table('order_shift')->where('day_id',$orderDay->id)->orderBy('id','desc')->first();
@@ -166,7 +170,7 @@ class DashboardController extends Controller
    
         $day = \Carbon\Carbon::parse($orderDay->start_date)->format('d-m-Y');
 
-        return view('cashier.invoice.report',compact('orders','day','hide'));
+        return view('cashier.invoice.report',compact('orders','day','hide','type'));
 
     }
 

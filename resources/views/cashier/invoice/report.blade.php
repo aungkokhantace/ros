@@ -26,7 +26,7 @@
                     <div class="invoice-table-wrapper">
                         <div id="-print-table" style="font-family:'Courier New',Times New Roman;font-weight: bold;">
                         <table class="print-invoice" style="border-collapse: collapse;width:83mm;margin:0 auto;table-layout: fixed;word-wrap: break-word;background:none;">
-                        <p align="center">{{$day}} Report</p>
+                        <p align="center">{{$day}} {{$type}} Report</p>
                             <thead>
                                 <col width="60">
                                 <col width="140">
