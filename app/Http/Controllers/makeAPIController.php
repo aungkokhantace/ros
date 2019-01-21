@@ -1025,12 +1025,18 @@ class MakeAPIController extends ApiGuardController
            $from_table->save();
 
         }
+        
 
         $to_table           = Table::find($transfer_to_table_id);
 
         $to_table->status   = 1;
 
         $to_table->save();
+        
+        $order_table_delete = OrderTable::where('table_id',$transfer_to_table_id)->value('order_id');
+        if($order_table_delete == $order_id){
+            $OrderTable = OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+        }
 
         $OrderTable = OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)
                     ->update(['table_id'=> $transfer_to_table_id]);
