@@ -385,7 +385,6 @@ class MakeAPIController extends ApiGuardController
             return Response::json($output);
 
         }catch(\Exception $e){
-            dd($e);
             DB::rollback();
             $date       = date("Y-m-d H:i:s");
             $data       = json_decode(request('orderID'));
@@ -480,7 +479,6 @@ class MakeAPIController extends ApiGuardController
                      if($order_detail->state == 'new'){
                       
                // if($order_detail->state == 'new'){
-                      //     dd('temp',$temp);
                       // }
                       $temp = new Orderdetail();
                       $order_detail_id = Utility::OrderDetailId($order_id);
@@ -857,7 +855,6 @@ class MakeAPIController extends ApiGuardController
   
                return Response::json($output);
             }catch(\Exception $e){
-               dd($e);
               DB::rollback();
               $date       = date("Y-m-d H:i:s");
               $data       = json_decode(request('orderID'));
@@ -1007,40 +1004,153 @@ class MakeAPIController extends ApiGuardController
     }
 
     public function table_transfer_v2(){
-
         $temp               = Input::all();
-      
         $order_id                           = $temp['order_id'];
-
         $transfer_to_table_id               = $temp['transfer_to_table_id'];
         $transfer_from_table_id             = $temp['transfer_from_table_id'];
-        $transfer_from_table_id  = OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->value('table_id');
         
-        $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();
-       
-
-        if($order_count == "1"){
-           $from_table = Table::find($transfer_from_table_id);
-           $from_table->status = 0;
-           $from_table->save();
-
-        }
-        
-
+        //change to table status
         $to_table           = Table::find($transfer_to_table_id);
-
         $to_table->status   = 1;
-
         $to_table->save();
+
+        $table_count = OrderTable::where('order_id',$order_id)->count();
         
-   
-        $order_table_delete = OrderTable::where('table_id',$transfer_to_table_id)->value('order_id');
-        if($order_table_delete == $order_id){
-          OrderTable::where('order_id','=',$order_table_delete)->where('table_id',$transfer_from_table_id)->forceDelete();
-        }else{
-          OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)
-                    ->update(['table_id'=> $transfer_to_table_id]);
+        //group case
+        if($table_count > 1){
+            //change from table status
+        //    $from_table = Table::find($transfer_from_table_id);
+        //    $from_table->status = 0;
+        //    $from_table->save();
+
+           //check whether to table has invoice
+           $to_table_voucher = OrderTable::where('table_id',$transfer_to_table_id)->where('order_id',$order_id)->first();
+           
+           if(count($to_table_voucher) == 0){
+                $to_order_table = new OrderTable();
+                $to_order_table->id = $order_id;
+                $to_order_table->order_id = $order_id;
+                $to_order_table->table_id = $transfer_to_table_id;
+
+                $to_order_table->save();
+
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();       
+
+                OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();   
+
+                if($order_count == "1"){
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();                         
+                }
+           }
+           elseif((count($to_table_voucher) > 0) &&  $to_table_voucher->order_id != $order_id){
+                $to_order_table = new OrderTable();
+                $to_order_table->id = $order_id;
+                $to_order_table->order_id = $order_id;
+                $to_order_table->table_id = $transfer_to_table_id;
+
+                $to_order_table->save();
+
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();       
+
+                if($order_count == "1"){
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();        
+                }
+                else{
+                    OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+                }
+           }
+           elseif((count($to_table_voucher) > 0) &&  $to_table_voucher->order_id == $order_id){
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count(); 
+                
+                OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+                
+                if($order_count == "1"){
+                    
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();       
+                }
+           }   
         }
+        // non-group case
+        else{
+            //check whether to table has invoice
+           $to_table_voucher = OrderTable::where('table_id',$transfer_to_table_id)->where('order_id',$order_id)->first();
+
+           if(count($to_table_voucher) == 0){
+                $to_order_table = new OrderTable();
+                $to_order_table->id = $order_id;
+                $to_order_table->order_id = $order_id;
+                $to_order_table->table_id = $transfer_to_table_id;
+
+                $to_order_table->save();
+
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();       
+
+                OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();   
+
+                if($order_count == "1"){
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();                         
+                }
+           }
+           elseif((count($to_table_voucher) > 0) &&  $to_table_voucher->order_id != $order_id){
+            
+                $to_order_table = new OrderTable();
+                $to_order_table->id = $order_id;
+                $to_order_table->order_id = $order_id;
+                $to_order_table->table_id = $transfer_to_table_id;
+
+                $to_order_table->save();
+
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();       
+
+                if($order_count == "1"){
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();        
+                }
+                else{
+                    OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+                }
+           }
+           elseif((count($to_table_voucher) > 0) &&  $to_table_voucher->order_id == $order_id){
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count(); 
+                
+                OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+                
+                if($order_count == "1"){
+                    
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();       
+                }
+           } 
+
+            // $to_order_table = new OrderTable();
+            // $to_order_table->id = $order_id;
+            // $to_order_table->order_id = $order_id;
+            // $to_order_table->table_id = $transfer_to_table_id;
+
+            // $to_order_table->save();
+
+            // $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();
+       
+            // OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+    
+            // if($order_count == "1"){
+            //    $from_table = Table::find($transfer_from_table_id);
+            //    $from_table->status = 0;
+            //    $from_table->save();
+            // } 
+        }
+   
+        
 
         $output             = array("message" => "Success");
 
