@@ -85,7 +85,7 @@
             </div>
         </div>
         
-        <div class="row append_list">
+        <div class="row append_list divAuto">
             
         </div>
     </div>  
@@ -151,8 +151,25 @@
     <script type="text/javascript">
         $(document).ready(function(){
 
-            var locationId = $(".location_btn").val();     
 
+            setInterval(function(){
+
+
+                var locationId = $("button:disabled").val();
+                
+                if(locationId){
+                    getTables2(locationId);
+                }else{
+                    getRooms2();
+
+                }
+            }, 
+
+            5000);
+                
+          
+            var locationId = $(".location_btn").val();     
+            
             getTables(locationId);  
 
             $(`.location_btn[value=${locationId}]`).prop("disabled",true);
@@ -168,7 +185,7 @@
             $('.append_list').text('');
 
             var locationId = $(this).val();
-
+            
             $(this).prop("disabled",true);
             
             getTables(locationId);
@@ -244,6 +261,98 @@
             });
         }
 
+        function getRooms()
+        {
+            $.ajax({
+            url: '/Cashier/Rooms',
+            type:"GET",
+            dataType:"json",
+            beforeSend: function(){
+            },
+            success:function(response) {
+
+                var lengths = Object.keys(response).length;
+
+                for (i = 0; i < lengths; i++) {
+
+                    if(response[i].status == 0){
+
+                        $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/room/${response[i].id}/invoice' class='btn btn-success avaliable-btn'>${response[i].room_name}</a></div>`);
+
+                    }else{
+
+                        $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/room/${response[i].id}/invoice' class='btn btn-info service-btn'>${response[i].room_name}</a></div>`);
+                    }
+                }
+            },
+            complete: function(){
+            }
+            });
+        }
+
+        function getTables2(locationId)
+        {
+            $.ajax({
+                url: '/Cashier/Tables/'+locationId,
+                type:"GET",
+                dataType:"json",
+                beforeSend: function(){
+
+                },
+
+                success:function(response) {
+
+                    var lengths = Object.keys(response).length;
+
+                    $('.append_list').html('');
+
+                    for (i = 0; i < lengths; i++) {
+                        if(response[i].status == 0){
+                            
+                            $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/table/${response[i].id}/invoice' class='btn btn-success avaliable-btn'>${response[i].table_no}</a></div>`);
+
+                        }else{
+                            
+                            $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/table/${response[i].id}/invoice' class='btn btn-info service-btn'>${response[i].table_no}</a></div>`);
+                        }
+                    }
+                },
+                complete: function(){
+                }
+            });
+        }
+
+        function getRooms2()
+        {
+            $.ajax({
+            url: '/Cashier/Rooms',
+            type:"GET",
+            dataType:"json",
+            beforeSend: function(){
+            },
+            success:function(response) {
+
+                var lengths = Object.keys(response).length;
+
+                $('.append_list').html('');
+
+                for (i = 0; i < lengths; i++) {
+
+                    if(response[i].status == 0){
+
+                        $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/room/${response[i].id}/invoice' class='btn btn-success avaliable-btn'>${response[i].room_name}</a></div>`);
+
+                    }else{
+
+                        $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/room/${response[i].id}/invoice' class='btn btn-info service-btn'>${response[i].room_name}</a></div>`);
+                    }
+                }
+            },
+            complete: function(){
+            }
+            });
+        }
+        
     </script>
             
     <script type="text/javascript">

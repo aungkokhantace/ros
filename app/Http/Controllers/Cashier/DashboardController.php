@@ -173,4 +173,10 @@ class DashboardController extends Controller
     public function authorized(){
         return view('cashier.error.401');
     }
+
+    public function dashboardAjax()
+    {
+        $tables = Table::where('location_id',$location_id)->get();
+        return json_encode($tables);
+    }
 }
