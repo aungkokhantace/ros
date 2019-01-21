@@ -190,7 +190,7 @@ class InvoiceCancelReportController extends Controller
                 $amount[] = $tt;
             }
         }
-        $order_detail   = $this->InvoiceRepository->getdetail($invoice_id);
+        $order_detail   = $this->InvoiceRepository->getdetail_cancel($invoice_id);
         $tables         = $this->InvoiceRepository->orderTable($invoice_id);
         $rooms          = $this->InvoiceRepository->orderRoom($invoice_id);
         $cashier        = $this->InvoiceRepository->cashier($invoice_id);

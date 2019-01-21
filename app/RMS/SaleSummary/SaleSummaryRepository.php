@@ -352,6 +352,8 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
 
      public function sale_summary_detail($date,$type){
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel         = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel        = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $query                  = Orderdetail::query();
         $query                  = $query->join('order','order.id','=','order_details.order_id')
                                     ->join('users','users.id','=','order.user_id')
@@ -380,6 +382,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
             $query               = $query->where(DB::raw('Date(order_day.start_date)'),$date); 
         }
         $orders                  = $query->where('order.status',$order_paid_status)
+                                    ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                                     ->whereNull('order_details.deleted_at')
                                     ->groupBy('order_details.order_id')
                                     ->orderBy('order_day.start_date','ASC')
@@ -389,6 +392,8 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
 
      public function sale_summary_detail_sort($date,$type,$sort){
         $order_paid_status      = StatusConstance::ORDER_PAID_STATUS;
+        $kitchen_cancel         = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
+        $customer_cancel        = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $query                  = Orderdetail::query();
         $query                  = $query->join('order','order.id','=','order_details.order_id')
                                     ->join('order_day','order.day_id','=','order_day.id')
@@ -419,6 +424,7 @@ class SaleSummaryRepository implements SaleSummaryRepositoryInterface
         }
 
         $query                  = $query->where('order.status',$order_paid_status)
+                                    ->whereNotIn('order_details.status_id',[$kitchen_cancel,$customer_cancel])
                                     ->whereNull('order_details.deleted_at')
                                     ->groupBy('order_details.order_id');
 
