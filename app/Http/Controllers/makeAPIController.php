@@ -726,7 +726,7 @@ class MakeAPIController extends ApiGuardController
                             foreach($remark_detail_ary as $edit_remark){
                                 $check_edit_remark = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$edit_remark)->first();
                                 if(!isset($check_edit_remark)){
-                                    array_push($order_detail->order_detail_id,$cooking_ary);
+                                    array_push($cooking_ary,$order_detail->order_detail_id);
                                 }
                             }
                         }
