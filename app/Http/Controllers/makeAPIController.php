@@ -799,7 +799,7 @@ class MakeAPIController extends ApiGuardController
 
                     
                      $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
-                     return $order_detail_not_delete;
+                     
                      $order_total_price = 0;
                      foreach($order_detail_not_delete as $price_order){
                          if($price_order->status_id == 1){
