@@ -6,6 +6,10 @@ ini_set('memory_limit', '-1');
 @section('content')
 <head>
   <style>
+  .modal-body {
+    border-top-right-radius: 5px !important;
+    border-top-left-radius: 5px !important;
+  }
   .modal-width {
     width: 300px;
   }
@@ -31,16 +35,30 @@ ini_set('memory_limit', '-1');
     background: #eb9605;
     border-color: #eb9605;
   }
-  .modal-foot {
-    padding: 15px;
-    font-weight: bolder !important;
-    color :white;
-    background: #5cb85c;
-    border-radius: 0 0 5px 5px !important;
-  }
   table tr .remark {
     max-width: 100px;
     word-break: break-all;
+  }
+  .footer-modal {
+    padding: 10px 0 10px 0 !important;
+    background: #ecf0f5 !important;
+    border-top: 0 none;
+    text-align: center !important;
+    border-radius: 0 0 5px 5px !important;
+  }
+  .footer-modal button {
+    font-weight: bolder;
+    width: 130px;
+    height: 35px;
+  }
+  .modal-foot {
+    padding: 0 0 10px 0 !important;
+    background: #ecf0f5 !important;
+    border-radius: 0 0 5px 5px !important;
+    font-weight: bolder !important;
+  }
+  .modal-header h4 {
+    font-weight: bolder;
   }
   </style>
 </head>
@@ -538,8 +556,8 @@ ini_set('memory_limit', '-1');
             }
         });
     </script>
-    <script>
 
+    <script>
         function printElement(e) {
             var ifr = document.createElement('iframe');
             ifr.style='height: auto; width: 0px; position: absolute';
@@ -552,10 +570,17 @@ ini_set('memory_limit', '-1');
             ifr.parentElement.removeChild(ifr);
         }
 
-        function print_click(clicked_id)
+        function print_chef(clicked_id) {
+            var clickID     = clicked_id;
+            var printID     = clickID + "-chef";
+            var test        = document.getElementById(printID);
+            printElement(document.getElementById(printID));
+        }
+
+        function print_for_waiter(clicked_id)
         {
             var clickID     = clicked_id;
-            var printID     = clickID + "-print-table";
+            var printID     = clickID + "-waiter";
             var test        = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
