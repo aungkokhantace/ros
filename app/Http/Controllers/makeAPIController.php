@@ -1014,7 +1014,7 @@ class MakeAPIController extends ApiGuardController
 
         $transfer_to_table_id               = $temp['transfer_to_table_id'];
         $transfer_from_table_id             = $temp['transfer_from_table_id'];
-        $transfer_from_table_id  = OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->value('table_id');
+        
         
         $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();
        
