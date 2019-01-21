@@ -408,8 +408,8 @@ class MakeAPIController extends ApiGuardController
 
     public function add_new_to_voucher(){
 
-        try{
-           DB::beginTransaction();
+        // try{
+        //    DB::beginTransaction();
               $temp       = Input::all();
               $ordersRaw  = $temp['orderID'];
               $orders     = json_decode($ordersRaw);
@@ -441,6 +441,7 @@ class MakeAPIController extends ApiGuardController
 
                 }
               $order = Order::find($order_id);
+              
              
               if ($order->status == 2) {
                   $output = array("message" => "Paid");
@@ -448,16 +449,7 @@ class MakeAPIController extends ApiGuardController
                }
                else
                {
-                  $order->total_price             = $total_price;
-                  $order->service_amount          = $service_amount;
-                  $order->tax_amount              = $tax_amount;
-                  $order->all_total_amount        = $net_price;
-                  $order->total_discount_amount   = $discount_amount;
-                  if(isset($order->total_extra_price)){
-                    $order->total_extra_price       = $extra_price;
-                  }
-                  $order->stand_number            = $stand_number;
-                  $order->save();
+                  
                   // Custom Log
                   $message = "[ $date ]  info:   Update an Order  [ id = $order->id ] " . PHP_EOL;
                   RmsLog::create($message);
@@ -567,6 +559,7 @@ class MakeAPIController extends ApiGuardController
                           if($temp->status_id == 6 && $order_detail->status != 6){
                               array_push($backend_cancel_order_ary,$temp->order_detail_id);
                           }
+                         
                           $quantity                   = $order_detail->quantity;
                           //save Orderdetail
                           $temp->order_id             = $order_id;
@@ -806,6 +799,7 @@ class MakeAPIController extends ApiGuardController
 
                     
                      $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
+                     return $order_detail_not_delete;
                      $order_total_price = 0;
                      foreach($order_detail_not_delete as $price_order){
                          if($price_order->status_id == 1){
@@ -825,6 +819,7 @@ class MakeAPIController extends ApiGuardController
                         }
                         $order->stand_number            = $stand_number;
                         $order->save();
+                       
                    
                       // if(isset($order_extra) && count($order_extra)>0){
                       //     $order_extra->forceDelete();
@@ -855,17 +850,17 @@ class MakeAPIController extends ApiGuardController
                }
   
                return Response::json($output);
-            }catch(\Exception $e){
-               dd($e);
-              DB::rollback();
-              $date       = date("Y-m-d H:i:s");
-              $data       = json_decode(request('orderID'));
-              $tabletID   = $data[0]->order_id;
-              $message    = "[  $date ]  error:  updated  Order [ id = $tabletID ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
-              RmsLog::create($message);
-              $output = array("message" => "Please Upload Again");
-              return Response::json($output);
-          }
+        //     }catch(\Exception $e){
+        //        dd($e);
+        //       DB::rollback();
+        //       $date       = date("Y-m-d H:i:s");
+        //       $data       = json_decode(request('orderID'));
+        //       $tabletID   = $data[0]->order_id;
+        //       $message    = "[  $date ]  error:  updated  Order [ id = $tabletID ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
+        //       RmsLog::create($message);
+        //       $output = array("message" => "Please Upload Again");
+        //       return Response::json($output);
+        //   }
       }
   
 
