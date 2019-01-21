@@ -1032,7 +1032,7 @@ class MakeAPIController extends ApiGuardController
 
         $to_table->save();
 
-        OrderTable::where('order_id','=',$order_id)
+        $OrderTable = OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)
                     ->update(['table_id'=> $transfer_to_table_id]);
 
         $output             = array("message" => "Success");
