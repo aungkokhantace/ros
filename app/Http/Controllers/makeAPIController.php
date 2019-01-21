@@ -796,7 +796,7 @@ class MakeAPIController extends ApiGuardController
                           array_push($cooking_ary,$delete_order);
                         }
                      }
-
+                     DB::commit();
                     
                      $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
                     
@@ -810,7 +810,7 @@ class MakeAPIController extends ApiGuardController
                      }
 
                     
-                       
+                    
                         $order_all_total_amount         = ($order_total_price + $order->service_amount + $order->tax_amount) - $order->total_discount_amount; 
                        
                         $order->total_price             = $order_total_price;
@@ -821,7 +821,6 @@ class MakeAPIController extends ApiGuardController
                         if(isset($order->total_extra_price)){
                             $order->total_extra_price       = $extra_price;
                         }
-
                         $order->stand_number            = $stand_number;
                         $order->save();
                        
@@ -845,7 +844,7 @@ class MakeAPIController extends ApiGuardController
                       
 
                       $output = array("message" => "Success");
-                      DB::commit();
+                     
                       if(isset($cancel_order_ary) && count($cancel_order_ary)>0){
                           $output['cooked'] = $cancel_order_ary;
                       }else{
