@@ -799,23 +799,23 @@ class MakeAPIController extends ApiGuardController
                      DB::commit();
                     
                      $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
-                    
+                 
                      $order_total_price = 0;
                      $order_tax_edit = 0;
                      $order_service_edit = 0;
                      foreach($order_detail_not_delete as $price_order){
                             $order_total_price += $price_order->amount;
-                            $order_tax_edit    += $price_order->tax_amount;
-                            $order_service_edit += $price_order->tax_amount;
+                            $order_tax_edit    += $tax_amount;
+                            $order_service_edit += $service_amount;
                      }
 
-                    
+                   
                     
                         $order_all_total_amount         = ($order_total_price + $order->service_amount + $order->tax_amount) - $order->total_discount_amount; 
-                       
+                        
                         $order->total_price             = $order_total_price;
-                        $order->service_amount          = $service_amount;
-                        $order->tax_amount              = $tax_amount;
+                        $order->service_amount          = $order_service_edit;
+                        $order->tax_amount              = $order_tax_edit;
                         $order->all_total_amount        = $order_all_total_amount;
                         $order->total_discount_amount   = $discount_amount;
                         if(isset($order->total_extra_price)){
@@ -823,6 +823,7 @@ class MakeAPIController extends ApiGuardController
                         }
                         $order->stand_number            = $stand_number;
                         $order->save();
+                       
                        
                    
                       // if(isset($order_extra) && count($order_extra)>0){
