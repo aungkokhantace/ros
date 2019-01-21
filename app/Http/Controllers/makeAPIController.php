@@ -818,6 +818,7 @@ class MakeAPIController extends ApiGuardController
                         if(isset($order->total_extra_price)){
                             $order->total_extra_price       = $extra_price;
                         }
+                        
                         $order->stand_number            = $stand_number;
                         $order->save();
                        
