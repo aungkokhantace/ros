@@ -1227,8 +1227,8 @@ class InvoiceController extends Controller
             if($request->take_voucher == NULL){
                 $request->take_voucher = 0;
             }
-            // $saleinventoryCon = new inventoryController();
-            // $saleinventoryCon->saleStock($id);
+            $saleinventoryCon = new inventoryController();
+            $saleinventoryCon->saleStock($id);
             $order = Order::find($id);
             
             $orderShift = OrderShift::orderBy('id','desc')->value('shift_id');
