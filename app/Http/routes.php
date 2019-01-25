@@ -234,6 +234,9 @@ Route::group(['middleware' => 'web'], function () {
             });
             //end shift
 
+            // Ajax Shift Status 
+            Route::get('ajax/shiftStatus', 'Cashier\Shift\ShiftController@shiftStatus');
+
             //End Kitchen Setup
             Route::get('Unauthorized','Cashier\DashboardController@authorized');
         });

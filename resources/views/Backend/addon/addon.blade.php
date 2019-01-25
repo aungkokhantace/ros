@@ -99,7 +99,7 @@
 
            <div class="form-group">
                <div class="col-sm-8 col-sm-offset-3">
-                   <input type="submit" name="submit" value="{{isset($resource)? 'Update' : 'ADD'}}" class="user-button-ok" >
+                   <input type="button" name="submitForm" value="{{isset($resource)? 'Update' : 'ADD'}}" class="user-button-ok" >
                    <input type="reset" value="CANCEL" class="user-button-cancel" onclick="extra_listing_form_back();">
                </div>
            </div>
@@ -109,5 +109,23 @@
 </div>
 </div>
 </div>
+<script>
+    $(document).ready(function(){
+        $('input[name=submitForm]').on('click',function(){
+      $.ajax({
+          method: 'get',
+          url: '/Cashier/ajax/shiftStatus'
+      }).done(function(status){
+          status = parseInt(status);
+          action = $('input[name=submitForm]').val();
+          if (action == 'Update' && status) {
+            swal ( "Fails" ,  "Shift is Running, Please Day End First!" ,  "error" );
+            return;
+          }
+        $("form").submit();
+      }); 
+  });
+    });
+</script>
 
 @endsection

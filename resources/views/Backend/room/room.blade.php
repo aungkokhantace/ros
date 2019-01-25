@@ -27,6 +27,13 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="prict" class="col-sm-3 control-label left-align label-font">Room Charges<span class="require">*</span></label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="price" name="price" placeholder="Enter Capacity" value="{{ isset($room)? ($room->price + 0 ):Request::old('price') }}"/>
+                <p class="text-danger">{{$errors->first('price')}}</p>
+            </div>
+        </div>
+        <div class="form-group">
             <label for="capacity" class="col-sm-3 control-label left-align label-font">Capacity<span class="require">*</span></label>
             <div class="col-sm-8">
                 <input type="text" class="form-control" id="capacity" name="capacity" placeholder="Enter Capacity" value="{{ isset($room)? $room->capacity:Request::old('capacity') }}"/>
@@ -36,7 +43,7 @@
 
         <div class="form-group">
             <div class="col-sm-8 col-sm-offset-3">
-                <input type="submit" name="submit" value="{{isset($room)? 'UPDATE' : 'ADD'}}" class="user-button-ok">
+                <input type="button" name="submitForm" value="{{isset($room)? 'UPDATE' : 'ADD'}}" class="user-button-ok">
                 <input type="button" value="CANCEL" class="user-button-cancel" onclick="room_cancel();">
             </div>
         </div>
@@ -44,4 +51,22 @@
     </div>
 </div>
 </div>
+<script>
+        $(document).ready(function(){
+            $('input[name=submitForm]').on('click',function(){
+          $.ajax({
+              method: 'get',
+              url: '/Cashier/ajax/shiftStatus'
+          }).done(function(status){
+              status = parseInt(status);
+              action = $('input[name=submitForm]').val();
+              if (action == 'UPDATE' && status) {
+                swal ( "Fails" ,  "Shift is Running, Please Day End First!" ,  "error" );
+                return;
+              }
+            $("form").submit();
+          }); 
+      });
+        });
+    </script>
 @endsection
