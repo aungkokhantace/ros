@@ -11,6 +11,7 @@ use App\Session;
 use App\RMS\User\UserRepository;
 use App\User;
 use App\RMS\Order\Order;
+use App\RMS\Item\ItemRepository;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\SyncsTable\SyncsTable;
 use App\RMS\Category\Category;
@@ -262,6 +263,12 @@ class Utility
 
         $detail_id       = $order_id . $detail_id;
         return $detail_id;
+    }
+
+    public static function getitemPrice($item_id){
+        $itemRepo       = new ItemRepository();
+        $itemprice      = $itemRepo->getItemPrice($item_id);
+        return $itemprice;
     }
 
 
