@@ -244,7 +244,24 @@ class MakeAPIController extends ApiGuardController
         // }
 
 
-        
+             $order                         = new Order();
+            $order->id                      = $order_id;
+            $order->user_id                 = $user_id;
+            $order->take_id                 = $take_id;
+            $order->order_time              = $dt->toDateTimeString();
+            $order->total_extra_price       = $total_extra_price;
+            $order->total_discount_amount   = $total_discount_amount;
+            $order->total_price             = $total_price;
+            $order->service_amount          = $service_amount;
+            $order->room_charge             = $room_charge;
+            $order->tax_amount              = $tax_amount;
+            $order->all_total_amount        = $all_total_amount;
+            $order->tablet_id               = $tablet_id;
+            $order->day_id                  = $day_id;
+            $order->shift_id                = $shift_id;
+            $order->status                  = $order_status;
+            $order->stand_number            = $stand_number;
+            $order->save();
         // Custom Log
         $message = "[ $date ]  info:   create an Order  [ id = $order_id ] " . PHP_EOL;
         RmsLog::create($message);
@@ -295,9 +312,10 @@ class MakeAPIController extends ApiGuardController
         }
 
         foreach ($order_details as $order_detail) {
+           
             $order_detail_status        = $order_detail->status;
             $order_detail_id            = Utility::OrderDetailId($order_id);
-            $item_price                 = Utility::getitemPrice($order_detail->item_id);
+           
             $temp = new Orderdetail();
             $temp->id                   = $order_detail_id;
             $temp->order_id             = $order_id;
@@ -309,8 +327,8 @@ class MakeAPIController extends ApiGuardController
             $temp->discount_amount      = $order_detail->discount_amount;
             $temp->exception            = $order_detail->exception;
             $temp->promotion_id         = $order_detail->promotion_id;
-            $temp->amount               = $item_price;
-            $temp->amount_with_discount = $item_price-($order_detail->discount_amount);
+            $temp->amount               = $order_detail->price;
+            $temp->amount_with_discount = $order_detail->amount;
             $temp->order_time           = $dt->toDateTimeString();
             $temp->status_id            = $order_detail_status;
             $temp->take_item            = $order_detail->take_item;
@@ -374,24 +392,7 @@ class MakeAPIController extends ApiGuardController
         }
 
 
-            $order                          = new Order();
-            $order->id                      = $order_id;
-            $order->user_id                 = $user_id;
-            $order->take_id                 = $take_id;
-            $order->order_time              = $dt->toDateTimeString();
-            $order->total_extra_price       = $total_extra_price;
-            $order->total_discount_amount   = $total_discount_amount;
-            $order->total_price             = $total_price;
-            $order->service_amount          = $service_amount;
-            $order->room_charge             = $room_charge;
-            $order->tax_amount              = $tax_amount;
-            $order->all_total_amount        = $all_total_amount;
-            $order->tablet_id               = $tablet_id;
-            $order->day_id                  = $day_id;
-            $order->shift_id                = $shift_id;
-            $order->status                  = $order_status;
-            $order->stand_number            = $stand_number;
-            $order->save();
+            
             DB::commit();
             $output = array("message" => "Success");
             return Response::json($output);
