@@ -212,16 +212,18 @@ ini_set('memory_limit', '-1');
                                                 <div class="btn-group">
                                                     <div>
                                                         @if ($item->status_id == 1 && !$item->is_ready_food)
-                                                            <input type="submit" class="start btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking"/>
+                                                            <input type="submit" class="start btn btn-info btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" value="Start Cooking"/>
                                                         @elseif(!empty($item->is_ready_food) && $item->status_id == 1)
-                                                            <input type="submit" class="complete btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Food Ready"/>
-                                                        @elseif($item->status_id == '3')
+                                                            <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" value="Food Ready"/>
+                                                        {{--
+                                                          @elseif($item->status_id == '3')
                                                             <div>
-                                                                <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Take"/>
+                                                                <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" value="Take"/>
                                                             </div>
+                                                        --}}
                                                         @endif
                                                         @if ($item->status_id == 2)
-                                                            <input type="submit" class="complete btn btn-success btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Complete"/>
+                                                            <input type="submit" class="taken btn btn-success btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" value="Complete"/>
                                                         @endif
                                                     </div>
                                                     <div>
@@ -269,7 +271,6 @@ ini_set('memory_limit', '-1');
                                                     </div>
                                                 </div>
                                             </td>
-
                                             <td style="border-left: none !important;">
                                                 <div class="btn-group">
                                                     <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (Waiter)</button>
@@ -295,7 +296,7 @@ ini_set('memory_limit', '-1');
                                             @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
                                                     <div class="btn-group">
-                                                        <input type="button" class="cancel btn btn-danger btn_k" id="{{$item->id}}-{{$item->setmenu_id}}" data-toggle="modal" data-target="#{{$item->id}}-{{$item->setmenu_id}}modal" value="Cancel">
+                                                        <input type="button" class="cancel btn btn-danger btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" data-toggle="modal" data-target="#{{$item->id}}-{{$item->setmenu_id}}modal" value="Cancel">
                                                     </div>
                                                 </td>
                                             @else
@@ -374,7 +375,7 @@ ini_set('memory_limit', '-1');
             };
 
             $('#divAuto').on('click', '.start', function(e){
-                var itemID      = $(this).attr('id');
+                var itemID = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
                         title: "Are you sure?",
@@ -385,11 +386,12 @@ ini_set('memory_limit', '-1');
                         confirmButtonText: "Confirm",
                         closeOnConfirm: false
                     }, function(isConfirm){
-
                         if (isConfirm) {
+                            $('#' + itemID).attr('disabled', true);
+                            var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/getStart/ajaxRequest/' + itemID,
+                                url: '/Kitchen/getStart/ajaxRequest/' + id,
                                 success: function (Response) {
                                     console.log(Response);
                                     //Socket Emit
@@ -406,7 +408,7 @@ ini_set('memory_limit', '-1');
 
 
             $('#divAuto').on('click', '.taken', function(e){
-                var itemID      = $(this).attr('id');
+                var itemID = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
                         title: "Are you sure?",
@@ -417,13 +419,13 @@ ini_set('memory_limit', '-1');
                         confirmButtonText: "Confirm",
                         closeOnConfirm: false
                     }, function(isConfirm){
-
                         if (isConfirm) {
+                            $('#' + itemID).attr('disabled', true);
+                            var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/taken/ajaxRequest/' + itemID,
+                                url: '/Kitchen/taken/ajaxRequest/' + id,
                                 success: function (Response) {
-
                                     console.log(Response);
                                     //Socket Emit
                                     var socketKey        = "taken_by";
@@ -437,11 +439,8 @@ ini_set('memory_limit', '-1');
                 });
             });
 
-
-
-
             $('#divAuto').on('click', '.complete',function (e) {
-                var itemID      = $(this).attr('id');
+                var itemID = $(this).attr('id');
                 $(document).ready(function(){
                     swal({
                         title: "Are you sure?",
@@ -453,9 +452,11 @@ ini_set('memory_limit', '-1');
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
+                            $('#' + itemID).attr('disabled', true);
+                            var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/getCompleteID/' + itemID,
+                                url: '/Kitchen/getCompleteID/' + id,
                                 success: function (Response) {
                                     var returnResp        = Response.message;
                                     if (returnResp == 'success') {
@@ -474,9 +475,9 @@ ini_set('memory_limit', '-1');
             });
 
             $('#divAuto').on('click', '.cancel_item',function (e) {
-                var formID      = $(this).closest("form").attr('id');
-                var data        = $('#' + formID).serialize();
-                var modalID     = $(this).attr('id') + 'modal';
+                var formID  = $(this).closest("form").attr('id');
+                var data    = $('#' + formID).serialize();
+                var modalID = $(this).attr('id') + 'modal';
                 $(document).ready(function(){
                     $.ajax({
                         type: 'POST',
@@ -520,31 +521,31 @@ ini_set('memory_limit', '-1');
             var url     = "/Kitchen/kitchen/ajaxRequest";//Json Callback Url
             var div     = "divAuto";//Put div id inside html response
             //Order Cancel Socket
-            var invoice_update      = "invoice_update";
+            var invoice_update = "invoice_update";
             socketOn(invoice_update,url,div);
 
             //Order start Cooking Socket
-            var cooked      = "cooked";
+            var cooked = "cooked";
             socketOn(cooked,url,div);
 
             //Order Cancel Socket
-            var order_remove      = "order_remove";
+            var order_remove = "order_remove";
             socketOn(order_remove,url,div);
 
             //Order Cooking Done
-            var cooking_done      = "cooking_done";
+            var cooking_done = "cooking_done";
             socketOn(cooking_done,url,div);
 
             //Invoice Payment Socket
-            var payment_done      = "payment_done";
+            var payment_done = "payment_done";
             socketOn(payment_done,url,div);
 
             //Table Transfer
-            var tableChange      = "tableChange";
+            var tableChange = "tableChange";
             socketOn(tableChange,url,div);
 
             //Order Eidt
-            var edit      = "edit";
+            var edit = "edit";
             socketOn(edit,url,div);
             //Taken order socket
             var taken_by_waiter  = 'take';
@@ -575,30 +576,29 @@ ini_set('memory_limit', '-1');
         }
 
         function print_chef(clicked_id) {
-            var clickID     = clicked_id;
-            var printID     = clickID + "-chef";
-            var test        = document.getElementById(printID);
+            var clickID = clicked_id;
+            var printID = clickID + "-chef";
+            var test    = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
 
         function print_for_waiter(clicked_id)
         {
-            var clickID     = clicked_id;
-            var printID     = clickID + "-waiter";
-            var test        = document.getElementById(printID);
+            var clickID = clicked_id;
+            var printID = clickID + "-waiter";
+            var test    = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
 
         function print_chief(order) {
-            var id      = order;
-            var modal   = id + '-print-chef';
+            var id    = order;
+            var modal = id + '-print-chef';
             $('#' + modal).modal('show');
         }
 
         function print_waiter(order) {
-
-            var id      = order;
-            var modal   = id + '-print-waiter';
+            var id    = order;
+            var modal = id + '-print-waiter';
             $('#' + modal).modal('show');
         }
     </script>
