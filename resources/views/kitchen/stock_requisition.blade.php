@@ -10,7 +10,7 @@
                             <div class="form-div">
                                 <form action="{{ url('/Kitchen/stock-requisition') }}" method="post">
                                     {{ csrf_field() }}
-                                    <h4><b>Stock Requisition Form</b></h4>
+                                    <h4>ကုန္ၾကမ္းမွာရန္ <b>Form</b></h4>
                                     @if (Session::has('success'))
                                         <div class="alert alert-success">
                                             {{ session('success') }}
@@ -26,7 +26,7 @@
                                             <span id="remove1" onclick="remove(this)" class="close"><i class="fa fa-times"></i></span>
                                             <div class="form-group row first-div">
                                                 <div class="col-sm-3 custom">
-                                                    <label for="group-type">Raw Group Type</label>
+                                                    <label for="group-type">ကုန္ၾကမ္းအမ်ိဴးအစား</label>
                                                     <select class="form-control" style="border-radius:5px !important" name="stock[0][group].group" id="group-type">
                                                         @foreach($raw_group_responses as $raw_group_response)
                                                             <option value="{{ $raw_group_response->Id }}">{{ $raw_group_response->Raw_group_name }}</option>
@@ -34,7 +34,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3 custom">
-                                                    <label for="item">Raw Item</label>
+                                                    <label for="item">ကုန္ၾကမ္း</label>
                                                     <select class="form-control" style="border-radius:5px !important" name="stock[0][StockId].stick_id" id="item">
                                                         @foreach($raw_stock_responses as $raw_stock_response)
                                                             <option value="{{ $raw_stock_response->Raw_item_no.','.$raw_stock_response->PurchasePrice }}">
@@ -44,12 +44,12 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <label for="quantity">Quantity</label>
-                                                    <input type="number" class="form-control" name="stock[0][Quantity].quantity" placeholder="Quantity" id="quantity"/>
+                                                    <label for="quantity">အေရအတြက္</label>
+                                                    <input type="number" class="form-control" name="stock[0][Quantity].quantity" placeholder="အေရအတြက္" id="quantity"/>
                                                     <span class="error">This field is required.</span>
                                                 </div>
                                                 <div class="col-sm-3 custom">
-                                                    <label for="unit">Measurement Units</label>
+                                                    <label for="unit">အတိုင္းအတာ</label>
                                                     <select class="form-control" style="border-radius:5px !important" name="stock[0][unit].unit" id="unit">
                                                         @foreach($measurement_unit_responses as $measurement_unit_response)
                                                             <option value="{{ $measurement_unit_response->Id }}">{{ $measurement_unit_response->Code }}</option>
@@ -63,10 +63,10 @@
                                         <label for="inputEmail3" class="col-sm-4 col-form-label"></label>
                                         <div class="col-sm-4">
                                             <div class="btn-group mr-2" role="group">
-                                                <button type="button" class="btn btn-dark add-more-btn">Add New</button>
+                                                <button type="button" class="btn btn-dark add-more-btn">ထပ္ထည့္ရန္</button>
                                             </div>
                                             <div class="btn-group" role="group">
-                                                <input type="submit" class="btn btn-success" value="Submit">
+                                                <input type="submit" class="btn btn-success" value="မွာရန္">
                                             </div>
                                         </div>
                                     </div>

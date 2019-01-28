@@ -55,7 +55,9 @@
                             </td>
                             <td class="tr_right">{{ $item->quantity }}</td>
                         <!-- <td class="tr_right">{{ $item->exception }}</td> -->
-                            <td class="tr_right">{{ $item->remark }}</td>
+                            <td class="tr_right">
+                              {{ $item->remark }}
+                            </td>
                             <td class="tr_right">
                               @php $extra_array = []; @endphp
                               @foreach($extra as $ex)
@@ -83,31 +85,31 @@
 
                             <td class="tr_right" style="border-right: none !important;">
                                 @if($item->status_id == '1' && !$item->is_ready_food)
-                                    <input type="submit" class="start start_duration_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="Start Cooking">
+                                    <input type="submit" class="start start_duration_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="စခ်က္မယ္">
                                 @endif
                                 @if($item->status_id == '1' && $item->is_ready_food)
-                                    <input type="submit" class="complete complete_duration_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="Food Ready">
+                                    <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="ဟင္းပြဲရၿပီ">
                                 @endif
 
                                 @if($item->status_id =='2')
-
-                                    <input type="submit" class="complete complete_duration_item btn_k btn btn-success" id="{{$item->order_detail_id}}" name="complete" value="Complete Cooking">
-
+                                    <input type="submit" class="taken complete_taken_item btn_k btn btn-success" id="{{$item->order_detail_id}}" name="complete" value="ၿပီးၿပီ">
                                 @endif
+                                {{--
                                 @if($item->status_id == '3')
-                                    <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Take" />
+                                    <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="ယူမယ္"/>
 
                                 @endif
+                                --}}
                             </td>
 
                             @if($item->status_id == '1')
                                 <td class="tr_right" style="border-left: none !important;">
-                                    <input type="button" class="cancel btn_k btn btn-danger" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
+                                    <input type="button" class="cancel btn_k btn btn-danger" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="မလုပ္ဘူး" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
                                     <div class="modal fade" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                       <div class="modal-dialog cancle-modal" role="document">
                                         <div class="modal-content">
                                           <div class="modal-header">
-                                              <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                              <h4 class="modal-title" id="myModalLabel">ဖ်က္မယ့္အေၾကာင္းရင္း</h4>
                                           </div>
                                           <div class="modal-body">
                                             {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $item->order_detail_id . "-" . $item->setmenu_id . "form")) !!}
@@ -120,7 +122,7 @@
                                             <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
                                             <table class="table">
                                               <tr>
-                                                <td>Enter Message</td>
+                                                <td>စာရိုက္ပါ</td>
                                                 <td><input type="text" name="message" class="form-control"></td>
                                               </tr>
                                               <tr>
@@ -129,10 +131,10 @@
                                               </tr>
                                               <tr>
                                                 <td>
-                                                  <input type="button" name="submit" value="Save" class="btn btn-info cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">
+                                                  <input type="button" name="submit" value="သိမ္းမယ္" class="btn btn-info cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">
                                                 </td>
                                                 <td>
-                                                  <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                                  <button type="button" class="btn" data-dismiss="modal">ပိတ္မယ္</button>
                                                 </td>
                                               </tr>
                                             </table>
@@ -211,28 +213,30 @@
                                 </td> -->
                             <td>
                                 @if($setmenu->status_id == '1' && !$setmenu->is_ready_food)
-                                    <input type="submit" class="start start_duration_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="start" value="Start Cooking">
+                                    <input type="submit" class="start start_duration_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="start" value="စခ်က္မယ္">
                                 @endif
                                 @if($setmenu->status_id == '1' && $setmenu->is_ready_food)
-                                    <input type="submit" class="complete complete_duration_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="start" value="Food Ready">
+                                    <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="start" value="ဟင္းပြဲရၿပီ">
                                 @endif
 
                                 @if($setmenu->status_id =='2')
-                                    <input type="submit" class="complete complete_duration_setmenu btn_k btn btn-success" id="{{$setmenu->id}}" name="complete" value="Cooking">
+                                    <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-success" id="{{$setmenu->id}}" name="complete" value="ၿပီးၿပီ">
 
                                 @endif
+                                {{--
                                 @if($setmenu->status_id =='3')
-                                    <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->order_detail_id}}" name="complete" value="Taken">
+                                    <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->order_detail_id}}" name="complete" value="ယူမယ္">
                                 @endif
+                                --}}
                             </td>
                             @if($setmenu->status_id == '1')
                                 <td>
-                                    <input type="button" class="cancel btn_k btn btn-danger" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
+                                    <input type="button" class="cancel btn_k btn btn-danger" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="မလုပ္ဘူး" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
                                     <div class="modal fade" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                       <div class="modal-dialog cancle-modal" role="document">
                                         <div class="modal-content">
                                           <div class="modal-header">
-                                              <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                              <h4 class="modal-title" id="myModalLabel">ဖ်က္မယ့္အေၾကာင္းရင္း</h4>
                                           </div>
                                           <div class="modal-body">
                                             {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $setmenu->order_detail_id . "-" . $setmenu->setmenu_id . "form")) !!}
@@ -245,7 +249,7 @@
                                             <input type="hidden" name="setmenu_id" value="{{$setmenu->setmenu_id}}">
                                             <table class="table">
                                               <tr>
-                                                <td>Enter Message</td>
+                                                <td>စာရိုက္ပါ</td>
                                                 <td><input type="text" name="message" class="form-control"></td>
                                               </tr>
                                               <tr>
@@ -254,10 +258,10 @@
                                               </tr>
                                               <tr>
                                                 <td>
-                                                  <input type="button" name="submit" value="Save" class="btn btn-info cancel_product">
+                                                  <input type="button" name="submit" value="သိမ္းမယ္" class="btn btn-info cancel_product">
                                                 </td>
                                                 <td>
-                                                  <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                                  <button type="button" class="btn" data-dismiss="modal">ပိတ္မယ္</button>
                                                 </td>
                                               </tr>
                                             </table>
