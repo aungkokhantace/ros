@@ -12,6 +12,7 @@ use App\RMS\User\UserRepository;
 use App\User;
 use App\RMS\Order\Order;
 use App\RMS\Item\ItemRepository;
+use App\RMS\OrderExtra\OrderExtraRepository;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\SyncsTable\SyncsTable;
 use App\RMS\Category\Category;
@@ -272,7 +273,13 @@ class Utility
     }
 
 
+    public static function getAddonPrice($extra_id){
+        //Addon and Extra are equal
+        $AddonRepo      = new OrderExtraRepository();
+        $extra_price    = $AddonRepo->getAddonPrice($extra_id);
+        return $extra_price;
 
+    }
 
 
 }
