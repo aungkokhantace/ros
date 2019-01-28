@@ -3,6 +3,8 @@
 namespace App\RMS\Infrastructure\Forms;
 
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Input;
+
 
 class SetMenuEditRequest extends Request
 {
@@ -16,7 +18,7 @@ class SetMenuEditRequest extends Request
     {   
 
         return [
-            'set_menus_name'    => 'required',
+            'set_menus_name'    => 'required:set_menu,name,'.$this->get("id").',id,branch_id,'.Input::get("branch").',deleted_at,NULL',
             'item'              => 'required',
             'set_menus_price'   => 'required|numeric',
             'status'            => 'required',

@@ -81,6 +81,9 @@ class KitchenController extends Controller
 
     public function update(KitchenEditRequest $request){
         $request->validate();
+        $branch_id              = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id          = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
         $id             = $request->get('id');
         $name           = $request->get('name');
         $lower_name     = strtolower($name);//to change all letter which user edited in form to lower case

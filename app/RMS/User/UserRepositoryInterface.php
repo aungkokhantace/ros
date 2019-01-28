@@ -11,6 +11,7 @@ interface UserRepositoryInterface
     public function store($paramObj);
     public function getUsers();
     public function getRoles();
+     public function getRolesByRoleID($role_id);
     public function delete_users($id,$deleted_by);
     public function active($id);
     public function inactive($id);

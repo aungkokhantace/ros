@@ -73,7 +73,10 @@ class Utility
         $id = Auth::guard('Cashier')->user()->id;
         return $id;
     }
-
+    public static function getCurrentUserRoleID(){
+        $roleid = Auth::guard('Cashier')->user()->role_id;
+        return $roleid;
+    }
     public static function savePriceTracking($table_name,$table_id,$table_id_type,$action,$old_price,$new_price,$created_by,$created_at) {
         DB::table('setup_price_tracking')->insert([
             ['table_name'=>$table_name, 'table_id'=>$table_id, 'table_id_type'=>$table_id_type,

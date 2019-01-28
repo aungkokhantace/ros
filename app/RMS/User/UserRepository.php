@@ -83,6 +83,13 @@ class UserRepository implements UserRepositoryInterface
         return $roles;
     }
 
+    public function getRolesByRoleID($role_id){
+        
+        $roles = Role::where('id','>=',$role_id)->get();
+        return $roles;
+    }
+
+
     public function delete_users($id,$deleted_by){
         User::find($id)->delete();
         DB::table('users')->where('id',$id)->update(['deleted_by'=>$deleted_by]);

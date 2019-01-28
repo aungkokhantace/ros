@@ -686,9 +686,11 @@ class ListViewController extends Controller
     }
 
     public function edit($id) {        
-        // dd($id);
+        $restaurant     = Utility::getCurrentRestaurant();
+        $branch         = Utility::getCurrentBranch();
         $status_addon      = StatusConstance::ADDON_AVAILABLE_STATUS;
         $status_extra      = StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
+          $item_status    = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
         $order             = $this->detailRepository->getorder($id);
         $order_details     = $this->detailRepository->getdetail($id);
         // dd($order_details);
@@ -854,6 +856,8 @@ class ListViewController extends Controller
     public function update() {
         //dd(Input::all());
         //Create Order ID
+         $restaurant     = Utility::getCurrentRestaurant();
+        $branch         = Utility::getCurrentBranch();
         $order_id       = Input::get('order_id');
         $order_detail_id= (Input::get('order_detail_id') == null ? array() : Input::get('order_detail_id'));
         $user_id        = Auth::guard('Cashier')->id();
@@ -886,6 +890,7 @@ class ListViewController extends Controller
         $cancel_status  = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $cancel_extra   = StatusConstance::ORDER_EXTRA_UNAVAILABLE_STATUS;
         $extra_status   = StatusConstance::ORDER_EXTRA_AVAILABLE_STATUS;
+          $item_status    = StatusConstance::ORDER_DETAIL_COOKING_STATUS;
         $order_kitchen_cancel_status    = StatusConstance::ORDER_DETAIL_KITCHEN_CANCEL_STATUS;
         $order_customer_cancel_status   = StatusConstance::ORDER_DETAIL_CUSTOMER_CANCEL_STATUS;
         $count1 = 0;
@@ -1001,6 +1006,8 @@ class ListViewController extends Controller
                                 $extraObj->amount           = $extra_amount;
                                 $extraObj->quantity         = $quantity[$itemCount];
                                 $extraObj->status           = $extra_status;
+                                $orderSetObj->restaurant_id     = $restaurant;
+                                $orderSetObj->branch_id         = $branch;
                                 $extraObj->created_by       = $user_id;
                                 $extraObj->created_at       = $cur_date;
                                 $extraObj->save();
@@ -1049,6 +1056,35 @@ class ListViewController extends Controller
                             $extraObj->save();
                         }
                     }
+                       // /* set menu */
+            
+                    if ($itemID == 0) {
+                        
+                        $detail_id               = $this->detailRepository->getSetMenuDetailById($order_id);
+                       
+                        foreach ($detail_id as $key => $value) {
+                            $delete             = $this->detailRepository->deletsubmenu($value->id);
+                        }
+                           
+                            $set_items            = $this->detailRepository->getSetItemBySetID($setID);
+                            foreach ($set_items as $key => $set) {
+                                $orderSetObj                    = new OrderSetMenuDetail();  
+                                $orderSetObj->order_detail_id   = $detailID;
+                                $orderSetObj->setmenu_id        = $setID;
+                                $orderSetObj->item_id           = $set->item_id;
+                                $orderSetObj->order_type_id     = $order_type;
+                                $orderSetObj->quantity          = $quantity[$itemCount];
+                                $orderSetObj->status_id         = $item_status;
+                                $orderSetObj->order_time        = $cur_date;
+                                $orderSetObj->created_at        = $cur_date;
+                                $orderSetObj->created_by        = $user_id;
+                                $orderSetObj->restaurant_id     = $restaurant;
+                                $orderSetObj->branch_id         = $branch;
+                                $orderSetObj->save();
+                            }
+
+                    }
+                    
 
                 }
             }
@@ -1058,6 +1094,7 @@ class ListViewController extends Controller
             ->withMessage(FormatGenerator::message('Success', 'Order created ...'))
             ->with('Sockect','Socket Order Send');
         } catch (\Exception $e){
+            dd($e);
             DB::rollback();
             echo $e->getMessage();
             echo $e->getLine();

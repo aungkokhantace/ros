@@ -10,7 +10,7 @@ namespace App\RMS\Item;
 
 
 interface ItemRepositoryInterface
-{
+{   public function getallItem();
     public function store($paramObj,$input,$remark,$branch_id ,$restaurant_id);
     public function ChooseCat();
     public function selectParent();

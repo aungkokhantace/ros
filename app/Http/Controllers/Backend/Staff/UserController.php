@@ -9,6 +9,7 @@ use App\RMS\Role\Role;
 use App\Status\StatusConstance;
 use App\RMS\Permission\Permission;
 use App\Session;
+use App\RMS\Utility;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -50,12 +51,12 @@ class UserController extends Controller
             ->with('kitchens',$kitchens);
     }
 
-    public function create(){       
-        $roles      = $this->userRepository->getRoles();
+    public function create(){ 
+        $roleID     =  Utility::getCurrentUserRoleID();
+        $roles      = $this->userRepository->getRolesByRoleID($roleID);
         $kitchens   = $this->userRepository->getKitchensByBranch();
         $branch     = $this->branchRepo->getAllType();
         $restaurant = $this->restaurantRepo->getAllType();
-        // dd("a",$branch);
 
         return view('Backend.user.User')->with('roles', $roles)->with('kitchens',$kitchens)->with('branchs',$branch)->with('restaurants',$restaurant);
     }
@@ -93,7 +94,8 @@ class UserController extends Controller
         $password   = trim(bcrypt(Input::get('login_password')));
         $roleId     = Input::get('userType');
         $kitchenId  = Input::get('kitchen');
-        $branch_id  = Input::get('branch');       
+         $branch_id  = Input::get('branch'); 
+         
         $restaurant_id = Auth::guard('Cashier')->user()->restaurant_id != null ? Auth::guard('Cashier')->user()->restaurant_id : Input::get('restaurant');     
         
         $paramObj               = new User();

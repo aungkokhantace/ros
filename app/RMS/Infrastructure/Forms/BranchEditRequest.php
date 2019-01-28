@@ -3,6 +3,8 @@
 namespace App\RMS\Infrastructure\Forms;
 
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Input;
+
 
 class BranchEditRequest extends Request
 {
@@ -13,7 +15,10 @@ class BranchEditRequest extends Request
      */
     public function authorize()
     {
-        return true;
+        return [
+              'name'        => 'required|string|unique:branch,name,'.$this->get("id").',id,restaurant_id,'.Input::get("restaurant").',deleted_at,NULL',
+              'description' => 'required',
+            ];
     }
 
     /**
@@ -23,8 +28,10 @@ class BranchEditRequest extends Request
      */
     public function rules()
     {
-        return [
-            //
+       return [
+            'name.required' => 'Branch Name is required!',
+            
+            'description.required' => 'Please fill out description!',
         ];
     }
 }

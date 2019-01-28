@@ -3,7 +3,7 @@
 namespace App\RMS\Infrastructure\Forms;
 
 use App\Http\Requests\Request;
-
+use Illuminate\Support\Facades\Input;
 class BranchEntryRequest extends Request
 {
     /**
@@ -13,7 +13,11 @@ class BranchEntryRequest extends Request
      */
     public function authorize()
     {
-        return true;
+         return [
+              'name'        => 'required|string|unique:branch,name,NULL,id,restaurant_id,'.Input::get("restaurant").',deleted_at,NULL',
+              'description' => 'required',
+
+            ];
     }
 
     /**
@@ -23,8 +27,10 @@ class BranchEntryRequest extends Request
      */
     public function rules()
     {
-        return [
-            //
+         return [
+            'name.required'        => 'Branch Name is required!',
+            'name.unique'          => 'This name is already taken!',
+            'description.required' => 'Please fill out description!',
         ];
     }
 }

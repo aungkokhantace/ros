@@ -427,6 +427,30 @@ $("#branch").change(function(){
                 })
               })
 });
+<script src="/assets/backend_js/branch/branch.js"></script>
+<script type="text/javascript">
+    $("#branch").change(function(){
+        var branch     =$("#branch").val();
+        var restaurant = $("#restaurant").val();
+        $.ajax({
+            type: "GET",
 
+            url: "/Backend/get_addon/ajaxRequest/"+branch+"/"+restaurant,
+
+        }).done( function(data){
+            $('#product').empty();
+            $('#product').append("<option disabled selected>Select Category</option>");
+            $(data).each(function(){
+                // console.log(this.id,this.name);
+                $('#product').append($('<option>',{
+                    value : this.id,
+                    text: this.name,
+                }));
+            })
+
+        })
+
+    });
+</script>
 </script>
 @endsection

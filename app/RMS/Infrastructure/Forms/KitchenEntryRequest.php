@@ -3,6 +3,8 @@
 namespace App\RMS\Infrastructure\Forms;
 
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Input;
+
 
 class KitchenEntryRequest extends Request
 {
@@ -15,7 +17,7 @@ class KitchenEntryRequest extends Request
     public function rules()
     {
         return [
-            'name'=>'required|unique:kitchen,name,NULL,id,deleted_at,NULL',
+            'name'=>'required|unique:kitchen,name,NULL,id,branch_id,'.Input::get("branch").',deleted_at,NULL',
         ];
     }
 

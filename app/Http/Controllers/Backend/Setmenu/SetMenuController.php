@@ -132,6 +132,9 @@ class SetMenuController extends Controller
 
     public function update(SetMenuEditRequest $request){
         $request->validate();
+         $branch_id                  = Utility::getCurrentBranch() != 0 ? Utility::getCurrentBranch(): Input::get('branch');     
+
+        $restaurant_id              = Utility::getCurrentRestaurant() != 0 ? Utility::getCurrentRestaurant() : Input::get('restaurant'); 
         $id                             = Input::get('id');
         $set_menus_price                = Input::get('set_menus_price');
         $status                         = Input::get('status');

@@ -149,7 +149,7 @@ class OrderViewController extends Controller
         return view('cashier.foodorderlist.real_time_kitchen_view')->with('groupedOrders',$order_arr)->with('tables',$tables)->with('rooms',$rooms);
     }
 
-    public function detail($order_id,$order_status){
+    public function detail($order_id,$order_status,$order_detail_id){
 
         $orders =$this->OrderRepository->getFoodListDetail($order_id,$order_status);
 

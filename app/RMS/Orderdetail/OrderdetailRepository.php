@@ -9,6 +9,7 @@ use App\RMS\Item\Item;
 use App\RMS\OrderTable\OrderTable;
 use App\RMS\OrderRoom\OrderRoom;
 use App\RMS\OrderExtra\OrderExtra;
+use App\RMS\OrderSetMenuDetail\OrderSetMenuDetail;
 use App\RMS\SetItem\SetItem;
 use App\RMS\Kitchen\Kitchen;
 use App\RMS\SetMenu\SetMenu;
@@ -16,6 +17,7 @@ use App\RMS\Item\Continent;
 use App\Status\StatusConstance;
 use App\RMS\Utility;
 use App\RMS\ReturnMessage;
+
 class OrderdetailRepository implements OrderdetailRepositoryInterface
 {
     public function store($paramObj){
@@ -88,6 +90,7 @@ class OrderdetailRepository implements OrderdetailRepositoryInterface
     }
 
     public function getSetItemBySetID($id) {
+        $status        = StatusConstance::SETMENU_AVAILABLE_STATUS;
         $set_items      = SetItem::select('id','item_id')
                           ->where('set_menu_id',$id)
                           ->whereNull('deleted_at')
@@ -196,6 +199,14 @@ class OrderdetailRepository implements OrderdetailRepositoryInterface
         return $order_details;
         
     }
+   public function getsetmenudetail($orderdetailID){
+        $order_setmenu_details = OrderSetMenuDetail::leftjoin('order_details','order_setmenu_details.order_detail_id','=','order_detail.id')
+                  ->leftjoin('set_menu','set_menu_id','=','order_setmenu_details.setmenu_id')
+                  ->leftjoin('items','items.id','=','order_setmenu_details.item_id')
+                  ->select('item.name as item_name', 'item.id as item_id','setmenu.id as setmenu_id','setmenu.set_menus_name as setmenu_name','order_setmenu_details.quantity','order_setmenu_details.take_item','order_detail_id')
+                  ->where('order_detail_id','=',$orderdetailID);
+        return $order_setmenu_details;
+    }
 
     public function cashier($id){
         $cashier = Order::where('id','=',$id)->first();
@@ -257,5 +268,32 @@ class OrderdetailRepository implements OrderdetailRepositoryInterface
                       ->get()->toArray();
         return $continents;
     }
-    
+     public function getSetMenuByOrder($setmenuID){
+         
+        $status         = StatusConstance::SETMENU_AVAILABLE_STATUS;
+        $addon = array();
+        $addon = OrderSetMenuDetail::select('setmenu_id','quantity')
+                        ->where('order_setmenu_detail.order_detail_id','=',$id)
+                        ->where('order_setmenu_detail.status_id','=',$status)
+                        ->where('order_setmenu_detail.deleted_at','=',NULL)
+                        ->get()->toArray();
+    }
+     public function getSetMenuDetailById($orderID){
+        $setmenu = Orderdetail::where('order_id',$orderID)->get();
+        // select('order_detail.id','setmenu_id','item_id')
+        //                 ->where('order_setmenu_detail.order_id','=',$orderID)
+        //                 ->where('order_setmenu_detail.deleted_at','=',NULL)
+        //                 ->where('set_menu_id','!=',0)
+        //                 ->get()->toArray();
+        return $setmenu;
+     
+    }
+    public function deletsubmenu($id){
+      $tempObj             = OrderSetMenuDetail::where('id',$id)->get();
+              foreach ($tempObj as $key => $value) {
+      $value               = Utility::addDeletedBy($value);
+        $value->deleted_at = date('Y-m-d H:m:i');
+             $value->save();
+        }
+    }
 }

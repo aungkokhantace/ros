@@ -13,6 +13,13 @@ class OrderSetMenuDetail extends Model
     protected $fillable = ['id','order_detail_id','setmenu_id','item_id','order_type_id','quantity','exception','order_time','order_duration','cooking_time','waiter_duration','waiter_id','waiter_status','status_id','cancel_status','message','remark','created_by','updated_by',
     'deleted_by','created_at','updated_at','deleted_at'];
 
-    
+ public function order_details()
+    {
+        return $this->belongsTo('App\RMS\Order\Orderdetail', 'order_detail_id', 'id');
+    }
 
+    public function set_menu()
+    {
+        return $this->belongsTo('App\RMS\SetMenu\SetMenu','setmenu_id','id');
+    }
 }

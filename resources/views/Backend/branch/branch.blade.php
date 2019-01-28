@@ -59,7 +59,7 @@
          <div class="form-group">
             <label for="description" class="col-sm-3 control-label left-align label-font">Description</label>
             <div class="col-sm-7">
-                <textarea class="form-control" id="item-description" name="description" placeholder="Enter Add-on Description" rows="7" cols="40">{{isset($branch)? $branch->description:Input::old('description')}}</textarea>
+                <textarea class="form-control" id="item-description" name="description" placeholder="Enter Branch Description" rows="7" cols="40">{{isset($branch)? $branch->description:Input::old('description')}}</textarea>
                 <p class="text-danger">{{$errors->first('description')}}</p>
             </div>
         </div>

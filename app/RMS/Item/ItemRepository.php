@@ -17,6 +17,24 @@ use App\RMS\ReturnMessage;
 
 class ItemRepository implements ItemRepositoryInterface
 {
+    public function getallItem(){
+        $branch        = Utility::getCurrentBranch();
+        $restaurant    = Utility::getCurrentRestaurant();
+       
+
+        $query         = Item::query();
+        $query         = $query->whereNull('deleted_at');
+        if($restaurant != 0){
+            $query      = $query->where('restaurant_id',$restaurant);
+        }
+        if($branch != 0){
+            $query     = $query->where('branch_id',$branch);
+        }
+        $items        = $query->get();
+        return $items;
+
+      
+    }
     public function store($paramObj,$input,$remark,$branch_id ,$restaurant_id)
     {
         $returnedObj = array();

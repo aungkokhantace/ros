@@ -111,6 +111,13 @@
             $('.enter-btn').click(function(){
                 $('.login-form').submit();
             });
+
+              //Press Enter Key From Keyboard
+            $(document).bind('keypress', function(key) {
+            if(key.keyCode==13){
+                   $('.login-form').submit();
+             }
+            });
         });
     </script>
 </body>

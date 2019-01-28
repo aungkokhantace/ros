@@ -26,4 +26,5 @@ interface OrderdetailRepositoryInterface
     public function getdetail($id);
     public function orderTable($id);
     public function orderRoom($id);
+    public function getSetMenuByOrder($id);
 }

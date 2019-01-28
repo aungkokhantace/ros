@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\File;
 use Illuminate\Pagination\LengthAwarePaginator;
 
+
 use App\RMS\FormatGenerator As FormatGenerator;
 use App\RMS\ReturnMessage As ReturnMessage;
 use InterventionImage;
@@ -44,6 +45,7 @@ class CategoryController extends Controller
         $result  = $this->CategoryRepository->ChooseCat();
         $branch  = $this->branchRepo->getAllType();
         $restaurant = $this->restaurantRepo->getAllType();
+
         
         return view('Backend.category.category', ['categories' => $result])->with('kitchen',$kitchen)->with('branchs',$branch)->with('restaurants',$restaurant);
     }
@@ -91,6 +93,8 @@ class CategoryController extends Controller
         $paramObj->description  = $description;
         $paramObj->restaurant_id = $restaurant_id;
         $paramObj->branch_id     = $branch_id;
+
+
         $result = $this->CategoryRepository->store($paramObj);
 
          if($result['aceplusStatusCode'] ==  ReturnMessage::OK){

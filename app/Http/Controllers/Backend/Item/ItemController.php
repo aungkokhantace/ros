@@ -46,7 +46,7 @@ class ItemController extends Controller
     //Item Listing Page
     public function index()
     {
-       $items   = Item::all();
+       $items   =  $this->ItemRepository->getAllItem();
        // $cat     = $this->ItemRepository->allCat();
        $cat     = $this->CategoryRepository->getAllCategory();
        return view('Backend.item.ItemListing')->with('items', $items)->with('cat', $cat);
