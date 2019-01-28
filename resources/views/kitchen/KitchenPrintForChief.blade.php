@@ -49,7 +49,7 @@
               </div>
               <div class="footer-modal">
                 <button class="btn btn-success" id ="{{ $item->id }}" onClick="print_chef(this.id)">Print</button>
-                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">Close</button>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">ပိတ္မယ္</button>
               </div>
             </div>
           </div>
@@ -163,7 +163,7 @@
               </div>
               <div class="footer-modal">
                 <button class="btn btn-success" id ="{{ $item->order_detail_id }}" onClick="print_for_waiter(this.id)">Print</button>
-                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">Close</button>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">ပိတ္မယ္</button>
               </div>
             </div>
           </div>
