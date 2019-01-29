@@ -97,6 +97,11 @@ class ItemRepository implements ItemRepositoryInterface
 
     }
 
+    public function getItemPrice($item_id){
+        $item_price = Item::where('id',$item_id)->select('price')->whereNull('deleted_at')->where('status',1)->first();
+        return $item_price->price;
+    }
+
     public function selectParent()
     {
         $parent = DB::table('category')->where('parent_id', '=', 0)->get();

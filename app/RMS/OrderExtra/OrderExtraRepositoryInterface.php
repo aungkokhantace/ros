@@ -9,4 +9,5 @@ namespace App\RMS\OrderExtra;
 interface OrderExtraRepositoryInterface
 {
 	public function delete($order_detail_id);
+	public function getAddonPrice($addon_id);
 }

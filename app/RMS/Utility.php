@@ -11,6 +11,9 @@ use App\Session;
 use App\RMS\User\UserRepository;
 use App\User;
 use App\RMS\Order\Order;
+use App\RMS\Discount\DiscountRepository;
+use App\RMS\Item\ItemRepository;
+use App\RMS\OrderExtra\OrderExtraRepository;
 use App\RMS\Orderdetail\Orderdetail;
 use App\RMS\SyncsTable\SyncsTable;
 use App\RMS\Category\Category;
@@ -264,8 +267,33 @@ class Utility
         return $detail_id;
     }
 
+    public static function getitemPrice($item_id){
+        $itemRepo       = new ItemRepository();
+        $itemprice      = $itemRepo->getItemPrice($item_id);
+        return $itemprice;
+    }
 
 
+    public static function getAddonPrice($extra_id){
+        //Addon and Extra are equal
+        $AddonRepo      = new OrderExtraRepository();
+        $extra_price    = $AddonRepo->getAddonPrice($extra_id);
+        return $extra_price;
+
+    }
+
+    public static function getItemDiscount($item_id){
+        $discountRepo = new DiscountRepository();
+        $item_discount  = $discountRepo->getDiscountPrice($item_id);
+        return $item_discount;
+    }
+
+    public static function getSetItemPrice($set_item_id){
+        $setprice   = DB::table('set_menu')->where('id',$set_item_id)->where('status',1)->first();
+        return $setprice->set_menus_price; 
+    }
+
+   
 
 
 }
