@@ -179,7 +179,7 @@
         {{--End item Status--}}
         <div class="form-group">
             <div class="col-sm-7 col-sm-offset-3">
-                <input type="submit" name="submit" value="{{isset($record)? 'UPDATE' : 'ADD'}}" class="user-button-ok"> {{--Add Button--}}
+                <input type="button" name="submitForm" value="{{isset($record)? 'UPDATE' : 'ADD'}}" class="user-button-ok"> {{--Add Button--}}
                 <input type="reset" value="CANCEL" class="user-button-cancel" onclick="show_item_list();"> {{--Cancel Button--}}
             </div>
         </div>
@@ -344,6 +344,20 @@ $(document).ready(function() {
         });
     });
   }
+  $('input[name=submitForm]').on('click',function(){
+      $.ajax({
+          method: 'get',
+          url: '/Cashier/ajax/shiftStatus'
+      }).done(function(status){
+          status = parseInt(status);
+          action = $('input[name=submitForm]').val();
+          if (action == 'UPDATE' && status) {
+            swal ( "Fails" ,  "Shift is Running, Please Day End First!" ,  "error" );
+            return;
+          }
+        $("form").submit();
+      }); 
+  });
 
 });
 </script>

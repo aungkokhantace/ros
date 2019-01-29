@@ -191,6 +191,18 @@ class ShiftController extends Controller
         }
         return redirect()->back()->withMessage(FormatGenerator::message('Success', 'Shift updated ...'));
     }
+
+    public function shiftStatus(){
+        $status = (boolean) 0 ;
+        try {
+            $status = collect(DB::table('order_day')->latest()->get())->first()->status;
+            return $status;
+  
+        } catch (\Throwable $e) {
+            return status;
+        }
+    }
+
     /*
     public function Shift($shift){
         $user_role      = StatusConstance::WAITER_ROLE;
