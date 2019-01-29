@@ -150,15 +150,5 @@ class DiscountRepository implements DiscountRepositoryInterface
     public function getContinent() {
 		$continent  = Continent::select('id','name')->get();
 		return $continent;
-    }
-    
-    public function getDiscountPrice($item_id){
-        $discount = DiscountModel::where('item_id',$item_id)->whereNull('deleted_at')->select('amount')->first();
-        if($discount != null){
-            return $discount->amount;
-        }else{
-            return null;
-        }
-       
-    }
+	}
 }

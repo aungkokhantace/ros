@@ -150,18 +150,16 @@ ini_set('memory_limit', '-1');
                                   <div class="btn-group">
                                       <div>
                                           @if ($item->status_id == 1 && !$item->is_ready_food)
-                                              <input type="submit" class="start btn btn-info btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" value="Start Cooking"/>
+                                              <input type="submit" class="start btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking"/>
                                           @elseif(!empty($item->is_ready_food) && $item->status_id == 1)
-                                              <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" value="Food Ready"/>
-                                          {{--
-                                            @elseif($item->status_id == '3')
+                                              <input type="submit" class="complete btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Food Ready"/>
+                                          @elseif($item->status_id == '3')
                                               <div>
-                                                  <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" value="Take"/>
+                                                  <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Take"/>
                                               </div>
-                                          --}}
                                           @endif
                                           @if ($item->status_id == 2)
-                                              <input type="submit" class="taken btn btn-success btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" value="Complete"/>
+                                              <input type="submit" class="complete btn btn-success btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Complete"/>
                                           @endif
                                       </div>
                                       <div>
@@ -209,6 +207,7 @@ ini_set('memory_limit', '-1');
                                       </div>
                                   </div>
                               </td>
+
                               <td style="border-left: none !important;">
                                   <div class="btn-group">
                                       <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (Waiter)</button>
@@ -234,7 +233,7 @@ ini_set('memory_limit', '-1');
                               @if ($item->status_id == 1)
                                   <td style="border-left: none !important;">
                                       <div class="btn-group">
-                                          <input type="button" class="cancel btn btn-danger btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" data-toggle="modal" data-target="#{{$item->id}}-{{$item->setmenu_id}}modal" value="Cancel">
+                                          <input type="button" class="cancel btn btn-danger btn_k" id="{{$item->id}}-{{$item->setmenu_id}}" data-toggle="modal" data-target="#{{$item->id}}-{{$item->setmenu_id}}modal" value="Cancel">
                                       </div>
                                   </td>
                               @else
@@ -275,11 +274,6 @@ ini_set('memory_limit', '-1');
       @endforeach
     </div>
 </div>
-
-@foreach($orders as $order)
-    @include('kitchen.KitchenPrintForChief')
-@endforeach
-
 <?php
 ini_set('memory_limit', '-1');
 ?>

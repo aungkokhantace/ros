@@ -21,5 +21,4 @@ interface DiscountRepositoryInterface
     public function storeDiscountLog($tempObj);
     public function updateDiscountLog($tempObj);
     public function deleteDiscountLog($tempObj);
-    public function getDiscountPrice($item_id);
 }

@@ -384,7 +384,6 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/CookingItem/' + itemID,
@@ -417,7 +416,6 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/CookedItem/' + itemID,
@@ -454,7 +452,7 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/taken/' + itemID,
@@ -488,8 +486,8 @@
                         confirmButtonText: "Confirm",
                         closeOnConfirm: false
                     }, function(isConfirm){
+
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/taken/ajaxRequest/' + itemID,
@@ -523,7 +521,7 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/taken/setmenu' + itemID,
@@ -557,7 +555,6 @@
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {
-                        $('#' + itemID).attr('disabled', true);
                         $.ajax({
                             type: 'GET',
                             url: '/Kitchen/productView/CookingSetMenuItem/' + itemID,
@@ -586,7 +583,6 @@
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {
-                        $('#' + itemID).attr('disabled', true);
                         $.ajax({
                             type: 'GET',
                             url: '/Kitchen/productView/CookedSetMenuItem/' + itemID,

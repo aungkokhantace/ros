@@ -373,10 +373,7 @@ class OrderViewController extends Controller
 
             $orders[$key]->items = $orderItemList;
         }
-        return view('kitchen.realtime_tableview')->with('tables',$tables)
-            ->with('orders',$orders)->with('rooms',$rooms)
-            ->with('extra',$extra)->with('kitchen', $kitchen)
-            ->render();
+        return view('kitchen.realtime_tableview')->with('tables',$tables)->with('orders',$orders)->with('rooms',$rooms)->with('extra',$extra)->render();
     }
 
     public function productView()
@@ -907,7 +904,7 @@ class OrderViewController extends Controller
                 // Change Order Status
                 $this->normalizeOrderStatus($order);
 
-            }  else {
+            }else{
                 $order_detail   = Orderdetail::find($id);
 
                 $order_id = $order_detail->order_id;
@@ -933,14 +930,6 @@ class OrderViewController extends Controller
                 $this->normalizeOrderStatus($order);
             // return redirect()->action('Kitchen\OrderViewController@tableView');
             }
-
-            DB::table('tables')
-                ->join('order_tables', 'order_tables.table_id', '=', 'tables.id')
-                ->join('order', 'order_tables.order_id', '=', 'order.id')
-                ->where('order_tables.order_id', '=', $order_id)
-                ->where('order.status', '=', StatusConstance::ORDER_CANCEL_STATUS)
-                ->update(['tables.status' => 0]);
-
             DB::commit();
             // Custom Log
             $date       = date("Y-m-d H:i:s");
@@ -955,7 +944,7 @@ class OrderViewController extends Controller
             $message    = "[ $date ]  error:  fails to cancel an item from [ Kitchen ] [ OrderdetailID =  $id ] and got error -------". $e->getMessage()." ----- line ".$e->getLine() ."-----". $e->getFile(). PHP_EOL;
             RmsLog::create($message);
             $output = array("message" => "Fail To Cancel an item.");
-            return \Response::json($e->getMessage());
+            return Response::json($output);
         }
     }
 
