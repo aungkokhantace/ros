@@ -566,7 +566,12 @@ class MakeAPIController extends ApiGuardController
                           array_push($new_order_detail_ary,$order_detail->order_detail_id);
                           $order_detail_id             = $order_detail->order_detail_id;
                           $temp = Orderdetail::where('order_detail_id',$order_detail_id)->first();
-                          
+                          if($order_detail->status != 1){
+                            array_push($order_cooking_ary,$order_detail->order_detail_id);
+                           }
+                           if($temp->status_id != 1){
+                            array_push($cooking_ary,$order_detail->order_detail_id);
+                           }
                           if($temp->status_id == 6 && $order_detail->status != 6){
                               array_push($backend_cancel_order_ary,$temp->order_detail_id);
                           }
