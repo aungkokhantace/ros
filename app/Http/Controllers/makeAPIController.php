@@ -680,7 +680,7 @@ class MakeAPIController extends ApiGuardController
                         }else{
                             foreach($remarks as $remark){
                                 if($remark->selected == "true"){
-                                    array_push($remark,$remark_detail_ary);
+                                    array_push($remark->remark_id,$remark_detail_ary);
                                 }
                             }
 
