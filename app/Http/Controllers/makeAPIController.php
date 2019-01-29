@@ -228,13 +228,14 @@ class MakeAPIController extends ApiGuardController
         ->where('status',$session_status)
         ->whereNull('deleted_at')
         ->first();
-
+       
         if($daystart->id != $day_id){
             $output = array();
             $output['message'] = 'wrong shift';
             return Response::json($output);
 
         }
+
 
         $order                          = new Order();
         $order->id                      = $order_id;
@@ -385,7 +386,6 @@ class MakeAPIController extends ApiGuardController
             return Response::json($output);
 
         }catch(\Exception $e){
-            dd($e);
             DB::rollback();
             $date       = date("Y-m-d H:i:s");
             $data       = json_decode(request('orderID'));
@@ -480,7 +480,6 @@ class MakeAPIController extends ApiGuardController
                      if($order_detail->state == 'new'){
                       
                // if($order_detail->state == 'new'){
-                      //     dd('temp',$temp);
                       // }
                       $temp = new Orderdetail();
                       $order_detail_id = Utility::OrderDetailId($order_id);
@@ -567,7 +566,9 @@ class MakeAPIController extends ApiGuardController
                           array_push($new_order_detail_ary,$order_detail->order_detail_id);
                           $order_detail_id             = $order_detail->order_detail_id;
                           $temp = Orderdetail::where('order_detail_id',$order_detail_id)->first();
-                          
+                          if($order_detail->status != 1){
+                            array_push($order_cooking_ary,$order_detail->order_detail_id);
+                           }
                           if($temp->status_id == 6 && $order_detail->status != 6){
                               array_push($backend_cancel_order_ary,$temp->order_detail_id);
                           }
@@ -660,7 +661,7 @@ class MakeAPIController extends ApiGuardController
                               foreach($remarks as $remark){
                                   if($remark->selected == "true"){
                                       $remark_detail = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$remark->remark_id)->first();
-                                      array_push($remark->remark_id,$remark_detail_ary);
+                                      array_push($remark_detail_ary,$remark->remark_id);
                                       if(!isset($remark_detail)){
                                           $OrderDetailObj = new Order_Detail_Remark();
                                           $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
@@ -679,7 +680,7 @@ class MakeAPIController extends ApiGuardController
                         }else{
                             foreach($remarks as $remark){
                                 if($remark->selected == "true"){
-                                    array_push($remark,$remark_detail_ary);
+                                    array_push($remark_detail_ary,$remark->remark_id);
                                 }
                             }
 
@@ -774,6 +775,7 @@ class MakeAPIController extends ApiGuardController
   
                      
                       $cooking_ary      = array_unique($cooking_ary);
+                      $order_cooking_ary = array_unique($order_cooking_ary);
                       $cancel_order_ary = array();
                       if(isset($cooking_ary) && count($cooking_ary)>0){
                             foreach($cooking_ary as $item){
@@ -791,6 +793,8 @@ class MakeAPIController extends ApiGuardController
                             array_push($cancel_order_ary,$item->item_name .' is canceled by kitchen');
                         }
                     }
+
+                     
                     
                   
 
@@ -804,28 +808,33 @@ class MakeAPIController extends ApiGuardController
                          $order_set_menu_detail = OrderSetMenuDetail::where('order_detail_id',$delete_order)->forceDelete();
                          $deleting_order_detail = Orderdetail::where('order_detail_id',$delete_order)->forceDelete();
                         }else{
+                            
                           array_push($cooking_ary,$delete_order);
                         }
                      }
 
-                    
-                     $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
-                    
-                     $order_total_price = 0;
-                     $order_tax_edit = 0;
-                     $order_service_edit = 0;
-                     foreach($order_detail_not_delete as $price_order){
-                            $order_total_price += $price_order->amount;
-                            $order_tax_edit    += $price_order->tax_amount;
-                            $order_service_edit += $price_order->tax_amount;
-                     }
 
+                     $cancel_order_ary = array();
+                     if(isset($cooking_ary) && count($cooking_ary)>0){
+                           foreach($cooking_ary as $item){
+                             
+                               if(!in_array($item,$order_cooking_ary)){
+                                   $item =  Orderdetail::where('order_detail_id',$item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name','order_details.amount_with_discount as amount_discount','order_details.amount as amount','order_details.discount_amount as discount')->first();
+                                   // $order_amount += $item->amount_discount;
+                                   // $discount_amount += $item->discount;
+                                   array_push($cancel_order_ary,$item->item_name .' is cooking');
+                               }
+   
+                           }
+                       }
+                  
+                   if(isset($backend_cancel_order_ary) && count($backend_cancel_order_ary)>0){
+                       foreach($backend_cancel_order_ary as $backedn_cancel){
+                           $item  = Orderdetail::where('order_detail_id',$backedn_cancel)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
+                           array_push($cancel_order_ary,$item->item_name .' is canceled by kitchen');
+                       }
+                   }
                     
-                       
-                       
-                       
-                       
-                       
                    
                       // if(isset($order_extra) && count($order_extra)>0){
                       //     $order_extra->forceDelete();
@@ -857,7 +866,6 @@ class MakeAPIController extends ApiGuardController
   
                return Response::json($output);
             }catch(\Exception $e){
-               dd($e);
               DB::rollback();
               $date       = date("Y-m-d H:i:s");
               $data       = json_decode(request('orderID'));
@@ -1007,40 +1015,153 @@ class MakeAPIController extends ApiGuardController
     }
 
     public function table_transfer_v2(){
-
         $temp               = Input::all();
-      
         $order_id                           = $temp['order_id'];
-
         $transfer_to_table_id               = $temp['transfer_to_table_id'];
-
-        $transfer_from_table_id  = OrderTable::where('order_id','=',$order_id)->value('table_id');
-       
-        $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();
-       
-
-        if($order_count == "1"){
-           $from_table = Table::find($transfer_from_table_id);
-           $from_table->status = 0;
-           $from_table->save();
-
-        }
+        $transfer_from_table_id             = $temp['transfer_from_table_id'];
         
-
+        //change to table status
         $to_table           = Table::find($transfer_to_table_id);
-
         $to_table->status   = 1;
-
         $to_table->save();
+
+        $table_count = OrderTable::where('order_id',$order_id)->count();
         
-   
-        $order_table_delete = OrderTable::where('table_id',$transfer_to_table_id)->value('order_id');
-        if($order_table_delete == $order_id){
-          OrderTable::where('order_id','=',$order_table_delete)->where('table_id',$transfer_from_table_id)->forceDelete();
-        }else{
-          OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)
-                    ->update(['table_id'=> $transfer_to_table_id]);
+        //group case
+        if($table_count > 1){
+            //change from table status
+        //    $from_table = Table::find($transfer_from_table_id);
+        //    $from_table->status = 0;
+        //    $from_table->save();
+
+           //check whether to table has invoice
+           $to_table_voucher = OrderTable::where('table_id',$transfer_to_table_id)->where('order_id',$order_id)->first();
+           
+           if(count($to_table_voucher) == 0){
+                $to_order_table = new OrderTable();
+                $to_order_table->id = $order_id;
+                $to_order_table->order_id = $order_id;
+                $to_order_table->table_id = $transfer_to_table_id;
+
+                $to_order_table->save();
+
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();       
+
+                OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();   
+
+                if($order_count == "1"){
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();                         
+                }
+           }
+           elseif((count($to_table_voucher) > 0) &&  $to_table_voucher->order_id != $order_id){
+                $to_order_table = new OrderTable();
+                $to_order_table->id = $order_id;
+                $to_order_table->order_id = $order_id;
+                $to_order_table->table_id = $transfer_to_table_id;
+
+                $to_order_table->save();
+
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();       
+
+                if($order_count == "1"){
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();        
+                }
+                else{
+                    OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+                }
+           }
+           elseif((count($to_table_voucher) > 0) &&  $to_table_voucher->order_id == $order_id){
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count(); 
+                
+                OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+                
+                if($order_count == "1"){
+                    
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();       
+                }
+           }   
         }
+        // non-group case
+        else{
+            //check whether to table has invoice
+           $to_table_voucher = OrderTable::where('table_id',$transfer_to_table_id)->where('order_id',$order_id)->first();
+
+           if(count($to_table_voucher) == 0){
+                $to_order_table = new OrderTable();
+                $to_order_table->id = $order_id;
+                $to_order_table->order_id = $order_id;
+                $to_order_table->table_id = $transfer_to_table_id;
+
+                $to_order_table->save();
+
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();       
+
+                OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();   
+
+                if($order_count == "1"){
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();                         
+                }
+           }
+           elseif((count($to_table_voucher) > 0) &&  $to_table_voucher->order_id != $order_id){
+            
+                $to_order_table = new OrderTable();
+                $to_order_table->id = $order_id;
+                $to_order_table->order_id = $order_id;
+                $to_order_table->table_id = $transfer_to_table_id;
+
+                $to_order_table->save();
+
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();       
+
+                if($order_count == "1"){
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();        
+                }
+                else{
+                    OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+                }
+           }
+           elseif((count($to_table_voucher) > 0) &&  $to_table_voucher->order_id == $order_id){
+                $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count(); 
+                
+                OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+                
+                if($order_count == "1"){
+                    
+                    $from_table = Table::find($transfer_from_table_id);
+                    $from_table->status = 0;
+                    $from_table->save();       
+                }
+           } 
+
+            // $to_order_table = new OrderTable();
+            // $to_order_table->id = $order_id;
+            // $to_order_table->order_id = $order_id;
+            // $to_order_table->table_id = $transfer_to_table_id;
+
+            // $to_order_table->save();
+
+            // $order_count = OrderTable::where('table_id',$transfer_from_table_id)->count();
+       
+            // OrderTable::where('order_id','=',$order_id)->where('table_id',$transfer_from_table_id)->forceDelete();
+    
+            // if($order_count == "1"){
+            //    $from_table = Table::find($transfer_from_table_id);
+            //    $from_table->status = 0;
+            //    $from_table->save();
+            // } 
+        }
+   
+        
 
         $output             = array("message" => "Success");
 

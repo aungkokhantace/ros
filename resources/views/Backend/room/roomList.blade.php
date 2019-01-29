@@ -49,6 +49,7 @@ tfoot {
                             <th><input type="checkbox" id="room_check_all"></th>
                             <th>No</th>
                             <th>Room Name</th>
+                            <th>Room Charges</th>
                             <th>Capacity</th>
                             <th>Room Status</t1h>
                             <th>Action</th>
@@ -59,6 +60,7 @@ tfoot {
                             <th></th>
                             <th></th>
                             <th class="search-col" con-id="room_name">Room Name</th>
+                            <th class="search-col" con-id="room_name">Room Charges</th>
                             <th class="search-col" con-id="capacity">Capacity</th>
                             <th></th>
                             <th></th>
@@ -72,6 +74,7 @@ tfoot {
                                 </td>
                                 <td></td>
                                 <td><a href="/Backend/Room/edit/{{$room->id}}">{{ $room->room_name}}</a></td>
+                                <td>{{ $room->price + 0 }}</td>
                                 <td>{{ $room->capacity }}</td>
                                 <td>
                                     @if($room->status == 0) {{"Available"}}

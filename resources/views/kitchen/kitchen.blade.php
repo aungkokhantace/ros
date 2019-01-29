@@ -47,7 +47,6 @@ ini_set('memory_limit', '-1');
     border-radius: 0 0 5px 5px !important;
   }
   .footer-modal button {
-    font-weight: bolder;
     width: 130px;
     height: 35px;
   }
@@ -57,8 +56,12 @@ ini_set('memory_limit', '-1');
     border-radius: 0 0 5px 5px !important;
     font-weight: bolder !important;
   }
-  .modal-header h4 {
-    font-weight: bolder;
+  .cancel_btn button {
+    width: 120px !important;
+    color: white !important;
+  }
+  .mm-font {
+    padding: 3px 12px !important;
   }
   </style>
 </head>
@@ -212,16 +215,18 @@ ini_set('memory_limit', '-1');
                                                 <div class="btn-group">
                                                     <div>
                                                         @if ($item->status_id == 1 && !$item->is_ready_food)
-                                                            <input type="submit" class="start btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Start Cooking"/>
+                                                            <input type="submit" class="start btn btn-info btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="စခ်က္မယ္"/>
                                                         @elseif(!empty($item->is_ready_food) && $item->status_id == 1)
-                                                            <input type="submit" class="complete btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Food Ready"/>
-                                                        @elseif($item->status_id == '3')
+                                                            <input type="submit" class="taken btn btn-info btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ဟင္းပြဲရၿပီ"/>
+                                                        {{--
+                                                          @elseif($item->status_id == '3')
                                                             <div>
-                                                                <input type="submit" class="taken btn btn-info btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Take"/>
+                                                                <input type="submit" class="taken btn btn-info btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ယူမယ္"/>
                                                             </div>
+                                                          --}}
                                                         @endif
                                                         @if ($item->status_id == 2)
-                                                            <input type="submit" class="complete btn btn-success btn_k" id="{{$item->id}}/{{$item->setmenu_id}}" value="Complete"/>
+                                                            <input type="submit" class="taken btn btn-success btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ၿပီးၿပီ"/>
                                                         @endif
                                                     </div>
                                                     <div>
@@ -229,7 +234,7 @@ ini_set('memory_limit', '-1');
                                                         <div class="modal-dialog cancle-modal" role="document">
                                                           <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                                                <h4 class="modal-title" id="myModalLabel">ဖ်က္မယ့္အေၾကာင္းရင္း</h4>
                                                             </div>
                                                             <div class="modal-body">
                                                               {!! Form::open(array('class'=> 'form-horizontal', 'id' => $item->id)) !!}
@@ -242,7 +247,7 @@ ini_set('memory_limit', '-1');
                                                               <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
                                                               <table class="table">
                                                                 <tr>
-                                                                  <td>Enter Message</td>
+                                                                  <td>စာရိုက္ပါ</td>
                                                                   <td><input type="text" name="message" class="form-control"></td>
                                                                 </tr>
                                                                 <tr>
@@ -251,10 +256,10 @@ ini_set('memory_limit', '-1');
                                                                 </tr>
                                                                 <tr>
                                                                   <td>
-                                                                    <input type="button" name="submit" value="Save" class="btn btn-info cancel_item" id="{{$item->id}}-{{$item->setmenu_id}}">
+                                                                    <input type="button" name="submit" value="သိမ္းမယ္" class="btn btn-info cancel_item" id="{{$item->id}}-{{$item->setmenu_id}}">
                                                                   </td>
-                                                                  <td>
-                                                                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                                                  <td class="cancel_btn">
+                                                                    <button type="button" class="btn" data-dismiss="modal">ပိတ္မယ္</button>
                                                                   </td>
                                                                 </tr>
                                                               </table>
@@ -272,10 +277,11 @@ ini_set('memory_limit', '-1');
 
                                             <td style="border-left: none !important;">
                                                 <div class="btn-group">
-                                                    <button class="btn btn-success" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (Waiter)</button>
+                                                    <button class="btn btn-success mm-font" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (စားပြဲထိုး)</button>
                                                 </div>
                                             </td>
-                                            <td style="border-left: none !important;">
+                                            @if ($item->status_id == 1)
+                                              @if (empty($item->is_ready_food))
                                                 @php
                                                     if (isset($tables)) {
                                                         $id = $table->table_id;
@@ -283,22 +289,31 @@ ini_set('memory_limit', '-1');
                                                         $id = $room->rome_id;
                                                     }
                                                 @endphp
-                                                @if (empty($item->is_ready_food))
+                                                <td style="border-left: none !important;">
                                                     <div class="btn-group">
-                                                        <button class="btn btn-success" id='{{ $item->id }}' onclick="print_chief('{{$item->id}}')" data-toggle="modal" data-id="{{$item->id}}" data-target="#printModal">Print (Chef)</button>
+                                                        <button class="btn btn-success mm-font" id='{{ $item->id }}' onclick="print_chief('{{$item->id}}')" data-toggle="modal" data-id="{{$item->id}}" data-target="#printModal">Print (စားဖိုမွဴး)</button>
                                                     </div>
-                                                @endif
-                                            </td>
+                                                </td>
+                                              @endif
+                                            @endif
 
                                             @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
                                                     <div class="btn-group">
-                                                        <input type="button" class="cancel btn btn-danger btn_k" id="{{$item->id}}-{{$item->setmenu_id}}" data-toggle="modal" data-target="#{{$item->id}}-{{$item->setmenu_id}}modal" value="Cancel">
+                                                        <input type="button" class="cancel btn btn-danger btn_k" id="{{$item->id}}--{{$item->setmenu_id}}" data-toggle="modal" data-target="#{{$item->id}}-{{$item->setmenu_id}}modal" value="မလုပ္ဘူး">
                                                     </div>
                                                 </td>
                                             @else
                                                 <td style="border-left: none !important;"></td>
+                                                <td style="border-left: none !important;"></td>
                                             @endif
+
+                                            @if ($item->status_id == 1)
+                                              @if (!empty($item->is_ready_food))
+                                                <td style="border-left: none !important;"></td>
+                                              @endif
+                                            @endif
+
                                             {{-- @if ($item->status_id == 1)
                                                 <td style="border-left: none !important;">
                                                     <div class="btn-group">
@@ -373,7 +388,7 @@ ini_set('memory_limit', '-1');
                 var itemID      = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
-                        title: "Are you sure?",
+                        title: "ေသခ်ာလား?",
                         text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
@@ -383,6 +398,8 @@ ini_set('memory_limit', '-1');
                     }, function(isConfirm){
 
                         if (isConfirm) {
+                            $('.confirm').attr('disabled', true);
+                            var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/getStart/ajaxRequest/' + itemID,
@@ -402,10 +419,10 @@ ini_set('memory_limit', '-1');
 
 
             $('#divAuto').on('click', '.taken', function(e){
-                var itemID      = $(this).attr('id');
+                var itemID = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
-                        title: "Are you sure?",
+                        title: "ေသခ်ာလား?",
                         text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
@@ -415,11 +432,12 @@ ini_set('memory_limit', '-1');
                     }, function(isConfirm){
 
                         if (isConfirm) {
+                            $('.confirm').attr('disabled', true);
+                            var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/taken/ajaxRequest/' + itemID,
+                                url: '/Kitchen/taken/ajaxRequest/' + id,
                                 success: function (Response) {
-
                                     console.log(Response);
                                     //Socket Emit
                                     var socketKey        = "taken_by";
@@ -440,7 +458,7 @@ ini_set('memory_limit', '-1');
                 var itemID      = $(this).attr('id');
                 $(document).ready(function(){
                     swal({
-                        title: "Are you sure?",
+                        title: "ေသခ်ာလာ?",
                         text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
@@ -449,6 +467,8 @@ ini_set('memory_limit', '-1');
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
+                            $('.confirm').attr('disabled', true);
+                            var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/getCompleteID/' + itemID,
@@ -571,30 +591,29 @@ ini_set('memory_limit', '-1');
         }
 
         function print_chef(clicked_id) {
-            var clickID     = clicked_id;
-            var printID     = clickID + "-chef";
-            var test        = document.getElementById(printID);
+            var clickID = clicked_id;
+            var printID = clickID + "-chef";
+            var test    = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
 
         function print_for_waiter(clicked_id)
         {
-            var clickID     = clicked_id;
-            var printID     = clickID + "-waiter";
-            var test        = document.getElementById(printID);
+            var clickID = clicked_id;
+            var printID = clickID + "-waiter";
+            var test    = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
 
         function print_chief(order) {
-            var id      = order;
-            var modal   = id + '-print-chef';
+            var id    = order;
+            var modal = id + '-print-chef';
             $('#' + modal).modal('show');
         }
 
         function print_waiter(order) {
-
-            var id      = order;
-            var modal   = id + '-print-waiter';
+            var id    = order;
+            var modal = id + '-print-waiter';
             $('#' + modal).modal('show');
         }
     </script>

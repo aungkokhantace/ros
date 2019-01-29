@@ -373,7 +373,10 @@ class OrderViewController extends Controller
 
             $orders[$key]->items = $orderItemList;
         }
-        return view('kitchen.realtime_tableview')->with('tables',$tables)->with('orders',$orders)->with('rooms',$rooms)->with('extra',$extra)->render();
+        return view('kitchen.realtime_tableview')->with('tables',$tables)
+          ->with('orders',$orders)->with('rooms',$rooms)
+          ->with('extra',$extra)->with('kitchen', $kitchen)
+          ->render();
     }
 
     public function productView()
@@ -637,13 +640,13 @@ class OrderViewController extends Controller
         $order_details_cooked_status   = StatusConstance::ORDER_DETAIL_COOKED_STATUS;
         //Setmenu Status
         $order_setmenu_cooked_status   = StatusConstance::ORDER_SETMENU_COOKED_STATUS;
-       
+
         if($id != "0" && $setmenu_id == "0"){
             DB::statement('update order_details set status_id=?, order_duration=? where id=?',[$order_details_cooked_status,$date, $id]);
             $orders     = Orderdetail::where('id','=',$id)->get()->toArray();
         }
         else{
-           
+
             $setMenu                        = OrderSetMenuDetail::find($id);
             $orderDetail                    = OrderDetail::find($setMenu->order_detail_id);
             if($orderDetail->status_id == 1){
@@ -705,9 +708,9 @@ class OrderViewController extends Controller
 
         //Setmenu Status
         $order_setmenu_done_status     = StatusConstance::ORDER_SETMENU_COOKING_DONE_STATUS;
-        
+
         if($item_id != "0" && $setmenu_id == "0"){
-            
+
             DB::statement('update order_details set status_id=?, cooking_time=? where id=?', [$order_details_done_status,$date,$item_id]);
         }
         else{
@@ -930,6 +933,14 @@ class OrderViewController extends Controller
                 $this->normalizeOrderStatus($order);
             // return redirect()->action('Kitchen\OrderViewController@tableView');
             }
+
+            DB::table('tables')
+                ->join('order_tables', 'order_tables.table_id', '=', 'tables.id')
+                ->join('order', 'order_tables.order_id', '=', 'order.id')
+                ->where('order_tables.order_id', '=', $order_id)
+                ->where('order.status', '=', StatusConstance::ORDER_CANCEL_STATUS)
+                ->update(['tables.status' => 0]);
+                
             DB::commit();
             // Custom Log
             $date       = date("Y-m-d H:i:s");
