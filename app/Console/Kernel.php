@@ -60,13 +60,6 @@ class Kernel extends ConsoleKernel
                     $schedule->command('db:backup')->cron('0 */24 * * *'); // every twenty-four hour
                 }
             }
-
-            else{
-                // dd('Order day does not start');    
-            }
-            
-        }else{
-            // dd('order day does not exists');
-        }   
+        }
     }
 }
