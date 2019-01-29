@@ -47,6 +47,15 @@
   .custom button:hover {
     color: white !important;
   }
+  .sa-button-container .cancel {
+    width: 121px !important;
+    height: 44px !important;
+    font-size: 15px !important;
+  }
+  .sa-button-container .confirm {
+    font-size: 15px !important;
+    height: 44px !important;
+  }
   </style>
 </head>
     <div id="body">
@@ -383,11 +392,11 @@
                 $(document).ready(function  (){
                     swal({
                         title: "ေသခ်ာလား?",
-                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
@@ -416,11 +425,11 @@
                 $(document).ready(function(){
                     swal({
                         title: "ေသခ်ာလား?",
-                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
@@ -453,11 +462,11 @@
                 $(document).ready(function(){
                     swal({
                         title: "ေသခ်ာလား?",
-                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
@@ -488,11 +497,10 @@
                 $(document).ready(function  (){
                     swal({
                         title: "ေသခ်ာလား?",
-                        text: "You will not be able to recover this item!",
                         type: "success",
-                        showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
 
@@ -523,11 +531,11 @@
                 $(document).ready(function(){
                     swal({
                         title: "ေသခ်ာလား?",
-                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
@@ -557,11 +565,11 @@
                 var itemID      = $(this).attr('id');
                 swal({
                     title: "ေသခ်ာလား?",
-                    text: "You will not be able to recover this item!",
                     type: "success",
                     showCancelButton: true,
+                    cancelButtonText: "မလုပ္ဘူး",
                     confirmButtonColor: "#86CCEB",
-                    confirmButtonText: "Confirm",
+                    confirmButtonText: "လုပ္မယ္",
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {
@@ -586,11 +594,11 @@
                 var itemID      = $(this).attr('id');
                 swal({
                     title: "ေသခ်ာလား?",
-                    text: "You will not be able to recover this item!",
                     type: "success",
                     showCancelButton: true,
+                    cancelButtonText: "မလုပ္ဘူး",
                     confirmButtonColor: "#86CCEB",
-                    confirmButtonText: "Confirm",
+                    confirmButtonText: "လုပ္မယ္",
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {

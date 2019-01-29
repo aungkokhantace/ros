@@ -63,6 +63,15 @@ ini_set('memory_limit', '-1');
   .mm-font {
     padding: 3px 12px !important;
   }
+  .sa-button-container .cancel {
+    width: 121px !important;
+    height: 44px !important;
+    font-size: 15px !important;
+  }
+  .sa-button-container .confirm {
+    font-size: 15px !important;
+    height: 44px !important;
+  }
   </style>
 </head>
     <div id="body">
@@ -389,11 +398,11 @@ ini_set('memory_limit', '-1');
                 $(document).ready(function  (){
                     swal({
                         title: "ေသခ်ာလား?",
-                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
 
@@ -402,7 +411,7 @@ ini_set('memory_limit', '-1');
                             var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/getStart/ajaxRequest/' + itemID,
+                                url: '/Kitchen/getStart/ajaxRequest/' + id,
                                 success: function (Response) {
                                     console.log(Response);
                                     //Socket Emit
@@ -423,11 +432,11 @@ ini_set('memory_limit', '-1');
                 $(document).ready(function  (){
                     swal({
                         title: "ေသခ်ာလား?",
-                        text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
 
@@ -462,8 +471,9 @@ ini_set('memory_limit', '-1');
                         text: "You will not be able to recover this item!",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
