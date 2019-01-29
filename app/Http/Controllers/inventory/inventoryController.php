@@ -271,7 +271,7 @@ class inventoryController extends Controller
 		$item_ary['ClassId'] 			= $classid;
 		$item_ary['SupplierId'] 		= $this->SupplierId;
 		$item_ary['UMId'] 				= 1;
-		if($item->is_ready_food == 1){
+		if($item->is_ready_food == 1 && $item->has_inventory == 1){
 		$item_ary['ProductTypeId'] 		= 3;
 		}else{
 		$item_ary['ProductTypeId'] 		= 1;

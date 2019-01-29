@@ -5,7 +5,7 @@
       <div class="box">
        <div class="box-header">
     
-        <h3 class="h3-font"><b>{{isset($continent) ?  'Edit Continent' : 'Setup New Continent' }}</b></h3>
+        <h3 class="h3-font"><b>{{isset($continent) ?  'Edit Condiment' : 'Setup New Condiment' }}</b></h3>
      </div>
 </div> 
        <div class="container">

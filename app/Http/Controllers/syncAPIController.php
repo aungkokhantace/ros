@@ -127,7 +127,7 @@ class syncAPIController extends ApiGuardController
         }
         if($key == $activate_key){
             $inventory = new inventoryController();
-            $items = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time,is_ready_food,stock_code FROM items WHERE status = '1' AND deleted_at IS NULL order by name ASC");
+            $items = DB::select("SELECT id,name,image,price,has_inevntory,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time,is_ready_food,stock_code FROM items WHERE status = '1' AND deleted_at IS NULL order by name ASC");
             $remainitems = $inventory->getremainbalance();
             $remainAry = array();
            
@@ -711,7 +711,7 @@ class syncAPIController extends ApiGuardController
                 if ($sync->table_name == "items") {
                     if ($sync->version > $temp['items']) {
                         $inventory = new inventoryController();
-                        $items = DB::select("SELECT id,name,image,price,status,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time,is_ready_food,stock_code FROM items WHERE status = '1' AND deleted_at IS NULL order by name ASC");
+                        $items = DB::select("SELECT id,name,image,price,status,has_inventory,category_id,continent_id,group_id,isdefault,has_continent,standard_cooking_time,is_ready_food,stock_code FROM items WHERE status = '1' AND deleted_at IS NULL order by name ASC");
                         $remainitems = $inventory->getremainbalance();
                         
                         foreach($items as $item){

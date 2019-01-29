@@ -13,7 +13,7 @@ tfoot {
             {{--heading title--}}
             <div class="col-md-12">
                 <div class="col-md-3">
-                    <h3 class="h3 list-heading-align"><strong>Continent Listing</strong></h3>
+                    <h3 class="h3 list-heading-align"><strong>Condiment Listing</strong></h3>
                     @if(count(Session::get('message')) != 0)
                         <div ></div>
                     @endif
