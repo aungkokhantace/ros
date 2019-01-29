@@ -1273,6 +1273,7 @@ class InvoiceController extends Controller
             $order->refund = $request->change;
             $order->take_voucher = $request->take_voucher;
             $order->shift_id = $orderShift;
+            $order->cashier =  \Auth::guard('Cashier')->user()->user_name;
             $order->status = 2;
 
 

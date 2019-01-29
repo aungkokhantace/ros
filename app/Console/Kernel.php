@@ -62,11 +62,11 @@ class Kernel extends ConsoleKernel
             }
 
             else{
-                dd('Order day does not start');    
+                // dd('Order day does not start');    
             }
             
         }else{
-            dd('order day does not exists');
+            // dd('order day does not exists');
         }   
     }
 }

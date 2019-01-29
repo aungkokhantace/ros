@@ -142,6 +142,7 @@ class DayStartController extends Controller
                                       ->where('status','=',$order_status)
                                       ->where('day_id','=',$day_id)
                                       ->get();
+
                 if (count($orders) > 0) {
                     $error_code         = 5;
                     return redirect()->back()->with('error_code',$error_code)->with('orders',$orders);
@@ -156,6 +157,8 @@ class DayStartController extends Controller
                     } 
                 }
             } else {
+                $orders = Order::where('day_id',$day_id)->where('status',1)->update(['shift_id' => 2]);
+
                 $order_shift->status        = $status;
                 $result                 = $this->dayStartRepository->update($order_shift);
                 if($result['aceplusStatusCode'] ==  ReturnMessage::OK){

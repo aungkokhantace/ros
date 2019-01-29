@@ -39,7 +39,7 @@
                                         Tel: {{ $config->phone}}<br/>
                                         Addr: {{ $config->address}}<br /><br />
 
-                                        <span style="float:left">Cashier: {{ Auth::guard('Cashier')->user()->user_name }}</span><br>
+                                        <span style="float:left">Cashier: {{ $order->cashier }}</span><br>
                                         <span style="float:left">Waiter: {{ $order->User->user_name }}</span><br>
                                         <span style="float:left">Invoice No: {{ $order->order_id}}</span><br/>
                                         <span style="float:left">Invoice Date:{{ Carbon\Carbon::parse($order->order_time)->format('d-m-Y') }}</span><br/>

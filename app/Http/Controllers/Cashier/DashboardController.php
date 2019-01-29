@@ -165,9 +165,12 @@ class DashboardController extends Controller
         }
         
         $orderDay = DB::table('order_day')->where('id',$orderShift->day_id)->orderBy('id','desc')->first();
+        
+        $orders = Order::where('day_id',$orderDay->id)
+                    ->where('shift_id',$orderShift->shift_id)
+                    ->where('status',2)
+                    ->get();
 
-        $orders = Order::where('day_id',$orderDay->id)->where('shift_id',$orderShift->shift_id)->get();
-   
         $day = \Carbon\Carbon::parse($orderDay->start_date)->format('d-m-Y');
 
         return view('cashier.invoice.report',compact('orders','day','hide','type'));
