@@ -158,6 +158,7 @@ ini_set('memory_limit', '-1');
                                               <div>
                                                   <input type="submit" class="taken btn btn-info btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ယူမယ္"/>
                                               </div>
+                                            --}}
                                           @endif
                                           @if ($item->status_id == 2)
                                               <input type="submit" class="taken btn btn-success btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ၿပီးၿပီ"/>
@@ -281,6 +282,9 @@ ini_set('memory_limit', '-1');
       @endforeach
     </div>
 </div>
+@foreach($orders as $order)
+    @include('kitchen.KitchenPrintForChief')
+@endforeach
 <?php
 ini_set('memory_limit', '-1');
 ?>
