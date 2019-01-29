@@ -3,8 +3,10 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Console\Command;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\RMS\Config\Config;
+
 class Kernel extends ConsoleKernel
 {
     /**
@@ -28,35 +30,43 @@ class Kernel extends ConsoleKernel
         $order_day = \DB::table('order_day')->where('deleted_at', '=' , NULL)
                             ->orderby('id','desc')
                             ->first();
-        
-        if($order_day->status == 2){
+        if($order_day){
 
-            $config = Config::first();
-            // $schedule->command('db:backup')->everyMinute(); // every minute
-            if($config->backup_frequency == 0.5){
-                $schedule->command('db:backup')->everyThirtyMinutes(); // every 30 minutes
+            if($order_day->status == 2){
+
+                $config = Config::first();
+                // $schedule->command('db:backup')->everyMinute(); // every minute
+                if($config->backup_frequency == 0.5){
+                    $schedule->command('db:backup')->everyThirtyMinutes(); // every 30 minutes
+                }
+    
+                if($config->backup_frequency == 1){
+                    $schedule->command('db:backup')->hourly(); // every hour
+                }
+                
+                if($config->backup_frequency == 2){
+                    $schedule->command('db:backup')->cron('0 */2 * * *'); //every two hour
+                }
+    
+                if($config->backup_frequency == 5){
+                    $schedule->command('db:backup')->cron('0 */5 * * *'); // every five hour
+                }
+    
+                if($config->backup_frequency == 12){
+                    $schedule->command('db:backup')->cron('0 */12 * * *'); // every twelve hour
+                }
+    
+                if($config->backup_frequency == 24){
+                    $schedule->command('db:backup')->cron('0 */24 * * *'); // every twenty-four hour
+                }
             }
 
-            if($config->backup_frequency == 1){
-                $schedule->command('db:backup')->hourly(); // every hour
+            else{
+                dd('Order day does not start');    
             }
             
-            if($config->backup_frequency == 2){
-                $schedule->command('db:backup')->cron('0 */2 * * *'); //every two hour
-            }
-
-            if($config->backup_frequency == 5){
-                $schedule->command('db:backup')->cron('0 */5 * * *'); // every five hour
-            }
-
-            if($config->backup_frequency == 12){
-                $schedule->command('db:backup')->cron('0 */12 * * *'); // every twelve hour
-            }
-
-            if($config->backup_frequency == 24){
-                $schedule->command('db:backup')->cron('0 */24 * * *'); // every twenty-four hour
-            }
-        }
-        
+        }else{
+            dd('order day does not exists');
+        }   
     }
 }

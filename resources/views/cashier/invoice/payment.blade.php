@@ -130,7 +130,7 @@
                                     @endif
 
                                     <tr class="gov_charge_row"> 
-                                        <td colspan="3" class="no-border"><b>TAX({{ $config->tax}}%)</b></td>
+                                        <td colspan="3" class="no-border"><b>Commercial Tax({{ $config->tax}}%)</b></td>
                                         <td class="no-border"><input type="number" name="gov_tax" class="gov_tax" value="" style="width:72px ; border:none;" dir="rtl" readonly></td>
                                     </tr>
 
@@ -238,11 +238,9 @@
                     <button class="btn print-modal" onclick="printInvoice('{{$order->order_id}}')">
                         <img src="/assets/cashier/images/payment/print_img.png" alt="Print Image" class="heightLine_06">
                     </button>
-
+                   
                     @if($tables->count() > 0)
-                            @foreach($tables as $table)
-                                <a href="/Cashier/table/{{$table->table_id}}/invoice" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>
-                            @endforeach
+                            <a href="/Cashier/table/{{$tables[0]->table_id}}/invoice" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>
                         @elseif($rooms->count() > 0)
                             @foreach($rooms as $room)
                                 <a href="/Cashier/room/{{$room->room_id}}/invoice" class="btn"><img src="/assets/cashier/images/payment/previous_img.png" alt="Previous" class="heightLine_06"></a>                                
@@ -351,7 +349,7 @@
                                     @endif
 
                                     <tr class="gov_charge_row"> 
-                                        <td colspan="3" class="no-border"><b>TAX({{ $config->tax}}%)</b></td>
+                                        <td colspan="3" class="no-border"><b>Commercial Tax({{ $config->tax}}%)</b></td>
                                         <td class="no-border">{{ $order->tax_amount }}</td>
                                     </tr>
 
