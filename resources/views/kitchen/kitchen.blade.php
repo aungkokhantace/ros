@@ -223,6 +223,7 @@ ini_set('memory_limit', '-1');
                                                             <div>
                                                                 <input type="submit" class="taken btn btn-info btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ယူမယ္"/>
                                                             </div>
+                                                          --}}
                                                         @endif
                                                         @if ($item->status_id == 2)
                                                             <input type="submit" class="taken btn btn-success btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ၿပီးၿပီ"/>
@@ -418,7 +419,7 @@ ini_set('memory_limit', '-1');
 
 
             $('#divAuto').on('click', '.taken', function(e){
-                var itemID      = $(this).attr('id');
+                var itemID = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
                         title: "ေသခ်ာလား?",
@@ -435,9 +436,8 @@ ini_set('memory_limit', '-1');
                             var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/taken/ajaxRequest/' + itemID,
+                                url: '/Kitchen/taken/ajaxRequest/' + id,
                                 success: function (Response) {
-
                                     console.log(Response);
                                     //Socket Emit
                                     var socketKey        = "taken_by";
@@ -591,30 +591,29 @@ ini_set('memory_limit', '-1');
         }
 
         function print_chef(clicked_id) {
-            var clickID     = clicked_id;
-            var printID     = clickID + "-chef";
-            var test        = document.getElementById(printID);
+            var clickID = clicked_id;
+            var printID = clickID + "-chef";
+            var test    = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
 
         function print_for_waiter(clicked_id)
         {
-            var clickID     = clicked_id;
-            var printID     = clickID + "-waiter";
-            var test        = document.getElementById(printID);
+            var clickID = clicked_id;
+            var printID = clickID + "-waiter";
+            var test    = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
 
         function print_chief(order) {
-            var id      = order;
-            var modal   = id + '-print-chef';
+            var id    = order;
+            var modal = id + '-print-chef';
             $('#' + modal).modal('show');
         }
 
         function print_waiter(order) {
-
-            var id      = order;
-            var modal   = id + '-print-waiter';
+            var id    = order;
+            var modal = id + '-print-waiter';
             $('#' + modal).modal('show');
         }
     </script>
