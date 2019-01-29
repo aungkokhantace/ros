@@ -203,15 +203,8 @@ class MakeAPIController extends ApiGuardController
 
 
         foreach($orders as $order) {
-
             $user_id                = $order->user_id;
             $take_id                = $order->take_id;
-            $total_extra_price      = $order->extra_price;
-            $total_discount_amount  = $order->discount_amount;
-            $total_price            = $order->total_price;
-            $service_amount         = $order->service_amount;
-            $room_charge            = $order->room_charge;
-            $tax_amount             = $order->tax_amount;
             $all_total_amount       = $order->net_price;
             $order_tables           = $order->order_table;
             $order_rooms            = $order->order_room;
@@ -222,14 +215,16 @@ class MakeAPIController extends ApiGuardController
             $tablet_id              = $order->tablet_id;
             $stand_number           = $order->stand_number;
         }
-
-        $configRepo = new ConfigRepository();
-        $allconfig  = $configRepo->getAllConfig();
-        $tax        = $allconfig->tax;
-        $service    = $allconfig->service;
-        $room_charge= $allconfig->room_charge;
-      
-
+        
+       
+        $configRepo     = new ConfigRepository();
+        $allconfig      = $configRepo->getAllConfig();
+        $tax            = $allconfig->tax;
+        $service        = $allconfig->service;
+        $room_charge    = $allconfig->room_charge;
+        $order_amount   = 0 ;
+        $discount_amount  = 0;
+        $extra_price      = 0;
         $order_id   = Utility::VoucherID($user_id);
         // $daystart             = DayStart::select('id')
         // ->where('status',$session_status)
@@ -295,9 +290,25 @@ class MakeAPIController extends ApiGuardController
         }
 
         foreach ($order_details as $order_detail) {
-            $order_detail_status        = $order_detail->status;
-            $order_detail_id            = Utility::OrderDetailId($order_id);
-            $item_price                 = Utility::getitemPrice($order_detail->item_id);
+          
+            $order_detail_status            = $order_detail->status;
+            $order_detail_id                = Utility::OrderDetailId($order_id);
+            
+            if($order_detail->set_id != "null"){
+                $set_item_id                = $order_detail->set_id;
+                $item_price                 = Utility::getSetItemPrice($set_item_id);
+                $discount_amount            = 0;
+            }else{
+               
+                $item_price                 = Utility::getitemPrice($order_detail->item_id);
+                $discount_amount            = Utility::getItemDiscount($order_detail->item_id);
+            }
+           
+           
+            if(!isset($discount_amount) && count($discount_amount) == 0){
+             $discount_amount = 0;
+            }
+            $total_price                = $item_price * $order_detail->quantity;
             $temp = new Orderdetail();
             $temp->id                   = $order_detail_id;
             $temp->order_id             = $order_id;
@@ -306,11 +317,11 @@ class MakeAPIController extends ApiGuardController
             $temp->setmenu_id           = $order_detail->set_id;
             $temp->quantity             = $order_detail->quantity;
             $temp->order_type_id        = $order_detail->order_type_id;
-            $temp->discount_amount      = $order_detail->discount_amount;
+            $temp->discount_amount      = $discount_amount;
             $temp->exception            = $order_detail->exception;
             $temp->promotion_id         = $order_detail->promotion_id;
-            $temp->amount               = $item_price;
-            $temp->amount_with_discount = $item_price-($order_detail->discount_amount);
+            $temp->amount               = $total_price;
+            $temp->amount_with_discount = $total_price - $discount_amount;
             $temp->order_time           = $dt->toDateTimeString();
             $temp->status_id            = $order_detail_status;
             $temp->take_item            = $order_detail->take_item;
@@ -318,6 +329,10 @@ class MakeAPIController extends ApiGuardController
               $temp->remark_extra   = $order_detail->remark_extra;
             }
             $temp->save();
+
+            $order_amount +=  $temp->amount_with_discount;
+            $discount_amount += $discount_amount;
+            
             // Custom Log
             $message = "[ $date ]  info:   create an OrderDetails [ id = $order_detail_id ] " . PHP_EOL;
             RmsLog::create($message);
@@ -361,6 +376,7 @@ class MakeAPIController extends ApiGuardController
 
             $extra = $order_detail->extra;
             foreach ($extra as $e) {
+             if($e->status == 1){
                 $extra_price = Utility::getAddonPrice($e->extra_id);
                 $extra = new OrderExtra();
                 $extra->order_detail_id         = $temp->order_detail_id;
@@ -368,21 +384,28 @@ class MakeAPIController extends ApiGuardController
                 $extra->quantity                = $e->quantity;
                 $extra->amount                  = $extra_price;
                 $extra->save();
+                $extra_price  += $extra->amount;
                 // Custom Log
                 $message = "[  $date ] info:  create an OrderExtra [ order_detail_id =  $extra->order_detail_id ]" . PHP_EOL;
                 RmsLog::create($message);
+             }
             }
         }
-
-
+            $total_amount                   = $order_amount + $extra_price;
+            $tax_amount                     = ($total_amount * $tax)/100;
+            $service_amount                 = ($total_amount * $service)/100;
+            $all_total_amount               = $tax_amount + $service_amount + $total_amount ;
+            if(count($order_rooms) > 0){
+             $all_total_amount  = $all_total_amount + $room_charge;
+            }
             $order                          = new Order();
             $order->id                      = $order_id;
             $order->user_id                 = $user_id;
             $order->take_id                 = $take_id;
             $order->order_time              = $dt->toDateTimeString();
-            $order->total_extra_price       = $total_extra_price;
-            $order->total_discount_amount   = $total_discount_amount;
-            $order->total_price             = $total_price;
+            $order->total_extra_price       = $extra_price;
+            $order->total_discount_amount   = $discount_amount;
+            $order->total_price             = $total_amount;
             $order->service_amount          = $service_amount;
             $order->room_charge             = $room_charge;
             $order->tax_amount              = $tax_amount;
@@ -432,41 +455,23 @@ class MakeAPIController extends ApiGuardController
               $date       = date("Y-m-d H:i:s");
               foreach($orders as $order) {
                   $order_id           = $order->order_id;
-                  $total_price        = $order->total_price;
-                  $service_amount     = $order->service_amount;
-                  $tax_amount         = $order->tax_amount;
-                  $net_price          = $order->net_price;
                   $day_id             = $order->day_id;
                   $order_details      = $order->order_detail;
-                  $discount_amount    = $order->discount_amount;
-                  $extra_price        = $order->extra_price;
                   $stand_number       = $order->stand_number;
               }
-              $daystart             = DayStart::select('id')
-                ->where('status',$session_status)
-                ->whereNull('deleted_at')
-                ->first();
+            //   $daystart             = DayStart::select('id')
+            //     ->where('status',$session_status)
+            //     ->whereNull('deleted_at')
+            //     ->first();
 
-                if($daystart->id != $day_id){
-                    $output = array();
-                    $output['message'] = 'wrong shift';
-                    $output['cooked'] = [];
-                    return Response::json($output);
+            //     if($daystart->id != $day_id){
+            //         $output = array();
+            //         $output['message'] = 'wrong shift';
+            //         $output['cooked'] = [];
+            //         return Response::json($output);
 
-                }
+            //     }
                 $order = Order::find($order_id);
-              
-                $order->total_price             = $total_price;
-                $order->service_amount          = $service_amount;
-                $order->tax_amount              = $tax_amount;
-                $order->all_total_amount        = $net_price;
-                $order->total_discount_amount   = $discount_amount;
-                if(isset($order->total_extra_price)){
-                    $order->total_extra_price       = $extra_price;
-                }
-
-                $order->stand_number            = $stand_number;
-                $order->save();
               if ($order->status == 2) {
                   $output = array("message" => "Paid");
                  
@@ -474,9 +479,14 @@ class MakeAPIController extends ApiGuardController
                else
                {
                   
-                  // Custom Log
-                  $message = "[ $date ]  info:   Update an Order  [ id = $order->id ] " . PHP_EOL;
-                  RmsLog::create($message);
+                $configRepo      = new ConfigRepository();
+                $allconfig       = $configRepo->getAllConfig();
+                $tax             = $allconfig->tax;
+                $service         = $allconfig->service;
+                $room_charge     = $allconfig->room_charge;
+                $order_amount    = 0 ;
+                $discount_amount = 0;
+                $extra_price     = 0;
   
                   $new_order_detail_ary     = array();
                   $order_cooking_ary        = array();
@@ -487,9 +497,18 @@ class MakeAPIController extends ApiGuardController
                  foreach ($order_details as $order_detail) {
                      $order_detail_status         = $order_detail->status;
                      if($order_detail->state == 'new'){
-
-                      $temp = new Orderdetail();
-                      $order_detail_id = Utility::OrderDetailId($order_id);
+                        if($order_detail->set_id != "null"){
+                            $set_item_id                = $order_detail->set_id;
+                            $item_price                 = Utility::getSetItemPrice($set_item_id);
+                            $discount_amount            = 0;
+                        }else{
+                           
+                            $item_price                 = Utility::getitemPrice($order_detail->item_id);
+                            $discount_amount            = Utility::getItemDiscount($order_detail->item_id);
+                        }
+                      $temp                       = new Orderdetail();
+                      $order_detail_id            = Utility::OrderDetailId($order_id);
+                      $total_price                = $item_price * $order_detail->quantity;
                       array_push($new_order_detail_ary,$order_detail_id);
                       $temp->id                   = $order_detail_id;
                       $temp->order_id             = $order_id;
@@ -501,8 +520,8 @@ class MakeAPIController extends ApiGuardController
                       $temp->discount_amount      = $order_detail->discount_amount;
                       $temp->exception            = $order_detail->exception;
                       $temp->promotion_id         = $order_detail->promotion_id;
-                      $temp->amount               = $order_detail->price;
-                      $temp->amount_with_discount = $order_detail->amount;
+                      $temp->amount               = $total_price;
+                      $temp->amount_with_discount = $order_detail- $discount_amount;
                       $temp->order_time           = $dt->toDateTimeString();
                       $temp->status_id            = $order_detail_status;
                       $temp->take_item            = $order_detail->take_item;
@@ -510,7 +529,10 @@ class MakeAPIController extends ApiGuardController
                       $temp->remark_extra   = $order_detail->remark_extra;
                       }
                       $temp->save();
-  
+
+                      $order_amount +=  $temp->amount_with_discount;
+                      $discount_amount += $discount_amount;
+                      
                       // Custom Log
                       $message = "[ $date ]  info:   update an OrderDetails [ id = $temp->order_detail_id ] " . PHP_EOL;
                       RmsLog::create($message);
@@ -558,6 +580,7 @@ class MakeAPIController extends ApiGuardController
                               $extra->amount                  = $e->amount;
                               $extra->status                  = 1;
                               $extra->save();
+                              $extra_price  += $extra->amount;
                               // Custom Log
                               $message = "[  $date ] info:  update an OrderExtra [ order_detail_id =  $extra->order_detail_id ]" . PHP_EOL;
                               RmsLog::create($message);
@@ -567,39 +590,56 @@ class MakeAPIController extends ApiGuardController
                      }
                     if($order_detail->state =='old'){
                        
-                          if($order_detail->status != 1){
-                              array_push($order_cooking_ary,$order_detail->order_detail_id);
-                          }
+                          
                           array_push($new_order_detail_ary,$order_detail->order_detail_id);
                           $order_detail_id             = $order_detail->order_detail_id;
                           $temp = Orderdetail::where('order_detail_id',$order_detail_id)->first();
-                          
+                          if($order_detail->status != 1){
+                            array_push($order_cooking_ary,$order_detail->order_detail_id);
+                           }
                           if($temp->status_id == 6 && $order_detail->status != 6){
                               array_push($backend_cancel_order_ary,$temp->order_detail_id);
                           }
-                          if($temp->status_id == 1){
-                          $quantity                   = $order_detail->quantity;
-                          //save Orderdetail
-                          $temp->order_id             = $order_id;
-                          $temp->item_id              = $order_detail->item_id;
-                          $temp->order_detail_id      = $order_detail->order_detail_id;
-                          $temp->setmenu_id           = $order_detail->set_id;
-                          $temp->quantity             = $order_detail->quantity;
-                          $temp->order_type_id        = $order_detail->order_type_id;
-                          $temp->discount_amount      = $order_detail->discount_amount;
-                          $temp->exception            = $order_detail->exception;
-                          $temp->promotion_id         = $order_detail->promotion_id;
-                          $temp->amount               = $order_detail->price;
-                          $temp->amount_with_discount = $order_detail->amount;
-                          $temp->order_time           = $dt->toDateTimeString();
-                          if($temp->status_id == 6){
-                             $temp->status_id         = 6;
-                          }
-                          $temp->take_item            = $order_detail->take_item;
-                          if($order_detail->remark_extra != ''){
-                          $temp->remark_extra   = $order_detail->remark_extra;
-                          }
-                          $temp->save();
+                        if($temp->status_id == 1 ){
+                    
+                            if($temp->setmenu_id  != 0){
+                                $item_price                 = Utility::getSetItemPrice($temp->setmenu_id);
+                                $discount_amount            = 0;
+                            }else{
+                               
+                                $item_price                 = Utility::getitemPrice($order_detail->item_id);
+                                $discount_amount            = Utility::getItemDiscount($order_detail->item_id);
+                            }
+                                $quantity                   = $order_detail->quantity;
+                                $total_price                = $item_price * $quantity;
+                                //save Orderdetail
+                                $temp->order_id             = $order_id;
+                                $temp->item_id              = $order_detail->item_id;
+                                $temp->order_detail_id      = $order_detail->order_detail_id;
+                                $temp->setmenu_id           = $order_detail->set_id;
+                                $temp->quantity             = $order_detail->quantity;
+                                $temp->order_type_id        = $order_detail->order_type_id;
+                                $temp->discount_amount      = $order_detail->discount_amount;
+                                $temp->exception            = $order_detail->exception;
+                                $temp->promotion_id         = $order_detail->promotion_id;
+                                $temp->amount               = $total_price;
+                                $temp->amount_with_discount = $total_price - $discount_amount;
+                                $temp->order_time           = $dt->toDateTimeString();
+                                if($temp->status_id == 6){
+                                    $temp->status_id         = 6;
+                                }
+                                $temp->take_item            = $order_detail->take_item;
+                                if($order_detail->remark_extra != ''){
+                                $temp->remark_extra   = $order_detail->remark_extra;
+                                }
+                                $temp->save();
+                                $order_amount +=  $temp->amount_with_discount;
+                                $discount_amount += $discount_amount;
+                          }else{
+                            array_push($cooking_ary,$order_detail->order_detail_id);
+                            $order_amount +=  $temp->amount_with_discount;
+                            
+                            $discount_amount += $temp->discount_amount;
                           }
                           // Custom Log
                           $message = "[ $date ]  info:  Update Order Detail [ id = $order_detail->order_detail_id ] " . PHP_EOL;
@@ -609,56 +649,57 @@ class MakeAPIController extends ApiGuardController
                           //OrderSetMenuDetail
                         if($temp->status_id == 1){
                           $set_item                   = $order_detail->set_item;
-                          OrderSetMenuDetail::where('order_detail_id','=',$order_detail->order_detail_id)->forceDelete();
+                        //   OrderSetMenuDetail::where('order_detail_id','=',$order_detail->order_detail_id)->forceDelete();
                          foreach($set_item as $item){
-                            $set = new OrderSetMenuDetail();
-                            $set->order_detail_id = $order_detail->order_detail_id;
-                            $set->setmenu_id      = $item->set_menu_id;
-                            $set->item_id         = $item->item_id;
-                            $set->order_type_id   = $temp->order_type_id;
-                            $set->exception       = $temp->exception;
-                            $set->order_time      = $dt->toDateTimeString();
-                            $set->status_id       = $temp->status_id;
-                            $set->quantity        = $quantity;
-                            $set->save();
-                            // Custom Log
-                            $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
-                            RmsLog::create($message);
-                        }
+                        //     $set = new OrderSetMenuDetail();
+                        //     $set->order_detail_id = $order_detail->order_detail_id;
+                        //     $set->setmenu_id      = $item->set_menu_id;
+                        //     $set->item_id         = $item->item_id;
+                        //     $set->order_type_id   = $temp->order_type_id;
+                        //     $set->exception       = $temp->exception;
+                        //     $set->order_time      = $dt->toDateTimeString();
+                        //     $set->status_id       = $temp->status_id;
+                        //     $set->quantity        = $quantity;
+                        //     $set->save();
+                        //     // Custom Log
+                        //     $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
+                        //     RmsLog::create($message);
+                        // }
                           
-                            //   $set_detail = OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id)
-                            //                                   ->where('item_id','=',$item->item_id)
-                            //                                   ->first();
-                            //   if($set_detail == null){
-                            //       $set = new OrderSetMenuDetail();
-                            //       $set->order_detail_id = $order_detail->order_detail_id;
-                            //       $set->setmenu_id      = $item->set_menu_id;
-                            //       $set->item_id         = $item->item_id;
-                            //       $set->order_type_id   = $temp->order_type_id;
-                            //       $set->exception       = $temp->exception;
-                            //       $set->order_time      = $dt->toDateTimeString();
-                            //       $set->status_id       = $temp->status_id;
-                            //       $set->quantity        = $quantity;
-                            //       $set->save();
-                            //       // Custom Log
-                            //       $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
-                            //       RmsLog::create($message);
-                            //   }
-                            //   else{
-                            //       $set                  = $set_detail;
-                            //       $set->order_detail_id = $order_detail->order_detail_id;
-                            //       $set->setmenu_id      = $item->set_menu_id;
-                            //       $set->item_id         = $item->item_id;
-                            //       $set->order_type_id   = $temp->order_type_id;
-                            //       $set->exception       = $temp->exception;
-                            //       $set->order_time      = $dt->toDateTimeString();
-                            //       $set->status_id       = $temp->status_id;
-                            //       $set->quantity        = $quantity;
-                            //       $set->save();
-                            //       // Custom Log
-                            //       $message = "[ $date ]  info:   Update OrderSetMenuDetail [ id = $set_detail->id ] " . PHP_EOL;
-                            //       RmsLog::create($message);
-                            //   }
+                              $set_detail = OrderSetMenuDetail::where('order_detail_id','=',$order_detail_id)
+                                                              ->where('item_id','=',$item->item_id)
+                                                              ->first();
+                              if($set_detail == null){
+                                  $set = new OrderSetMenuDetail();
+                                  $set->order_detail_id = $order_detail->order_detail_id;
+                                  $set->setmenu_id      = $item->set_menu_id;
+                                  $set->item_id         = $item->item_id;
+                                  $set->order_type_id   = $temp->order_type_id;
+                                  $set->exception       = $temp->exception;
+                                  $set->order_time      = $dt->toDateTimeString();
+                                  $set->status_id       = $temp->status_id;
+                                  $set->quantity        = $quantity;
+                                  $set->save();
+                                  // Custom Log
+                                  $message = "[ $date ]  info:   Update  OrderSetMenuDetail [ id = $set->id ] " . PHP_EOL;
+                                  RmsLog::create($message);
+                              }
+                              else{
+                                  $set                  = $set_detail;
+                                  $set->order_detail_id = $order_detail->order_detail_id;
+                                  $set->setmenu_id      = $item->set_menu_id;
+                                  $set->item_id         = $item->item_id;
+                                  $set->order_type_id   = $temp->order_type_id;
+                                  $set->exception       = $temp->exception;
+                                  $set->order_time      = $dt->toDateTimeString();
+                                  $set->status_id       = $temp->status_id;
+                                  $set->quantity        = $quantity;
+                                  $set->save();
+                                  // Custom Log
+                                  $message = "[ $date ]  info:   Update OrderSetMenuDetail [ id = $set_detail->id ] " . PHP_EOL;
+                                  RmsLog::create($message);
+                              }
+                            }
                           }
                         $remarks  = $order_detail->remark;
                         if($temp->status_id == 1){
@@ -685,7 +726,7 @@ class MakeAPIController extends ApiGuardController
                         }else{
                             foreach($remarks as $remark){
                                 if($remark->selected == "true"){
-                                    array_push($remark,$remark_detail_ary);
+                                    array_push($remark->remark_id,$remark_detail_ary);
                                 }
                             }
 
@@ -710,9 +751,12 @@ class MakeAPIController extends ApiGuardController
                                       $extra->amount                  = $e->amount;
                                       $extra->status                  = 1;
                                       $extra->save();
+                                      $extra_price  += $extra->amount;
                                       // Custom Log
                                       $message = "[  $date ] info:  update an OrderExtra [ order_detail_id =  $extra->order_detail_id ]" . PHP_EOL;
                                       RmsLog::create($message);
+                                  }else{
+                                      $extra_price  += $detail_extra->amount;
                                   }
   
   
@@ -724,7 +768,14 @@ class MakeAPIController extends ApiGuardController
                          }
                         }else{
                             foreach ($extra as $e) {
-                                
+                                $detail_extra = OrderExtra::where('order_detail_id',$order_detail->order_detail_id)
+                                ->where('extra_id','=',$e->extra_id)
+                                ->first();
+                                if($e->status == 1){
+                                        if(isset($detail_extra) && count($detail_extra)>0 ){
+                                        $extra_price  += $detail_extra->amount;
+                                        }
+                                }
                                 if($e->status == 1){
                                     array_push($detail_extra_ary,$e);
                                 }
@@ -736,7 +787,9 @@ class MakeAPIController extends ApiGuardController
                             foreach($remark_detail_ary as $edit_remark){
                                 $check_edit_remark = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$edit_remark)->first();
                                 if(!isset($check_edit_remark)){
+                                   if($order_detail->status == 1){
                                     array_push($cooking_ary,$order_detail->order_detail_id);
+                                   }
                                 }
                             }
                         }
@@ -750,7 +803,9 @@ class MakeAPIController extends ApiGuardController
                                 ->where('extra_id','=',$edit_extra->extra_id)
                                 ->first();
                                 if(!isset($check_edit_extra)){
+                                  if($order_detail->status == 1){
                                     array_push($cooking_ary,$order_detail->order_detail_id);
+                                  }
                                 }
                             }
                         }
@@ -767,7 +822,7 @@ class MakeAPIController extends ApiGuardController
                      }
                   }
   
-  
+                 
                   $old_orders_details = Orderdetail::where('order_id',$order_id)->select('order_detail_id')->get();
                   $old_orders_details_ary = array();
   
@@ -775,16 +830,21 @@ class MakeAPIController extends ApiGuardController
                       array_push($old_orders_details_ary,$old_orders->order_detail_id);
                   }
                  
-                      $delete_order_detail =  array_merge(array_diff($old_orders_details_ary, $new_order_detail_ary), array_diff($new_order_detail_ary, $old_orders_details_ary));
+                 $delete_order_detail =  array_merge(array_diff($old_orders_details_ary, $new_order_detail_ary), array_diff($new_order_detail_ary, $old_orders_details_ary));
                      
   
                      
                       $cooking_ary      = array_unique($cooking_ary);
+                      $order_cooking_ary = array_unique($order_cooking_ary);
+                     
                       $cancel_order_ary = array();
                       if(isset($cooking_ary) && count($cooking_ary)>0){
                             foreach($cooking_ary as $item){
+                              
                                 if(!in_array($item,$order_cooking_ary)){
-                                    $item =  Orderdetail::where('order_detail_id',$item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
+                                    $item =  Orderdetail::where('order_detail_id',$item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name','order_details.amount_with_discount as amount_discount','order_details.amount as amount','order_details.discount_amount as discount')->first();
+                                    // $order_amount += $item->amount_discount;
+                                    // $discount_amount += $item->discount;
                                     array_push($cancel_order_ary,$item->item_name .' is cooking');
                                 }
     
@@ -815,23 +875,6 @@ class MakeAPIController extends ApiGuardController
                      }
 
                     
-                     $order_detail_not_delete = Orderdetail::where('order_id',$order_id)->get();
-                    
-                     $order_total_price = 0;
-                     $order_tax_edit = 0;
-                     $order_service_edit = 0;
-                     foreach($order_detail_not_delete as $price_order){
-                            $order_total_price += $price_order->amount;
-                            $order_tax_edit    += $price_order->tax_amount;
-                            $order_service_edit += $price_order->tax_amount;
-                     }
-
-                    
-                       
-                       
-                       
-                       
-                       
                    
                       // if(isset($order_extra) && count($order_extra)>0){
                       //     $order_extra->forceDelete();
@@ -849,7 +892,31 @@ class MakeAPIController extends ApiGuardController
                       // if(isset($deleting_orders) && count($deleting_orders)>0){
                       //     $deleting_orders->forceDelete();
                       // }
+                      $is_room                        = OrderRoom::where('order_id',$order->id)->get();
                       
+                      $total_amount                   = $order_amount + $extra_price;
+                    
+                      $tax_amount                     = ($total_amount * $tax)/100;
+                      $service_amount                 = ($total_amount * $service)/100;
+                      $all_total_amount               = $tax_amount + $service_amount + $total_amount ;
+                      if(isset($is_room) && count($is_room)>0){
+                        $all_total_amount = $all_total_amount + $room_charge;
+                      }
+                      $order->total_price             = $total_amount;
+                      $order->service_amount          = $service_amount;
+                      $order->tax_amount              = $tax_amount;
+                      $order->all_total_amount        = $all_total_amount;
+                      $order->total_discount_amount   = $discount_amount;
+                      if(isset($order->total_extra_price)){
+                          $order->total_extra_price       = $extra_price;
+                      }
+      
+                      $order->stand_number            = $stand_number;
+                      $order->save();
+
+                      // Custom Log
+                        $message = "[ $date ]  info:   Update an Order  [ id = $order->id ] " . PHP_EOL;
+                        RmsLog::create($message);
 
                       $output = array("message" => "Success");
                       DB::commit();
@@ -863,6 +930,7 @@ class MakeAPIController extends ApiGuardController
   
                return Response::json($output);
             }catch(\Exception $e){
+                dd($e);
               DB::rollback();
               $date       = date("Y-m-d H:i:s");
               $data       = json_decode(request('orderID'));
