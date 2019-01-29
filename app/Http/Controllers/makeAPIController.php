@@ -597,9 +597,6 @@ class MakeAPIController extends ApiGuardController
                           if($order_detail->status != 1){
                             array_push($order_cooking_ary,$order_detail->order_detail_id);
                            }
-                           if($temp->status_id != 1){
-                            array_push($cooking_ary,$order_detail->order_detail_id);
-                           }
                           if($temp->status_id == 6 && $order_detail->status != 6){
                               array_push($backend_cancel_order_ary,$temp->order_detail_id);
                           }
@@ -840,26 +837,7 @@ class MakeAPIController extends ApiGuardController
                       $cooking_ary      = array_unique($cooking_ary);
                       $order_cooking_ary = array_unique($order_cooking_ary);
                      
-                      $cancel_order_ary = array();
-                      if(isset($cooking_ary) && count($cooking_ary)>0){
-                            foreach($cooking_ary as $item){
-                              
-                                if(!in_array($item,$order_cooking_ary)){
-                                    $item =  Orderdetail::where('order_detail_id',$item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name','order_details.amount_with_discount as amount_discount','order_details.amount as amount','order_details.discount_amount as discount')->first();
-                                    // $order_amount += $item->amount_discount;
-                                    // $discount_amount += $item->discount;
-                                    array_push($cancel_order_ary,$item->item_name .' is cooking');
-                                }
-    
-                            }
-                        }
-                   
-                    if(isset($backend_cancel_order_ary) && count($backend_cancel_order_ary)>0){
-                        foreach($backend_cancel_order_ary as $backedn_cancel){
-                            $item  = Orderdetail::where('order_detail_id',$backedn_cancel)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
-                            array_push($cancel_order_ary,$item->item_name .' is canceled by kitchen');
-                        }
-                    }
+                     
                     
                   
 
@@ -873,11 +851,34 @@ class MakeAPIController extends ApiGuardController
                          $order_set_menu_detail = OrderSetMenuDetail::where('order_detail_id',$delete_order)->forceDelete();
                          $deleting_order_detail = Orderdetail::where('order_detail_id',$delete_order)->forceDelete();
                         }else{
+                            
                           array_push($cooking_ary,$delete_order);
                         }
                      }
 
+
+                     $cancel_order_ary = array();
+                     if(isset($cooking_ary) && count($cooking_ary)>0){
+                           foreach($cooking_ary as $item){
+                             
+                               if(!in_array($item,$order_cooking_ary)){
+                                   $item =  Orderdetail::where('order_detail_id',$item)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name','order_details.amount_with_discount as amount_discount','order_details.amount as amount','order_details.discount_amount as discount')->first();
+                                   // $order_amount += $item->amount_discount;
+                                   // $discount_amount += $item->discount;
+                                   array_push($cancel_order_ary,$item->item_name .' is cooking');
+                               }
+   
+                           }
+                       }
+                  
+                   if(isset($backend_cancel_order_ary) && count($backend_cancel_order_ary)>0){
+                       foreach($backend_cancel_order_ary as $backedn_cancel){
+                           $item  = Orderdetail::where('order_detail_id',$backedn_cancel)->join('items','order_details.item_id','=','items.id')->select('items.name as item_name')->first();
+                           array_push($cancel_order_ary,$item->item_name .' is canceled by kitchen');
+                       }
+                   }
                     
+                     
                    
                       // if(isset($order_extra) && count($order_extra)>0){
                       //     $order_extra->forceDelete();
