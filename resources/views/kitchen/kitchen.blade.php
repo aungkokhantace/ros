@@ -223,7 +223,6 @@ ini_set('memory_limit', '-1');
                                                             <div>
                                                                 <input type="submit" class="taken btn btn-info btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ယူမယ္"/>
                                                             </div>
-                                                        --}}
                                                         @endif
                                                         @if ($item->status_id == 2)
                                                             <input type="submit" class="taken btn btn-success btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ၿပီးၿပီ"/>
@@ -274,6 +273,7 @@ ini_set('memory_limit', '-1');
                                                     </div>
                                                 </div>
                                             </td>
+
                                             <td style="border-left: none !important;">
                                                 <div class="btn-group">
                                                     <button class="btn btn-success mm-font" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (စားပြဲထိုး)</button>
@@ -384,7 +384,7 @@ ini_set('memory_limit', '-1');
             };
 
             $('#divAuto').on('click', '.start', function(e){
-                var itemID = $(this).attr('id');
+                var itemID      = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
                         title: "ေသခ်ာလား?",
@@ -395,12 +395,13 @@ ini_set('memory_limit', '-1');
                         confirmButtonText: "Confirm",
                         closeOnConfirm: false
                     }, function(isConfirm){
+
                         if (isConfirm) {
                             $('.confirm').attr('disabled', true);
                             var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/getStart/ajaxRequest/' + id,
+                                url: '/Kitchen/getStart/ajaxRequest/' + itemID,
                                 success: function (Response) {
                                     console.log(Response);
                                     //Socket Emit
@@ -417,7 +418,7 @@ ini_set('memory_limit', '-1');
 
 
             $('#divAuto').on('click', '.taken', function(e){
-                var itemID = $(this).attr('id');
+                var itemID      = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
                         title: "ေသခ်ာလား?",
@@ -428,13 +429,15 @@ ini_set('memory_limit', '-1');
                         confirmButtonText: "Confirm",
                         closeOnConfirm: false
                     }, function(isConfirm){
+
                         if (isConfirm) {
                             $('.confirm').attr('disabled', true);
                             var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/taken/ajaxRequest/' + id,
+                                url: '/Kitchen/taken/ajaxRequest/' + itemID,
                                 success: function (Response) {
+
                                     console.log(Response);
                                     //Socket Emit
                                     var socketKey        = "taken_by";
@@ -448,8 +451,11 @@ ini_set('memory_limit', '-1');
                 });
             });
 
+
+
+
             $('#divAuto').on('click', '.complete',function (e) {
-                var itemID = $(this).attr('id');
+                var itemID      = $(this).attr('id');
                 $(document).ready(function(){
                     swal({
                         title: "ေသခ်ာလာ?",
@@ -465,7 +471,7 @@ ini_set('memory_limit', '-1');
                             var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/getCompleteID/' + id,
+                                url: '/Kitchen/getCompleteID/' + itemID,
                                 success: function (Response) {
                                     var returnResp        = Response.message;
                                     if (returnResp == 'success') {
@@ -484,9 +490,9 @@ ini_set('memory_limit', '-1');
             });
 
             $('#divAuto').on('click', '.cancel_item',function (e) {
-                var formID  = $(this).closest("form").attr('id');
-                var data    = $('#' + formID).serialize();
-                var modalID = $(this).attr('id') + 'modal';
+                var formID      = $(this).closest("form").attr('id');
+                var data        = $('#' + formID).serialize();
+                var modalID     = $(this).attr('id') + 'modal';
                 $(document).ready(function(){
                     $.ajax({
                         type: 'POST',
@@ -530,31 +536,31 @@ ini_set('memory_limit', '-1');
             var url     = "/Kitchen/kitchen/ajaxRequest";//Json Callback Url
             var div     = "divAuto";//Put div id inside html response
             //Order Cancel Socket
-            var invoice_update = "invoice_update";
+            var invoice_update      = "invoice_update";
             socketOn(invoice_update,url,div);
 
             //Order start Cooking Socket
-            var cooked = "cooked";
+            var cooked      = "cooked";
             socketOn(cooked,url,div);
 
             //Order Cancel Socket
-            var order_remove = "order_remove";
+            var order_remove      = "order_remove";
             socketOn(order_remove,url,div);
 
             //Order Cooking Done
-            var cooking_done = "cooking_done";
+            var cooking_done      = "cooking_done";
             socketOn(cooking_done,url,div);
 
             //Invoice Payment Socket
-            var payment_done = "payment_done";
+            var payment_done      = "payment_done";
             socketOn(payment_done,url,div);
 
             //Table Transfer
-            var tableChange = "tableChange";
+            var tableChange      = "tableChange";
             socketOn(tableChange,url,div);
 
             //Order Eidt
-            var edit = "edit";
+            var edit      = "edit";
             socketOn(edit,url,div);
             //Taken order socket
             var taken_by_waiter  = 'take';
@@ -585,29 +591,30 @@ ini_set('memory_limit', '-1');
         }
 
         function print_chef(clicked_id) {
-            var clickID = clicked_id;
-            var printID = clickID + "-chef";
-            var test    = document.getElementById(printID);
+            var clickID     = clicked_id;
+            var printID     = clickID + "-chef";
+            var test        = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
 
         function print_for_waiter(clicked_id)
         {
-            var clickID = clicked_id;
-            var printID = clickID + "-waiter";
-            var test    = document.getElementById(printID);
+            var clickID     = clicked_id;
+            var printID     = clickID + "-waiter";
+            var test        = document.getElementById(printID);
             printElement(document.getElementById(printID));
         }
 
         function print_chief(order) {
-            var id    = order;
-            var modal = id + '-print-chef';
+            var id      = order;
+            var modal   = id + '-print-chef';
             $('#' + modal).modal('show');
         }
 
         function print_waiter(order) {
-            var id    = order;
-            var modal = id + '-print-waiter';
+
+            var id      = order;
+            var modal   = id + '-print-waiter';
             $('#' + modal).modal('show');
         }
     </script>

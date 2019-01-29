@@ -495,6 +495,7 @@
                         confirmButtonText: "Confirm",
                         closeOnConfirm: false
                     }, function(isConfirm){
+
                         if (isConfirm) {
                             $('.confirm').attr('disabled', true);
                             $.ajax({

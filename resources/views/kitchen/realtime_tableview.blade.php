@@ -158,7 +158,6 @@ ini_set('memory_limit', '-1');
                                               <div>
                                                   <input type="submit" class="taken btn btn-info btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ယူမယ္"/>
                                               </div>
-                                          --}}
                                           @endif
                                           @if ($item->status_id == 2)
                                               <input type="submit" class="taken btn btn-success btn_k mm-font" id="{{$item->id}}--{{$item->setmenu_id}}" value="ၿပီးၿပီ"/>
@@ -209,6 +208,7 @@ ini_set('memory_limit', '-1');
                                       </div>
                                   </div>
                               </td>
+
                               <td style="border-left: none !important;">
                                   <div class="btn-group">
                                       <button class="btn btn-success mm-font" id="{{ $item->order_detail_id }}" onclick="print_waiter('{{$item->order_detail_id}}')" data-toggle="modal" data-id="{{$item->order_detail_id}}" data-target="#printWaiter">Print (စားပြဲထိုး)</button>
@@ -281,11 +281,6 @@ ini_set('memory_limit', '-1');
       @endforeach
     </div>
 </div>
-
-@foreach($orders as $order)
-    @include('kitchen.KitchenPrintForChief')
-@endforeach
-
 <?php
 ini_set('memory_limit', '-1');
 ?>
