@@ -44,6 +44,9 @@
     background: #5cb85c;
     border-radius: 0 0 5px 5px !important;
   }
+  .custom button:hover {
+    color: white !important;
+  }
   </style>
 </head>
     <div id="body">
@@ -184,7 +187,7 @@
                                                                     <td>
                                                                       <input type="button" name="submit" value="သိမ္းမယ္" class="btn btn-info cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">
                                                                     </td>
-                                                                    <td>
+                                                                    <td class="custom">
                                                                       <button type="button" class="btn" data-dismiss="modal">ပိတ္မယ္</button>
                                                                     </td>
                                                                   </tr>
@@ -388,7 +391,7 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/CookingItem/' + itemID,
@@ -421,7 +424,7 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/CookedItem/' + itemID,
@@ -458,7 +461,7 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/taken/' + itemID,
@@ -493,7 +496,7 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/taken/ajaxRequest/' + itemID,
@@ -527,7 +530,7 @@
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/taken/setmenu/' + itemID,
@@ -561,7 +564,7 @@
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {
-                        $('#' + itemID).attr('disabled', true);
+                        $('.confirm').attr('disabled', true);
                         $.ajax({
                             type: 'GET',
                             url: '/Kitchen/productView/CookingSetMenuItem/' + itemID,
@@ -590,7 +593,7 @@
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {
-                        $('#' + itemID).attr('disabled', true);
+                        $('.confirm').attr('disabled', true);
                         $.ajax({
                             type: 'GET',
                             url: '/Kitchen/productView/CookedSetMenuItem/' + itemID,

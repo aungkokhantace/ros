@@ -396,7 +396,7 @@ ini_set('memory_limit', '-1');
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+                            $('.confirm').attr('disabled', true);
                             var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
@@ -429,7 +429,7 @@ ini_set('memory_limit', '-1');
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+                            $('.confirm').attr('disabled', true);
                             var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
@@ -461,7 +461,7 @@ ini_set('memory_limit', '-1');
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-                            $('#' + itemID).attr('disabled', true);
+                            $('.confirm').attr('disabled', true);
                             var id = itemID.replace('--', '/');
                             $.ajax({
                                 type: 'GET',
