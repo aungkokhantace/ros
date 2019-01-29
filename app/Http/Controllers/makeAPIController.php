@@ -661,7 +661,7 @@ class MakeAPIController extends ApiGuardController
                               foreach($remarks as $remark){
                                   if($remark->selected == "true"){
                                       $remark_detail = Order_Detail_Remark::where('order_detail_id',$order_detail->order_detail_id)->where('remark_id',$remark->remark_id)->first();
-                                      array_push($remark->remark_id,$remark_detail_ary);
+                                      array_push($remark_detail_ary,$remark->remark_id);
                                       if(!isset($remark_detail)){
                                           $OrderDetailObj = new Order_Detail_Remark();
                                           $OrderDetailObj->order_detail_id = $order_detail->order_detail_id;
@@ -680,7 +680,7 @@ class MakeAPIController extends ApiGuardController
                         }else{
                             foreach($remarks as $remark){
                                 if($remark->selected == "true"){
-                                    array_push($remark->remark_id,$remark_detail_ary);
+                                    array_push($remark_detail_ary,$remark->remark_id);
                                 }
                             }
 
