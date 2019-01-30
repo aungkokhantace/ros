@@ -248,11 +248,10 @@
                     for (i = 0; i < lengths; i++) {
                         if(response[i].status == 0){
 
-                            $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/table/${response[i].id}/invoice' class='btn btn-success avaliable-btn'>${response[i].table_no}</a></div>`);
-
+                            var div = $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/table/${response[i].id}/invoice' class='btn btn-success avaliable-btn'>${response[i].table_no}</a></div>`);
                         }else{
 
-                            $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/table/${response[i].id}/invoice' class='btn btn-info service-btn'>${response[i].table_no}</a></div>`);
+                            var div = $('.append_list').append(`<div class='col-lg-2 col-md-3 col-sm-4 mb-2'><a href='/Cashier/table/${response[i].id}/invoice' class='btn btn-info service-btn'>${response[i].table_no}</a></div>`);
                         }
                     }
                 },

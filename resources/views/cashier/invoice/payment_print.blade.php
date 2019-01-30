@@ -22,6 +22,10 @@
                                     Email: {{ $config->email }}<br/>
                                     Tel: {{ $config->phone}}<br/>
                                     Addr: {{ $config->address}}<br /><br />
+
+                                    <span style="float:left">Cashier: {{ $order->cashier }}</span><br>
+                                    <span style="float:left">Waiter: {{ $order->User->user_name }}</span><br>                                    
+                                      
                                     <span style="float:left">Invoice No: {{ $order->order_id}}</span><br/>
                                     <span style="float:left">Invoice Date:{{ Carbon\Carbon::parse($order->order_time)->format('d-m-Y') }}</span><br/>
                                     @if(count($tables)>0)
@@ -132,10 +136,15 @@
                             </tr>
 
                             <tr>
-                                <td colspan="3" style="height:25px;padding:5px 7px;">Tax</td>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Commercial Tax</td>
                                 <td align="right">{{ number_format($order->tax_amount) }}</td>
                             </tr>
                             
+                            <tr>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Extra Charge</td>
+                                <td align="right">{{ number_format($order->extra_charge) }}</td>
+                            </tr>
+
                             <tr style="border-bottom:1px dashed black;">
                                 <td colspan="4" style="height:5px;"></td>
                             </tr>

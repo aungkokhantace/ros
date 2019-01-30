@@ -1221,7 +1221,6 @@ class InvoiceController extends Controller
 
     public function invoicePaidUpdate($id,Request $request)
     {
-
         try {
 
             if($request->take_voucher == NULL){
@@ -1264,6 +1263,8 @@ class InvoiceController extends Controller
             }
 
             $order->over_all_discount_remark = $request->remark;
+            $order->extra_charge = $request->extra_charge;
+            $order->extra_charge_remark = $request->extra_charge_remark;
             $order->all_total_amount = $request->total_amount;
             $order->over_all_discount =  $request->discount_price;
             $order->sub_total = $request->sub_total;
@@ -1273,6 +1274,7 @@ class InvoiceController extends Controller
             $order->refund = $request->change;
             $order->take_voucher = $request->take_voucher;
             $order->shift_id = $orderShift;
+            $order->cashier =  \Auth::guard('Cashier')->user()->user_name;
             $order->status = 2;
 
 

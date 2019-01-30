@@ -57,8 +57,8 @@
                                         @else 
                                             <td>Take Away</td>
                                         @endif -->
-                                        <td align="right">{{ number_format($order->total_price) }}</td>
-                                        @php  $tot += $order->total_price  @endphp
+                                        <td align="right">{{ number_format($order->all_total_amount) }}</td>
+                                        @php  $tot += $order->all_total_amount  @endphp
                                     </tr>
                                 @endforeach
                                 <tr style="border-bottom:1px dashed black;font-size:13px;line-height:25px;">

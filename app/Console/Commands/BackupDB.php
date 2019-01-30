@@ -48,10 +48,9 @@ class BackupDB extends Command
       $config = Config::first();
 
       $process = new Process('mysqldump -u root '.$config->db_name.' >'.$config->backup_url.$current_timestamp.'.sql');
-     
   		$process->run();
   		if (!$process->isSuccessful()) {
-  		    throw new ProcessFailedException($process);
+            throw new \Exception('Mysql dump fail ! Check database name and backup url from config');
   		}
     	echo $process->getOutput();
     }
