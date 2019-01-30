@@ -82,7 +82,7 @@
             </div>
         </div>
        <div class="form-group">
-            <label for="item-continent" class="col-sm-3 control-label">Has Contiuent<span class="require">*</span></label>
+            <label for="item-continent" class="col-sm-3 control-label">Has Condiment<span class="require">*</span></label>
             <div class="col-sm-7">
                 <input name="check" value="0" type="hidden">
                 @if(isset($record))
@@ -91,6 +91,18 @@
                 <input type="checkbox" name="check" id="item-continent" value="1" @if(Input::old('check') == 1) checked @endif/>
                 @endif
                 <p class="text-danger">{{$errors->first('price')}}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="item-continent" class="col-sm-3 control-label">Has Inventory<span class="require">*</span></label>
+            <div class="col-sm-7">
+                <input name="has_inventory" value="0" type="hidden">
+                @if(isset($record))
+                <input type="checkbox" name="has_inventory"  id="item_has_inventory" value="1" @if($record->has_inventory == 1) checked @endif/>
+                @else
+                <input type="checkbox" name="has_inventory" id="item_has_inventory" value="1" @if(Input::old('has_inventory') == 1) checked @endif/>
+                @endif
+                <p class="text-danger">{{$errors->first('has_inventory')}}</p>
             </div>
         </div>
 

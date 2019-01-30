@@ -95,6 +95,8 @@ class ItemController extends Controller
         $remark                 = $request->get('remark');
         $cooking_time           = Input::get('standard_cooking_time');
         $is_ready_food           = Input::get('is_ready_food');
+        $has_inventory           = Input::get('has_inventory');
+       
         if ($check == 0) {
             $file                   = $request->file('fileupload');
             $imagedata              = file_get_contents($file);
@@ -120,6 +122,7 @@ class ItemController extends Controller
         $paramObj->has_continent            = $check;
 
         $paramObj->is_ready_food            = $is_ready_food;
+        $paramObj->has_inventory            = $has_inventory;
         $result                             = $this->ItemRepository->store($paramObj,$input,$remark);        
         $item_arr                           = $result['data'];       
         if($result['aceplusStatusCode']     !=  ReturnMessage::OK){
@@ -210,6 +213,7 @@ class ItemController extends Controller
         $status         = $request->get('status');
         $remark         = $request->get('remark');
         $is_ready_food  = $request->get('is_ready_food');
+        $has_inventory  = $request->get('has_inventory');
         $cooking_time   = Input::get('standard_cooking_time');
         $oldname        = $this->ItemRepository->find(Input::get('id'));
         $oldprice       = $oldname->price;
@@ -275,6 +279,7 @@ class ItemController extends Controller
                     $paramObj->category_id  = $category;
                     $paramObj->status       = $status;
                     $paramObj->is_ready_food= $is_ready_food;
+                    $paramObj->has_inventory = $has_inventory;
                     $paramObj->standard_cooking_time = $cooking_time;
 
                     //For File Upload
@@ -323,6 +328,7 @@ class ItemController extends Controller
                     $paramObj->has_continent= 1;
                     $paramObj->status       = $status;
                     $paramObj->is_ready_food = $is_ready_food;
+                    $paramObj->has_inventory = $has_inventory;
                     $result                 = $this->ItemRepository->updateNewContinent($paramObj);
                 }
 /* ------------------end  contient is > itemid -------------------------------------*/
@@ -392,6 +398,7 @@ class ItemController extends Controller
                     $paramObj->status                   = $status;
                     $paramObj->category_id              = $category;
                     $paramObj->is_ready_food            = $is_ready_food;
+                    $paramObj->has_inventory            = $has_inventory;
                     $paramObj->standard_cooking_time    = $cooking_time;
                     $result = $this->ItemRepository->updateAllItem($paramObj,$oldprice);
 
@@ -453,6 +460,7 @@ class ItemController extends Controller
                 $paramObj->category_id           = $category;
                 $paramObj->standard_cooking_time = $cooking_time;
                 $paramObj->is_ready_food         = $is_ready_food;
+                $paramObj->has_inventory         = $has_inventory;
 
                 $result                          = $this->ItemRepository->updateItem($paramObj,$oldprice);
                   /* start item remark */
