@@ -35,7 +35,7 @@ class inventoryController extends Controller
     private $utility;
 
     private $configRepository;
-    
+
 	public $SupplierId 	       = 1;
 	public $producttype 	   = 1;
 	public $pprice_percent 	   = 0;
@@ -232,7 +232,7 @@ class inventoryController extends Controller
     	foreach ($data as $um) {
 
         if (UM::pluck('um_id')->contains($um->Id)) {
-                UM::find($um->Id)->first()->update([
+                UM::where('um_id',$um->Id)->first()->update([
                     'um_id' =>$um->Id,
                     'code' =>$um->Code ,
                     'description' =>$um->Description,
