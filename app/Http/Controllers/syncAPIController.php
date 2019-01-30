@@ -159,6 +159,11 @@ class syncAPIController extends ApiGuardController
               }else{
                  $item->is_ready_food = false;
               }
+              if($item->has_inventory == '1'){
+                $item->has_inventory  = true;
+              }else{
+                 $item->has_inventory = false;
+              }
 
             }
             $output = array("items" => $items);
@@ -743,6 +748,11 @@ class syncAPIController extends ApiGuardController
                             $item->is_ready_food  = true;
                           }else{
                              $item->is_ready_food = false;
+                          }
+                          if($item->has_inventory == '1'){
+                            $item->has_inventory  = true;
+                          }else{
+                             $item->has_inventory = false;
                           }
 
                          }
