@@ -119,8 +119,13 @@
                             </tr>
 
                             <tr>
-                                <td colspan="3" style="height:25px;padding:5px 7px;">Tax</td>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Commercial Tax</td>
                                 <td>{{ number_format($order->tax_amount) }}</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" style="height:25px;padding:5px 7px;">Extra Charge</td>
+                                <td>{{ number_format($order->extra_charge) }}</td>
                             </tr>
                             
                             <tr style="border-bottom:1px dashed black;">
