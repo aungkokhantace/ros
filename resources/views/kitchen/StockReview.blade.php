@@ -9,7 +9,7 @@
                       <div class="col-lg-1"></div>
                       <div class="col-lg-8">
                         <div class="form-div">
-                          <h4><b>Finished Good Stock Review</b></h4><br>
+                          <h4>ပြဲေရလက္က်န္</h4><br>
                           <canvas id="horizontalBar"></canvas>
                         </div>
                       </div>

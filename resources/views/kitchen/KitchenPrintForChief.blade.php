@@ -49,7 +49,7 @@
               </div>
               <div class="footer-modal">
                 <button class="btn btn-success" id ="{{ $item->id }}" onClick="print_chef(this.id)">Print</button>
-                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">Close</button>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">ပိတ္မယ္</button>
               </div>
             </div>
           </div>
@@ -94,17 +94,33 @@
                                   <td class="left">
                                   @foreach($tables as $table)
                                       @if($table->order_id == $orderKey)
-                                          {{ $table->location_type }}
+                                          @php
+                                            $loc_array[] = $table->location_type;
+                                          @endphp
                                       @endif
                                   @endforeach
+                                  @if (!empty($loc_array) && count($loc_array) > 1)
+                                      {{ implode(',', array_unique($loc_array)) }}
+                                  @elseif (!empty($loc_array) && count($loc_array) == 1)
+                                      {{ $loc_array[0] }}
+                                  @endif
+                                  @php unset($loc_array); @endphp
                                   </td>
                                   <td class="center">:</td>
                                   <td class="right">
+                                    @php $no_array   = []; @endphp
                                     @foreach($tables as $table)
                                         @if($table->order_id == $orderKey)
-                                            {{ $table->table_no }}
+                                          @php
+                                            $no_array[] = $table->table_no;
+                                          @endphp
                                         @endif
                                     @endforeach
+                                    @if (!empty($no_array) && count($no_array) > 1)
+                                      {{ implode(',', $no_array) }}
+                                    @elseif (!empty($no_array) && count($no_array) == 1)
+                                      {{ $no_array[0] }}
+                                    @endif
                                   </td>
                               </tr>
                                 @if($orderValue->take_id == 0)
@@ -163,7 +179,7 @@
               </div>
               <div class="footer-modal">
                 <button class="btn btn-success" id ="{{ $item->order_detail_id }}" onClick="print_for_waiter(this.id)">Print</button>
-                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">Close</button>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary">ပိတ္မယ္</button>
               </div>
             </div>
           </div>

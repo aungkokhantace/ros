@@ -234,13 +234,13 @@
 
         .btn-group input {
             width: 120px;
-            font-weight: bolder;
+            height: 32px;
             font-family: 'Source Sans Pro', sans-serif;
         }
 
         .btn-group button {
-            width: 150px;
-            font-weight: bolder;
+            width: 120px;
+            height: 32px;
             font-family: 'Source Sans Pro', sans-serif;
         }
 
@@ -339,19 +339,19 @@
         </a>
         <a href="/Kitchen/kitchen" @if(Request::path() == 'Kitchen/kitchen') class="item-list active" @else class="item-list" @endif>
             <i class="fa fa-sliders"></i>
-            &nbsp;<span><b>Table View</b></span>
+            &nbsp;<span>စားပြဲအလိုက္</span>
         </a>
         <a href="/Kitchen/productView" @if(Request::path() == 'Kitchen/productView') class="item-list active" @else class="item-list" @endif>
             <i class="fa fa-suitcase"></i>
-            &nbsp;<span><b>Product View</b></span>
+            &nbsp;<span>ဟင္းပြဲအလိုက္</span>
         </a>
         <a href="/Kitchen/stock-requisition" @if(Request::path() == 'Kitchen/stock-requisition') class="item-list active" @else class="item-list" @endif>
             <i class="fa fa-wpforms"></i>
-            &nbsp;<b>Stock Requisition Form</b></span>
+            &nbsp;ကုန္ၾကမ္းမွာရန္</span>
         </a>
         <a href="/Kitchen/stock-review" @if(Request::path() == 'Kitchen/stock-review') class="item-list active" @else class="item-list" @endif>
           <i class="fa fa-cutlery"></i>
-          &nbsp;<b>Finished Good Stock Review</b>
+          &nbsp;ပြဲေရလက္က်န္
         </a>
         <a href="javascript:void(0);" class="icon" onclick="myFunction()">
             <i class="fa fa-bars"></i>

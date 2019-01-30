@@ -37,9 +37,11 @@ class RoomController extends Controller
         $request->validate();
         $name                   = trim(Input::get('room_name'));
         $capacity               = trim(Input::get('capacity'));
+        $price               = trim(Input::get('price'));
         $paramObj               = new Room();
         $paramObj->room_name    = $name;
         $paramObj->capacity     = $capacity;
+        $paramObj->price        = $price;
         $paramObj->status       = 0;
         $result = $this->roomRepository->store($paramObj);
 
@@ -64,10 +66,12 @@ class RoomController extends Controller
         $id          = Input::get('id');
         $name        = trim(Input::get('room_name'));
         $capacity    = trim(Input::get('capacity'));
+        $price       = trim(Input::get('price'));
 
         $paramObj               = Room::find($id);
         $paramObj->room_name    = $name;
         $paramObj->capacity     = $capacity;
+        $paramObj->price        = $price;
         //check room name already exist in db
         $rooms       = $this->roomRepository->getRooms();
         $old_room    = $this->roomRepository->getRoomById($id);

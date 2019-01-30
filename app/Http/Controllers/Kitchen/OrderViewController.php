@@ -373,7 +373,10 @@ class OrderViewController extends Controller
 
             $orders[$key]->items = $orderItemList;
         }
-        return view('kitchen.realtime_tableview')->with('tables',$tables)->with('orders',$orders)->with('rooms',$rooms)->with('extra',$extra)->render();
+        return view('kitchen.realtime_tableview')->with('tables',$tables)
+          ->with('orders',$orders)->with('rooms',$rooms)
+          ->with('extra',$extra)->with('kitchen', $kitchen)
+          ->render();
     }
 
     public function productView()
@@ -930,6 +933,26 @@ class OrderViewController extends Controller
                 $this->normalizeOrderStatus($order);
             // return redirect()->action('Kitchen\OrderViewController@tableView');
             }
+
+            // For OrderTable
+
+            DB::table('tables')
+                ->join('order_tables', 'order_tables.table_id', '=', 'tables.id')
+                ->join('order', 'order_tables.order_id', '=', 'order.id')
+                ->where('order_tables.order_id', '=', $order_id)
+                ->where('order.status', '=', StatusConstance::ORDER_CANCEL_STATUS)
+                ->update(['tables.status' => 0]);
+
+            // For orderRoom
+
+            DB::table('rooms')
+                ->join('order_room', 'order_room.room_id', '=', 'rooms.id')
+                ->join('order', 'order_room.order_id', '=', 'order.id')
+                ->where('order_room.order_id', '=', $order_id)
+                ->where('order.status', '=', StatusConstance::ORDER_CANCEL_STATUS)
+                ->update(['rooms.status' => 0]);
+
+
             DB::commit();
             // Custom Log
             $date       = date("Y-m-d H:i:s");

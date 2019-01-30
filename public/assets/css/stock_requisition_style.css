@@ -60,6 +60,10 @@
   font-size: 12px;
 }
 
+label {
+  font-weight: normal !important;
+}
+
 @-moz-document url-prefix() {
   .custom .form-control {
     padding-right: 25px;
@@ -85,7 +89,11 @@
     margin: 0 22px 0 42px;
 }
 .col-sm-4 input[type=submit] {
-  width: 150px;
+  padding-top: 2px !important;
+  width: 120px;
+}
+.col-sm-4 button {
+  padding-top: 4px !important;
 }
 
 .form-div h4 {

@@ -7,7 +7,6 @@
     border-radius: 5px 5px 0 0 !important;
   }
   .modal-header h4 {
-    font-weight: bolder !important;
     color: white;
   }
   .cancle-modal {
@@ -30,10 +29,13 @@
     background: #eb9605;
     border-color: #eb9605;
     font-weight: bolder;
+    color: white;
+    padding-top: 10px !important;
   }
   .modal-body table input[type=button] {
     width: 120px !important;
     font-weight: bolder;
+    padding-top: 10px !important;
   }
   .modal-foot {
     padding: 15px;
@@ -41,6 +43,18 @@
     color :white;
     background: #5cb85c;
     border-radius: 0 0 5px 5px !important;
+  }
+  .custom button:hover {
+    color: white !important;
+  }
+  .sa-button-container .cancel {
+    width: 121px !important;
+    height: 44px !important;
+    font-size: 15px !important;
+  }
+  .sa-button-container .confirm {
+    font-size: 15px !important;
+    height: 44px !important;
   }
   </style>
 </head>
@@ -134,31 +148,31 @@
 
                                                 <td class="tr_right" style="border-right: none !important;">
                                                     @if($item->status_id == '1' && !$item->is_ready_food)
-                                                        <input type="submit" class="start start_duration_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="Start Cooking">
+                                                        <input type="submit" class="start start_duration_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="စခ်က္မယ္">
                                                     @endif
                                                     @if($item->status_id == '1' && $item->is_ready_food)
-                                                        <input type="submit" class="complete complete_duration_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="Food Ready">
+                                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" name="start" value="ဟင္းပြဲရၿပီ">
                                                     @endif
 
                                                     @if($item->status_id =='2')
-
-                                                        <input type="submit" class="complete complete_duration_item btn_k btn btn-success" id="{{$item->order_detail_id}}" name="complete" value="Complete Cooking">
-
+                                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-success" id="{{$item->order_detail_id}}" name="complete" value="ၿပီးၿပီ">
                                                     @endif
+                                                    {{--
                                                     @if($item->status_id == '3')
-                                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="Take" />
+                                                        <input type="submit" class="taken complete_taken_item btn_k btn btn-info" id="{{$item->order_detail_id}}" value="ယူမယ္"/>
 
                                                     @endif
+                                                    --}}
                                                 </td>
 
                                                 @if($item->status_id == '1')
                                                     <td class="tr_right" style="border-left: none !important;">
-                                                        <input type="button" class="cancel btn_k btn btn-danger" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
+                                                        <input type="button" class="cancel btn_k btn btn-danger" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}" name="cancel" value="မလုပ္ဘူး" data-toggle="modal" data-target="#{{$item->order_detail_id}}-{{$item->setmenu_id}}modal">
                                                         <div class="modal fade" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                           <div class="modal-dialog cancle-modal" role="document">
                                                             <div class="modal-content">
                                                               <div class="modal-header">
-                                                                  <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                                                  <h4 class="modal-title" id="myModalLabel">ဖ်က္မယ့္အေၾကာင္းရင္း</h4>
                                                               </div>
                                                               <div class="modal-body">
                                                                 {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $item->order_detail_id . "-" . $item->setmenu_id . "form")) !!}
@@ -171,7 +185,7 @@
                                                                 <input type="hidden" name="setmenu_id" value="{{$item->setmenu_id}}">
                                                                 <table class="table">
                                                                   <tr>
-                                                                    <td>Enter Message</td>
+                                                                    <td>စာရိုက္ပါ</td>
                                                                     <td><input type="text" name="message" class="form-control"></td>
                                                                   </tr>
                                                                   <tr>
@@ -180,10 +194,10 @@
                                                                   </tr>
                                                                   <tr>
                                                                     <td>
-                                                                      <input type="button" name="submit" value="Save" class="btn btn-info cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">
+                                                                      <input type="button" name="submit" value="သိမ္းမယ္" class="btn btn-info cancel_product" id="{{$item->order_detail_id}}-{{$item->setmenu_id}}">
                                                                     </td>
-                                                                    <td>
-                                                                      <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                                                    <td class="custom">
+                                                                      <button type="button" class="btn" data-dismiss="modal">ပိတ္မယ္</button>
                                                                     </td>
                                                                   </tr>
                                                                 </table>
@@ -262,28 +276,30 @@
                                                     </td> -->
                                                 <td>
                                                     @if($setmenu->status_id == '1' && !$setmenu->is_ready_food)
-                                                        <input type="submit" class="start start_duration_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="start" value="Start Cooking">
+                                                        <input type="submit" class="start start_duration_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="start" value="စခ်က္မယ္">
                                                     @endif
                                                     @if($setmenu->status_id == '1' && $setmenu->is_ready_food)
-                                                        <input type="submit" class="complete complete_duration_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="start" value="Food Ready">
+                                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->id}}" name="start" value="ဟင္းပြဲရၿပီ">
                                                     @endif
 
                                                     @if($setmenu->status_id =='2')
-                                                        <input type="submit" class="complete complete_duration_setmenu btn_k btn btn-success" id="{{$setmenu->id}}" name="complete" value="Cooking">
+                                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-success" id="{{$setmenu->id}}" name="complete" value="ၿပီးၿပီ">
 
                                                     @endif
+                                                    {{--
                                                     @if($setmenu->status_id =='3')
-                                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->order_detail_id}}" name="complete" value="Taken">
+                                                        <input type="submit" class="taken complete_taken_setmenu btn_k btn btn-info" id="{{$setmenu->order_detail_id}}" name="complete" value="ယူမယ္">
                                                     @endif
+                                                    --}}
                                                 </td>
                                                 @if($setmenu->status_id == '1')
                                                     <td>
-                                                        <input type="button" class="cancel btn_k btn btn-danger" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="Cancel" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
+                                                        <input type="button" class="cancel btn_k btn btn-danger" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}" name="cancel" value="မလုပ္ဘူး" data-toggle="modal" data-target="#{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal">
                                                         <div class="modal fade" id="{{$setmenu->order_detail_id}}-{{$setmenu->setmenu_id}}modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                           <div class="modal-dialog cancle-modal" role="document">
                                                             <div class="modal-content">
                                                               <div class="modal-header">
-                                                                  <h4 class="modal-title" id="myModalLabel">Reason of Cancellation</h4>
+                                                                  <h4 class="modal-title" id="myModalLabel">ဖ်က္မယ့္အေၾကာင္းရင္း</h4>
                                                               </div>
                                                               <div class="modal-body">
                                                                 {!! Form::open(array('url' => 'Kitchen/getCancelID/ProductView', 'class'=> 'form-horizontal','onsubmit'=>'return false;', 'id' => $setmenu->order_detail_id . "-" . $setmenu->setmenu_id . "form")) !!}
@@ -296,7 +312,7 @@
                                                                 <input type="hidden" name="setmenu_id" value="{{$setmenu->setmenu_id}}">
                                                                 <table class="table">
                                                                   <tr>
-                                                                    <td>Enter Message</td>
+                                                                    <td>စာရိုက္ပါ</td>
                                                                     <td><input type="text" name="message" class="form-control"></td>
                                                                   </tr>
                                                                   <tr>
@@ -305,10 +321,10 @@
                                                                   </tr>
                                                                   <tr>
                                                                     <td>
-                                                                      <input type="button" name="submit" value="Save" class="btn btn-info cancel_product">
+                                                                      <input type="button" name="submit" value="သိမ္းမယ္" class="btn btn-info cancel_product">
                                                                     </td>
                                                                     <td>
-                                                                      <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                                                      <button type="button" class="btn" data-dismiss="modal">ပိတ္မယ္</button>
                                                                     </td>
                                                                   </tr>
                                                                 </table>
@@ -375,15 +391,16 @@
                 var itemID      = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
-                        title: "Are you sure?",
-                        text: "You will not be able to recover this item!",
+                        title: "ေသခ်ာလား?",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/CookingItem/' + itemID,
@@ -407,15 +424,16 @@
                 var itemID      = $(this).attr('id');
                 $(document).ready(function(){
                     swal({
-                        title: "Are you sure?",
-                        text: "You will not be able to recover this item!",
+                        title: "ေသခ်ာလား?",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/CookedItem/' + itemID,
@@ -443,16 +461,16 @@
 
                 $(document).ready(function(){
                     swal({
-                        title: "Are you sure?",
-                        text: "You will not be able to recover this item!",
+                        title: "ေသခ်ာလား?",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/productView/taken/' + itemID,
@@ -478,16 +496,16 @@
                 var itemID      = $(this).attr('id');
                 $(document).ready(function  (){
                     swal({
-                        title: "Are you sure?",
-                        text: "You will not be able to recover this item!",
+                        title: "ေသခ်ာလား?",
                         type: "success",
-                        showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
 
                         if (isConfirm) {
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
                                 url: '/Kitchen/taken/ajaxRequest/' + itemID,
@@ -512,19 +530,19 @@
 
                 $(document).ready(function(){
                     swal({
-                        title: "Are you sure?",
-                        text: "You will not be able to recover this item!",
+                        title: "ေသခ်ာလား?",
                         type: "success",
                         showCancelButton: true,
+                        cancelButtonText: "မလုပ္ဘူး",
                         confirmButtonColor: "#86CCEB",
-                        confirmButtonText: "Confirm",
+                        confirmButtonText: "လုပ္မယ္",
                         closeOnConfirm: false
                     }, function(isConfirm){
                         if (isConfirm) {
-
+                            $('.confirm').attr('disabled', true);
                             $.ajax({
                                 type: 'GET',
-                                url: '/Kitchen/productView/taken/setmenu' + itemID,
+                                url: '/Kitchen/productView/taken/setmenu/' + itemID,
                                 success: function (Response) {
 
                                     var returnResp        = Response.message;
@@ -546,15 +564,16 @@
             $('#autoDiv').on('click','.start_duration_setmenu',function(e){
                 var itemID      = $(this).attr('id');
                 swal({
-                    title: "Are you sure?",
-                    text: "You will not be able to recover this item!",
+                    title: "ေသခ်ာလား?",
                     type: "success",
                     showCancelButton: true,
+                    cancelButtonText: "မလုပ္ဘူး",
                     confirmButtonColor: "#86CCEB",
-                    confirmButtonText: "Confirm",
+                    confirmButtonText: "လုပ္မယ္",
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {
+                        $('.confirm').attr('disabled', true);
                         $.ajax({
                             type: 'GET',
                             url: '/Kitchen/productView/CookingSetMenuItem/' + itemID,
@@ -574,15 +593,16 @@
             $('#autoDiv').on('click','.complete_duration_setmenu',function(e){
                 var itemID      = $(this).attr('id');
                 swal({
-                    title: "Are you sure?",
-                    text: "You will not be able to recover this item!",
+                    title: "ေသခ်ာလား?",
                     type: "success",
                     showCancelButton: true,
+                    cancelButtonText: "မလုပ္ဘူး",
                     confirmButtonColor: "#86CCEB",
-                    confirmButtonText: "Confirm",
+                    confirmButtonText: "လုပ္မယ္",
                     closeOnConfirm: false
                 }, function(isConfirm){
                     if (isConfirm) {
+                        $('.confirm').attr('disabled', true);
                         $.ajax({
                             type: 'GET',
                             url: '/Kitchen/productView/CookedSetMenuItem/' + itemID,
