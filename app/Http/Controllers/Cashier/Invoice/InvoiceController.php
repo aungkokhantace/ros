@@ -1192,7 +1192,7 @@ class InvoiceController extends Controller
 							->where('status',$session_status)
 							->whereNull('deleted_at')
                             ->first();
-   
+
 		$day_id 			  = '';
 
 
@@ -1227,21 +1227,21 @@ class InvoiceController extends Controller
             if($request->take_voucher == NULL){
                 $request->take_voucher = 0;
             }
-            // $saleinventoryCon = new inventoryController();
-            // $saleinventoryCon->saleStock($id);
+            $saleinventoryCon = new inventoryController();
+            $saleinventoryCon->saleStock($id);
             $order = Order::find($id);
-            
+
             $orderShift = OrderShift::orderBy('id','desc')->value('shift_id');
-          
+
             if(!$order->table->isEmpty()){
                 $table_id = $order->table[0]->id;
 
                 $order_count = OrderTable::where('table_id',$table_id)->pluck('order_id');
-                
+
                 $check_status = Order::whereIn('id',$order_count)->pluck('status')->toArray();
                 $check = array_count_values($check_status);
-                
-               
+
+
             }
 
 
@@ -1252,14 +1252,14 @@ class InvoiceController extends Controller
             }
 
             if(!$order->table->isEmpty()){
-                
+
             if($check['1'] == 1){
                     foreach($order->table as $table_status){
                         $table = Table::where('id',$table_status->id)->first();
                         $table->status = 0;
                         $table->update();
-                    }      
-                
+                    }
+
                 }
             }
 
